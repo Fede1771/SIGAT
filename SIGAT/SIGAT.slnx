@@ -1,0 +1,9 @@
+<Solution>
+  <Project Path="../SIGAT.BE/SIGAT.BE.csproj" />
+  <Project Path="../SIGAT.BLL/SIGAT.BLL.csproj" />
+  <Project Path="../SIGAT.DAL/SIGAT.DAL.csproj" />
+  <Project Path="../SIGAT.SERVICIOS/SIGAT.SERVICIOS.csproj" />
+  <Project Path="../SIGAT.Tests/SIGAT.Tests.csproj" Id="254fb66a-63b3-46b9-b601-1ffb3fc18de5" />
+  <Project Path="../SIGAT.UI/SIGAT.UI.csproj" Id="cb07d899-3f0f-4653-81e3-dec67a012c2c" />
+  <Project Path="SIGAT.csproj" Id="0cac8d02-ded1-4aa6-bc55-6e9b371b2ffc" />
+</Solution>

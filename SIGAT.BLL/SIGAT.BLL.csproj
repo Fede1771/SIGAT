@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SIGAT.BE\SIGAT.BE.csproj" />
+    <ProjectReference Include="..\SIGAT.DAL\SIGAT.DAL.csproj" />
+    <ProjectReference Include="..\SIGAT.SERVICIOS\SIGAT.SERVICIOS.csproj" />
+  </ItemGroup>
+
+</Project>

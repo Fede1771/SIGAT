@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <PackageReference Include="Otp.NET" Version="1.4.1" />
+    <PackageReference Include="QRCoder" Version="1.8.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SIGAT.BE\SIGAT.BE.csproj" />
+    <ProjectReference Include="..\SIGAT.BLL\SIGAT.BLL.csproj" />
+    <ProjectReference Include="..\SIGAT.SERVICIOS\SIGAT.SERVICIOS.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Idiomas.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Idiomas.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Idiomas.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Idiomas.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <Nullable>disable</Nullable>
+    <NoWarn>NU1701</NoWarn>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+</Project>
