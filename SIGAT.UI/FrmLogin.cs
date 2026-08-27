@@ -21,23 +21,68 @@ namespace SIGAT.UI
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
 
-            this.Controls.Add(new Label { Text = "Usuario:", Location = new Point(50, 30), AutoSize = true });
-            txtUsuario = new TextBox { Location = new Point(50, 50), Width = 200 };
+            // Creamos y configuramos el Label de Usuario
+            Label lblUsuario = new Label();
+            lblUsuario.Text = "Usuario:";
+            lblUsuario.Location = new Point(50, 30);
+            lblUsuario.AutoSize = true;
+            this.Controls.Add(lblUsuario);
+
+            // Creamos y configuramos el TextBox de Usuario
+            txtUsuario = new TextBox();
+            txtUsuario.Location = new Point(50, 50);
+            txtUsuario.Width = 200;
             this.Controls.Add(txtUsuario);
 
-            this.Controls.Add(new Label { Text = "Contraseña:", Location = new Point(50, 90), AutoSize = true });
-            txtPassword = new TextBox { Location = new Point(50, 110), Width = 200, UseSystemPasswordChar = true };
+            // Creamos y configuramos el Label de Contraseña
+            Label lblPassword = new Label();
+            lblPassword.Text = "Contraseña:";
+            lblPassword.Location = new Point(50, 90);
+            lblPassword.AutoSize = true;
+            this.Controls.Add(lblPassword);
+
+            // Creamos y configuramos el TextBox de Contraseña
+            txtPassword = new TextBox();
+            txtPassword.Location = new Point(50, 110);
+            txtPassword.Width = 200;
+            txtPassword.UseSystemPasswordChar = true;
             this.Controls.Add(txtPassword);
 
-            btnLogin = new Button { Text = "Ingresar", Location = new Point(90, 150), Size = new Size(120, 35) };
-            btnLogin.Click += BtnLogin_Click;
-            this.AcceptButton = btnLogin;
+            // Creamos y configuramos el Botón de Ingreso
+            btnLogin = new Button();
+            btnLogin.Text = "Ingresar";
+            btnLogin.Location = new Point(90, 150);
+            btnLogin.Size = new Size(120, 35);
+            btnLogin.Click += new EventHandler(BtnLogin_Click);
+
+            this.AcceptButton = btnLogin; // Permite ingresar con la tecla Enter
             this.Controls.Add(btnLogin);
+
+            // --- TRUCO DE INICIALIZACIÓN ---
+            try
+            {
+                if (_usuarioBLL.ObtenerTodos().Count == 0)
+                {
+                    Usuario adminInicial = new Usuario();
+                    adminInicial.NombreUsuario = "admin";
+                    adminInicial.Nombre = "Admin";
+                    adminInicial.Apellido = "Sistema";
+                    adminInicial.Activo = true;
+                    adminInicial.IdPerfil = 1;
+
+                    _usuarioBLL.CrearUsuario(adminInicial, "admin");
+                }
+            }
+            catch
+            {
+            }
+            // ------------------------------------------------
         }
 
         private void BtnLogin_Click(object sender, EventArgs e)
         {
-            var resultado = _usuarioBLL.Autenticar(txtUsuario.Text, txtPassword.Text, out Usuario usuario);
+            Usuario usuarioValidado;
+            ResultadoLogin resultado = _usuarioBLL.Autenticar(txtUsuario.Text, txtPassword.Text, out usuarioValidado);
 
             if (resultado == ResultadoLogin.CredencialesInvalidas)
             {
@@ -50,7 +95,8 @@ namespace SIGAT.UI
             else if (resultado == ResultadoLogin.Exito)
             {
                 this.Hide();
-                new FrmPrincipal().ShowDialog();
+                FrmPrincipal frmPrincipal = new FrmPrincipal();
+                frmPrincipal.ShowDialog();
                 this.Close();
             }
         }

@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Windows.Forms;
 using SIGAT.BLL;
+using SIGAT.SERVICIOS;
 
 namespace SIGAT.UI
 {
@@ -10,51 +11,57 @@ namespace SIGAT.UI
         [STAThread]
         static void Main()
         {
-            ApplicationConfiguration.Initialize(); // Tu configuración original intacta
+            ApplicationConfiguration.Initialize();
 
             // 1. Interceptar excepciones de los hilos de la UI (Formularios)
-            Application.ThreadException += new ThreadExceptionEventHandler(GlobalExceptionHandler);
+            Application.ThreadException += new ThreadExceptionEventHandler(ManejarErrorDeInterfaz);
 
             // 2. Interceptar excepciones de hilos de fondo o tareas asíncronas
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
-            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(NonUIExceptionHandler);
+            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(ManejarErrorDeFondo);
 
+            // Arrancamos el sistema mostrando la pantalla de login
             Application.Run(new FrmLogin());
         }
 
         // Método que atrapa errores de la interfaz
-        static void GlobalExceptionHandler(object sender, ThreadExceptionEventArgs e)
+        static void ManejarErrorDeInterfaz(object sender, ThreadExceptionEventArgs e)
         {
             ManejarErrorCritico(e.Exception);
         }
 
         // Método que atrapa errores fuera de la interfaz
-        static void NonUIExceptionHandler(object sender, UnhandledExceptionEventArgs e)
+        static void ManejarErrorDeFondo(object sender, UnhandledExceptionEventArgs e)
         {
-            if (e.ExceptionObject is Exception ex)
+            if (e.ExceptionObject is Exception excepcionFondo)
             {
-                ManejarErrorCritico(ex);
+                ManejarErrorCritico(excepcionFondo);
             }
         }
 
         // Lógica central para registrar y mostrar el error sin que el sistema muera
-        static void ManejarErrorCritico(Exception ex)
+        static void ManejarErrorCritico(Exception excepcion)
         {
             try
             {
                 BitacoraBLL bitacoraBLL = new BitacoraBLL();
-                var sesion = SIGAT.SERVICIOS.SesionServicio.ObtenerInstancia().UsuarioActual;
-                string usuario = sesion != null ? sesion.NombreUsuario : "Sistema";
 
-                bitacoraBLL.Registrar(usuario, "Error Crítico del Sistema", $"Detalle técnico: {ex.Message}");
+                // Intentamos sacar el usuario logueado. Si es nulo, ponemos "Sistema"
+                string nombreUsuario = "Sistema";
+                if (SesionServicio.ObtenerInstancia().UsuarioActual != null)
+                {
+                    nombreUsuario = SesionServicio.ObtenerInstancia().UsuarioActual.NombreUsuario;
+                }
+
+                bitacoraBLL.Registrar(nombreUsuario, "Error Crítico del Sistema", "Detalle técnico: " + excepcion.Message);
             }
             catch
             {
-                // Si la bitácora también falla, lo ignoramos para evitar un bucle infinito
+                // Si la bitácora falla justo al intentar guardar un error, lo ignoramos para evitar un bucle infinito
             }
 
             MessageBox.Show("Se ha producido un error inesperado. El incidente fue registrado en la bitácora del sistema.\n\n" +
-                            "Mensaje técnico: " + ex.Message,
+                            "Mensaje técnico: " + excepcion.Message,
                             "Excepción Controlada",
                             MessageBoxButtons.OK,
                             MessageBoxIcon.Error);
