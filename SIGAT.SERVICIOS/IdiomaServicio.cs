@@ -6,10 +6,10 @@ namespace SIGAT.SERVICIOS
 {
     public class IdiomaServicio
     {
-        private static IdiomaServicio _instancia;
+        private static IdiomaServicio? _instancia;
 
-        // Este evento se dispara para avisarle a las pantallas que deben actualizar sus textos
-        public event Action IdiomaCambiado;
+        // Delegado / Evento que avisa a los formularios cuando cambia el idioma
+        public event Action? IdiomaCambiado;
 
         private IdiomaServicio() { }
 
@@ -24,12 +24,16 @@ namespace SIGAT.SERVICIOS
 
         public void CambiarIdioma(string cultura)
         {
-            // Cambiamos la cultura del hilo actual (afecta a números, fechas y recursos)
-            Thread.CurrentThread.CurrentUICulture = new CultureInfo(cultura);
-            Thread.CurrentThread.CurrentCulture = new CultureInfo(cultura);
+            // 1. Cambiamos la configuración regional del hilo de ejecución actual
+            CultureInfo nuevaCultura = new CultureInfo(cultura);
+            Thread.CurrentThread.CurrentUICulture = nuevaCultura;
+            Thread.CurrentThread.CurrentCulture = nuevaCultura;
 
-            // Avisamos a todos los que estén escuchando que el idioma cambió
-            IdiomaCambiado?.Invoke();
+            // 2. Si hay formularios "escuchando" este evento, les avisamos que se actualicen
+            if (IdiomaCambiado != null)
+            {
+                IdiomaCambiado.Invoke();
+            }
         }
     }
 }
