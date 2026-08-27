@@ -11,19 +11,20 @@ namespace SIGAT.BLL
 
         public void Registrar(string usuario, string actividad, string informacion)
         {
-            Bitacora b = new Bitacora
-            {
-                Fecha = DateTime.Now,
-                Usuario = usuario,
-                Actividad = actividad,
-                InformacionAsociada = informacion
-            };
-            _dal.Insertar(b);
+            // Creamos el objeto y le cargamos los datos uno por uno
+            Bitacora nuevoRegistro = new Bitacora();
+            nuevoRegistro.Fecha = DateTime.Now;
+            nuevoRegistro.Usuario = usuario;
+            nuevoRegistro.Actividad = actividad;
+            nuevoRegistro.InformacionAsociada = informacion;
+
+            // Lo enviamos a la capa de datos para guardar en la tabla
+            _dal.Insertar(nuevoRegistro);
         }
 
-        // NUEVO MÉTODO: El puente para que la UI le pida los datos a la DAL
         public List<Bitacora> Buscar(DateTime? desde, DateTime? hasta, string? usuario, string? actividad)
         {
+            // Actuamos como puente: recibimos los filtros de la pantalla y se los pasamos a la base de datos
             return _dal.Buscar(desde, hasta, usuario, actividad);
         }
     }
