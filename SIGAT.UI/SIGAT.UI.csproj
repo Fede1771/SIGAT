@@ -1,11 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <PackageReference Include="Otp.NET" Version="1.4.1" />
-    <PackageReference Include="QRCoder" Version="1.8.0" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\SIGAT.BE\SIGAT.BE.csproj" />
     <ProjectReference Include="..\SIGAT.BLL\SIGAT.BLL.csproj" />
     <ProjectReference Include="..\SIGAT.SERVICIOS\SIGAT.SERVICIOS.csproj" />
