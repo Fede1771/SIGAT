@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using SIGAT.BE;
+using SIGAT.BE.Auditoria;
 using SIGAT.DAL;
 
 namespace SIGAT.BLL
@@ -9,22 +10,33 @@ namespace SIGAT.BLL
     {
         private BitacoraDAL _dal = new BitacoraDAL();
 
+        // --- NUEVO MÉTODO (Usa el Patrón Factory y el Mapper) ---
+        public void Registrar(IBitacoraEvento evento)
+        {
+            // 1. Convertimos la interfaz genérica a nuestro objeto concreto
+            Bitacora eventoConcreto = (Bitacora)evento;
+
+            // 2. Pasamos el evento por el Mapper para adaptar las propiedades nuevas a la base de datos vieja
+            BitacoraMapper.PrepararParaBaseDeDatos(eventoConcreto);
+
+            // 3. Lo mandamos a guardar
+            _dal.Insertar(eventoConcreto);
+        }
+
+        // --- MÉTODO CLÁSICO (Se mantiene por compatibilidad con la UI / Sobrecarga) ---
         public void Registrar(string usuario, string actividad, string informacion)
         {
-            // Creamos el objeto y le cargamos los datos uno por uno
-            Bitacora nuevoRegistro = new Bitacora();
-            nuevoRegistro.Fecha = DateTime.Now;
-            nuevoRegistro.Usuario = usuario;
-            nuevoRegistro.Actividad = actividad;
-            nuevoRegistro.InformacionAsociada = informacion;
+            Bitacora registroClasico = new Bitacora();
+            registroClasico.Fecha = DateTime.Now;
+            registroClasico.Usuario = usuario;
+            registroClasico.Actividad = actividad;
+            registroClasico.InformacionAsociada = informacion;
 
-            // Lo enviamos a la capa de datos para guardar en la tabla
-            _dal.Insertar(nuevoRegistro);
+            _dal.Insertar(registroClasico);
         }
 
         public List<Bitacora> Buscar(DateTime? desde, DateTime? hasta, string? usuario, string? actividad)
         {
-            // Actuamos como puente: recibimos los filtros de la pantalla y se los pasamos a la base de datos
             return _dal.Buscar(desde, hasta, usuario, actividad);
         }
     }
