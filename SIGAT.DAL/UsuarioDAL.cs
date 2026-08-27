@@ -9,112 +9,141 @@ namespace SIGAT.DAL
     {
         public Usuario ObtenerPorNombreUsuario(string nombreUsuario)
         {
-            using (var conexion = ConexionBD.ObtenerConexion())
+            // El bloque "using" asegura que la conexión se cierre automáticamente al terminar
+            using (SqlConnection conexion = ConexionBD.ObtenerConexion())
             {
-                string query = @"SELECT u.IdUsuario, u.NombreUsuario, u.Password, u.Nombre, u.Apellido, u.Activo, u.IdPerfil, p.NombrePerfil 
-                                 FROM Usuarios u INNER JOIN Perfiles p ON u.IdPerfil = p.IdPerfil 
-                                 WHERE u.NombreUsuario = @User";
-                using (var cmd = new SqlCommand(query, conexion))
+                string consulta = @"SELECT u.IdUsuario, u.NombreUsuario, u.Password, u.Nombre, u.Apellido, u.Activo, u.IdPerfil, p.NombrePerfil 
+                                    FROM Usuarios u 
+                                    INNER JOIN Perfiles p ON u.IdPerfil = p.IdPerfil 
+                                    WHERE u.NombreUsuario = @User";
+
+                using (SqlCommand comando = new SqlCommand(consulta, conexion))
                 {
-                    cmd.Parameters.AddWithValue("@User", nombreUsuario);
+                    comando.Parameters.AddWithValue("@User", nombreUsuario);
                     conexion.Open();
-                    using (var reader = cmd.ExecuteReader())
+
+                    using (SqlDataReader lector = comando.ExecuteReader())
                     {
-                        if (reader.Read()) return MapearUsuario(reader);
+                        // Si encuentra un registro, lo convertimos a objeto y lo devolvemos
+                        if (lector.Read())
+                        {
+                            return MapearUsuario(lector);
+                        }
                     }
                 }
             }
+            // Si no encontró nada, devuelve nulo
             return null;
         }
 
         public List<Usuario> ObtenerTodos()
         {
-            var lista = new List<Usuario>();
-            using (var conexion = ConexionBD.ObtenerConexion())
+            List<Usuario> listaDeUsuarios = new List<Usuario>();
+
+            using (SqlConnection conexion = ConexionBD.ObtenerConexion())
             {
-                string query = @"SELECT u.IdUsuario, u.NombreUsuario, u.Password, u.Nombre, u.Apellido, u.Activo, u.IdPerfil, p.NombrePerfil 
-                                 FROM Usuarios u INNER JOIN Perfiles p ON u.IdPerfil = p.IdPerfil";
-                using (var cmd = new SqlCommand(query, conexion))
+                string consulta = @"SELECT u.IdUsuario, u.NombreUsuario, u.Password, u.Nombre, u.Apellido, u.Activo, u.IdPerfil, p.NombrePerfil 
+                                    FROM Usuarios u 
+                                    INNER JOIN Perfiles p ON u.IdPerfil = p.IdPerfil";
+
+                using (SqlCommand comando = new SqlCommand(consulta, conexion))
                 {
                     conexion.Open();
-                    using (var reader = cmd.ExecuteReader())
+                    using (SqlDataReader lector = comando.ExecuteReader())
                     {
-                        while (reader.Read()) lista.Add(MapearUsuario(reader));
+                        // Mientras haya filas en la base de datos, las agregamos a la lista
+                        while (lector.Read())
+                        {
+                            Usuario usuarioEncontrado = MapearUsuario(lector);
+                            listaDeUsuarios.Add(usuarioEncontrado);
+                        }
                     }
                 }
             }
-            return lista;
+            return listaDeUsuarios;
         }
 
-        public void Insertar(Usuario u)
+        public void Insertar(Usuario nuevoUsuario)
         {
-            using (var conexion = ConexionBD.ObtenerConexion())
+            using (SqlConnection conexion = ConexionBD.ObtenerConexion())
             {
-                string query = @"INSERT INTO Usuarios (NombreUsuario, Password, Nombre, Apellido, Activo, IdPerfil) 
-                                 VALUES (@NombreUsuario, @Password, @Nombre, @Apellido, @Activo, @IdPerfil)";
-                using (var cmd = new SqlCommand(query, conexion))
+                string consulta = @"INSERT INTO Usuarios (NombreUsuario, Password, Nombre, Apellido, Activo, IdPerfil) 
+                                    VALUES (@NombreUsuario, @Password, @Nombre, @Apellido, @Activo, @IdPerfil)";
+
+                using (SqlCommand comando = new SqlCommand(consulta, conexion))
                 {
-                    AsignarParametros(cmd, u);
+                    AsignarParametros(comando, nuevoUsuario);
                     conexion.Open();
-                    cmd.ExecuteNonQuery();
+                    comando.ExecuteNonQuery();
                 }
             }
         }
 
-        public void Actualizar(Usuario u)
+        public void Actualizar(Usuario usuarioEditado)
         {
-            using (var conexion = ConexionBD.ObtenerConexion())
+            using (SqlConnection conexion = ConexionBD.ObtenerConexion())
             {
-                string query = @"UPDATE Usuarios SET NombreUsuario=@NombreUsuario, Password=@Password, Nombre=@Nombre, 
-                                 Apellido=@Apellido, Activo=@Activo, IdPerfil=@IdPerfil 
-                                 WHERE IdUsuario=@IdUsuario";
-                using (var cmd = new SqlCommand(query, conexion))
+                string consulta = @"UPDATE Usuarios SET NombreUsuario = @NombreUsuario, Password = @Password, Nombre = @Nombre, 
+                                    Apellido = @Apellido, Activo = @Activo, IdPerfil = @IdPerfil 
+                                    WHERE IdUsuario = @IdUsuario";
+
+                using (SqlCommand comando = new SqlCommand(consulta, conexion))
                 {
-                    cmd.Parameters.AddWithValue("@IdUsuario", u.IdUsuario);
-                    AsignarParametros(cmd, u);
+                    comando.Parameters.AddWithValue("@IdUsuario", usuarioEditado.IdUsuario);
+                    AsignarParametros(comando, usuarioEditado);
+
                     conexion.Open();
-                    cmd.ExecuteNonQuery();
+                    comando.ExecuteNonQuery();
                 }
             }
         }
 
         public void Eliminar(int idUsuario)
         {
-            using (var conexion = ConexionBD.ObtenerConexion())
+            using (SqlConnection conexion = ConexionBD.ObtenerConexion())
             {
-                string query = "UPDATE Usuarios SET Activo = 0 WHERE IdUsuario = @IdUsuario";
-                using (var cmd = new SqlCommand(query, conexion))
+                // Baja Lógica: No borramos el registro, solo le ponemos Activo = 0 (Falso)
+                string consulta = "UPDATE Usuarios SET Activo = 0 WHERE IdUsuario = @IdUsuario";
+
+                using (SqlCommand comando = new SqlCommand(consulta, conexion))
                 {
-                    cmd.Parameters.AddWithValue("@IdUsuario", idUsuario);
+                    comando.Parameters.AddWithValue("@IdUsuario", idUsuario);
                     conexion.Open();
-                    cmd.ExecuteNonQuery();
+                    comando.ExecuteNonQuery();
                 }
             }
         }
 
-        private void AsignarParametros(SqlCommand cmd, Usuario u)
+        // Método auxiliar para no repetir código en los INSERT y UPDATE
+        private void AsignarParametros(SqlCommand comando, Usuario usuario)
         {
-            cmd.Parameters.AddWithValue("@NombreUsuario", u.NombreUsuario);
-            cmd.Parameters.AddWithValue("@Password", u.Password);
-            cmd.Parameters.AddWithValue("@Nombre", u.Nombre);
-            cmd.Parameters.AddWithValue("@Apellido", u.Apellido);
-            cmd.Parameters.AddWithValue("@Activo", u.Activo);
-            cmd.Parameters.AddWithValue("@IdPerfil", u.IdPerfil);
+            comando.Parameters.AddWithValue("@NombreUsuario", usuario.NombreUsuario);
+            comando.Parameters.AddWithValue("@Password", usuario.Password);
+            comando.Parameters.AddWithValue("@Nombre", usuario.Nombre);
+            comando.Parameters.AddWithValue("@Apellido", usuario.Apellido);
+            comando.Parameters.AddWithValue("@Activo", usuario.Activo);
+            comando.Parameters.AddWithValue("@IdPerfil", usuario.IdPerfil);
         }
 
-        private Usuario MapearUsuario(SqlDataReader reader)
+        // Transforma los datos crudos de SQL Server a un objeto C#
+        private Usuario MapearUsuario(SqlDataReader lector)
         {
-            return new Usuario
-            {
-                IdUsuario = reader.GetInt32(0),
-                NombreUsuario = reader.GetString(1),
-                Password = reader.GetString(2),
-                Nombre = reader.GetString(3),
-                Apellido = reader.GetString(4),
-                Activo = reader.GetBoolean(5),
-                IdPerfil = reader.GetInt32(6),
-                Perfil = new Perfil { IdPerfil = reader.GetInt32(6), NombrePerfil = reader.GetString(7) }
-            };
+            Usuario usuario = new Usuario();
+
+            usuario.IdUsuario = lector.GetInt32(0);
+            usuario.NombreUsuario = lector.GetString(1);
+            usuario.Password = lector.GetString(2);
+            usuario.Nombre = lector.GetString(3);
+            usuario.Apellido = lector.GetString(4);
+            usuario.Activo = lector.GetBoolean(5);
+            usuario.IdPerfil = lector.GetInt32(6);
+
+            // Armamos el objeto Perfil asociado
+            usuario.Perfil = new Perfil();
+            usuario.Perfil.IdPerfil = lector.GetInt32(6);
+            usuario.Perfil.NombrePerfil = lector.GetString(7);
+
+            return usuario;
         }
     }
 }

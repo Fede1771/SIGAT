@@ -10,99 +10,122 @@ namespace SIGAT.DAL
     {
         private EncriptadorServicio _encriptador = new EncriptadorServicio();
 
-        public void Insertar(Bitacora b)
+        public void Insertar(Bitacora nuevoRegistro)
         {
-            using (var conexion = ConexionBD.ObtenerConexion())
+            using (SqlConnection conexion = ConexionBD.ObtenerConexion())
             {
-                string query = @"INSERT INTO Bitacora (Fecha, Usuario, Actividad, InformacionAsociada, DigitoVerificador) 
-                                 VALUES (@Fecha, @Usuario, @Actividad, @InformacionAsociada, @DigitoVerificador)";
-                using (var cmd = new SqlCommand(query, conexion))
+                string consulta = @"INSERT INTO Bitacora (Fecha, Usuario, Actividad, InformacionAsociada, DigitoVerificador) 
+                                    VALUES (@Fecha, @Usuario, @Actividad, @InformacionAsociada, @DigitoVerificador)";
+
+                using (SqlCommand comando = new SqlCommand(consulta, conexion))
                 {
-                    cmd.Parameters.AddWithValue("@Fecha", b.Fecha);
-                    cmd.Parameters.AddWithValue("@Usuario", b.Usuario ?? (object)DBNull.Value);
-                    cmd.Parameters.AddWithValue("@Actividad", b.Actividad ?? (object)DBNull.Value);
+                    comando.Parameters.AddWithValue("@Fecha", nuevoRegistro.Fecha);
 
-                    string? infoEncriptada = _encriptador.Encriptar(b.InformacionAsociada);
-                    cmd.Parameters.AddWithValue("@InformacionAsociada", (object?)infoEncriptada ?? DBNull.Value);
+                    // Si el usuario o actividad están vacíos, mandamos NULL a la base de datos
+                    comando.Parameters.AddWithValue("@Usuario", nuevoRegistro.Usuario != null ? nuevoRegistro.Usuario : DBNull.Value);
+                    comando.Parameters.AddWithValue("@Actividad", nuevoRegistro.Actividad != null ? nuevoRegistro.Actividad : DBNull.Value);
 
-                    string cadenaParaDV = $"{b.Fecha:yyyyMMddHHmmss}{b.Usuario}{b.Actividad}{infoEncriptada}";
-                    b.DigitoVerificador = _encriptador.CalcularDV(cadenaParaDV);
-                    cmd.Parameters.AddWithValue("@DigitoVerificador", b.DigitoVerificador ?? (object)DBNull.Value);
+                    // 1. Encriptamos la información
+                    string infoEncriptada = _encriptador.Encriptar(nuevoRegistro.InformacionAsociada);
+                    comando.Parameters.AddWithValue("@InformacionAsociada", infoEncriptada != null ? infoEncriptada : DBNull.Value);
+
+                    // 2. Armamos una cadena de texto con todos los datos pegados para el Dígito Verificador (DV)
+                    string fechaFormateada = nuevoRegistro.Fecha.ToString("yyyyMMddHHmmss");
+                    string cadenaParaDV = fechaFormateada + nuevoRegistro.Usuario + nuevoRegistro.Actividad + infoEncriptada;
+
+                    // 3. Calculamos el hash de esa cadena y lo guardamos
+                    nuevoRegistro.DigitoVerificador = _encriptador.CalcularDV(cadenaParaDV);
+                    comando.Parameters.AddWithValue("@DigitoVerificador", nuevoRegistro.DigitoVerificador != null ? nuevoRegistro.DigitoVerificador : DBNull.Value);
 
                     conexion.Open();
-                    cmd.ExecuteNonQuery();
+                    comando.ExecuteNonQuery();
                 }
             }
         }
 
-        public List<Bitacora> Buscar(DateTime? desde, DateTime? hasta, string? usuario, string? actividad)
+        public List<Bitacora> Buscar(DateTime? desde, DateTime? hasta, string usuario, string actividad)
         {
-            var lista = new List<Bitacora>();
-            using (var conexion = ConexionBD.ObtenerConexion())
-            {
-                string query = @"SELECT IdBitacora, Fecha, Usuario, Actividad, InformacionAsociada, DigitoVerificador 
-                                 FROM Bitacora 
-                                 WHERE (@Desde IS NULL OR Fecha >= @Desde) 
-                                 AND (@Hasta IS NULL OR Fecha <= @Hasta) 
-                                 AND (@Usuario IS NULL OR Usuario LIKE '%' + @Usuario + '%') 
-                                 AND (@Actividad IS NULL OR Actividad LIKE '%' + @Actividad + '%') 
-                                 ORDER BY Fecha DESC";
+            List<Bitacora> listaResultados = new List<Bitacora>();
 
-                using (var cmd = new SqlCommand(query, conexion))
+            using (SqlConnection conexion = ConexionBD.ObtenerConexion())
+            {
+                string consulta = @"SELECT IdBitacora, Fecha, Usuario, Actividad, InformacionAsociada, DigitoVerificador 
+                                    FROM Bitacora 
+                                    WHERE (@Desde IS NULL OR Fecha >= @Desde) 
+                                    AND (@Hasta IS NULL OR Fecha <= @Hasta) 
+                                    AND (@Usuario IS NULL OR Usuario LIKE '%' + @Usuario + '%') 
+                                    AND (@Actividad IS NULL OR Actividad LIKE '%' + @Actividad + '%') 
+                                    ORDER BY Fecha DESC";
+
+                using (SqlCommand comando = new SqlCommand(consulta, conexion))
                 {
-                    cmd.Parameters.AddWithValue("@Desde", (object?)desde ?? DBNull.Value);
-                    cmd.Parameters.AddWithValue("@Hasta", (object?)hasta ?? DBNull.Value);
-                    cmd.Parameters.AddWithValue("@Usuario", string.IsNullOrEmpty(usuario) ? DBNull.Value : (object)usuario);
-                    cmd.Parameters.AddWithValue("@Actividad", string.IsNullOrEmpty(actividad) ? DBNull.Value : (object)actividad);
+                    // Pasamos los filtros (si son nulos o vacíos, le pasamos DBNull)
+                    comando.Parameters.AddWithValue("@Desde", desde != null ? desde : DBNull.Value);
+                    comando.Parameters.AddWithValue("@Hasta", hasta != null ? hasta : DBNull.Value);
+                    comando.Parameters.AddWithValue("@Usuario", string.IsNullOrEmpty(usuario) ? DBNull.Value : usuario);
+                    comando.Parameters.AddWithValue("@Actividad", string.IsNullOrEmpty(actividad) ? DBNull.Value : actividad);
 
                     conexion.Open();
-                    using (var reader = cmd.ExecuteReader())
+                    using (SqlDataReader lector = comando.ExecuteReader())
                     {
-                        while (reader.Read())
+                        while (lector.Read())
                         {
-                            string? infoEncriptada = reader.IsDBNull(4) ? null : reader.GetString(4);
-                            lista.Add(new Bitacora
-                            {
-                                IdBitacora = reader.GetInt32(0),
-                                Fecha = reader.GetDateTime(1),
-                                Usuario = reader.IsDBNull(2) ? null : reader.GetString(2),
-                                Actividad = reader.IsDBNull(3) ? null : reader.GetString(3),
-                                InformacionAsociada = _encriptador.Desencriptar(infoEncriptada),
-                                DigitoVerificador = reader.IsDBNull(5) ? null : reader.GetString(5)
-                            });
+                            Bitacora registro = new Bitacora();
+
+                            registro.IdBitacora = lector.GetInt32(0);
+                            registro.Fecha = lector.GetDateTime(1);
+
+                            // Comprobamos si las columnas vienen nulas desde SQL antes de leerlas
+                            registro.Usuario = lector.IsDBNull(2) ? null : lector.GetString(2);
+                            registro.Actividad = lector.IsDBNull(3) ? null : lector.GetString(3);
+
+                            string infoEncriptada = lector.IsDBNull(4) ? null : lector.GetString(4);
+                            registro.InformacionAsociada = _encriptador.Desencriptar(infoEncriptada);
+
+                            registro.DigitoVerificador = lector.IsDBNull(5) ? null : lector.GetString(5);
+
+                            listaResultados.Add(registro);
                         }
                     }
                 }
             }
-            return lista;
+            return listaResultados;
         }
 
         public bool VerificarIntegridadBaseDatos()
         {
             bool integridadOk = true;
-            using (var conexion = ConexionBD.ObtenerConexion())
+
+            using (SqlConnection conexion = ConexionBD.ObtenerConexion())
             {
-                string query = "SELECT Fecha, Usuario, Actividad, InformacionAsociada, DigitoVerificador FROM Bitacora";
-                using (var cmd = new SqlCommand(query, conexion))
+                string consulta = "SELECT Fecha, Usuario, Actividad, InformacionAsociada, DigitoVerificador FROM Bitacora";
+
+                using (SqlCommand comando = new SqlCommand(consulta, conexion))
                 {
                     conexion.Open();
-                    using (var reader = cmd.ExecuteReader())
+                    using (SqlDataReader lector = comando.ExecuteReader())
                     {
-                        while (reader.Read())
+                        while (lector.Read())
                         {
-                            var fecha = reader.GetDateTime(0);
-                            var usuario = reader.IsDBNull(1) ? null : reader.GetString(1);
-                            var actividad = reader.IsDBNull(2) ? null : reader.GetString(2);
-                            var info = reader.IsDBNull(3) ? null : reader.GetString(3);
-                            var dvGuardado = reader.IsDBNull(4) ? null : reader.GetString(4);
+                            // 1. Extraemos los datos crudos fila por fila
+                            DateTime fecha = lector.GetDateTime(0);
+                            string usuario = lector.IsDBNull(1) ? null : lector.GetString(1);
+                            string actividad = lector.IsDBNull(2) ? null : lector.GetString(2);
+                            string infoEncriptada = lector.IsDBNull(3) ? null : lector.GetString(3);
+                            string dvGuardado = lector.IsDBNull(4) ? null : lector.GetString(4);
 
-                            string cadenaParaDV = $"{fecha:yyyyMMddHHmmss}{usuario}{actividad}{info}";
-                            string? dvCalculado = _encriptador.CalcularDV(cadenaParaDV);
+                            // 2. Volvemos a armar la cadena exactamente igual que cuando se insertó
+                            string fechaFormateada = fecha.ToString("yyyyMMddHHmmss");
+                            string cadenaParaDV = fechaFormateada + usuario + actividad + infoEncriptada;
 
+                            // 3. Recalculamos el dígito verificador
+                            string dvCalculado = _encriptador.CalcularDV(cadenaParaDV);
+
+                            // 4. Si el DV guardado en la tabla NO coincide con el calculado ahora, alguien alteró la base
                             if (dvGuardado != dvCalculado)
                             {
                                 integridadOk = false;
-                                break;
+                                break; // Cortamos el bucle porque ya encontramos un error de integridad
                             }
                         }
                     }
