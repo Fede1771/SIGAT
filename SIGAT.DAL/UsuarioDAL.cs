@@ -7,9 +7,9 @@ namespace SIGAT.DAL
 {
     public class UsuarioDAL
     {
-        public Usuario ObtenerPorNombreUsuario(string nombreUsuario)
+        // Agregamos el "?" a Usuario para indicar que puede devolver null si no lo encuentra
+        public Usuario? ObtenerPorNombreUsuario(string nombreUsuario)
         {
-            // El bloque "using" asegura que la conexión se cierre automáticamente al terminar
             using (SqlConnection conexion = ConexionBD.ObtenerConexion())
             {
                 string consulta = @"SELECT u.IdUsuario, u.NombreUsuario, u.Password, u.Nombre, u.Apellido, u.Activo, u.IdPerfil, p.NombrePerfil 
@@ -24,7 +24,6 @@ namespace SIGAT.DAL
 
                     using (SqlDataReader lector = comando.ExecuteReader())
                     {
-                        // Si encuentra un registro, lo convertimos a objeto y lo devolvemos
                         if (lector.Read())
                         {
                             return MapearUsuario(lector);
@@ -32,8 +31,7 @@ namespace SIGAT.DAL
                     }
                 }
             }
-            // Si no encontró nada, devuelve nulo
-            return null;
+            return null; // Ahora C# acepta este null sin quejarse
         }
 
         public List<Usuario> ObtenerTodos()
@@ -51,7 +49,6 @@ namespace SIGAT.DAL
                     conexion.Open();
                     using (SqlDataReader lector = comando.ExecuteReader())
                     {
-                        // Mientras haya filas en la base de datos, las agregamos a la lista
                         while (lector.Read())
                         {
                             Usuario usuarioEncontrado = MapearUsuario(lector);
@@ -102,7 +99,6 @@ namespace SIGAT.DAL
         {
             using (SqlConnection conexion = ConexionBD.ObtenerConexion())
             {
-                // Baja Lógica: No borramos el registro, solo le ponemos Activo = 0 (Falso)
                 string consulta = "UPDATE Usuarios SET Activo = 0 WHERE IdUsuario = @IdUsuario";
 
                 using (SqlCommand comando = new SqlCommand(consulta, conexion))
@@ -114,7 +110,6 @@ namespace SIGAT.DAL
             }
         }
 
-        // Método auxiliar para no repetir código en los INSERT y UPDATE
         private void AsignarParametros(SqlCommand comando, Usuario usuario)
         {
             comando.Parameters.AddWithValue("@NombreUsuario", usuario.NombreUsuario);
@@ -125,7 +120,6 @@ namespace SIGAT.DAL
             comando.Parameters.AddWithValue("@IdPerfil", usuario.IdPerfil);
         }
 
-        // Transforma los datos crudos de SQL Server a un objeto C#
         private Usuario MapearUsuario(SqlDataReader lector)
         {
             Usuario usuario = new Usuario();
@@ -138,7 +132,6 @@ namespace SIGAT.DAL
             usuario.Activo = lector.GetBoolean(5);
             usuario.IdPerfil = lector.GetInt32(6);
 
-            // Armamos el objeto Perfil asociado
             usuario.Perfil = new Perfil();
             usuario.Perfil.IdPerfil = lector.GetInt32(6);
             usuario.Perfil.NombrePerfil = lector.GetString(7);
