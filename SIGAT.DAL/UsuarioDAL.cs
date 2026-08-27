@@ -11,7 +11,7 @@ namespace SIGAT.DAL
         {
             using (var conexion = ConexionBD.ObtenerConexion())
             {
-                string query = @"SELECT u.IdUsuario, u.NombreUsuario, u.Password, u.Nombre, u.Apellido, u.Activo, u.DosFactorActivo, u.IdPerfil, p.NombrePerfil 
+                string query = @"SELECT u.IdUsuario, u.NombreUsuario, u.Password, u.Nombre, u.Apellido, u.Activo, u.IdPerfil, p.NombrePerfil 
                                  FROM Usuarios u INNER JOIN Perfiles p ON u.IdPerfil = p.IdPerfil 
                                  WHERE u.NombreUsuario = @User";
                 using (var cmd = new SqlCommand(query, conexion))
@@ -32,7 +32,7 @@ namespace SIGAT.DAL
             var lista = new List<Usuario>();
             using (var conexion = ConexionBD.ObtenerConexion())
             {
-                string query = @"SELECT u.IdUsuario, u.NombreUsuario, u.Password, u.Nombre, u.Apellido, u.Activo, u.DosFactorActivo, u.IdPerfil, p.NombrePerfil 
+                string query = @"SELECT u.IdUsuario, u.NombreUsuario, u.Password, u.Nombre, u.Apellido, u.Activo, u.IdPerfil, p.NombrePerfil 
                                  FROM Usuarios u INNER JOIN Perfiles p ON u.IdPerfil = p.IdPerfil";
                 using (var cmd = new SqlCommand(query, conexion))
                 {
@@ -50,8 +50,8 @@ namespace SIGAT.DAL
         {
             using (var conexion = ConexionBD.ObtenerConexion())
             {
-                string query = @"INSERT INTO Usuarios (NombreUsuario, Password, Nombre, Apellido, Activo, DosFactorActivo, IdPerfil) 
-                                 VALUES (@NombreUsuario, @Password, @Nombre, @Apellido, @Activo, @DosFactorActivo, @IdPerfil)";
+                string query = @"INSERT INTO Usuarios (NombreUsuario, Password, Nombre, Apellido, Activo, IdPerfil) 
+                                 VALUES (@NombreUsuario, @Password, @Nombre, @Apellido, @Activo, @IdPerfil)";
                 using (var cmd = new SqlCommand(query, conexion))
                 {
                     AsignarParametros(cmd, u);
@@ -66,7 +66,7 @@ namespace SIGAT.DAL
             using (var conexion = ConexionBD.ObtenerConexion())
             {
                 string query = @"UPDATE Usuarios SET NombreUsuario=@NombreUsuario, Password=@Password, Nombre=@Nombre, 
-                                 Apellido=@Apellido, Activo=@Activo, DosFactorActivo=@DosFactorActivo, IdPerfil=@IdPerfil 
+                                 Apellido=@Apellido, Activo=@Activo, IdPerfil=@IdPerfil 
                                  WHERE IdUsuario=@IdUsuario";
                 using (var cmd = new SqlCommand(query, conexion))
                 {
@@ -99,7 +99,6 @@ namespace SIGAT.DAL
             cmd.Parameters.AddWithValue("@Nombre", u.Nombre);
             cmd.Parameters.AddWithValue("@Apellido", u.Apellido);
             cmd.Parameters.AddWithValue("@Activo", u.Activo);
-            cmd.Parameters.AddWithValue("@DosFactorActivo", u.DosFactorActivo);
             cmd.Parameters.AddWithValue("@IdPerfil", u.IdPerfil);
         }
 
@@ -113,9 +112,8 @@ namespace SIGAT.DAL
                 Nombre = reader.GetString(3),
                 Apellido = reader.GetString(4),
                 Activo = reader.GetBoolean(5),
-                DosFactorActivo = reader.GetBoolean(6),
-                IdPerfil = reader.GetInt32(7),
-                Perfil = new Perfil { IdPerfil = reader.GetInt32(7), NombrePerfil = reader.GetString(8) }
+                IdPerfil = reader.GetInt32(6),
+                Perfil = new Perfil { IdPerfil = reader.GetInt32(6), NombrePerfil = reader.GetString(7) }
             };
         }
     }

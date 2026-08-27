@@ -11,7 +11,7 @@ namespace SIGAT.UI
         private UsuarioBLL _bll = new UsuarioBLL();
         private DataGridView dgvUsuarios;
         private TextBox txtUsername, txtPass, txtNombre, txtApellido;
-        private CheckBox chkActivo, chk2FA;
+        private CheckBox chkActivo;
         private ComboBox cmbPerfil;
         private Button btnGuardar, btnEliminar, btnLimpiar;
         private int _idSeleccionado = 0;
@@ -91,7 +91,6 @@ namespace SIGAT.UI
             topActual += salto + 10;
 
             chkActivo = new CheckBox { Text = "Activo", Top = topActual, Left = 10, Width = 100, Font = new Font("Segoe UI", 9, FontStyle.Bold), Checked = true };
-            chk2FA = new CheckBox { Text = "Requiere 2FA", Top = topActual, Left = 130, Width = 150, Font = new Font("Segoe UI", 9, FontStyle.Bold) };
             topActual += salto - 10;
 
             btnGuardar = new Button { Text = "Guardar", Top = topActual, Left = 10, Width = 110, Height = 35, Font = new Font("Segoe UI", 9, FontStyle.Bold), BackColor = Color.White };
@@ -109,7 +108,7 @@ namespace SIGAT.UI
                 lbl3, txtNombre,
                 lbl4, txtApellido,
                 lbl5, cmbPerfil,
-                chkActivo, chk2FA,
+                chkActivo,
                 btnGuardar, btnEliminar, btnLimpiar
             });
 
@@ -139,7 +138,6 @@ namespace SIGAT.UI
                 txtNombre.Text = u.Nombre;
                 txtApellido.Text = u.Apellido;
                 chkActivo.Checked = u.Activo;
-                chk2FA.Checked = u.DosFactorActivo;
                 _passOriginal = u.Password;
 
                 foreach (Perfil p in cmbPerfil.Items)
@@ -161,7 +159,6 @@ namespace SIGAT.UI
                     Nombre = txtNombre.Text,
                     Apellido = txtApellido.Text,
                     Activo = chkActivo.Checked,
-                    DosFactorActivo = chk2FA.Checked,
                     IdPerfil = ((Perfil)cmbPerfil.SelectedItem).IdPerfil,
                     Password = _idSeleccionado > 0 ? _passOriginal : ""
                 };
@@ -199,7 +196,7 @@ namespace SIGAT.UI
             _idSeleccionado = 0;
             _passOriginal = "";
             txtUsername.Clear(); txtPass.Clear(); txtNombre.Clear(); txtApellido.Clear();
-            chkActivo.Checked = true; chk2FA.Checked = false; cmbPerfil.SelectedIndex = -1;
+            chkActivo.Checked = true; cmbPerfil.SelectedIndex = -1;
             dgvUsuarios.ClearSelection();
         }
     }

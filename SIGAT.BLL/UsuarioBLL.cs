@@ -29,11 +29,6 @@ namespace SIGAT.BLL
                 return ResultadoLogin.UsuarioInactivo;
             }
 
-            if (usuarioValidado.DosFactorActivo)
-            {
-                return ResultadoLogin.Requiere2FA;
-            }
-
             SesionServicio.ObtenerInstancia().IniciarSesion(usuarioValidado);
             _bitacora.Registrar(usuarioValidado.NombreUsuario, "Login Exitoso", "Inicio de sesión sin 2FA.");
             return ResultadoLogin.Exito;

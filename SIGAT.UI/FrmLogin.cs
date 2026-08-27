@@ -47,12 +47,6 @@ namespace SIGAT.UI
             {
                 MessageBox.Show("El usuario está inactivo.", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
-            else if (resultado == ResultadoLogin.Requiere2FA)
-            {
-                this.Hide();
-                new FrmValidar2FA(usuario).ShowDialog();
-                this.Close();
-            }
             else if (resultado == ResultadoLogin.Exito)
             {
                 this.Hide();
