@@ -32,7 +32,7 @@ namespace SIGAT.UI
             // Carga segura de la imagen desde tu ruta
             try
             {
-                picLogo.Image = Image.FromFile(@"C:\Users\feder\Documents\SIGAT\SIGAT LOGO.png");
+                picLogo.Image = Image.FromFile(@"C:\Users\feder\Documents\SIGAT\SIGAT\SIGAT LOGO.png");
             }
             catch
             {
