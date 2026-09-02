@@ -39,36 +39,36 @@ namespace SIGAT.UI
             this.WindowState = FormWindowState.Maximized;
             this.BackColor = Color.FromArgb(245, 247, 250);
 
-            int anchoPanelDerecho = 380;
-            int margen = 40;
+            // 1. Usamos Padding para crear el margen de 40px en toda la ventana automáticamente
+            this.Padding = new Padding(40);
 
-            // 1. Configuración de la Grilla (Izquierda)
+            int anchoPanelDerecho = 380;
+
+            // 2. Configuración del Panel Lateral (Derecha)
+            Panel panelDerecho = new Panel();
+            panelDerecho.Width = anchoPanelDerecho;
+            panelDerecho.Dock = DockStyle.Right; // Se pega a la derecha respetando el margen
+            panelDerecho.BackColor = Color.Transparent;
+
+            // 3. Creamos un panel invisible para separar la grilla de los controles (40px)
+            Panel separador = new Panel();
+            separador.Width = 40;
+            separador.Dock = DockStyle.Right; 
+            separador.BackColor = Color.Transparent;
+
+            // 4. Configuración de la Grilla (Izquierda)
             dgvUsuarios = new DataGridView();
-            dgvUsuarios.Top = margen;
-            dgvUsuarios.Left = margen;
-            dgvUsuarios.Width = this.ClientSize.Width - (anchoPanelDerecho + (margen * 3));
-            dgvUsuarios.Height = this.ClientSize.Height - 80;
+            dgvUsuarios.Dock = DockStyle.Fill; // Ocupa automáticamente TODO el espacio sobrante
             dgvUsuarios.ReadOnly = true;
             dgvUsuarios.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvUsuarios.MultiSelect = false;
             dgvUsuarios.AllowUserToAddRows = false;
             dgvUsuarios.AllowUserToDeleteRows = false;
             dgvUsuarios.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dgvUsuarios.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             dgvUsuarios.BackgroundColor = Color.White;
 
-            // Asignamos los eventos de la grilla de forma clásica
             dgvUsuarios.CellClick += new DataGridViewCellEventHandler(DgvUsuarios_CellClick);
             dgvUsuarios.DataBindingComplete += new DataGridViewBindingCompleteEventHandler(DgvUsuarios_DataBindingComplete);
-
-            // 2. Configuración del Panel Lateral (Derecha)
-            Panel panelDerecho = new Panel();
-            panelDerecho.Top = margen;
-            panelDerecho.Width = anchoPanelDerecho;
-            panelDerecho.Height = this.ClientSize.Height - 80;
-            panelDerecho.Anchor = AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom;
-            panelDerecho.BackColor = Color.Transparent;
-            panelDerecho.Left = this.ClientSize.Width - anchoPanelDerecho - margen;
 
             int topActual = 10;
             int salto = 62;
@@ -212,7 +212,7 @@ namespace SIGAT.UI
             btnLimpiar.BackColor = Color.White;
             btnLimpiar.Click += new EventHandler(BtnLimpiar_Click);
 
-            // Agregamos todos los controles creados al panel derecho
+            // Agregamos controles al panel derecho
             panelDerecho.Controls.Add(lblUsuario);
             panelDerecho.Controls.Add(txtUsername);
             panelDerecho.Controls.Add(lblClave);
@@ -228,9 +228,11 @@ namespace SIGAT.UI
             panelDerecho.Controls.Add(btnEliminar);
             panelDerecho.Controls.Add(btnLimpiar);
 
-            // Agregamos la grilla y el panel a la ventana principal
-            this.Controls.Add(dgvUsuarios);
-            this.Controls.Add(panelDerecho);
+            // IMPORTANTE: El orden en que se agregan al form define cómo actúa el Dock.
+            this.Controls.Add(panelDerecho); // 1. Reclama la derecha
+            this.Controls.Add(separador);    // 2. Reclama los 40px a la izquierda del panel
+            this.Controls.Add(dgvUsuarios);  // 3. Llena todo el espacio que sobra a la izquierda
+
             this.AcceptButton = btnGuardar;
         }
 
