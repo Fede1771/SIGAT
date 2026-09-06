@@ -10,22 +10,7 @@ namespace SIGAT.UI
         public FrmLogin()
         {
             InitializeComponent();
-
-            CargarLogo();
             CrearUsuarioAdminInicial();
-        }
-
-        private void CargarLogo()
-        {
-            // Carga segura de la imagen desde tu ruta
-            try
-            {
-                picLogo.Image = Image.FromFile(@"C:\Users\feder\Documents\SIGAT\SIGAT\SIGAT LOGO.png");
-            }
-            catch
-            {
-                // Si la imagen no se encuentra, el programa no se cae, simplemente muestra el espacio en blanco
-            }
         }
 
         private void CrearUsuarioAdminInicial()
