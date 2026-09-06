@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using SIGAT.BE;
+﻿using SIGAT.BE;
 using SIGAT.BE.Auditoria;
 using SIGAT.DAL;
 

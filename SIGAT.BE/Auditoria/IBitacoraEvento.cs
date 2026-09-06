@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SIGAT.BE.Auditoria
+﻿namespace SIGAT.BE.Auditoria
 {
     public interface IBitacoraEvento
     {

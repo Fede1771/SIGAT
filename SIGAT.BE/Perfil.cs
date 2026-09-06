@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace SIGAT.BE
+﻿namespace SIGAT.BE
 {
     public class Perfil
     {

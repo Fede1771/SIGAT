@@ -15,7 +15,6 @@ namespace SIGAT.UI
 
         private void CrearUsuarioAdminInicial()
         {
-            // --- TRUCO DE INICIALIZACIÓN ---
             try
             {
                 if (_usuarioBLL.ObtenerTodos().Count == 0)
@@ -33,7 +32,6 @@ namespace SIGAT.UI
             catch
             {
             }
-            // ------------------------------------------------
         }
 
         private void BtnLogin_Click(object sender, EventArgs e)

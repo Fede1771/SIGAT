@@ -1,6 +1,4 @@
-﻿using System;
-using SIGAT.BE;
-using SIGAT.BE.Auditoria;
+﻿using SIGAT.BE.Auditoria;
 
 namespace SIGAT.BLL.Fabricas
 {

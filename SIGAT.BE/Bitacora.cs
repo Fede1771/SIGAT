@@ -1,5 +1,4 @@
-﻿using System;
-using SIGAT.BE.Auditoria;
+﻿using SIGAT.BE.Auditoria;
 
 namespace SIGAT.BE
 {

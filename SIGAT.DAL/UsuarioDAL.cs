@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.Data.SqlClient;
+﻿using Microsoft.Data.SqlClient;
 using SIGAT.BE;
 
 namespace SIGAT.DAL
@@ -31,7 +29,7 @@ namespace SIGAT.DAL
                     }
                 }
             }
-            return null; // Ahora C# acepta este null sin quejarse
+            return null;
         }
 
         public List<Usuario> ObtenerTodos()

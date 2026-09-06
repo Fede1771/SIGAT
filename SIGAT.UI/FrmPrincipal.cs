@@ -71,8 +71,6 @@ namespace SIGAT.UI
             IdiomaServicio.ObtenerInstancia().CambiarIdioma("en-US");
         }
 
-        // ---------------------------------------------------------------------
-
         private void ActualizarTextos()
         {
             ResourceManager rm = new ResourceManager("SIGAT.UI.Idiomas", Assembly.GetExecutingAssembly());
