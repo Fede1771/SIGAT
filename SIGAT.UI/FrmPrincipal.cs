@@ -1,20 +1,20 @@
 ﻿using SIGAT.BE;
+using SIGAT.BE.Idiomas;
 using SIGAT.BLL;
 using SIGAT.SERVICIOS;
-using System.Resources;
-using System.Reflection;
+using SIGAT.SERVICIOS.Idiomas;
 
 namespace SIGAT.UI
 {
-    public partial class FrmPrincipal : Form
+    public partial class FrmPrincipal : Form, IIdiomaObserver
     {
         private BitacoraBLL _bitacora = new BitacoraBLL();
+        private IdiomaBLL _idiomaBLL = new IdiomaBLL();
 
         public FrmPrincipal()
         {
             InitializeComponent();
 
-            // ESTÉTICA: Pintamos el fondo MDI de un gris muy suave y moderno
             foreach (Control controlActual in this.Controls)
             {
                 if (controlActual is MdiClient)
@@ -24,19 +24,62 @@ namespace SIGAT.UI
                 }
             }
 
-            // Control de Permisos: Ocultamos Gestión de Usuarios si no es Administrador
             Usuario usuarioLogueado = SesionServicio.ObtenerInstancia().UsuarioActual;
-            if (usuarioLogueado != null && usuarioLogueado.Perfil.NombrePerfil != "Administrador")
+            bool esAdministrador = usuarioLogueado != null && usuarioLogueado.Perfil.NombrePerfil == "Administrador";
+            if (!esAdministrador)
             {
                 itemUsuarios.Visible = false;
             }
 
-            // Nos suscribimos al evento de cambio de idioma
-            IdiomaServicio.ObtenerInstancia().IdiomaCambiado += new Action(ActualizarTextos);
-            ActualizarTextos();
+            this.Tag = "titulo_ventana";
+            itemSistema.Tag = "menu_sistema";
+            itemUsuarios.Tag = "menu_usuarios";
+            itemBitacora.Tag = "menu_bitacora";
+            itemLogout.Tag = "menu_logout";
+            itemIdioma.Tag = "menu_idioma";
+
+            this.Load += FrmPrincipal_Load;
+            this.FormClosed += FrmPrincipal_FormClosed;
         }
 
-        // EVENTOS DEL MENÚ ----------------------------------------------------
+        private void FrmPrincipal_Load(object sender, EventArgs e)
+        {
+            IdiomaManager.ObtenerInstancia().Suscribir(this);
+            CargarMenuDeIdiomas();
+            ActualizarIdioma();
+        }
+
+        private void FrmPrincipal_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            IdiomaManager.ObtenerInstancia().Desuscribir(this);
+        }
+
+        // Arma el submenu Idioma leyendo la tabla Idioma
+        private void CargarMenuDeIdiomas()
+        {
+            itemIdioma.DropDownItems.Clear();
+
+            List<Idioma> idiomas = _idiomaBLL.ObtenerIdiomas();
+            foreach (Idioma idioma in idiomas)
+            {
+                ToolStripMenuItem opcion = new ToolStripMenuItem(idioma.Nombre);
+                opcion.Tag = idioma.Id;
+                opcion.Click += OpcionDeIdioma_Click;
+                itemIdioma.DropDownItems.Add(opcion);
+            }
+        }
+
+        private void OpcionDeIdioma_Click(object sender, EventArgs e)
+        {
+            ToolStripMenuItem opcionElegida = (ToolStripMenuItem)sender;
+            int idIdioma = (int)opcionElegida.Tag;
+            _idiomaBLL.CambiarIdioma(idIdioma);
+        }
+
+        private void ItemGestionIdiomas_Click(object sender, EventArgs e)
+        {
+            AbrirFormulario(new FrmGestionIdiomas());
+        }
 
         private void ItemUsuarios_Click(object sender, EventArgs e)
         {
@@ -61,38 +104,19 @@ namespace SIGAT.UI
             this.Close();
         }
 
-        private void ItemEspañol_Click(object sender, EventArgs e)
+        public void ActualizarIdioma()
         {
-            IdiomaServicio.ObtenerInstancia().CambiarIdioma("es-AR");
-        }
+            TraductorFormularios.TraducirFormulario(this);
 
-        private void ItemIngles_Click(object sender, EventArgs e)
-        {
-            IdiomaServicio.ObtenerInstancia().CambiarIdioma("en-US");
-        }
+            string txtUsuario = IdiomaManager.ObtenerInstancia().Traducir(this.Name, "titulo_usuario", "Usuario");
+            string txtPerfil = IdiomaManager.ObtenerInstancia().Traducir(this.Name, "titulo_perfil", "Perfil");
 
-        private void ActualizarTextos()
-        {
-            ResourceManager rm = new ResourceManager("SIGAT.UI.Idiomas", Assembly.GetExecutingAssembly());
-
-            // Traducimos el título de la ventana
-            string txtUsuario = rm.GetString("TituloUsuario") ?? "Usuario";
-            string txtPerfil = rm.GetString("TituloPerfil") ?? "Perfil";
-
-            string nombreUsu = SesionServicio.ObtenerInstancia().UsuarioActual?.NombreUsuario ?? "";
-            string nombrePer = SesionServicio.ObtenerInstancia().PerfilActual?.NombrePerfil ?? "";
+            string nombreUsu = SesionServicio.ObtenerInstancia().UsuarioActual.NombreUsuario;
+            string nombrePer = SesionServicio.ObtenerInstancia().PerfilActual.NombrePerfil;
 
             this.Text = "SIGAT - " + txtUsuario + ": " + nombreUsu + " | " + txtPerfil + ": " + nombrePer;
-
-            // Traducimos las opciones del menú
-            itemSistema.Text = rm.GetString("MenuSistema") ?? "Sistema";
-            itemUsuarios.Text = rm.GetString("MenuUsuarios") ?? "Gestión de Usuarios";
-            itemBitacora.Text = rm.GetString("MenuBitacora") ?? "Bitácora";
-            itemLogout.Text = rm.GetString("MenuLogout") ?? "Cerrar Sesión";
-            itemIdioma.Text = rm.GetString("MenuIdioma") ?? "Idioma";
         }
 
-        // Hace que cualquier ventana hija se abra maximizada y cierre las demás
         private void AbrirFormulario(Form formHijo)
         {
             foreach (Form formularioAbierto in this.MdiChildren)

@@ -2,15 +2,8 @@
 {
     partial class FrmPrincipal
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -22,10 +15,6 @@
 
         #region Windows Form Designer generated code
 
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
         private void InitializeComponent()
         {
             this.menu = new MenuStrip();
@@ -35,8 +24,7 @@
             this.itemLogoutSeparator = new ToolStripSeparator();
             this.itemLogout = new ToolStripMenuItem();
             this.itemIdioma = new ToolStripMenuItem();
-            this.itemEspañol = new ToolStripMenuItem();
-            this.itemIngles = new ToolStripMenuItem();
+            this.itemGestionIdiomas = new ToolStripMenuItem();
             this.menu.SuspendLayout();
             this.SuspendLayout();
             //
@@ -75,22 +63,19 @@
             //
             // itemIdioma
             //
+            // Ya no tiene items fijos (Español/Inglés): se llenan solos en
+            // tiempo de ejecución, leyendo la tabla Idioma (ver FrmPrincipal.cs,
+            // método CargarMenuDeIdiomas). Solo dejamos acá la opción fija
+            // "Gestionar idiomas...", que siempre tiene que estar presente.
             this.itemIdioma.DropDownItems.AddRange(new ToolStripItem[] {
-                this.itemEspañol,
-                this.itemIngles});
+                this.itemGestionIdiomas});
             this.itemIdioma.Name = "itemIdioma";
             //
-            // itemEspañol
+            // itemGestionIdiomas
             //
-            this.itemEspañol.Name = "itemEspañol";
-            this.itemEspañol.Text = "Español";
-            this.itemEspañol.Click += new EventHandler(this.ItemEspañol_Click);
-            //
-            // itemIngles
-            //
-            this.itemIngles.Name = "itemIngles";
-            this.itemIngles.Text = "English";
-            this.itemIngles.Click += new EventHandler(this.ItemIngles_Click);
+            this.itemGestionIdiomas.Name = "itemGestionIdiomas";
+            this.itemGestionIdiomas.Text = "Gestionar idiomas...";
+            this.itemGestionIdiomas.Click += new EventHandler(this.ItemGestionIdiomas_Click);
             //
             // FrmPrincipal
             //
@@ -118,7 +103,6 @@
         private ToolStripSeparator itemLogoutSeparator;
         private ToolStripMenuItem itemLogout;
         private ToolStripMenuItem itemIdioma;
-        private ToolStripMenuItem itemEspañol;
-        private ToolStripMenuItem itemIngles;
+        private ToolStripMenuItem itemGestionIdiomas;
     }
 }
