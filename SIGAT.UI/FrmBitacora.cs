@@ -17,8 +17,7 @@ namespace SIGAT.UI
             lblAct.Tag = "lbl_actividad";
             btnBuscar.Tag = "btn_buscar";
 
-            // La grilla arma sus columnas solas al recibir datos, hay que
-            // esperar a que termine para poder taguearlas
+            // La grilla arma sus columnas solas al recibir datos, hay que esperar a que termine para poder taguearlas
             dgv.DataBindingComplete += Dgv_DataBindingComplete;
 
             this.Load += FrmBitacora_Load;
