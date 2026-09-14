@@ -1,13 +1,13 @@
 ﻿using SIGAT.BE;
 using SIGAT.BLL;
+using SIGAT.SERVICIOS.Idiomas;
 
 namespace SIGAT.UI
 {
-    public partial class FrmGestionUsuarios : Form
+    public partial class FrmGestionUsuarios : Form, IIdiomaObserver
     {
         private UsuarioBLL _usuarioBLL = new UsuarioBLL();
 
-        // Variables de estado
         private int _idSeleccionado = 0;
         private string _passOriginal = "";
 
@@ -15,8 +15,35 @@ namespace SIGAT.UI
         {
             InitializeComponent();
 
+            this.Tag = "frmgestionusuarios_titulo";
+            lblUsuario.Tag = "lbl_usuario_gu";
+            lblClave.Tag = "lbl_clave";
+            lblNombre.Tag = "lbl_nombre";
+            lblApellido.Tag = "lbl_apellido";
+            lblPerfil.Tag = "lbl_perfil";
+            chkActivo.Tag = "chk_activo";
+            btnGuardar.Tag = "btn_guardar";
+            btnEliminar.Tag = "btn_eliminar";
+            btnLimpiar.Tag = "btn_limpiar";
+
+            dgvUsuarios.DataBindingComplete += DgvUsuarios_DataBindingComplete;
+
             CargarPerfiles();
             CargarGrilla();
+
+            this.Load += FrmGestionUsuarios_Load;
+            this.FormClosed += FrmGestionUsuarios_FormClosed;
+        }
+
+        private void FrmGestionUsuarios_Load(object sender, EventArgs e)
+        {
+            IdiomaManager.ObtenerInstancia().Suscribir(this);
+            ActualizarIdioma();
+        }
+
+        private void FrmGestionUsuarios_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            IdiomaManager.ObtenerInstancia().Desuscribir(this);
         }
 
         private void CargarPerfiles()
@@ -41,7 +68,6 @@ namespace SIGAT.UI
 
         private void DgvUsuarios_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
         {
-            // Ocultamos columnas sensibles o técnicas que el usuario no necesita ver
             if (dgvUsuarios.Columns["Password"] != null)
             {
                 dgvUsuarios.Columns["Password"].Visible = false;
@@ -51,11 +77,49 @@ namespace SIGAT.UI
             {
                 dgvUsuarios.Columns["IdPerfil"].Visible = false;
             }
+
+            if (dgvUsuarios.Columns["IdUsuario"] != null)
+            {
+                dgvUsuarios.Columns["IdUsuario"].Tag = "col_idusuario";
+            }
+            if (dgvUsuarios.Columns["NombreUsuario"] != null)
+            {
+                dgvUsuarios.Columns["NombreUsuario"].Tag = "col_nombreusuario";
+            }
+            if (dgvUsuarios.Columns["Nombre"] != null)
+            {
+                dgvUsuarios.Columns["Nombre"].Tag = "col_nombre";
+            }
+            if (dgvUsuarios.Columns["Apellido"] != null)
+            {
+                dgvUsuarios.Columns["Apellido"].Tag = "col_apellido";
+            }
+            if (dgvUsuarios.Columns["Activo"] != null)
+            {
+                dgvUsuarios.Columns["Activo"].Tag = "col_activo";
+            }
+            if (dgvUsuarios.Columns["Perfil"] != null)
+            {
+                dgvUsuarios.Columns["Perfil"].Tag = "col_perfil";
+            }
+
+            TraducirColumnasVisibles();
+        }
+
+        private void TraducirColumnasVisibles()
+        {
+            foreach (DataGridViewColumn columna in dgvUsuarios.Columns)
+            {
+                if (columna.Tag != null)
+                {
+                    columna.HeaderText = IdiomaManager.ObtenerInstancia()
+                        .Traducir(this.Name, columna.Tag.ToString(), columna.HeaderText);
+                }
+            }
         }
 
         private void DgvUsuarios_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            // Verificamos que se haya hecho clic en una fila válida (evita errores si tocan los títulos)
             if (e.RowIndex >= 0)
             {
                 Usuario usuarioFila = (Usuario)dgvUsuarios.Rows[e.RowIndex].DataBoundItem;
@@ -67,7 +131,6 @@ namespace SIGAT.UI
                 chkActivo.Checked = usuarioFila.Activo;
                 _passOriginal = usuarioFila.Password;
 
-                // Buscamos el perfil correcto en el combo box y lo seleccionamos
                 foreach (Perfil perfilActual in cmbPerfil.Items)
                 {
                     if (perfilActual.IdPerfil == usuarioFila.IdPerfil)
@@ -87,7 +150,6 @@ namespace SIGAT.UI
                     throw new Exception("Debe seleccionar un perfil para el usuario.");
                 }
 
-                // Armamos el objeto con los datos del formulario
                 Usuario usuarioParaGuardar = new Usuario();
                 usuarioParaGuardar.IdUsuario = _idSeleccionado;
                 usuarioParaGuardar.NombreUsuario = txtUsername.Text;
@@ -98,7 +160,6 @@ namespace SIGAT.UI
                 Perfil perfilSeleccionado = (Perfil)cmbPerfil.SelectedItem;
                 usuarioParaGuardar.IdPerfil = perfilSeleccionado.IdPerfil;
 
-                // Si es un usuario existente mantenemos la clave original si no escribió una nueva
                 if (_idSeleccionado > 0)
                 {
                     usuarioParaGuardar.Password = _passOriginal;
@@ -108,7 +169,6 @@ namespace SIGAT.UI
                     usuarioParaGuardar.Password = "";
                 }
 
-                // Decidimos si es un Alta (Insert) o una Modificación (Update)
                 if (_idSeleccionado == 0)
                 {
                     _usuarioBLL.CrearUsuario(usuarioParaGuardar, txtPass.Text);
@@ -167,6 +227,12 @@ namespace SIGAT.UI
             cmbPerfil.SelectedIndex = -1;
 
             dgvUsuarios.ClearSelection();
+        }
+
+        public void ActualizarIdioma()
+        {
+            TraductorFormularios.TraducirFormulario(this);
+            TraducirColumnasVisibles();
         }
     }
 }
