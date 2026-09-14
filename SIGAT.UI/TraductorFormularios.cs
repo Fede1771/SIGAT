@@ -1,8 +1,7 @@
-﻿using System.Windows.Forms;
+﻿using SIGAT.SERVICIOS.Idiomas;
 
-namespace SIGAT.SERVICIOS.Idiomas
+namespace SIGAT.UI
 {
-    // Recorre los controles de un formulario y traduce los que tienen Tag
     public static class TraductorFormularios
     {
         public static void TraducirFormulario(Form formulario)
@@ -42,7 +41,6 @@ namespace SIGAT.SERVICIOS.Idiomas
                     }
                 }
 
-                // Recursividad: si el control tiene hijos, entramos ahi tambien
                 if (control.HasChildren)
                 {
                     TraducirControles(nombreForm, control.Controls);

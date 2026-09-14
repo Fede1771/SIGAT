@@ -39,6 +39,7 @@
             //
             // itemSistema
             //
+            this.itemSistema.Text = "Sistema";
             this.itemSistema.DropDownItems.AddRange(new ToolStripItem[] {
                 this.itemUsuarios,
                 this.itemBitacora,
@@ -48,25 +49,25 @@
             //
             // itemUsuarios
             //
+            this.itemUsuarios.Text = "Gestión de Usuarios";
             this.itemUsuarios.Name = "itemUsuarios";
             this.itemUsuarios.Click += new EventHandler(this.ItemUsuarios_Click);
             //
             // itemBitacora
             //
+            this.itemBitacora.Text = "Bitácora";
             this.itemBitacora.Name = "itemBitacora";
             this.itemBitacora.Click += new EventHandler(this.ItemBitacora_Click);
             //
             // itemLogout
             //
+            this.itemLogout.Text = "Cerrar Sesión";
             this.itemLogout.Name = "itemLogout";
             this.itemLogout.Click += new EventHandler(this.ItemLogout_Click);
             //
             // itemIdioma
             //
-            // Ya no tiene items fijos (Español/Inglés): se llenan solos en
-            // tiempo de ejecución, leyendo la tabla Idioma (ver FrmPrincipal.cs,
-            // método CargarMenuDeIdiomas). Solo dejamos acá la opción fija
-            // "Gestionar idiomas...", que siempre tiene que estar presente.
+            this.itemIdioma.Text = "Idioma";
             this.itemIdioma.DropDownItems.AddRange(new ToolStripItem[] {
                 this.itemGestionIdiomas});
             this.itemIdioma.Name = "itemIdioma";

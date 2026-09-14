@@ -45,8 +45,10 @@ namespace SIGAT.UI
         private void FrmPrincipal_Load(object sender, EventArgs e)
         {
             IdiomaManager.ObtenerInstancia().Suscribir(this);
-            CargarMenuDeIdiomas();
-            ActualizarIdioma();
+
+            List<Idioma> idiomas = _idiomaBLL.ObtenerIdiomas();
+            CargarMenuDeIdiomas(idiomas);
+            AplicarIdiomaPorDefecto(idiomas);
         }
 
         private void FrmPrincipal_FormClosed(object sender, FormClosedEventArgs e)
@@ -54,18 +56,43 @@ namespace SIGAT.UI
             IdiomaManager.ObtenerInstancia().Desuscribir(this);
         }
 
-        // Arma el submenu Idioma leyendo la tabla Idioma
-        private void CargarMenuDeIdiomas()
+        private void CargarMenuDeIdiomas(List<Idioma> idiomas)
         {
             itemIdioma.DropDownItems.Clear();
 
-            List<Idioma> idiomas = _idiomaBLL.ObtenerIdiomas();
             foreach (Idioma idioma in idiomas)
             {
                 ToolStripMenuItem opcion = new ToolStripMenuItem(idioma.Nombre);
                 opcion.Tag = idioma.Id;
                 opcion.Click += OpcionDeIdioma_Click;
                 itemIdioma.DropDownItems.Add(opcion);
+            }
+
+            itemIdioma.DropDownItems.Add(new ToolStripSeparator());
+            itemIdioma.DropDownItems.Add(itemGestionIdiomas);
+        }
+
+        // Al arrancar, se aplica Español automaticamente
+        private void AplicarIdiomaPorDefecto(List<Idioma> idiomas)
+        {
+            if (IdiomaManager.ObtenerInstancia().IdiomaActual != null)
+            {
+                ActualizarIdioma();
+                return;
+            }
+
+            foreach (Idioma idioma in idiomas)
+            {
+                if (idioma.Nombre == "Español")
+                {
+                    _idiomaBLL.CambiarIdioma(idioma.Id);
+                    return;
+                }
+            }
+
+            if (idiomas.Count > 0)
+            {
+                _idiomaBLL.CambiarIdioma(idiomas[0].Id);
             }
         }
 
