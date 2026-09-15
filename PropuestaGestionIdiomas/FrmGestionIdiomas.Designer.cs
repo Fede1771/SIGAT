@@ -1,4 +1,4 @@
-﻿namespace SIGAT.UI
+namespace SIGAT.UI
 {
     partial class FrmGestionIdiomas
     {

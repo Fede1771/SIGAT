@@ -1,4 +1,4 @@
-﻿using SIGAT.BLL;
+using SIGAT.BLL;
 using SIGAT.SERVICIOS.Idiomas;
 
 namespace SIGAT.UI

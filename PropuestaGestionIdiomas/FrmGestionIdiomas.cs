@@ -1,4 +1,4 @@
-﻿using SIGAT.BE.Idiomas;
+using SIGAT.BE.Idiomas;
 using SIGAT.BLL;
 using SIGAT.SERVICIOS.Idiomas;
 

@@ -1,4 +1,4 @@
-﻿using Microsoft.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using SIGAT.BE.Idiomas;
 
 namespace SIGAT.DAL
