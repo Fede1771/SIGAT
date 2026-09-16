@@ -1,0 +1,69 @@
+Clave	Formulario	Español	Traduccion
+btn_buscar	FrmBitacora	Buscar	Поиск
+chk_fechas	FrmBitacora	Fechas:	Даты:
+col_actividad	FrmBitacora	Actividad	Действие
+col_fecha	FrmBitacora	Fecha	Дата
+col_id	FrmBitacora	Id	ID
+col_informacion	FrmBitacora	Información	Информация
+col_usuario	FrmBitacora	Usuario	Пользователь
+frmbitacora_titulo	FrmBitacora	Consulta de Bitácora	Просмотр журнала
+lbl_actividad	FrmBitacora	Actividad:	Действие:
+lbl_usuario	FrmBitacora	Usuario:	Пользователь:
+btn_aplicar_idioma	FrmGestionIdiomas	Aplicar	Применить
+btn_cambiar_estado	FrmGestionIdiomas	Activar / desactivar	Активировать / деактивировать
+btn_exportar_traducciones	FrmGestionIdiomas	Exportar traducciones	Экспорт переводов
+btn_guardar_traduccion	FrmGestionIdiomas	Guardar traducción	Сохранить перевод
+btn_importar_traducciones	FrmGestionIdiomas	Importar traducciones	Импорт переводов
+btn_nuevo_idioma	FrmGestionIdiomas	Crear idioma	Создать язык
+chk_idioma_activo	FrmGestionIdiomas	Activo	Активен
+frmgestionidiomas_titulo	FrmGestionIdiomas	Gestión de idiomas	Управление языками
+lbl_codigo_idioma	FrmGestionIdiomas	Código:	Код:
+lbl_idioma_activo	FrmGestionIdiomas	Idioma:	Язык:
+lbl_nombre_nativo	FrmGestionIdiomas	Nombre nativo:	Родное название:
+lbl_nuevo_idioma	FrmGestionIdiomas	Nombre:	Название:
+btn_eliminar	FrmGestionUsuarios	Baja	Удалить
+btn_guardar	FrmGestionUsuarios	Guardar	Сохранить
+btn_limpiar	FrmGestionUsuarios	Limpiar	Очистить
+chk_activo	FrmGestionUsuarios	Activo	Активен
+col_activo	FrmGestionUsuarios	Activo	Активен
+col_apellido	FrmGestionUsuarios	Apellido	Фамилия
+col_idusuario	FrmGestionUsuarios	Id	ID
+col_nombre	FrmGestionUsuarios	Nombre	Имя
+col_nombreusuario	FrmGestionUsuarios	Usuario	Имя пользователя
+col_perfil	FrmGestionUsuarios	Perfil	Профиль
+frmgestionusuarios_titulo	FrmGestionUsuarios	Gestión de Usuarios	Управление пользователями
+lbl_apellido	FrmGestionUsuarios	Apellido:	Фамилия:
+lbl_clave	FrmGestionUsuarios	Clave (vacío no cambia):	Пароль (оставьте пустым, чтобы не менять):
+lbl_nombre	FrmGestionUsuarios	Nombre:	Имя:
+lbl_perfil	FrmGestionUsuarios	Perfil:	Профиль:
+lbl_usuario_gu	FrmGestionUsuarios	Usuario:	Пользователь:
+1	FrmPrincipal	Español	Испанский
+2	FrmPrincipal	Portugués	Португальский
+3	FrmPrincipal	Inglés	Английский
+4	FrmPrincipal	Ruso	Русский
+btn_aplicar_idioma	FrmPrincipal	Aplicar	Применить
+btn_buscar	FrmPrincipal	Поиск	Поиск
+btn_cambiar_estado	FrmPrincipal	Activar / desactivar	Активировать / деактивировать
+btn_guardar_traduccion	FrmPrincipal	Guardar traducción	Сохранить перевод
+btn_nuevo_idioma	FrmPrincipal	Crear idioma	Создать язык
+chk_fechas	FrmPrincipal	Fechas:	Даты:
+chk_idioma_activo	FrmPrincipal	Activo	Активен
+col_actividad	FrmPrincipal	Actividad	Действие
+col_fecha	FrmPrincipal	Fecha	Дата
+col_id	FrmPrincipal	IdBitacora	ID журнала
+col_informacion	FrmPrincipal	InformacionAsociada	Связанная информация
+col_usuario	FrmPrincipal	Usuario	Пользователь
+frmbitacora_titulo	FrmPrincipal	Consulta de Bitácora	Просмотр журнала
+frmgestionidiomas_titulo	FrmPrincipal	Gestión de idiomas	Управление языками
+lbl_actividad	FrmPrincipal	Actividad:	Действие:
+lbl_codigo_idioma	FrmPrincipal	Código:	Код:
+lbl_idioma_activo	FrmPrincipal	Idioma:	Язык:
+lbl_nombre_nativo	FrmPrincipal	Nombre nativo:	Родное название:
+lbl_nuevo_idioma	FrmPrincipal	Nombre:	Название:
+lbl_usuario	FrmPrincipal	Usuario:	Пользователь:
+menu_bitacora	FrmPrincipal	Bitácora	Журнал
+menu_idioma	FrmPrincipal	Idioma	Язык
+menu_logout	FrmPrincipal	Cerrar Sesión	Выйти
+menu_sistema	FrmPrincipal	Sistema	Система
+menu_usuarios	FrmPrincipal	Gestión de Usuarios	Управление пользователями
+titulo_ventana	FrmPrincipal	FrmPrincipal	SIGAT
