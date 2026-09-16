@@ -17,6 +17,8 @@
         private Button btnNuevoIdioma;
         private DataGridView dgvTraducciones;
         private Button btnGuardarTraduccion;
+        private Button btnExportarTraducciones;
+        private Button btnImportarTraducciones;
 
         protected override void Dispose(bool disposing)
         {
@@ -40,6 +42,8 @@
             btnNuevoIdioma = new Button();
             dgvTraducciones = new DataGridView();
             btnGuardarTraduccion = new Button();
+            btnExportarTraducciones = new Button();
+            btnImportarTraducciones = new Button();
             ((System.ComponentModel.ISupportInitialize)dgvTraducciones).BeginInit();
             SuspendLayout();
 
@@ -107,6 +111,16 @@
             btnGuardarTraduccion.Text = "Guardar traducción";
             btnGuardarTraduccion.Click += btnGuardarTraduccion_Click;
 
+            btnExportarTraducciones.Location = new Point(25, 505);
+            btnExportarTraducciones.Size = new Size(150, 35);
+            btnExportarTraducciones.Text = "Exportar traducciones";
+            btnExportarTraducciones.Click += btnExportarTraducciones_Click;
+
+            btnImportarTraducciones.Location = new Point(185, 505);
+            btnImportarTraducciones.Size = new Size(150, 35);
+            btnImportarTraducciones.Text = "Importar traducciones";
+            btnImportarTraducciones.Click += btnImportarTraducciones_Click;
+
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(815, 565);
@@ -124,6 +138,8 @@
             Controls.Add(btnNuevoIdioma);
             Controls.Add(dgvTraducciones);
             Controls.Add(btnGuardarTraduccion);
+            Controls.Add(btnExportarTraducciones);
+            Controls.Add(btnImportarTraducciones);
             Name = "FrmGestionIdiomas";
             Text = "Gestión de idiomas";
             ((System.ComponentModel.ISupportInitialize)dgvTraducciones).EndInit();
