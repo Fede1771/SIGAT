@@ -1,5 +1,13 @@
 /* =========================================================================
    SIGAT - Limpieza de registros viejos de Bitácora
+   (Basado en 5_Limpieza_Bitacora.sql original, sin cambios de fondo:
+   el script ya estaba bien diseñado en 3 pasos seguros.)
+
+   Recomendación: NO borrar toda la bitácora de una. Conservá al menos
+   los últimos N días (retención sugerida: 180 días, ajustable) y, si te
+   importa la auditoría histórica, pasá los registros viejos a
+   Bitacora_Historico (Paso 2) antes de borrarlos de la tabla principal.
+
    Ejecutar los 3 pasos EN ORDEN, uno por uno. No saltear al Paso 3
    sin haber corrido antes el Paso 1 y el Paso 2.
    ========================================================================= */
@@ -35,3 +43,10 @@ DECLARE @diasRetencion3 INT = 180;
 DELETE FROM Bitacora
 WHERE Fecha < DATEADD(DAY, -@diasRetencion3, GETDATE());
 GO
+
+/* -------------------------------------------------------------------------
+   Alternativa: vaciar TODA la bitácora (por ejemplo, recién instalada la
+   base en la PC nueva y querés arrancar de cero). Usar con cuidado: esto
+   borra el historial completo de auditoría.
+   ------------------------------------------------------------------------- */
+-- TRUNCATE TABLE Bitacora;  -- más rápido que DELETE, resetea el IDENTITY. Descomentar para usar.
