@@ -21,6 +21,7 @@
             this.itemSistema = new ToolStripMenuItem();
             this.itemUsuarios = new ToolStripMenuItem();
             this.itemBitacora = new ToolStripMenuItem();
+
             this.itemLogoutSeparator = new ToolStripSeparator();
             this.itemLogout = new ToolStripMenuItem();
             this.itemIdioma = new ToolStripMenuItem();
