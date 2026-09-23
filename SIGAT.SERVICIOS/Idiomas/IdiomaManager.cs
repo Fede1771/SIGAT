@@ -6,11 +6,19 @@ namespace SIGAT.SERVICIOS.Idiomas
     public sealed class IdiomaManager : IIdiomaSubject
     {
         private static IdiomaManager _instancia;
-
+            
         private List<IIdiomaObserver> _observadores = new List<IIdiomaObserver>();
         private Dictionary<string, string> _traducciones = new Dictionary<string, string>();
 
-        public Idioma IdiomaActual { get; private set; }
+        public Idioma? IdiomaActual { get; private set; }
+
+        // Estado local del proceso: nunca persiste la selección en el servidor.
+        public void ReiniciarSesion()
+        {
+            IdiomaActual = null;
+            _traducciones.Clear();
+            _observadores.Clear();
+        }
 
         private IdiomaManager() { }
 

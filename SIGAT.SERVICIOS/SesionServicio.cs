@@ -57,11 +57,17 @@ namespace SIGAT.SERVICIOS
 
         public void IniciarSesion(Usuario usuarioLogueado)
         {
+            ArgumentNullException.ThrowIfNull(usuarioLogueado);
+
+            Idiomas.IdiomaManager.ObtenerInstancia().ReiniciarSesion();
+
             UsuarioActual = usuarioLogueado;
         }
 
         public void CerrarSesion()
         {
+            Idiomas.IdiomaManager.ObtenerInstancia().ReiniciarSesion();
+
             UsuarioActual = null;
         }
     }

@@ -63,7 +63,7 @@ namespace SIGAT.UI
             foreach (Idioma idioma in idiomas)
             {
                 ToolStripMenuItem opcion = new ToolStripMenuItem(idioma.Nombre);
-                opcion.Tag = idioma.Id;
+                opcion.Tag = idioma;
                 opcion.Click += OpcionDeIdioma_Click;
                 itemIdioma.DropDownItems.Add(opcion);
             }
@@ -83,7 +83,7 @@ namespace SIGAT.UI
 
             foreach (Idioma idioma in idiomas)
             {
-                if (idioma.Nombre == "Español")
+                if (string.Equals(idioma.Codigo, "es", StringComparison.OrdinalIgnoreCase))
                 {
                     _idiomaBLL.CambiarIdioma(idioma.Id);
                     return;
@@ -99,7 +99,7 @@ namespace SIGAT.UI
         private void OpcionDeIdioma_Click(object sender, EventArgs e)
         {
             ToolStripMenuItem opcionElegida = (ToolStripMenuItem)sender;
-            int idIdioma = (int)opcionElegida.Tag;
+            int idIdioma = ((Idioma)opcionElegida.Tag).Id;
             _idiomaBLL.CambiarIdioma(idIdioma);
         }
 
@@ -123,6 +123,7 @@ namespace SIGAT.UI
             string nombreUsuario = SesionServicio.ObtenerInstancia().UsuarioActual.NombreUsuario;
 
             _bitacora.Registrar(nombreUsuario, "Logout", "Cierre de sesión seguro.");
+            foreach (Form hijo in MdiChildren) hijo.Close();
             SesionServicio.ObtenerInstancia().CerrarSesion();
 
             this.Hide();
@@ -134,6 +135,17 @@ namespace SIGAT.UI
         public void ActualizarIdioma()
         {
             TraductorFormularios.TraducirFormulario(this);
+
+            int? idActivo = IdiomaManager.ObtenerInstancia().IdiomaActual?.Id;
+            foreach (ToolStripItem item in itemIdioma.DropDownItems)
+            {
+                if (item is ToolStripMenuItem opcion && opcion.Tag is Idioma idioma)
+                {
+                    opcion.Text = PresentacionIdioma.Etiqueta(idioma, idActivo);
+                    opcion.Checked = idioma.Id == idActivo;
+                    opcion.AccessibleName = opcion.Text;
+                }
+            }
 
             string txtUsuario = IdiomaManager.ObtenerInstancia().Traducir(this.Name, "titulo_usuario", "Usuario");
             string txtPerfil = IdiomaManager.ObtenerInstancia().Traducir(this.Name, "titulo_perfil", "Perfil");

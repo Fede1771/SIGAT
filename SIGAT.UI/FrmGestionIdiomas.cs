@@ -13,6 +13,13 @@ namespace SIGAT.UI
         public FrmGestionIdiomas()
         {
             InitializeComponent();
+            cmbIdiomas.FormattingEnabled = true;
+            cmbIdiomas.Format += (sender, e) =>
+            {
+                if (e.ListItem is Idioma idioma)
+                    e.Value = PresentacionIdioma.Etiqueta(idioma,
+                        IdiomaManager.ObtenerInstancia().IdiomaActual?.Id);
+            };
 
             Tag = "frmgestionidiomas_titulo";
             lblIdiomaActivo.Tag = "lbl_idioma_activo";
@@ -300,6 +307,10 @@ namespace SIGAT.UI
         public void ActualizarIdioma()
         {
             TraductorFormularios.TraducirFormulario(this);
+            // Renovar las etiquetas sin cambiar el idioma elegido para editar traducciones.
+            if (cmbIdiomas.DataSource != null)
+                ((CurrencyManager)cmbIdiomas.BindingContext[cmbIdiomas.DataSource]).Refresh();
+            cmbIdiomas.Refresh();
         }
     }
 }

@@ -58,7 +58,7 @@ namespace SIGAT.UI
         {
             foreach (ToolStripItem item in items)
             {
-                if (item.Tag != null)
+                if (item.Tag is string)
                 {
                     RegistrarClave(nombreForm, item.Tag.ToString(), item.Text);
                     item.Text = Traducir(nombreForm, item.Tag.ToString(), item.Text);
