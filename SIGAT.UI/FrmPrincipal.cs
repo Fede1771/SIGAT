@@ -39,6 +39,10 @@ namespace SIGAT.UI
             itemIdioma.Tag = "menu_idioma";
 
             this.Load += FrmPrincipal_Load;
+            ToolStripMenuItem itemRoles = new ToolStripMenuItem("Roles y permisos (TP)");
+            itemRoles.Visible = esAdministrador;
+            itemRoles.Click += (sender, e) => AbrirFormulario(new FormGestionRoles());
+            itemSistema.DropDownItems.Add(itemRoles);
             this.FormClosed += FrmPrincipal_FormClosed;
         }
 
