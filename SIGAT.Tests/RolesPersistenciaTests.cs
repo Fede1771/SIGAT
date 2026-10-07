@@ -11,16 +11,50 @@ namespace SIGAT.Tests;
 public class RolesPersistenciaTests
 {
     [TestMethod]
-    public void FamiliaConNombreDePermisoNoAutorizaYNoSePuedeQuitarUltimoGestor()
+    public void MatrizContieneExactamenteLosComponentesSolicitados()
     {
-        EstadoRoles estado = new EstadoRoles();
-        Usuario usuario = new Usuario { Activo = true };
-        Rol rol = new Rol { Nombre = "Gestión de Roles" };
-        usuario.AsignarRol(rol);
-        estado.Usuarios.Add(usuario);
-        estado.Roles.Add(rol);
-        Assert.IsFalse(usuario.TienePatente("Gestión de Roles"));
-        Assert.ThrowsExactly<InvalidOperationException>(() => RolesBLL.Validar(estado));
+        EstadoRoles estado = MatrizRoles.CrearCatalogo();
+        string[] nombres = { "Administrador", "Responsable de Inventario", "Técnico de Mantenimiento", "Mesa de Ayuda", "Auditor" };
+        int[][] ids = { new[] {1,3,4,5,6,7}, new[] {3,4,6}, new[] {5,2}, new[] {4,2}, new[] {1,2,6} };
+        Assert.AreEqual(5, estado.Roles.Count);
+        Assert.AreEqual(7, estado.Permisos.Count);
+        int simples = 0;
+        foreach (Permiso permiso in estado.Permisos)
+        {
+            if (permiso is PermisoSimple) simples++;
+            Assert.IsEmpty(permiso.ObtenerHijos());
+        }
+        Assert.AreEqual(2, simples);
+        for (int i = 0; i < nombres.Length; i++)
+        {
+            Rol rol = estado.Roles[i];
+            Assert.AreEqual(nombres[i], rol.Nombre);
+            Assert.AreEqual(ids[i].Length, rol.Permisos.Count);
+            foreach (Permiso permiso in estado.Permisos)
+            {
+                bool esperado = false;
+                foreach (int id in ids[i]) if (permiso.Id == id) esperado = true;
+                Assert.AreEqual(esperado, rol.TienePermiso(permiso.Nombre), rol.Nombre + ": " + permiso.Nombre);
+            }
+        }
+        MatrizRoles.ValidarCatalogo(estado);
+    }
+
+    [TestMethod]
+    public void RechazaRolesExtrasCambiosDeTipoHijosInventadosYPermisosAdicionales()
+    {
+        EstadoRoles estado = MatrizRoles.CrearCatalogo();
+        estado.Roles.Add(new Rol { Id = 99, Nombre = "Extra" });
+        Assert.ThrowsExactly<InvalidOperationException>(() => MatrizRoles.ValidarCatalogo(estado));
+        estado = MatrizRoles.CrearCatalogo();
+        estado.Roles[0].AgregarPermiso(estado.Permisos[1]);
+        Assert.ThrowsExactly<InvalidOperationException>(() => MatrizRoles.ValidarCatalogo(estado));
+        estado = MatrizRoles.CrearCatalogo();
+        estado.Permisos[2].Agregar(estado.Permisos[1]);
+        Assert.ThrowsExactly<InvalidOperationException>(() => MatrizRoles.ValidarCatalogo(estado));
+        estado = MatrizRoles.CrearCatalogo();
+        estado.Permisos[2] = new PermisoSimple { Id = 3, Nombre = "Gestión de activos" };
+        Assert.ThrowsExactly<InvalidOperationException>(() => MatrizRoles.ValidarCatalogo(estado));
     }
 
     [TestMethod]
@@ -35,72 +69,48 @@ public class RolesPersistenciaTests
         }
         var builder = new SqlConnectionStringBuilder(cadena);
         if (!builder.InitialCatalog.StartsWith("SIGAT_Roles_Pruebas_", StringComparison.Ordinal))
-            throw new InvalidOperationException("Esta prueba solo admite una base SIGAT_Roles_Pruebas_.");
+            throw new InvalidOperationException("Solo se admite una base de pruebas.");
         RolesDAL dal = new RolesDAL(cadena);
         RolesBLL servicio = new RolesBLL(dal);
         EstadoRoles original = dal.Cargar();
+        MatrizRoles.ValidarCatalogo(original);
         try
         {
             Usuario admin = Buscar(original, 1);
             SesionServicio.ObtenerInstancia().IniciarSesion(admin);
             EstadoRoles estado = servicio.CargarParaGestion();
             EstadoRoles desactualizado = dal.Cargar();
-            Rol nuevo = new Rol(new PermisoCompuesto { Id = 101, Nombre = "Supervisor de prueba" }) { Id = 100 };
-            nuevo.AgregarPermiso(estado.Permisos[4]);
-            estado.Roles.Add(nuevo);
-            estado.Permisos.Add(nuevo.Familia);
-            Buscar(estado, 2).AsignarRol(nuevo);
-            Rol personal = new Rol(new PermisoCompuesto { Id = 103, Nombre = "Asignaciones directas" })
-                { Id = 104, IdUsuarioPersonal = 2 };
-            personal.AgregarPermiso(nuevo.Familia);
-            personal.AgregarPermiso(estado.Permisos[1]);
-            estado.Roles.Add(personal);
-            estado.Permisos.Add(personal.Familia);
-            Buscar(estado, 2).AsignarRol(personal);
+            Buscar(estado, 2).AsignarRol(estado.Roles[4]);
+            Buscar(estado, 3).AsignarRol(estado.Roles[3]);
             servicio.Guardar(estado);
             Assert.ThrowsExactly<InvalidOperationException>(() => dal.Guardar(desactualizado));
-
             SesionServicio.ObtenerInstancia().CerrarSesion();
             Usuario ingreso = new Usuario { IdUsuario = 2 };
             servicio.CargarRolesUsuario(ingreso);
             SesionServicio.ObtenerInstancia().IniciarSesion(ingreso);
-            Assert.IsTrue(ingreso.TienePatente("Gestión de Usuarios"));
-            Assert.IsTrue(ingreso.TienePatente("Control de Cambios"));
-            Rol? recuperado = null;
-            Rol? personalRecuperado = null;
-            foreach (Rol rol in ingreso.Roles)
-            {
-                if (rol.Id == 100) recuperado = rol;
-                if (rol.IdUsuarioPersonal == 2) personalRecuperado = rol;
-            }
-            Assert.IsNotNull(recuperado);
-            Assert.IsNotNull(personalRecuperado);
-            bool comparteFamilia = false;
-            foreach (Permiso permiso in personalRecuperado.Permisos)
-                if (ReferenceEquals(permiso, recuperado.Familia)) comparteFamilia = true;
-            Assert.IsTrue(comparteFamilia, "Los árboles compartidos deben conservar la identidad al reconstruirse.");
-            Assert.IsFalse(ingreso.TienePatente("Gestión de Roles"));
+            Assert.IsTrue(ingreso.TienePermiso("Ver bitácora"));
+            Assert.IsTrue(ingreso.TienePermiso("Consultar inventario"));
+            Assert.IsTrue(ingreso.TienePermiso("Reportes"));
+            Assert.IsFalse(ingreso.TienePermiso(MatrizRoles.Administracion));
             Assert.ThrowsExactly<InvalidOperationException>(() => servicio.CargarParaGestion());
-            Assert.IsTrue(Buscar(dal.Cargar(), 3).Roles.Count > 0, "Las cuentas inactivas conservan asignaciones.");
-
+            Assert.IsTrue(Buscar(dal.Cargar(), 3).TienePermiso("Movimientos"));
             SesionServicio.ObtenerInstancia().IniciarSesion(admin);
             estado = dal.Cargar();
             Usuario objetivo = Buscar(estado, 2);
             foreach (Rol rol in objetivo.Roles) objetivo.QuitarRol(rol);
             servicio.Guardar(estado);
             servicio.CargarRolesUsuario(ingreso);
-            Assert.IsEmpty(ingreso.Roles, "El perfil no debe reponer roles quitados.");
+            Assert.IsEmpty(ingreso.Roles);
             EstadoRoles sinGestor = dal.Cargar();
             foreach (Rol rol in Buscar(sinGestor, 1).Roles) Buscar(sinGestor, 1).QuitarRol(rol);
             Assert.ThrowsExactly<InvalidOperationException>(() => servicio.Guardar(sinGestor));
-
-            // Fuerza un error SQL después del DELETE: la transacción debe restaurar todo.
+            // Un error de FK después del DELETE no debe perder las asignaciones.
             estado = dal.Cargar();
             long version = estado.Version;
-            estado.Permisos.Add(new PermisoSimple { Id = estado.Permisos[0].Id, Nombre = "Duplicado" });
+            Buscar(estado, 2).AsignarRol(new Rol { Id = 999, Nombre = "Inválido" });
             Assert.ThrowsExactly<SqlException>(() => dal.Guardar(estado));
             Assert.AreEqual(version, dal.Cargar().Version);
-            Assert.IsTrue(Buscar(dal.Cargar(), 1).TienePatente("Gestión de Roles"));
+            Assert.IsTrue(Buscar(dal.Cargar(), 1).TienePermiso(MatrizRoles.Administracion));
         }
         finally
         {

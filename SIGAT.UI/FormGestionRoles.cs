@@ -10,15 +10,15 @@ namespace SIGAT.UI
     public class FormGestionRoles : Form
     {
         private readonly List<Rol> roles = new List<Rol>();
-        private readonly List<Permiso> patentes = new List<Permiso>();
+
         private readonly List<Usuario> usuarios = new List<Usuario>();
-        private readonly Dictionary<Usuario, Rol> personales = new Dictionary<Usuario, Rol>();
+
         private readonly TreeView tvRolesJerarquia = new TreeView();
         private readonly TreeView tvUsuarioPermisos = new TreeView();
         private readonly TreeView tvCatalogoGeneral = new TreeView();
         private readonly ComboBox cbUsuarios = new ComboBox();
         private object origenUsuario;
-        private int siguienteId = 1;
+
         private EstadoRoles estado = new EstadoRoles();
         private readonly RolesBLL rolesBLL = new RolesBLL();
         private readonly Label lblEstado = new Label();
@@ -49,68 +49,16 @@ namespace SIGAT.UI
             cbUsuarios.DataSource = null;
             estado = datos;
             roles.Clear();
-            patentes.Clear();
+            roles.AddRange(datos.Roles);
             usuarios.Clear();
-            personales.Clear();
-            siguienteId = 1;
-            foreach (Permiso permiso in datos.Permisos)
-            {
-                if (permiso is PermisoSimple) patentes.Add(permiso);
-                if (permiso.Id >= siguienteId) siguienteId = permiso.Id + 1;
-            }
-            foreach (Rol rol in datos.Roles)
-            {
-                if (!rol.IdUsuarioPersonal.HasValue) roles.Add(rol);
-                if (rol.Id >= siguienteId) siguienteId = rol.Id + 1;
-            }
             foreach (Usuario usuario in datos.Usuarios)
-            {
                 if (usuario.Activo) usuarios.Add(usuario);
-                foreach (Rol rol in usuario.Roles)
-                {
-                    if (rol.IdUsuarioPersonal == usuario.IdUsuario) personales.Add(usuario, rol);
-                }
-            }
             cbUsuarios.DisplayMember = "NombreUsuario";
             cbUsuarios.DataSource = usuarios;
             foreach (Usuario usuario in usuarios)
-            {
                 if (usuario.IdUsuario == seleccionado) cbUsuarios.SelectedItem = usuario;
-            }
             RefrescarArboles();
         }
-
-        private void PrepararGuardado()
-        {
-            estado.Roles.Clear();
-            estado.Permisos.Clear();
-            HashSet<int> visitados = new HashSet<int>();
-            foreach (Permiso patente in patentes) ReunirPermisos(patente, visitados);
-            foreach (Rol rol in roles)
-            {
-                estado.Roles.Add(rol);
-                ReunirPermisos(rol.Familia, visitados);
-            }
-            foreach (Rol personal in personales.Values)
-            {
-                estado.Roles.Add(personal);
-                ReunirPermisos(personal.Familia, visitados);
-            }
-        }
-
-        private void ReunirPermisos(Permiso permiso, HashSet<int> visitados)
-        {
-            if (!visitados.Add(permiso.Id)) return;
-            estado.Permisos.Add(permiso);
-            foreach (Permiso hijo in permiso.ObtenerHijos()) ReunirPermisos(hijo, visitados);
-        }
-        private Rol NuevoRol(string nombre)
-        {
-            Rol rol = new Rol { Id = siguienteId++, Nombre = nombre };
-            rol.Familia.Id = siguienteId++;
-            return rol;
-        }
-
         private void CargarNodosRecursivo(TreeNode nodoPadre, Permiso permiso)
         {
             TreeNode nodo = new TreeNode(permiso.Nombre) { Tag = permiso };
@@ -133,15 +81,11 @@ namespace SIGAT.UI
             origenUsuario = null;
             tvRolesJerarquia.Nodes.Clear();
             tvCatalogoGeneral.Nodes.Clear();
-            TreeNode catalogoRoles = tvCatalogoGeneral.Nodes.Add("ROLES Y FAMILIAS");
-            TreeNode catalogoPatentes = tvCatalogoGeneral.Nodes.Add("PERMISOS SIMPLES (Patentes)");
-            foreach (Rol rol in roles)
-            {
-                CargarRol(tvRolesJerarquia.Nodes, rol);
-                CargarRol(catalogoRoles.Nodes, rol);
-            }
-            foreach (Permiso patente in patentes)
-                CargarNodosRecursivo(catalogoPatentes, patente);
+            foreach (Rol rol in roles) CargarRol(tvRolesJerarquia.Nodes, rol);
+            TreeNode simples = tvCatalogoGeneral.Nodes.Add("PERMISOS SIMPLES");
+            TreeNode familias = tvCatalogoGeneral.Nodes.Add("PERMISOS COMPUESTOS (FAMILIAS)");
+            foreach (Permiso permiso in estado.Permisos)
+                CargarNodosRecursivo(permiso is PermisoSimple ? simples : familias, permiso);
             tvRolesJerarquia.ExpandAll();
             tvCatalogoGeneral.ExpandAll();
             RefrescarUsuario();
@@ -165,152 +109,25 @@ namespace SIGAT.UI
             throw new InvalidOperationException("Seleccione un usuario.");
         }
 
-        private PermisoCompuesto DestinoSeleccionado()
-        {
-            object destino = tvRolesJerarquia.SelectedNode?.Tag;
-            if (destino is Rol rol) return rol.Familia;
-            if (destino is PermisoCompuesto familia) return familia;
-            throw new InvalidOperationException("Seleccione un rol o familia en la jerarquía superior.");
-        }
-
-        private void AsignarARol()
-        {
-            PermisoCompuesto destino = DestinoSeleccionado();
-            object origen = tvCatalogoGeneral.SelectedNode?.Tag;
-            // Se comparte la familia del rol, conservando Rol fuera del Composite.
-            if (origen is Rol rol) destino.Agregar(rol.Familia);
-            else if (origen is Permiso permiso) destino.Agregar(permiso);
-            else throw new InvalidOperationException("Seleccione un elemento del catálogo.");
-        }
-
         private void AsignarAUsuario()
         {
-            Usuario usuario = UsuarioSeleccionado();
-            if (origenUsuario is Rol rol)
-            {
-                usuario.AsignarRol(rol);
-            }
-            else if (origenUsuario is Permiso permiso)
-            {
-                // El modelo solo asigna roles: los permisos directos usan un rol personal.
-                if (!personales.TryGetValue(usuario, out Rol personal))
-                {
-                    personal = NuevoRol("Asignaciones directas de " + usuario.NombreUsuario);
-                    personal.IdUsuarioPersonal = usuario.IdUsuario;
-                    personales.Add(usuario, personal);
-                }
-                personal.AgregarPermiso(permiso);
-                usuario.AsignarRol(personal);
-            }
-            else throw new InvalidOperationException("Seleccione un rol o permiso en un árbol izquierdo.");
+            if (!(origenUsuario is Rol rol))
+                throw new InvalidOperationException("Seleccione uno de los cinco roles. Los permisos no se asignan directamente.");
+            UsuarioSeleccionado().AsignarRol(rol);
         }
 
         private void QuitarAUsuario()
         {
-            Usuario usuario = UsuarioSeleccionado();
-            TreeNode nodo = tvUsuarioPermisos.SelectedNode;
-            if (nodo == null) throw new InvalidOperationException("Seleccione una asignación en el árbol del usuario.");
-            if (nodo.Tag is Rol rol)
-            {
-                usuario.QuitarRol(rol);
-                if (personales.TryGetValue(usuario, out Rol personal) && ReferenceEquals(rol, personal))
-                    personales.Remove(usuario);
-                return;
-            }
-            if (nodo.Tag is Permiso permiso &&
-                personales.TryGetValue(usuario, out Rol directo) &&
-                ReferenceEquals(nodo.Parent?.Tag, directo))
-            {
-                directo.QuitarPermiso(permiso);
-                if (directo.Permisos.Count == 0)
-                {
-                    usuario.QuitarRol(directo);
-                    personales.Remove(usuario);
-                }
-                return;
-            }
-            throw new InvalidOperationException(
-                "El permiso es heredado. Quite el rol completo o su asignación directa; no se modifican roles compartidos desde aquí.");
+            if (!(tvUsuarioPermisos.SelectedNode?.Tag is Rol rol))
+                throw new InvalidOperationException("Seleccione el rol completo que desea quitar.");
+            UsuarioSeleccionado().QuitarRol(rol);
         }
-
-        private string PedirNombre()
-        {
-            string nombre = Microsoft.VisualBasic.Interaction.InputBox(
-                "Nombre del rol o familia:", "Gestión de roles").Trim();
-            if (nombre == "") return "";
-            foreach (Rol rol in roles)
-            {
-                if (rol.Familia.ContienePermiso(nombre))
-                    throw new InvalidOperationException("Ya existe ese nombre.");
-            }
-            foreach (Permiso patente in patentes)
-            {
-                if (patente.ContienePermiso(nombre))
-                    throw new InvalidOperationException("Ya existe ese nombre.");
-            }
-            return nombre;
-        }
-
-        private void CrearRol()
-        {
-            string nombre = PedirNombre();
-            if (nombre != "") roles.Add(NuevoRol(nombre));
-        }
-
-        private void CrearRolAnidado()
-        {
-            PermisoCompuesto destino = DestinoSeleccionado();
-            string nombre = PedirNombre();
-            if (nombre != "")
-                destino.Agregar(new PermisoCompuesto { Id = siguienteId++, Nombre = nombre });
-        }
-
-        private void EliminarRol()
-        {
-            object elegido = tvRolesJerarquia.SelectedNode?.Tag;
-            Rol rol = elegido as Rol;
-            PermisoCompuesto familia = rol != null ? rol.Familia : elegido as PermisoCompuesto;
-            if (familia == null) throw new InvalidOperationException("Seleccione un rol o familia para eliminar.");
-            // Una familia anidada puede ser la misma familia de un rol del catálogo.
-            foreach (Rol candidato in roles)
-            {
-                if (ReferenceEquals(candidato.Familia, familia)) rol = candidato;
-            }
-            if (MessageBox.Show(this, "¿Eliminar '" + familia.Nombre +
-                "' y todas sus asignaciones?", "Confirmar baja",
-                MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
-            foreach (Rol actual in roles) Desvincular(actual.Familia, familia);
-            foreach (Usuario usuario in estado.Usuarios)
-            {
-                if (rol != null) usuario.QuitarRol(rol);
-                if (personales.TryGetValue(usuario, out Rol personal))
-                {
-                    Desvincular(personal.Familia, familia);
-                    if (personal.Permisos.Count == 0)
-                    {
-                        usuario.QuitarRol(personal);
-                        personales.Remove(usuario);
-                    }
-                }
-            }
-            if (rol != null) roles.Remove(rol);
-        }
-
-        private void Desvincular(Permiso padre, Permiso buscado)
-        {
-            foreach (Permiso hijo in padre.ObtenerHijos())
-            {
-                if (ReferenceEquals(hijo, buscado)) padre.Quitar(hijo);
-                else Desvincular(hijo, buscado);
-            }
-        }
-
         private void Ejecutar(Action accion)
         {
             try
             {
                 accion();
-                PrepararGuardado();
+
                 rolesBLL.Guardar(estado);
                 RefrescarArboles();
                 lblEstado.Text = "Cambios guardados. Se aplican al volver a iniciar sesión.";
@@ -343,10 +160,10 @@ namespace SIGAT.UI
             tvRolesJerarquia.Name = "tvRolesJerarquia";
             tvUsuarioPermisos.Name = "tvUsuarioPermisos";
             tvCatalogoGeneral.Name = "tvCatalogoGeneral";
-            tabla.Controls.Add(Sector("Estructura de roles y familias", tvRolesJerarquia), 0, 0);
+            tabla.Controls.Add(Sector("Roles y componentes de la matriz", tvRolesJerarquia), 0, 0);
             tabla.Controls.Add(Sector("Roles y permisos asignados al usuario", tvUsuarioPermisos), 2, 0);
             tabla.SetRowSpan(tvUsuarioPermisos.Parent, 2);
-            tabla.Controls.Add(Sector("Catálogo de roles y permisos", tvCatalogoGeneral), 0, 1);
+            tabla.Controls.Add(Sector("Catálogo de permisos de la matriz", tvCatalogoGeneral), 0, 1);
             FlowLayoutPanel superior = PanelBotones();
             tabla.Controls.Add(superior, 1, 0);
             superior.Controls.Add(new Label { Text = "Usuario activo de SIGAT", AutoSize = true });
@@ -354,19 +171,13 @@ namespace SIGAT.UI
             cbUsuarios.DropDownStyle = ComboBoxStyle.DropDownList;
             cbUsuarios.Width = 260;
             superior.Controls.Add(cbUsuarios);
-            superior.Controls.Add(Boton("btnAsignarAUsuario", "Asignar Rol/Permiso a Usuario", AsignarAUsuario));
-            superior.Controls.Add(Boton("btnQuitarAUsuario", "Quitar Rol/Permiso a Usuario", QuitarAUsuario));
+            superior.Controls.Add(Boton("btnAsignarAUsuario", "Asignar rol al usuario", AsignarAUsuario));
+            superior.Controls.Add(Boton("btnQuitarAUsuario", "Quitar rol al usuario", QuitarAUsuario));
             superior.Controls.Add(new Label { AutoSize = true, MaximumSize = new Size(260, 0),
-                Text = "Asignar: seleccione un rol o permiso a la izquierda.\nQuitar: seleccione una asignación a la derecha.\nLos cambios se guardan automáticamente y se aplican al volver a iniciar sesión." });
+                Text = "Seleccione un rol en el árbol superior izquierdo.\nQuitar: seleccione una asignación a la derecha.\nLos cambios se guardan automáticamente y se aplican al volver a iniciar sesión." });
             lblEstado.AutoSize = true;
             lblEstado.MaximumSize = new Size(260, 0);
             superior.Controls.Add(lblEstado);
-            FlowLayoutPanel inferior = PanelBotones();
-            tabla.Controls.Add(inferior, 1, 1);
-            inferior.Controls.Add(Boton("btnAsignarARol", "Asignar Rol/Permiso a Rol", AsignarARol));
-            inferior.Controls.Add(Boton("btnCrearRol", "Crear Rol", CrearRol));
-            inferior.Controls.Add(Boton("btnCrearRolAnidado", "Crear Rol Anidado", CrearRolAnidado));
-            inferior.Controls.Add(Boton("btnEliminarRol", "Eliminar Rol", EliminarRol));
             cbUsuarios.SelectedIndexChanged += (s, e) => RefrescarUsuario();
             tvRolesJerarquia.AfterSelect += (s, e) => origenUsuario = e.Node.Tag;
             tvCatalogoGeneral.AfterSelect += (s, e) => origenUsuario = e.Node.Tag;

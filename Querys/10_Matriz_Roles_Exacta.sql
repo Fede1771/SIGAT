@@ -13,9 +13,42 @@ BEGIN
  PRINT N'La matriz ya está instalada.';
  RETURN;
 END;
-IF OBJECT_ID('dbo.SeguridadVersion','U') IS NOT NULL
- THROW 50001, 'Para migrar el esquema anterior ejecute 10_Matriz_Roles_Exacta.sql.', 1;
 BEGIN TRANSACTION;
+DECLARE @Version bigint = 1;
+CREATE TABLE #Asignaciones (IdUsuario int NOT NULL, NombreRol nvarchar(150) NOT NULL);
+IF OBJECT_ID('dbo.SeguridadVersion','U') IS NOT NULL
+ EXEC sp_executesql N'SELECT @Valor=Version+1 FROM dbo.SeguridadVersion WITH (UPDLOCK,HOLDLOCK) WHERE Id=1',
+ N'@Valor bigint OUTPUT', @Version OUTPUT;
+
+-- Solo conservar roles que coincidan por nombre, nunca por los IDs anteriores.
+IF COL_LENGTH('dbo.Rol','IdFamilia') IS NOT NULL
+ EXEC(N'INSERT #Asignaciones SELECT ur.IdUsuario,p.Nombre
+ FROM dbo.UsuarioRol ur JOIN dbo.Rol r ON r.Id=ur.IdRol
+ JOIN dbo.Permiso p ON p.Id=r.IdFamilia WHERE r.IdUsuarioPersonal IS NULL');
+
+-- Preservar administradores existentes para evitar perder el acceso.
+INSERT #Asignaciones
+ SELECT u.IdUsuario,N'Administrador' FROM dbo.Usuarios u
+ JOIN dbo.Perfiles p ON p.IdPerfil=u.IdPerfil
+ WHERE p.NombrePerfil='Administrador'
+ AND NOT EXISTS (SELECT 1 FROM #Asignaciones a WHERE a.IdUsuario=u.IdUsuario AND a.NombreRol=N'Administrador');
+
+IF NOT EXISTS (SELECT 1 FROM #Asignaciones a JOIN dbo.Usuarios u ON u.IdUsuario=a.IdUsuario
+ WHERE u.Activo=1 AND a.NombreRol=N'Administrador')
+ THROW 50001, 'Debe existir un administrador activo antes de migrar.', 1;
+
+-- Informar qué asignaciones desaparecen, sin convertirlas en otro rol.
+SELECT IdUsuario,NombreRol AS RolRetirado FROM #Asignaciones
+WHERE NombreRol NOT IN (N'Administrador',N'Responsable de Inventario',
+ N'Técnico de Mantenimiento',N'Mesa de Ayuda',N'Auditor');
+
+DROP TABLE IF EXISTS dbo.UsuarioRol;
+DROP TABLE IF EXISTS dbo.RolPermiso;
+DROP TABLE IF EXISTS dbo.Rol;
+DROP TABLE IF EXISTS dbo.PermisoHijo;
+DROP TABLE IF EXISTS dbo.Permiso;
+DROP TABLE IF EXISTS dbo.SeguridadVersion;
+
 EXEC(N'
 CREATE TABLE dbo.SeguridadVersion (
  Id int NOT NULL PRIMARY KEY CHECK (Id=1),
@@ -74,9 +107,11 @@ INSERT dbo.RolPermiso VALUES
  (1,1),(1,3),(1,4),(1,5),(1,6),(1,7),
  (2,3),(2,4),(2,6),(3,5),(3,2),(4,4),(4,2),(5,1),(5,2),(5,6);
 ');
-EXEC(N'INSERT dbo.SeguridadVersion VALUES (1,1,2);
- INSERT dbo.UsuarioRol (IdUsuario,IdRol)
- SELECT u.IdUsuario,1 FROM dbo.Usuarios u JOIN dbo.Perfiles p ON p.IdPerfil=u.IdPerfil
- WHERE p.NombrePerfil=''Administrador'';');
+EXEC sp_executesql N'INSERT dbo.SeguridadVersion VALUES (1,@Valor,2)', N'@Valor bigint', @Version;
+EXEC(N'INSERT dbo.UsuarioRol (IdUsuario,IdRol)
+ SELECT DISTINCT a.IdUsuario,r.Id FROM #Asignaciones a
+ JOIN dbo.Rol r ON r.Nombre=a.NombreRol');
 COMMIT;
+PRINT N'Matriz instalada: 5 roles, 7 permisos y 16 relaciones.';
 GO
+

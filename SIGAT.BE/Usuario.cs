@@ -39,14 +39,6 @@ namespace SIGAT.BE
         }
 
         public int IdUsuario { get; set; }
-        public bool TienePatente(string nombre)
-        {
-            foreach (Rol rol in roles)
-            {
-                if (rol.TienePatente(nombre)) return true;
-            }
-            return false;
-        }
         public string NombreUsuario { get; set; }
         public string Password { get; set; }
         public string Nombre { get; set; }  

@@ -29,8 +29,8 @@ namespace SIGAT.DAL
             using SqlTransaction transaccion = conexion.BeginTransaction(IsolationLevel.Serializable);
             EstadoRoles estado = new EstadoRoles();
             using (SqlCommand comando = new SqlCommand(@"
-                IF OBJECT_ID('dbo.SeguridadVersion', 'U') IS NULL
-                    THROW 50001, 'Ejecute Querys/09_Roles_Persistentes.sql antes de iniciar SIGAT.', 1;
+                IF COL_LENGTH('dbo.SeguridadVersion', 'Esquema') IS NULL
+                    THROW 50001, 'Ejecute Querys/10_Matriz_Roles_Exacta.sql antes de iniciar SIGAT.', 1;
                 SELECT Version FROM dbo.SeguridadVersion WITH (HOLDLOCK) WHERE Id = 1;", conexion, transaccion))
             {
                 estado.Version = Convert.ToInt64(comando.ExecuteScalar());
@@ -48,26 +48,21 @@ namespace SIGAT.DAL
                     estado.Permisos.Add(permiso);
                 }
             }
-            using (SqlCommand comando = new SqlCommand("SELECT IdPadre, IdHijo FROM dbo.PermisoHijo ORDER BY IdPadre, IdHijo", conexion, transaccion))
-            using (SqlDataReader lector = comando.ExecuteReader())
-            {
-                while (lector.Read())
-                    permisos[lector.GetInt32(0)].Agregar(permisos[lector.GetInt32(1)]);
-            }
             Dictionary<int, Rol> roles = new Dictionary<int, Rol>();
-            using (SqlCommand comando = new SqlCommand("SELECT Id, IdFamilia, IdUsuarioPersonal FROM dbo.Rol ORDER BY Id", conexion, transaccion))
+            using (SqlCommand comando = new SqlCommand("SELECT Id, Nombre FROM dbo.Rol ORDER BY Id", conexion, transaccion))
             using (SqlDataReader lector = comando.ExecuteReader())
             {
                 while (lector.Read())
                 {
-                    Rol rol = new Rol((PermisoCompuesto)permisos[lector.GetInt32(1)])
-                    {
-                        Id = lector.GetInt32(0),
-                        IdUsuarioPersonal = lector.IsDBNull(2) ? null : lector.GetInt32(2)
-                    };
+                    Rol rol = new Rol { Id = lector.GetInt32(0), Nombre = lector.GetString(1) };
                     roles.Add(rol.Id, rol);
                     estado.Roles.Add(rol);
                 }
+            }
+            using (SqlCommand comando = new SqlCommand("SELECT IdRol, IdPermiso FROM dbo.RolPermiso ORDER BY IdRol, IdPermiso", conexion, transaccion))
+            using (SqlDataReader lector = comando.ExecuteReader())
+            {
+                while (lector.Read()) roles[lector.GetInt32(0)].AgregarPermiso(permisos[lector.GetInt32(1)]);
             }
             Dictionary<int, Usuario> usuarios = new Dictionary<int, Usuario>();
             using (SqlCommand comando = new SqlCommand(@"SELECT u.IdUsuario, u.NombreUsuario, u.Activo, u.IdPerfil, p.NombrePerfil
@@ -97,7 +92,7 @@ namespace SIGAT.DAL
 
         public void Guardar(EstadoRoles estado)
         {
-            // Catálogo pequeño: se guarda como una unidad, con transacción y control de versión.
+            // Solo cambian las asignaciones a usuarios; el catálogo de la matriz es fijo.
             // Dos administradores no pueden sobrescribirse sin recibir un conflicto.
             using SqlConnection conexion = Conectar();
             conexion.Open();
@@ -110,28 +105,7 @@ namespace SIGAT.DAL
                 if (comando.ExecuteNonQuery() != 1)
                     throw new InvalidOperationException("Otro usuario modificó los roles. Se recargarán los datos; vuelva a realizar el cambio.");
             }
-            Ejecutar(conexion, transaccion, "DELETE FROM dbo.UsuarioRol; DELETE FROM dbo.Rol; DELETE FROM dbo.PermisoHijo; DELETE FROM dbo.Permiso;");
-            foreach (Permiso permiso in estado.Permisos)
-            {
-                using SqlCommand comando = new SqlCommand("INSERT dbo.Permiso (Id, Nombre, EsCompuesto) VALUES (@Id, @Nombre, @Compuesto)", conexion, transaccion);
-                comando.Parameters.Add("@Id", SqlDbType.Int).Value = permiso.Id;
-                comando.Parameters.Add("@Nombre", SqlDbType.NVarChar, 150).Value = permiso.Nombre;
-                comando.Parameters.Add("@Compuesto", SqlDbType.Bit).Value = permiso is PermisoCompuesto;
-                comando.ExecuteNonQuery();
-            }
-            foreach (Permiso padre in estado.Permisos)
-            {
-                foreach (Permiso hijo in padre.ObtenerHijos())
-                    InsertarPar(conexion, transaccion, "INSERT dbo.PermisoHijo (IdPadre, IdHijo) VALUES (@Uno, @Dos)", padre.Id, hijo.Id);
-            }
-            foreach (Rol rol in estado.Roles)
-            {
-                using SqlCommand comando = new SqlCommand("INSERT dbo.Rol (Id, IdFamilia, IdUsuarioPersonal) VALUES (@Id, @Familia, @Usuario)", conexion, transaccion);
-                comando.Parameters.Add("@Id", SqlDbType.Int).Value = rol.Id;
-                comando.Parameters.Add("@Familia", SqlDbType.Int).Value = rol.Familia.Id;
-                comando.Parameters.Add("@Usuario", SqlDbType.Int).Value = (object?)rol.IdUsuarioPersonal ?? DBNull.Value;
-                comando.ExecuteNonQuery();
-            }
+            Ejecutar(conexion, transaccion, "DELETE FROM dbo.UsuarioRol;");
             foreach (Usuario usuario in estado.Usuarios)
             {
                 foreach (Rol rol in usuario.Roles)

@@ -1,43 +1,28 @@
-using System.Collections.Generic;
-
 namespace SIGAT.BE
 {
-    // Un rol contiene permisos; no es un permiso ni hereda de él.
+    // Rol queda fuera del Composite: contiene componentes, no es una familia.
     public class Rol
     {
-        public Rol() { }
-
-        public Rol(PermisoCompuesto familia)
-        {
-            Familia = familia;
-        }
-
         public int Id { get; set; }
-        public int? IdUsuarioPersonal { get; set; }
-        public PermisoCompuesto Familia { get; } = new PermisoCompuesto();
-        public string Nombre
-        {
-            get { return Familia.Nombre; }
-            set { Familia.Nombre = value; }
-        }
-        public List<Permiso> Permisos { get { return Familia.ObtenerHijos(); } }
+        public string Nombre { get; set; } = "";
+        private readonly List<Permiso> permisos = new List<Permiso>();
+        public List<Permiso> Permisos { get { return new List<Permiso>(permisos); } }
 
-        public void AgregarPermiso(Permiso p)
+        public void AgregarPermiso(Permiso permiso)
         {
-            foreach (Permiso actual in Permisos)
-            {
-                if (ReferenceEquals(actual, p)) return;
-            }
-            Familia.Agregar(p);
+            ArgumentNullException.ThrowIfNull(permiso);
+            foreach (Permiso actual in permisos)
+                if (ReferenceEquals(actual, permiso)) return;
+            permisos.Add(permiso);
         }
 
-        public void QuitarPermiso(Permiso p)
+        public void QuitarPermiso(Permiso permiso)
         {
-            foreach (Permiso actual in Permisos)
+            foreach (Permiso actual in permisos)
             {
-                if (ReferenceEquals(actual, p))
+                if (ReferenceEquals(actual, permiso))
                 {
-                    Familia.Quitar(actual);
+                    permisos.Remove(actual);
                     return;
                 }
             }
@@ -45,26 +30,8 @@ namespace SIGAT.BE
 
         public bool TienePermiso(string nombre)
         {
-            foreach (Permiso permiso in Permisos)
-            {
+            foreach (Permiso permiso in permisos)
                 if (permiso.ContienePermiso(nombre)) return true;
-            }
-            return false;
-        }
-
-        // Para autorizar acciones solo cuentan las patentes, no el nombre de una familia.
-        public bool TienePatente(string nombre)
-        {
-            return BuscarPatente(Familia, nombre);
-        }
-
-        private static bool BuscarPatente(Permiso permiso, string nombre)
-        {
-            if (permiso is PermisoSimple) return permiso.ContienePermiso(nombre);
-            foreach (Permiso hijo in permiso.ObtenerHijos())
-            {
-                if (BuscarPatente(hijo, nombre)) return true;
-            }
             return false;
         }
     }
