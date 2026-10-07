@@ -1,4 +1,4 @@
-﻿using SIGAT.BE;
+using SIGAT.BE;
 using SIGAT.BE.Auditoria;
 using SIGAT.BLL.Fabricas;
 using SIGAT.DAL;
@@ -49,6 +49,7 @@ namespace SIGAT.BLL
                 return ResultadoLogin.UsuarioInactivo;
             }
 
+            new RolesBLL().CargarRolesUsuario(usuarioValidado);
             SesionServicio.ObtenerInstancia().IniciarSesion(usuarioValidado);
 
             // USAMOS LA FÁBRICA: Login Exitoso

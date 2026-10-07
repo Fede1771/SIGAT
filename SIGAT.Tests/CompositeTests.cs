@@ -71,14 +71,44 @@ public class CompositeTests
             try
             {
                 using var form = new SIGAT.UI.FormGestionRoles();
-                var cargar = typeof(SIGAT.UI.FormGestionRoles).GetMethod("CargarDatos",
+                var cargar = typeof(SIGAT.UI.FormGestionRoles).GetMethod("InicializarDatos",
                     System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!;
-                cargar.Invoke(form, new object[] { form, EventArgs.Empty });
+                var cuenta = new Usuario { IdUsuario = 42, NombreUsuario = "cuentaRegistrada", Activo = true,
+                    Perfil = new Perfil { NombrePerfil = "Administrador" } };
+                EstadoRoles datos = new EstadoRoles();
+                Rol admin = new Rol { Id = 1, Nombre = "Administrador" };
+                Rol operador = new Rol { Id = 2, Nombre = "Operador" };
+                datos.Roles.Add(admin);
+                datos.Roles.Add(operador);
+                datos.Roles.Add(new Rol { Id = 3, Nombre = "Gestión" });
+                foreach (string nombre in new[] { "Gestión de Roles", "Gestión de Usuarios", "Gestión de Idiomas", "Bitácora" })
+                {
+                    Permiso patente = new PermisoSimple { Nombre = nombre };
+                    admin.AgregarPermiso(patente);
+                    datos.Permisos.Add(patente);
+                }
+                cuenta.AsignarRol(admin);
+                datos.Usuarios.AddRange(new List<Usuario> { cuenta,
+                    new Usuario { IdUsuario = 43, NombreUsuario = "operadorRegistrado", Activo = true,
+                        Perfil = new Perfil { NombrePerfil = "Operador" } },
+                    new Usuario { IdUsuario = 44, NombreUsuario = "inactivo", Activo = false } });
+                datos.Usuarios[1].AsignarRol(operador);
+                cargar.Invoke(form, new object[] { datos });
                 var jerarquia = (System.Windows.Forms.TreeView)form.Controls.Find("tvRolesJerarquia", true)[0];
                 var usuario = (System.Windows.Forms.TreeView)form.Controls.Find("tvUsuarioPermisos", true)[0];
                 Assert.AreEqual(3, jerarquia.Nodes.Count);
-                Assert.AreEqual(2, usuario.Nodes[0].Nodes.Count);
+                Assert.AreEqual(4, usuario.Nodes[0].Nodes.Count);
                 Assert.IsInstanceOfType<Rol>(usuario.Nodes[0].Tag);
+                var combo = (System.Windows.Forms.ComboBox)form.Controls.Find("cbUsuarios", true)[0];
+                Assert.AreEqual(2, combo.Items.Count);
+                Assert.AreEqual("cuentaRegistrada", ((Usuario)combo.Items[0]).NombreUsuario);
+                Assert.AreEqual(42, ((Usuario)combo.Items[0]).IdUsuario);
+                Assert.AreEqual(1, cuenta.Roles.Count);
+                combo.SelectedIndex = 1;
+                Assert.AreEqual("Operador", usuario.Nodes[0].Text);
+                cargar.Invoke(form, new object[] { new EstadoRoles() });
+                Assert.AreEqual(0, combo.Items.Count);
+                Assert.AreEqual(0, usuario.Nodes.Count);
             }
             catch (Exception ex) { error = ex; }
         });

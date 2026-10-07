@@ -1,4 +1,4 @@
-﻿using SIGAT.BE;
+using SIGAT.BE;
 using SIGAT.BE.Idiomas;
 using SIGAT.BLL;
 using SIGAT.SERVICIOS;
@@ -25,11 +25,9 @@ namespace SIGAT.UI
             }
 
             Usuario usuarioLogueado = SesionServicio.ObtenerInstancia().UsuarioActual;
-            bool esAdministrador = usuarioLogueado != null && usuarioLogueado.Perfil.NombrePerfil == "Administrador";
-            if (!esAdministrador)
-            {
-                itemUsuarios.Visible = false;
-            }
+            itemUsuarios.Visible = usuarioLogueado != null && usuarioLogueado.TienePatente("Gestión de Usuarios");
+            itemBitacora.Visible = usuarioLogueado != null && usuarioLogueado.TienePatente("Bitácora");
+            itemGestionIdiomas.Visible = usuarioLogueado != null && usuarioLogueado.TienePatente("Gestión de Idiomas");
 
             this.Tag = "titulo_ventana";
             itemSistema.Tag = "menu_sistema";
@@ -39,9 +37,12 @@ namespace SIGAT.UI
             itemIdioma.Tag = "menu_idioma";
 
             this.Load += FrmPrincipal_Load;
-            ToolStripMenuItem itemRoles = new ToolStripMenuItem("Roles y permisos (TP)");
-            itemRoles.Visible = esAdministrador;
-            itemRoles.Click += (sender, e) => AbrirFormulario(new FormGestionRoles());
+            ToolStripMenuItem itemRoles = new ToolStripMenuItem("Gestión de roles y permisos");
+            itemRoles.Visible = usuarioLogueado != null && usuarioLogueado.TienePatente("Gestión de Roles");
+            itemRoles.Click += (sender, e) =>
+            {
+                if (PuedeAbrir("Gestión de Roles")) AbrirFormulario(new FormGestionRoles());
+            };
             itemSistema.DropDownItems.Add(itemRoles);
             this.FormClosed += FrmPrincipal_FormClosed;
         }
@@ -109,16 +110,19 @@ namespace SIGAT.UI
 
         private void ItemGestionIdiomas_Click(object sender, EventArgs e)
         {
+            if (!PuedeAbrir("Gestión de Idiomas")) return;
             AbrirFormulario(new FrmGestionIdiomas());
         }
 
         private void ItemUsuarios_Click(object sender, EventArgs e)
         {
+            if (!PuedeAbrir("Gestión de Usuarios")) return;
             AbrirFormulario(new FrmGestionUsuarios());
         }
 
         private void ItemBitacora_Click(object sender, EventArgs e)
         {
+            if (!PuedeAbrir("Bitácora")) return;
             AbrirFormulario(new FrmBitacora());
         }
 
@@ -157,7 +161,21 @@ namespace SIGAT.UI
             string nombreUsu = SesionServicio.ObtenerInstancia().UsuarioActual.NombreUsuario;
             string nombrePer = SesionServicio.ObtenerInstancia().PerfilActual.NombrePerfil;
 
-            this.Text = "SIGAT - " + txtUsuario + ": " + nombreUsu + " | " + txtPerfil + ": " + nombrePer;
+            string nombresRoles = "";
+            foreach (Rol rol in SesionServicio.ObtenerInstancia().UsuarioActual.Roles)
+            {
+                if (nombresRoles != "") nombresRoles += ", ";
+                nombresRoles += rol.Nombre;
+            }
+            this.Text = "SIGAT - " + txtUsuario + ": " + nombreUsu + " | " + txtPerfil + ": " + nombrePer
+                + " | Roles: " + (nombresRoles == "" ? "Sin roles asignados" : nombresRoles);
+        }
+
+        private bool PuedeAbrir(string permiso)
+        {
+            if (SesionServicio.ObtenerInstancia().UsuarioActual?.TienePatente(permiso) == true) return true;
+            MessageBox.Show("No tiene permiso para acceder a esta función.", "SIGAT");
+            return false;
         }
 
         private void AbrirFormulario(Form formHijo)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using SIGAT.BE;
+using SIGAT.BLL;
 
 namespace SIGAT.UI
 {
@@ -18,6 +19,9 @@ namespace SIGAT.UI
         private readonly ComboBox cbUsuarios = new ComboBox();
         private object origenUsuario;
         private int siguienteId = 1;
+        private EstadoRoles estado = new EstadoRoles();
+        private readonly RolesBLL rolesBLL = new RolesBLL();
+        private readonly Label lblEstado = new Label();
 
         public FormGestionRoles()
         {
@@ -25,29 +29,81 @@ namespace SIGAT.UI
             Load += CargarDatos;
         }
 
-        // Datos del TP: no son los usuarios ni los permisos de SQL Server.
         private void CargarDatos(object sender, EventArgs e)
         {
-            foreach (string nombre in new string[]
-            { "Bitácora", "Control de Cambios", "Gestión de Roles", "Generar Copia de Seguridad" })
+            try
             {
-                patentes.Add(new PermisoSimple { Id = siguienteId++, Nombre = nombre });
+                InicializarDatos(rolesBLL.CargarParaGestion());
             }
-            Rol admin = NuevoRol("Administrador");
-            roles.Add(admin);
-            roles.Add(NuevoRol("Usuario Simple"));
-            roles.Add(NuevoRol("Gestión"));
-            admin.AgregarPermiso(patentes[2]);
-            admin.AgregarPermiso(patentes[3]);
-            Usuario usuario = new Usuario { Id = 1, NombreUsuario = "admin" };
-            usuario.AsignarRol(admin);
-            usuarios.Add(usuario);
-            usuarios.Add(new Usuario { Id = 2, NombreUsuario = "alumno" });
+            catch (Exception ex)
+            {
+                MessageBox.Show(this, "No se pudieron cargar los usuarios de SIGAT.\n" + ex.Message,
+                    "Gestión de roles y permisos", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Close();
+            }
+        }
+
+        private void InicializarDatos(EstadoRoles datos)
+        {
+            int? seleccionado = (cbUsuarios.SelectedItem as Usuario)?.IdUsuario;
+            cbUsuarios.DataSource = null;
+            estado = datos;
+            roles.Clear();
+            patentes.Clear();
+            usuarios.Clear();
+            personales.Clear();
+            siguienteId = 1;
+            foreach (Permiso permiso in datos.Permisos)
+            {
+                if (permiso is PermisoSimple) patentes.Add(permiso);
+                if (permiso.Id >= siguienteId) siguienteId = permiso.Id + 1;
+            }
+            foreach (Rol rol in datos.Roles)
+            {
+                if (!rol.IdUsuarioPersonal.HasValue) roles.Add(rol);
+                if (rol.Id >= siguienteId) siguienteId = rol.Id + 1;
+            }
+            foreach (Usuario usuario in datos.Usuarios)
+            {
+                if (usuario.Activo) usuarios.Add(usuario);
+                foreach (Rol rol in usuario.Roles)
+                {
+                    if (rol.IdUsuarioPersonal == usuario.IdUsuario) personales.Add(usuario, rol);
+                }
+            }
             cbUsuarios.DisplayMember = "NombreUsuario";
             cbUsuarios.DataSource = usuarios;
+            foreach (Usuario usuario in usuarios)
+            {
+                if (usuario.IdUsuario == seleccionado) cbUsuarios.SelectedItem = usuario;
+            }
             RefrescarArboles();
         }
 
+        private void PrepararGuardado()
+        {
+            estado.Roles.Clear();
+            estado.Permisos.Clear();
+            HashSet<int> visitados = new HashSet<int>();
+            foreach (Permiso patente in patentes) ReunirPermisos(patente, visitados);
+            foreach (Rol rol in roles)
+            {
+                estado.Roles.Add(rol);
+                ReunirPermisos(rol.Familia, visitados);
+            }
+            foreach (Rol personal in personales.Values)
+            {
+                estado.Roles.Add(personal);
+                ReunirPermisos(personal.Familia, visitados);
+            }
+        }
+
+        private void ReunirPermisos(Permiso permiso, HashSet<int> visitados)
+        {
+            if (!visitados.Add(permiso.Id)) return;
+            estado.Permisos.Add(permiso);
+            foreach (Permiso hijo in permiso.ObtenerHijos()) ReunirPermisos(hijo, visitados);
+        }
         private Rol NuevoRol(string nombre)
         {
             Rol rol = new Rol { Id = siguienteId++, Nombre = nombre };
@@ -77,7 +133,7 @@ namespace SIGAT.UI
             origenUsuario = null;
             tvRolesJerarquia.Nodes.Clear();
             tvCatalogoGeneral.Nodes.Clear();
-            TreeNode catalogoRoles = tvCatalogoGeneral.Nodes.Add("ROLES (Familias)");
+            TreeNode catalogoRoles = tvCatalogoGeneral.Nodes.Add("ROLES Y FAMILIAS");
             TreeNode catalogoPatentes = tvCatalogoGeneral.Nodes.Add("PERMISOS SIMPLES (Patentes)");
             foreach (Rol rol in roles)
             {
@@ -94,7 +150,8 @@ namespace SIGAT.UI
         private void RefrescarUsuario()
         {
             tvUsuarioPermisos.Nodes.Clear();
-            if (cbUsuarios.SelectedItem is Usuario usuario)
+            if (cbUsuarios.SelectedIndex >= 0 && cbUsuarios.SelectedIndex < cbUsuarios.Items.Count &&
+                cbUsuarios.SelectedItem is Usuario usuario)
             {
                 foreach (Rol rol in usuario.Roles)
                     CargarRol(tvUsuarioPermisos.Nodes, rol);
@@ -139,6 +196,7 @@ namespace SIGAT.UI
                 if (!personales.TryGetValue(usuario, out Rol personal))
                 {
                     personal = NuevoRol("Asignaciones directas de " + usuario.NombreUsuario);
+                    personal.IdUsuarioPersonal = usuario.IdUsuario;
                     personales.Add(usuario, personal);
                 }
                 personal.AgregarPermiso(permiso);
@@ -222,7 +280,7 @@ namespace SIGAT.UI
                 "' y todas sus asignaciones?", "Confirmar baja",
                 MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
             foreach (Rol actual in roles) Desvincular(actual.Familia, familia);
-            foreach (Usuario usuario in usuarios)
+            foreach (Usuario usuario in estado.Usuarios)
             {
                 if (rol != null) usuario.QuitarRol(rol);
                 if (personales.TryGetValue(usuario, out Rol personal))
@@ -252,12 +310,17 @@ namespace SIGAT.UI
             try
             {
                 accion();
+                PrepararGuardado();
+                rolesBLL.Guardar(estado);
                 RefrescarArboles();
+                lblEstado.Text = "Cambios guardados. Se aplican al volver a iniciar sesión.";
             }
-            catch (InvalidOperationException ex)
+            catch (Exception ex)
             {
-                MessageBox.Show(this, ex.Message, "Gestión de roles",
+                lblEstado.Text = "No se guardó el cambio.";
+                MessageBox.Show(this, "No se guardó el cambio.\n" + ex.Message, "Gestión de roles",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
+                CargarDatos(this, EventArgs.Empty);
             }
         }
 
@@ -265,7 +328,7 @@ namespace SIGAT.UI
         private void CrearControles()
         {
             Name = "FormGestionRoles";
-            Text = "SIGAT - Roles y permisos (TP en memoria)";
+            Text = "Gestión de roles y permisos";
             Size = new Size(1240, 780);
             MinimumSize = new Size(1000, 650);
             StartPosition = FormStartPosition.CenterParent;
@@ -280,13 +343,13 @@ namespace SIGAT.UI
             tvRolesJerarquia.Name = "tvRolesJerarquia";
             tvUsuarioPermisos.Name = "tvUsuarioPermisos";
             tvCatalogoGeneral.Name = "tvCatalogoGeneral";
-            tabla.Controls.Add(Sector("Estructura Jerárquica de Roles (Árbol de Familias)", tvRolesJerarquia), 0, 0);
-            tabla.Controls.Add(Sector("Permisos Efectivos del Usuario Seleccionado", tvUsuarioPermisos), 2, 0);
+            tabla.Controls.Add(Sector("Estructura de roles y familias", tvRolesJerarquia), 0, 0);
+            tabla.Controls.Add(Sector("Roles y permisos asignados al usuario", tvUsuarioPermisos), 2, 0);
             tabla.SetRowSpan(tvUsuarioPermisos.Parent, 2);
-            tabla.Controls.Add(Sector("Catálogo General de Permisos y Roles Disponibles", tvCatalogoGeneral), 0, 1);
+            tabla.Controls.Add(Sector("Catálogo de roles y permisos", tvCatalogoGeneral), 0, 1);
             FlowLayoutPanel superior = PanelBotones();
             tabla.Controls.Add(superior, 1, 0);
-            superior.Controls.Add(new Label { Text = "Seleccionar Usuario", AutoSize = true });
+            superior.Controls.Add(new Label { Text = "Usuario activo de SIGAT", AutoSize = true });
             cbUsuarios.Name = "cbUsuarios";
             cbUsuarios.DropDownStyle = ComboBoxStyle.DropDownList;
             cbUsuarios.Width = 260;
@@ -294,7 +357,10 @@ namespace SIGAT.UI
             superior.Controls.Add(Boton("btnAsignarAUsuario", "Asignar Rol/Permiso a Usuario", AsignarAUsuario));
             superior.Controls.Add(Boton("btnQuitarAUsuario", "Quitar Rol/Permiso a Usuario", QuitarAUsuario));
             superior.Controls.Add(new Label { AutoSize = true, MaximumSize = new Size(260, 0),
-                Text = "Asignar: seleccione el origen en un árbol izquierdo.\nQuitar: seleccione la asignación en el árbol derecho.\nLos datos se reinician al abrir este formulario." });
+                Text = "Asignar: seleccione un rol o permiso a la izquierda.\nQuitar: seleccione una asignación a la derecha.\nLos cambios se guardan automáticamente y se aplican al volver a iniciar sesión." });
+            lblEstado.AutoSize = true;
+            lblEstado.MaximumSize = new Size(260, 0);
+            superior.Controls.Add(lblEstado);
             FlowLayoutPanel inferior = PanelBotones();
             tabla.Controls.Add(inferior, 1, 1);
             inferior.Controls.Add(Boton("btnAsignarARol", "Asignar Rol/Permiso a Rol", AsignarARol));
