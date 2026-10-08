@@ -27,12 +27,12 @@ IF COL_LENGTH('dbo.Rol','IdFamilia') IS NOT NULL
  JOIN dbo.Permiso p ON p.Id=r.IdFamilia WHERE r.IdUsuarioPersonal IS NULL');
 
 -- Preservar administradores existentes para evitar perder el acceso.
-INSERT #Asignaciones
- SELECT u.IdUsuario,N'Administrador' FROM dbo.Usuarios u
+IF COL_LENGTH('dbo.Usuarios','IdPerfil') IS NOT NULL
+ EXEC(N'INSERT #Asignaciones
+ SELECT u.IdUsuario,N''Administrador'' FROM dbo.Usuarios u
  JOIN dbo.Perfiles p ON p.IdPerfil=u.IdPerfil
- WHERE p.NombrePerfil='Administrador'
- AND NOT EXISTS (SELECT 1 FROM #Asignaciones a WHERE a.IdUsuario=u.IdUsuario AND a.NombreRol=N'Administrador');
-
+ WHERE p.NombrePerfil=''Administrador''
+ AND NOT EXISTS (SELECT 1 FROM #Asignaciones a WHERE a.IdUsuario=u.IdUsuario AND a.NombreRol=N''Administrador'')');
 IF NOT EXISTS (SELECT 1 FROM #Asignaciones a JOIN dbo.Usuarios u ON u.IdUsuario=a.IdUsuario
  WHERE u.Activo=1 AND a.NombreRol=N'Administrador')
  THROW 50001, 'Debe existir un administrador activo antes de migrar.', 1;
@@ -114,4 +114,3 @@ EXEC(N'INSERT dbo.UsuarioRol (IdUsuario,IdRol)
 COMMIT;
 PRINT N'Matriz instalada: 5 roles, 7 permisos y 16 relaciones.';
 GO
-

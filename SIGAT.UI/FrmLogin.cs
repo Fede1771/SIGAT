@@ -1,4 +1,4 @@
-﻿using SIGAT.BE;
+using SIGAT.BE;
 using SIGAT.BLL;
 
 namespace SIGAT.UI
@@ -24,9 +24,9 @@ namespace SIGAT.UI
                     adminInicial.Nombre = "Admin";
                     adminInicial.Apellido = "Sistema";
                     adminInicial.Activo = true;
-                    adminInicial.IdPerfil = 1;
 
-                    _usuarioBLL.CrearUsuario(adminInicial, "admin");
+
+                    _usuarioBLL.CrearAdministradorInicial(adminInicial, "admin");
                 }
             }
             catch

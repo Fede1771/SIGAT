@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using SIGAT.BE;
@@ -21,21 +21,6 @@ namespace SIGAT.SERVICIOS
             get
             {
                 return UsuarioActual != null;
-            }
-        }
-
-        public Perfil? PerfilActual
-        {
-            get
-            {
-                if (UsuarioActual != null)
-                {
-                    return UsuarioActual.Perfil;
-                }
-                else
-                {
-                    return null;
-                }
             }
         }
 

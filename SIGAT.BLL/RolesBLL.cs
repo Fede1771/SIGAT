@@ -50,6 +50,12 @@ namespace SIGAT.BLL
         public static void Validar(EstadoRoles estado)
         {
             MatrizRoles.ValidarCatalogo(estado);
+            if (estado.IdAdministradorOriginal > 0)
+            {
+                Usuario? original = estado.Usuarios.Find(u => u.IdUsuario == estado.IdAdministradorOriginal);
+                if (original == null || !original.Activo || !original.Roles.Any(r => r.Id == 1))
+                    throw new InvalidOperationException("El administrador original debe permanecer activo y conservar el rol Administrador.");
+            }
             bool administradorDisponible = false;
             foreach (Usuario usuario in estado.Usuarios)
             {

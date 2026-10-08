@@ -4,6 +4,7 @@ namespace SIGAT.BE
     public class EstadoRoles
     {
         public long Version { get; set; }
+        public int IdAdministradorOriginal { get; set; }
         public List<Rol> Roles { get; } = new List<Rol>();
         public List<Permiso> Permisos { get; } = new List<Permiso>();
         public List<Usuario> Usuarios { get; } = new List<Usuario>();

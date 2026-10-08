@@ -15,18 +15,12 @@ GO
 -- Chequeo de cada tabla puntual (más rápido que toda la base)
 DBCC CHECKTABLE ('Usuarios') WITH NO_INFOMSGS;
 DBCC CHECKTABLE ('Bitacora') WITH NO_INFOMSGS;
-DBCC CHECKTABLE ('Perfiles') WITH NO_INFOMSGS;
+DBCC CHECKTABLE ('Rol') WITH NO_INFOMSGS;
+DBCC CHECKTABLE ('UsuarioRol') WITH NO_INFOMSGS;
+DBCC CHECKTABLE ('RolPermiso') WITH NO_INFOMSGS;
 DBCC CHECKTABLE ('Idioma') WITH NO_INFOMSGS;
 DBCC CHECKTABLE ('Control') WITH NO_INFOMSGS;
 DBCC CHECKTABLE ('Traduccion') WITH NO_INFOMSGS;
-GO
-
--- Buscar usuarios "huérfanos": con un IdPerfil que no existe en Perfiles
--- (no debería pasar por el FK, pero sirve como chequeo de consistencia lógica)
-SELECT u.*
-FROM Usuarios u
-LEFT JOIN Perfiles p ON u.IdPerfil = p.IdPerfil
-WHERE p.IdPerfil IS NULL;
 GO
 
 -- Buscar traducciones "huérfanas": con un Id_Idioma o Id_Control que no existe
@@ -61,6 +55,6 @@ SELECT
     fk.is_not_trusted AS NoConfiable
 FROM sys.foreign_keys fk
 WHERE fk.parent_object_id IN (
-    OBJECT_ID('Usuarios'), OBJECT_ID('Traduccion')
+    OBJECT_ID('UsuarioRol'), OBJECT_ID('RolPermiso'), OBJECT_ID('Traduccion')
 );
 GO

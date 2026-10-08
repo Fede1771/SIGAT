@@ -1,6 +1,6 @@
 USE [SIGAT];
 GO
--- Debe devolver 16 filas: los componentes directos exactos de cada rol.
+-- Componentes directos actuales; inicialmente hay 16 relaciones.
 SELECT r.Nombre AS Rol,
        CASE WHEN p.EsCompuesto=1 THEN N'Compuesto' ELSE N'Simple' END AS Tipo,
        p.Nombre AS Permiso
@@ -16,12 +16,20 @@ LEFT JOIN dbo.UsuarioRol ur ON ur.IdUsuario=u.IdUsuario
 LEFT JOIN dbo.Rol r ON r.Id=ur.IdRol
 ORDER BY u.NombreUsuario,r.Nombre;
 GO
--- Permisos efectivos: unión de los componentes de los roles asignados.
+-- Requiere script 13. Incluye la herencia transitiva de roles anidados.
 DECLARE @Usuario varchar(50)='valen1';
+;WITH RolesEfectivos AS (
+ SELECT ur.IdRol FROM dbo.UsuarioRol ur JOIN dbo.Usuarios u ON u.IdUsuario=ur.IdUsuario
+ WHERE u.NombreUsuario=@Usuario AND u.Activo=1
+ UNION ALL
+ SELECT rh.IdHijo FROM RolesEfectivos re JOIN dbo.RolHijo rh ON rh.IdPadre=re.IdRol
+)
 SELECT DISTINCT p.Nombre AS Permiso,p.EsCompuesto
-FROM dbo.Usuarios u
-JOIN dbo.UsuarioRol ur ON ur.IdUsuario=u.IdUsuario
-JOIN dbo.RolPermiso rp ON rp.IdRol=ur.IdRol
+FROM RolesEfectivos re
+JOIN dbo.RolPermiso rp ON rp.IdRol=re.IdRol
 JOIN dbo.Permiso p ON p.Id=rp.IdPermiso
-WHERE u.NombreUsuario=@Usuario AND u.Activo=1;
+OPTION (MAXRECURSION 100);
+GO
+SELECT padre.Nombre AS RolPadre,hijo.Nombre AS RolAnidado
+FROM dbo.RolHijo rh JOIN dbo.Rol padre ON padre.Id=rh.IdPadre JOIN dbo.Rol hijo ON hijo.Id=rh.IdHijo;
 GO

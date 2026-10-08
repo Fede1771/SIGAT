@@ -41,11 +41,11 @@ public class RolesPersistenciaTests
     }
 
     [TestMethod]
-    public void RechazaRolesExtrasCambiosDeTipoHijosInventadosYPermisosAdicionales()
+    public void AdmiteRolesNuevosYProtegeCatalogoBase()
     {
         EstadoRoles estado = MatrizRoles.CrearCatalogo();
         estado.Roles.Add(new Rol { Id = 99, Nombre = "Extra" });
-        Assert.ThrowsExactly<InvalidOperationException>(() => MatrizRoles.ValidarCatalogo(estado));
+        MatrizRoles.ValidarCatalogo(estado);
         estado = MatrizRoles.CrearCatalogo();
         estado.Roles[0].AgregarPermiso(estado.Permisos[1]);
         Assert.ThrowsExactly<InvalidOperationException>(() => MatrizRoles.ValidarCatalogo(estado));

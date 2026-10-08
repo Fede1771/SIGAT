@@ -76,7 +76,7 @@ INSERT dbo.RolPermiso VALUES
 ');
 EXEC(N'INSERT dbo.SeguridadVersion VALUES (1,1,2);
  INSERT dbo.UsuarioRol (IdUsuario,IdRol)
- SELECT u.IdUsuario,1 FROM dbo.Usuarios u JOIN dbo.Perfiles p ON p.IdPerfil=u.IdPerfil
- WHERE p.NombrePerfil=''Administrador'';');
+ SELECT u.IdUsuario,1 FROM dbo.Usuarios u
+ WHERE u.NombreUsuario=''admin'' AND u.Activo=1;');
 COMMIT;
 GO

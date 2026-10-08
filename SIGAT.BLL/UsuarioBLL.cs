@@ -62,11 +62,21 @@ namespace SIGAT.BLL
 
         public List<Usuario> ObtenerTodos()
         {
-            return _dal.ObtenerTodos();
+            List<Usuario> usuarios = _dal.ObtenerTodos();
+            EstadoRoles estado = new RolesDAL().Cargar();
+            foreach (Usuario usuario in usuarios)
+                usuario.EsAdministradorOriginal = usuario.IdUsuario == estado.IdAdministradorOriginal;
+            foreach (Usuario usuario in usuarios)
+                foreach (Usuario asignado in estado.Usuarios)
+                    if (usuario.IdUsuario == asignado.IdUsuario)
+                        foreach (Rol rol in asignado.Roles) usuario.AsignarRol(rol);
+            return usuarios;
         }
 
         public void CrearUsuario(Usuario nuevoUsuario, string passwordPlana)
         {
+            ValidarDatos(nuevoUsuario);
+            if (string.IsNullOrWhiteSpace(passwordPlana)) throw new ArgumentException("La contraseña es obligatoria al crear un usuario.");
             Usuario usuarioExistente = _dal.ObtenerPorNombreUsuario(nuevoUsuario.NombreUsuario);
             if (usuarioExistente != null)
             {
@@ -84,10 +94,11 @@ namespace SIGAT.BLL
 
         public void ActualizarUsuario(Usuario usuarioEditado, string passwordPlana)
         {
-            if (passwordPlana != "")
-            {
-                usuarioEditado.Password = HashHelper.ObtenerHashSHA256(passwordPlana);
-            }
+            ValidarDatos(usuarioEditado);
+            Usuario? existente = _dal.ObtenerPorNombreUsuario(usuarioEditado.NombreUsuario);
+            if (existente != null && existente.IdUsuario != usuarioEditado.IdUsuario)
+                throw new ArgumentException("El nombre de usuario ya existe en el sistema.");
+            usuarioEditado.Password = string.IsNullOrEmpty(passwordPlana) ? "" : HashHelper.ObtenerHashSHA256(passwordPlana);
             _dal.Actualizar(usuarioEditado);
 
             // USAMOS LA FÁBRICA: Gestión de Usuarios
@@ -104,6 +115,25 @@ namespace SIGAT.BLL
             BitacoraFactory fabrica = new GestionUsuariosFactory(BitacoraAccion.BajaUsuario);
             IBitacoraEvento evento = fabrica.Crear(ObtenerNombreUsuarioActual(), "Se inhabilitó al usuario " + nombreUsuario);
             _bitacora.Registrar(evento);
+        }
+
+        public void CrearAdministradorInicial(Usuario usuario, string passwordPlana)
+        {
+            ValidarDatos(usuario);
+            if (string.IsNullOrWhiteSpace(passwordPlana)) throw new ArgumentException("La contraseña es obligatoria.");
+            usuario.Password = HashHelper.ObtenerHashSHA256(passwordPlana);
+            _dal.Insertar(usuario, true);
+        }
+
+        public static void ValidarDatos(Usuario usuario)
+        {
+            usuario.NombreUsuario = (usuario.NombreUsuario ?? "").Trim();
+            usuario.Nombre = (usuario.Nombre ?? "").Trim();
+            usuario.Apellido = (usuario.Apellido ?? "").Trim();
+            if (usuario.NombreUsuario.Length == 0 || usuario.NombreUsuario.Length > 50)
+                throw new ArgumentException("El usuario debe tener entre 1 y 50 caracteres.");
+            if (usuario.Nombre.Length == 0 || usuario.Nombre.Length > 100 || usuario.Apellido.Length == 0 || usuario.Apellido.Length > 100)
+                throw new ArgumentException("Nombre y apellido son obligatorios y admiten hasta 100 caracteres.");
         }
     }
 }

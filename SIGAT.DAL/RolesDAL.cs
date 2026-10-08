@@ -29,12 +29,14 @@ namespace SIGAT.DAL
             using SqlTransaction transaccion = conexion.BeginTransaction(IsolationLevel.Serializable);
             EstadoRoles estado = new EstadoRoles();
             using (SqlCommand comando = new SqlCommand(@"
-                IF COL_LENGTH('dbo.SeguridadVersion', 'Esquema') IS NULL
-                    THROW 50001, 'Ejecute Querys/10_Matriz_Roles_Exacta.sql antes de iniciar SIGAT.', 1;
+                IF OBJECT_ID('dbo.RolHijo','U') IS NULL
+                    THROW 50001, 'Ejecute Querys/13_Roles_Editables_Admin_Protegido.sql antes de iniciar SIGAT.', 1;
                 SELECT Version FROM dbo.SeguridadVersion WITH (HOLDLOCK) WHERE Id = 1;", conexion, transaccion))
             {
                 estado.Version = Convert.ToInt64(comando.ExecuteScalar());
             }
+            using (SqlCommand comando = new SqlCommand("SELECT IdUsuario FROM dbo.AdministradorOriginal WHERE Id=1", conexion, transaccion))
+                estado.IdAdministradorOriginal = Convert.ToInt32(comando.ExecuteScalar());
             Dictionary<int, Permiso> permisos = new Dictionary<int, Permiso>();
             using (SqlCommand comando = new SqlCommand("SELECT Id, Nombre, EsCompuesto FROM dbo.Permiso ORDER BY Id", conexion, transaccion))
             using (SqlDataReader lector = comando.ExecuteReader())
@@ -64,9 +66,12 @@ namespace SIGAT.DAL
             {
                 while (lector.Read()) roles[lector.GetInt32(0)].AgregarPermiso(permisos[lector.GetInt32(1)]);
             }
+            using (SqlCommand comando = new SqlCommand("SELECT IdPadre,IdHijo FROM dbo.RolHijo", conexion, transaccion))
+            using (SqlDataReader lector = comando.ExecuteReader())
+                while (lector.Read()) roles[lector.GetInt32(0)].AgregarRol(roles[lector.GetInt32(1)]);
             Dictionary<int, Usuario> usuarios = new Dictionary<int, Usuario>();
-            using (SqlCommand comando = new SqlCommand(@"SELECT u.IdUsuario, u.NombreUsuario, u.Activo, u.IdPerfil, p.NombrePerfil
-                FROM dbo.Usuarios u JOIN dbo.Perfiles p ON p.IdPerfil = u.IdPerfil ORDER BY u.NombreUsuario", conexion, transaccion))
+            using (SqlCommand comando = new SqlCommand(@"SELECT u.IdUsuario, u.NombreUsuario, u.Activo
+                FROM dbo.Usuarios u ORDER BY u.NombreUsuario", conexion, transaccion))
             using (SqlDataReader lector = comando.ExecuteReader())
             {
                 while (lector.Read())
@@ -74,8 +79,8 @@ namespace SIGAT.DAL
                     Usuario usuario = new Usuario
                     {
                         IdUsuario = lector.GetInt32(0), NombreUsuario = lector.GetString(1),
-                        Activo = lector.GetBoolean(2), IdPerfil = lector.GetInt32(3),
-                        Perfil = new Perfil { IdPerfil = lector.GetInt32(3), NombrePerfil = lector.GetString(4) }
+                        Activo = lector.GetBoolean(2)
+
                     };
                     usuarios.Add(usuario.IdUsuario, usuario);
                     estado.Usuarios.Add(usuario);
@@ -92,7 +97,7 @@ namespace SIGAT.DAL
 
         public void Guardar(EstadoRoles estado)
         {
-            // Solo cambian las asignaciones a usuarios; el catálogo de la matriz es fijo.
+            // Catálogo, jerarquía y asignaciones se guardan juntos.
             // Dos administradores no pueden sobrescribirse sin recibir un conflicto.
             using SqlConnection conexion = Conectar();
             conexion.Open();
@@ -105,7 +110,37 @@ namespace SIGAT.DAL
                 if (comando.ExecuteNonQuery() != 1)
                     throw new InvalidOperationException("Otro usuario modificó los roles. Se recargarán los datos; vuelva a realizar el cambio.");
             }
-            Ejecutar(conexion, transaccion, "DELETE FROM dbo.UsuarioRol;");
+            int protegido;
+            using (SqlCommand comando = new SqlCommand("SELECT IdUsuario FROM dbo.AdministradorOriginal WHERE Id=1", conexion, transaccion))
+                protegido = Convert.ToInt32(comando.ExecuteScalar());
+            if (!estado.Usuarios.Any(u => u.IdUsuario == protegido && u.Activo && u.Roles.Any(r => r.Id == 1)))
+                throw new InvalidOperationException("No se puede quitar el rol Administrador a la cuenta original.");
+            Ejecutar(conexion, transaccion, "DELETE FROM dbo.UsuarioRol; DELETE FROM dbo.RolHijo; DELETE FROM dbo.RolPermiso;");
+            foreach (Rol rol in estado.Roles)
+            {
+                using SqlCommand comando = new SqlCommand(@"UPDATE dbo.Rol SET Nombre=@Nombre WHERE Id=@Id;
+                    IF @@ROWCOUNT=0 INSERT dbo.Rol(Id,Nombre) VALUES (@Id,@Nombre)", conexion, transaccion);
+                comando.Parameters.Add("@Id", SqlDbType.Int).Value = rol.Id;
+                comando.Parameters.Add("@Nombre", SqlDbType.NVarChar,150).Value = rol.Nombre;
+                comando.ExecuteNonQuery();
+            }
+            var existentes = new List<int>();
+            using (SqlCommand comando = new SqlCommand("SELECT Id FROM dbo.Rol", conexion, transaccion))
+            using (SqlDataReader lector = comando.ExecuteReader())
+                while (lector.Read()) existentes.Add(lector.GetInt32(0));
+            foreach (int id in existentes.Where(id => !estado.Roles.Any(r => r.Id == id)))
+            {
+                using SqlCommand comando = new SqlCommand("DELETE dbo.Rol WHERE Id=@Id", conexion, transaccion);
+                comando.Parameters.Add("@Id", SqlDbType.Int).Value = id;
+                comando.ExecuteNonQuery();
+            }
+            foreach (Rol rol in estado.Roles)
+            {
+                foreach (Permiso permiso in rol.Permisos)
+                    InsertarPar(conexion, transaccion, "INSERT dbo.RolPermiso VALUES (@Uno,@Dos)", rol.Id, permiso.Id);
+                foreach (Rol hijo in rol.Roles)
+                    InsertarPar(conexion, transaccion, "INSERT dbo.RolHijo VALUES (@Uno,@Dos)", rol.Id, hijo.Id);
+            }
             foreach (Usuario usuario in estado.Usuarios)
             {
                 foreach (Rol rol in usuario.Roles)

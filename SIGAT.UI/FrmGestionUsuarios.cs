@@ -1,4 +1,4 @@
-﻿using SIGAT.BE;
+using SIGAT.BE;
 using SIGAT.BLL;
 using SIGAT.SERVICIOS.Idiomas;
 
@@ -6,233 +6,157 @@ namespace SIGAT.UI
 {
     public partial class FrmGestionUsuarios : Form, IIdiomaObserver
     {
-        private UsuarioBLL _usuarioBLL = new UsuarioBLL();
-
-        private int _idSeleccionado = 0;
-        private string _passOriginal = "";
+        private readonly UsuarioBLL _usuarioBLL = new UsuarioBLL();
+        private int _idSeleccionado;
 
         public FrmGestionUsuarios()
         {
             InitializeComponent();
-
-            this.Tag = "frmgestionusuarios_titulo";
+            Tag = "frmgestionusuarios_titulo";
             lblUsuario.Tag = "lbl_usuario_gu";
             lblClave.Tag = "lbl_clave";
             lblNombre.Tag = "lbl_nombre";
             lblApellido.Tag = "lbl_apellido";
-            lblPerfil.Tag = "lbl_perfil";
             chkActivo.Tag = "chk_activo";
             btnGuardar.Tag = "btn_guardar";
             btnEliminar.Tag = "btn_eliminar";
             btnLimpiar.Tag = "btn_limpiar";
-
-            dgvUsuarios.DataBindingComplete += DgvUsuarios_DataBindingComplete;
-
-            CargarPerfiles();
-            CargarGrilla();
-
-            this.Load += FrmGestionUsuarios_Load;
-            this.FormClosed += FrmGestionUsuarios_FormClosed;
+            lblAyuda.Tag = "lbl_ayuda_roles";
+            ConfigurarGrilla();
+            Load += FrmGestionUsuarios_Load;
+            FormClosed += (s, e) => IdiomaManager.ObtenerInstancia().Desuscribir(this);
+            Limpiar();
         }
 
         private void FrmGestionUsuarios_Load(object sender, EventArgs e)
         {
             IdiomaManager.ObtenerInstancia().Suscribir(this);
-            ActualizarIdioma();
+            try { CargarGrilla(); ActualizarIdioma(); }
+            catch (Exception ex) { MessageBox.Show(ex.Message, "Gestión de usuarios", MessageBoxButtons.OK, MessageBoxIcon.Error); }
         }
 
-        private void FrmGestionUsuarios_FormClosed(object sender, FormClosedEventArgs e)
+        private void ConfigurarGrilla()
         {
-            IdiomaManager.ObtenerInstancia().Desuscribir(this);
+            // Columnas explícitas: no se generan Id duplicado, Password ni colecciones.
+            dgvUsuarios.AutoGenerateColumns = false;
+            AgregarColumna("IdUsuario", "ID", "col_idusuario", 45, 45);
+            AgregarColumna("NombreUsuario", "Usuario", "col_nombreusuario", 130, 100);
+            AgregarColumna("Nombre", "Nombre", "col_nombre", 120, 90);
+            AgregarColumna("Apellido", "Apellido", "col_apellido", 120, 90);
+            dgvUsuarios.Columns.Add(new DataGridViewCheckBoxColumn
+            {
+                Name = "Activo", DataPropertyName = "Activo", HeaderText = "Activo", Tag = "col_activo",
+                FillWeight = 60, MinimumWidth = 60, SortMode = DataGridViewColumnSortMode.NotSortable
+            });
+            AgregarColumna("Roles", "Roles asignados", "col_roles_asignados", 200, 150);
+            dgvUsuarios.Columns["Roles"].DataPropertyName = "";
+            dgvUsuarios.CellFormatting += (s, e) =>
+            {
+                if (e.RowIndex < 0 || dgvUsuarios.Rows[e.RowIndex].DataBoundItem is not Usuario usuario) return;
+                if (dgvUsuarios.Columns[e.ColumnIndex].Name == "Roles")
+                {
+                    string nombres = "";
+                    foreach (Rol rol in usuario.Roles)
+                    {
+                        if (nombres != "") nombres += ", ";
+                        nombres += rol.Nombre;
+                    }
+                    e.Value = nombres == "" ? IdiomaManager.ObtenerInstancia().Traducir(Name, "sin_roles", "Sin roles asignados") : nombres;
+                    e.FormattingApplied = true;
+                }
+                if (!usuario.Activo) e.CellStyle.ForeColor = Color.DimGray;
+            };
+            dgvUsuarios.CellClick += (s, e) => { if (e.RowIndex >= 0) SeleccionarFila(); };
+            dgvUsuarios.KeyUp += (s, e) =>
+            {
+                if (e.KeyCode == Keys.Up || e.KeyCode == Keys.Down || e.KeyCode == Keys.Enter) SeleccionarFila();
+            };
         }
 
-        private void CargarPerfiles()
+        private void AgregarColumna(string propiedad, string titulo, string clave, float ancho, int minimo)
         {
-            Perfil perfilAdmin = new Perfil();
-            perfilAdmin.IdPerfil = 1;
-            perfilAdmin.NombrePerfil = "Administrador";
-
-            Perfil perfilOperador = new Perfil();
-            perfilOperador.IdPerfil = 2;
-            perfilOperador.NombrePerfil = "Operador";
-
-            cmbPerfil.Items.Add(perfilAdmin);
-            cmbPerfil.Items.Add(perfilOperador);
+            dgvUsuarios.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = propiedad, DataPropertyName = propiedad, HeaderText = titulo, Tag = clave,
+                FillWeight = ancho, MinimumWidth = minimo, SortMode = DataGridViewColumnSortMode.NotSortable
+            });
         }
 
         private void CargarGrilla()
         {
-            dgvUsuarios.DataSource = null;
             dgvUsuarios.DataSource = _usuarioBLL.ObtenerTodos();
+            dgvUsuarios.ClearSelection();
+            dgvUsuarios.CurrentCell = null;
         }
 
-        private void DgvUsuarios_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
+        private void SeleccionarFila()
         {
-            if (dgvUsuarios.Columns["Password"] != null)
-            {
-                dgvUsuarios.Columns["Password"].Visible = false;
-            }
-
-            if (dgvUsuarios.Columns["IdPerfil"] != null)
-            {
-                dgvUsuarios.Columns["IdPerfil"].Visible = false;
-            }
-
-            if (dgvUsuarios.Columns["IdUsuario"] != null)
-            {
-                dgvUsuarios.Columns["IdUsuario"].Tag = "col_idusuario";
-            }
-            if (dgvUsuarios.Columns["NombreUsuario"] != null)
-            {
-                dgvUsuarios.Columns["NombreUsuario"].Tag = "col_nombreusuario";
-            }
-            if (dgvUsuarios.Columns["Nombre"] != null)
-            {
-                dgvUsuarios.Columns["Nombre"].Tag = "col_nombre";
-            }
-            if (dgvUsuarios.Columns["Apellido"] != null)
-            {
-                dgvUsuarios.Columns["Apellido"].Tag = "col_apellido";
-            }
-            if (dgvUsuarios.Columns["Activo"] != null)
-            {
-                dgvUsuarios.Columns["Activo"].Tag = "col_activo";
-            }
-            if (dgvUsuarios.Columns["Perfil"] != null)
-            {
-                dgvUsuarios.Columns["Perfil"].Tag = "col_perfil";
-            }
-
-            TraducirColumnasVisibles();
-        }
-
-        private void TraducirColumnasVisibles()
-        {
-            foreach (DataGridViewColumn columna in dgvUsuarios.Columns)
-            {
-                if (columna.Tag != null)
-                {
-                    columna.HeaderText = IdiomaManager.ObtenerInstancia()
-                        .Traducir(this.Name, columna.Tag.ToString(), columna.HeaderText);
-                }
-            }
-        }
-
-        private void DgvUsuarios_CellClick(object sender, DataGridViewCellEventArgs e)
-        {
-            if (e.RowIndex >= 0)
-            {
-                Usuario usuarioFila = (Usuario)dgvUsuarios.Rows[e.RowIndex].DataBoundItem;
-
-                _idSeleccionado = usuarioFila.IdUsuario;
-                txtUsername.Text = usuarioFila.NombreUsuario;
-                txtNombre.Text = usuarioFila.Nombre;
-                txtApellido.Text = usuarioFila.Apellido;
-                chkActivo.Checked = usuarioFila.Activo;
-                _passOriginal = usuarioFila.Password;
-
-                foreach (Perfil perfilActual in cmbPerfil.Items)
-                {
-                    if (perfilActual.IdPerfil == usuarioFila.IdPerfil)
-                    {
-                        cmbPerfil.SelectedItem = perfilActual;
-                    }
-                }
-            }
+            if (dgvUsuarios.CurrentRow?.DataBoundItem is not Usuario usuario) return;
+            _idSeleccionado = usuario.IdUsuario;
+            txtUsername.Text = usuario.NombreUsuario;
+            txtNombre.Text = usuario.Nombre;
+            txtApellido.Text = usuario.Apellido;
+            chkActivo.Checked = usuario.Activo;
+            // Nunca reutilizar una clave que se escribió para otra cuenta.
+            txtPass.Clear();
+            btnEliminar.Enabled = usuario.Activo && !usuario.EsAdministradorOriginal;
+            chkActivo.Enabled = !usuario.EsAdministradorOriginal;
         }
 
         private void BtnGuardar_Click(object sender, EventArgs e)
         {
             try
             {
-                if (cmbPerfil.SelectedItem == null)
+                Usuario usuario = new Usuario
                 {
-                    throw new Exception("Debe seleccionar un perfil para el usuario.");
-                }
-
-                Usuario usuarioParaGuardar = new Usuario();
-                usuarioParaGuardar.IdUsuario = _idSeleccionado;
-                usuarioParaGuardar.NombreUsuario = txtUsername.Text;
-                usuarioParaGuardar.Nombre = txtNombre.Text;
-                usuarioParaGuardar.Apellido = txtApellido.Text;
-                usuarioParaGuardar.Activo = chkActivo.Checked;
-
-                Perfil perfilSeleccionado = (Perfil)cmbPerfil.SelectedItem;
-                usuarioParaGuardar.IdPerfil = perfilSeleccionado.IdPerfil;
-
-                if (_idSeleccionado > 0)
-                {
-                    usuarioParaGuardar.Password = _passOriginal;
-                }
-                else
-                {
-                    usuarioParaGuardar.Password = "";
-                }
-
-                if (_idSeleccionado == 0)
-                {
-                    _usuarioBLL.CrearUsuario(usuarioParaGuardar, txtPass.Text);
-                }
-                else
-                {
-                    _usuarioBLL.ActualizarUsuario(usuarioParaGuardar, txtPass.Text);
-                }
-
-                MessageBox.Show("Operación exitosa.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    IdUsuario = _idSeleccionado, NombreUsuario = txtUsername.Text,
+                    Nombre = txtNombre.Text, Apellido = txtApellido.Text, Activo = chkActivo.Checked
+                };
+                if (_idSeleccionado == 0) _usuarioBLL.CrearUsuario(usuario, txtPass.Text);
+                else _usuarioBLL.ActualizarUsuario(usuario, txtPass.Text);
+                MessageBox.Show("Usuario guardado correctamente.", "Gestión de usuarios", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 Limpiar();
                 CargarGrilla();
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            catch (Exception ex) { MessageBox.Show(ex.Message, "Gestión de usuarios", MessageBoxButtons.OK, MessageBoxIcon.Error); }
         }
 
         private void BtnEliminar_Click(object sender, EventArgs e)
         {
-            if (_idSeleccionado > 0)
+            if (_idSeleccionado == 0) return;
+            if (MessageBox.Show("¿Desea dar de baja al usuario " + txtUsername.Text + "?", "Confirmación",
+                MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
+            try
             {
-                DialogResult respuesta = MessageBox.Show("¿Desea dar de baja al usuario " + txtUsername.Text + "?", "Confirmación", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-                if (respuesta == DialogResult.Yes)
-                {
-                    _usuarioBLL.BajaLogicaUsuario(_idSeleccionado, txtUsername.Text);
-                    MessageBox.Show("Usuario inhabilitado correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    Limpiar();
-                    CargarGrilla();
-                }
+                _usuarioBLL.BajaLogicaUsuario(_idSeleccionado, txtUsername.Text);
+                Limpiar();
+                CargarGrilla();
+                MessageBox.Show("Usuario inhabilitado correctamente.", "Gestión de usuarios");
             }
-            else
-            {
-                MessageBox.Show("Debe seleccionar un usuario de la grilla primero.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
+            catch (Exception ex) { MessageBox.Show(ex.Message, "Gestión de usuarios", MessageBoxButtons.OK, MessageBoxIcon.Error); }
         }
 
-        private void BtnLimpiar_Click(object sender, EventArgs e)
-        {
-            Limpiar();
-        }
+        private void BtnLimpiar_Click(object sender, EventArgs e) { Limpiar(); }
 
         private void Limpiar()
         {
             _idSeleccionado = 0;
-            _passOriginal = "";
-
             txtUsername.Clear();
             txtPass.Clear();
             txtNombre.Clear();
             txtApellido.Clear();
-
             chkActivo.Checked = true;
-            cmbPerfil.SelectedIndex = -1;
-
+            chkActivo.Enabled = true;
+            btnEliminar.Enabled = false;
             dgvUsuarios.ClearSelection();
+            dgvUsuarios.CurrentCell = null;
+            txtUsername.Focus();
         }
 
         public void ActualizarIdioma()
         {
             TraductorFormularios.TraducirFormulario(this);
-            TraducirColumnasVisibles();
+            dgvUsuarios.Invalidate();
         }
     }
 }

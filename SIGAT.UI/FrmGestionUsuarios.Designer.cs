@@ -1,287 +1,159 @@
-﻿namespace SIGAT.UI
+namespace SIGAT.UI
 {
     partial class FrmGestionUsuarios
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private Label lblUsuario, lblClave, lblNombre, lblApellido, lblAyuda;
+        private TextBox txtUsername, txtPass, txtNombre, txtApellido;
+        private CheckBox chkActivo;
+        private Button btnGuardar, btnEliminar, btnLimpiar;
+        private DataGridView dgvUsuarios;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && (components != null))
-            {
-                components.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-
-        #region Windows Form Designer generated code
-
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
         private void InitializeComponent()
         {
-            panelDerecho = new Panel();
-            lblUsuario = new Label();
-            txtUsername = new TextBox();
-            lblClave = new Label();
-            txtPass = new TextBox();
-            lblNombre = new Label();
-            txtNombre = new TextBox();
-            lblApellido = new Label();
-            txtApellido = new TextBox();
-            lblPerfil = new Label();
-            cmbPerfil = new ComboBox();
-            chkActivo = new CheckBox();
-            btnGuardar = new Button();
-            btnEliminar = new Button();
-            btnLimpiar = new Button();
-            separador = new Panel();
-            dgvUsuarios = new DataGridView();
-            panelDerecho.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)dgvUsuarios).BeginInit();
             SuspendLayout();
-            // 
-            // panelDerecho
-            // 
-            panelDerecho.BackColor = Color.Transparent;
-            panelDerecho.Controls.Add(lblUsuario);
-            panelDerecho.Controls.Add(txtUsername);
-            panelDerecho.Controls.Add(lblClave);
-            panelDerecho.Controls.Add(txtPass);
-            panelDerecho.Controls.Add(lblNombre);
-            panelDerecho.Controls.Add(txtNombre);
-            panelDerecho.Controls.Add(lblApellido);
-            panelDerecho.Controls.Add(txtApellido);
-            panelDerecho.Controls.Add(lblPerfil);
-            panelDerecho.Controls.Add(cmbPerfil);
-            panelDerecho.Controls.Add(chkActivo);
-            panelDerecho.Controls.Add(btnGuardar);
-            panelDerecho.Controls.Add(btnEliminar);
-            panelDerecho.Controls.Add(btnLimpiar);
-            panelDerecho.Dock = DockStyle.Right;
-            panelDerecho.Location = new Point(703, 40);
-            panelDerecho.Name = "panelDerecho";
-            panelDerecho.Size = new Size(380, 520);
-            panelDerecho.TabIndex = 0;
-            // 
-            // lblUsuario
-            // 
-            lblUsuario.AutoSize = true;
-            lblUsuario.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            lblUsuario.Location = new Point(10, 10);
-            lblUsuario.Name = "lblUsuario";
-            lblUsuario.Size = new Size(67, 20);
-            lblUsuario.TabIndex = 0;
-            lblUsuario.Text = "Usuario:";
-            // 
-            // txtUsername
-            // 
-            txtUsername.Font = new Font("Segoe UI", 10F);
-            txtUsername.Location = new Point(10, 32);
-            txtUsername.MaxLength = 50;
-            txtUsername.Name = "txtUsername";
-            txtUsername.Size = new Size(350, 30);
-            txtUsername.TabIndex = 1;
-            // 
-            // lblClave
-            // 
-            lblClave.AutoSize = true;
-            lblClave.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            lblClave.Location = new Point(10, 72);
-            lblClave.Name = "lblClave";
-            lblClave.Size = new Size(178, 20);
-            lblClave.TabIndex = 2;
-            lblClave.Text = "Clave (vacío no cambia):";
-            // 
-            // txtPass
-            // 
-            txtPass.Font = new Font("Segoe UI", 10F);
-            txtPass.Location = new Point(10, 94);
-            txtPass.MaxLength = 100;
-            txtPass.Name = "txtPass";
-            txtPass.Size = new Size(350, 30);
-            txtPass.TabIndex = 3;
-            txtPass.UseSystemPasswordChar = true;
-            // 
-            // lblNombre
-            // 
-            lblNombre.AutoSize = true;
-            lblNombre.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            lblNombre.Location = new Point(10, 134);
-            lblNombre.Name = "lblNombre";
-            lblNombre.Size = new Size(71, 20);
-            lblNombre.TabIndex = 4;
-            lblNombre.Text = "Nombre:";
-            // 
-            // txtNombre
-            // 
-            txtNombre.Font = new Font("Segoe UI", 10F);
-            txtNombre.Location = new Point(10, 156);
-            txtNombre.MaxLength = 80;
-            txtNombre.Name = "txtNombre";
-            txtNombre.Size = new Size(350, 30);
-            txtNombre.TabIndex = 5;
-            // 
-            // lblApellido
-            // 
-            lblApellido.AutoSize = true;
-            lblApellido.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            lblApellido.Location = new Point(10, 196);
-            lblApellido.Name = "lblApellido";
-            lblApellido.Size = new Size(71, 20);
-            lblApellido.TabIndex = 6;
-            lblApellido.Text = "Apellido:";
-            // 
-            // txtApellido
-            // 
-            txtApellido.Font = new Font("Segoe UI", 10F);
-            txtApellido.Location = new Point(10, 218);
-            txtApellido.MaxLength = 80;
-            txtApellido.Name = "txtApellido";
-            txtApellido.Size = new Size(350, 30);
-            txtApellido.TabIndex = 7;
-            // 
-            // lblPerfil
-            // 
-            lblPerfil.AutoSize = true;
-            lblPerfil.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            lblPerfil.Location = new Point(10, 258);
-            lblPerfil.Name = "lblPerfil";
-            lblPerfil.Size = new Size(50, 20);
-            lblPerfil.TabIndex = 8;
-            lblPerfil.Text = "Perfil:";
-            // 
-            // cmbPerfil
-            // 
-            cmbPerfil.DropDownStyle = ComboBoxStyle.DropDownList;
-            cmbPerfil.Font = new Font("Segoe UI", 10F);
-            cmbPerfil.Location = new Point(10, 280);
-            cmbPerfil.Name = "cmbPerfil";
-            cmbPerfil.Size = new Size(350, 31);
-            cmbPerfil.TabIndex = 9;
-            // 
-            // chkActivo
-            // 
-            chkActivo.Checked = true;
-            chkActivo.CheckState = CheckState.Checked;
-            chkActivo.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            chkActivo.Location = new Point(10, 330);
-            chkActivo.Name = "chkActivo";
-            chkActivo.Size = new Size(100, 24);
-            chkActivo.TabIndex = 10;
-            chkActivo.Text = "Activo";
-            // 
-            // btnGuardar
-            // 
-            btnGuardar.BackColor = Color.White;
-            btnGuardar.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            btnGuardar.Location = new Point(10, 372);
-            btnGuardar.Name = "btnGuardar";
-            btnGuardar.Size = new Size(110, 35);
-            btnGuardar.TabIndex = 11;
-            btnGuardar.Text = "Guardar";
-            btnGuardar.UseVisualStyleBackColor = false;
-            btnGuardar.Click += BtnGuardar_Click;
-            // 
-            // btnEliminar
-            // 
-            btnEliminar.BackColor = Color.White;
-            btnEliminar.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            btnEliminar.Location = new Point(125, 372);
-            btnEliminar.Name = "btnEliminar";
-            btnEliminar.Size = new Size(110, 35);
-            btnEliminar.TabIndex = 12;
-            btnEliminar.Text = "Baja";
-            btnEliminar.UseVisualStyleBackColor = false;
-            btnEliminar.Click += BtnEliminar_Click;
-            // 
-            // btnLimpiar
-            // 
-            btnLimpiar.BackColor = Color.White;
-            btnLimpiar.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            btnLimpiar.Location = new Point(240, 372);
-            btnLimpiar.Name = "btnLimpiar";
-            btnLimpiar.Size = new Size(110, 35);
-            btnLimpiar.TabIndex = 13;
-            btnLimpiar.Text = "Limpiar";
-            btnLimpiar.UseVisualStyleBackColor = false;
-            btnLimpiar.Click += BtnLimpiar_Click;
-            // 
-            // separador
-            // 
-            separador.BackColor = Color.Transparent;
-            separador.Dock = DockStyle.Right;
-            separador.Location = new Point(1083, 40);
-            separador.Name = "separador";
-            separador.Size = new Size(40, 520);
-            separador.TabIndex = 1;
-            // 
-            // dgvUsuarios
-            // 
-            dgvUsuarios.AllowUserToAddRows = false;
-            dgvUsuarios.AllowUserToDeleteRows = false;
-            dgvUsuarios.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dgvUsuarios.BackgroundColor = Color.White;
-            dgvUsuarios.ColumnHeadersHeight = 29;
-            dgvUsuarios.Dock = DockStyle.Fill;
-            dgvUsuarios.Location = new Point(40, 40);
-            dgvUsuarios.MultiSelect = false;
-            dgvUsuarios.Name = "dgvUsuarios";
-            dgvUsuarios.ReadOnly = true;
-            dgvUsuarios.RowHeadersWidth = 51;
-            dgvUsuarios.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvUsuarios.Size = new Size(1083, 520);
-            dgvUsuarios.TabIndex = 2;
-            dgvUsuarios.CellClick += DgvUsuarios_CellClick;
-            dgvUsuarios.DataBindingComplete += DgvUsuarios_DataBindingComplete;
-            // 
-            // FrmGestionUsuarios
-            // 
-            AcceptButton = btnGuardar;
-            AutoScaleDimensions = new SizeF(8F, 20F);
-            AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.FromArgb(245, 247, 250);
-            ClientSize = new Size(1163, 600);
-            Controls.Add(panelDerecho);
-            Controls.Add(separador);
-            Controls.Add(dgvUsuarios);
-            FormBorderStyle = FormBorderStyle.None;
             Name = "FrmGestionUsuarios";
-            Padding = new Padding(40);
-            Text = "Gestión de Usuarios";
+            Text = "Gestión de usuarios";
+            Font = new Font("Segoe UI", 10F);
+            BackColor = Color.FromArgb(245, 247, 250);
+            ClientSize = new Size(1160, 620);
+            MinimumSize = new Size(940, 540);
+            // El marco estándar permite que MDI calcule correctamente el área maximizada.
+            FormBorderStyle = FormBorderStyle.Sizable;
             WindowState = FormWindowState.Maximized;
-            panelDerecho.ResumeLayout(false);
-            panelDerecho.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)dgvUsuarios).EndInit();
-            ResumeLayout(false);
+            AutoScaleMode = AutoScaleMode.Font;
+
+            TableLayoutPanel layout = new TableLayoutPanel
+            {
+                Dock = DockStyle.Fill, ColumnCount = 2, RowCount = 2, Padding = new Padding(24)
+            };
+            layout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+            layout.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 360));
+            layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
+            Controls.Add(layout);
+
+            TableLayoutPanel encabezado = new TableLayoutPanel
+            {
+                Dock = DockStyle.Fill, AutoSize = true, ColumnCount = 1,
+                Margin = new Padding(0, 0, 0, 22)
+            };
+            encabezado.Controls.Add(new Label
+            {
+                Text = "Gestión de usuarios", Tag = "frmgestionusuarios_titulo", AutoSize = true,
+                Font = new Font("Segoe UI", 20F, FontStyle.Bold),
+                ForeColor = Color.FromArgb(35, 55, 78), Margin = new Padding(0, 0, 0, 6)
+            });
+            encabezado.Controls.Add(new Label
+            {
+                Text = "Seleccioná una cuenta para editarla o completá el formulario para crear un usuario.",
+                Tag = "lbl_descripcion_usuarios", AutoSize = true,
+                ForeColor = Color.FromArgb(85, 100, 115), Margin = Padding.Empty
+            });
+            layout.Controls.Add(encabezado, 0, 0);
+            layout.SetColumnSpan(encabezado, 2);
+
+            dgvUsuarios = new DataGridView
+            {
+                Name = "dgvUsuarios", Dock = DockStyle.Fill, Margin = new Padding(0, 0, 18, 0),
+                ReadOnly = true, AllowUserToAddRows = false, AllowUserToDeleteRows = false,
+                AllowUserToResizeRows = false, MultiSelect = false, RowHeadersVisible = false,
+                SelectionMode = DataGridViewSelectionMode.FullRowSelect,
+                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
+                BackgroundColor = Color.White, BorderStyle = BorderStyle.None,
+                CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal,
+                GridColor = Color.FromArgb(230, 235, 241), EnableHeadersVisualStyles = false,
+                ColumnHeadersHeight = 42,
+                ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing
+            };
+            dgvUsuarios.ColumnHeadersDefaultCellStyle = new DataGridViewCellStyle
+            {
+                BackColor = Color.FromArgb(231, 237, 245), ForeColor = Color.FromArgb(35, 55, 78),
+                Font = new Font("Segoe UI", 10F, FontStyle.Bold), Padding = new Padding(8, 0, 8, 0),
+                SelectionBackColor = Color.FromArgb(231, 237, 245), SelectionForeColor = Color.FromArgb(35, 55, 78)
+            };
+            dgvUsuarios.DefaultCellStyle = new DataGridViewCellStyle
+            {
+                Padding = new Padding(8, 4, 8, 4), ForeColor = Color.FromArgb(35, 45, 60),
+                SelectionBackColor = Color.FromArgb(219, 234, 252), SelectionForeColor = Color.FromArgb(20, 45, 80)
+            };
+            dgvUsuarios.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(247, 249, 252);
+            dgvUsuarios.RowTemplate.Height = 38;
+            layout.Controls.Add(dgvUsuarios, 0, 1);
+
+            Panel contenedor = new Panel { Dock = DockStyle.Fill, AutoScroll = true, BackColor = Color.White, Margin = Padding.Empty };
+            TableLayoutPanel editor = new TableLayoutPanel
+            {
+                Dock = DockStyle.Top, AutoSize = true, ColumnCount = 1, Padding = new Padding(16)
+            };
+            editor.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+            contenedor.Controls.Add(editor);
+            layout.Controls.Add(contenedor, 1, 1);
+            editor.Controls.Add(new Label
+            {
+                Text = "Datos de la cuenta", Tag = "lbl_datos_cuenta", AutoSize = true,
+                Font = new Font("Segoe UI", 13F, FontStyle.Bold),
+                ForeColor = Color.FromArgb(35, 55, 78), Margin = new Padding(0, 0, 0, 14)
+            });
+
+            lblUsuario = Etiqueta("Usuario:");
+            txtUsername = Campo("txtUsername", 50);
+            lblClave = Etiqueta("Clave (vacío no cambia):");
+            txtPass = Campo("txtPass", 100);
+            txtPass.UseSystemPasswordChar = true;
+            lblNombre = Etiqueta("Nombre:");
+            txtNombre = Campo("txtNombre", 100);
+            lblApellido = Etiqueta("Apellido:");
+            txtApellido = Campo("txtApellido", 100);
+            chkActivo = new CheckBox { Name = "chkActivo", Text = "Activo", Checked = true, AutoSize = true, Margin = new Padding(0, 10, 0, 12) };
+            foreach (Control control in new Control[] { lblUsuario, txtUsername, lblClave, txtPass, lblNombre, txtNombre, lblApellido, txtApellido, chkActivo })
+                editor.Controls.Add(control);
+
+            TableLayoutPanel botones = new TableLayoutPanel { AutoSize = true, Dock = DockStyle.Fill, ColumnCount = 3, Margin = new Padding(0, 4, 0, 12) };
+            botones.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 34));
+            botones.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33));
+            botones.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33));
+            btnGuardar = BotonUsuario("btnGuardar", "Guardar");
+            btnEliminar = BotonUsuario("btnEliminar", "Baja");
+            btnLimpiar = BotonUsuario("btnLimpiar", "Limpiar");
+            btnGuardar.BackColor = Color.FromArgb(35, 101, 175);
+            btnGuardar.ForeColor = Color.White;
+            btnGuardar.FlatAppearance.BorderSize = 0;
+            btnEliminar.ForeColor = Color.FromArgb(160, 45, 45);
+            btnGuardar.Click += BtnGuardar_Click;
+            btnEliminar.Click += BtnEliminar_Click;
+            btnLimpiar.Click += BtnLimpiar_Click;
+            botones.Controls.Add(btnGuardar, 0, 0);
+            botones.Controls.Add(btnEliminar, 1, 0);
+            botones.Controls.Add(btnLimpiar, 2, 0);
+            editor.Controls.Add(botones);
+            lblAyuda = new Label
+            {
+                AutoSize = true, Dock = DockStyle.Fill, ForeColor = Color.FromArgb(85, 100, 115),
+                MaximumSize = new Size(300, 0),
+                BackColor = Color.FromArgb(245, 247, 250), Padding = new Padding(12),
+                Font = new Font("Segoe UI", 9F),
+                Text = "Las cuentas nuevas se crean sin roles. Asigná sus accesos desde Gestión de roles y permisos.\n\nPara reactivar una cuenta, seleccionála, marcá Activo y guardá."
+            };
+            editor.Controls.Add(lblAyuda);
+            AcceptButton = btnGuardar;
+            ResumeLayout(true);
         }
 
-        #endregion
+        private static Label Etiqueta(string texto)
+        {
+            return new Label { Text = texto, AutoSize = true, Font = new Font("Segoe UI", 10F, FontStyle.Bold), Margin = new Padding(0, 8, 0, 5) };
+        }
 
-        private Panel panelDerecho;
-        private Label lblUsuario;
-        private TextBox txtUsername;
-        private Label lblClave;
-        private TextBox txtPass;
-        private Label lblNombre;
-        private TextBox txtNombre;
-        private Label lblApellido;
-        private TextBox txtApellido;
-        private Label lblPerfil;
-        private ComboBox cmbPerfil;
-        private CheckBox chkActivo;
-        private Button btnGuardar;
-        private Button btnEliminar;
-        private Button btnLimpiar;
-        private Panel separador;
-        private DataGridView dgvUsuarios;
+        private static TextBox Campo(string nombre, int longitud)
+        {
+            return new TextBox { Name = nombre, Dock = DockStyle.Fill, MaxLength = longitud, Margin = new Padding(0, 0, 0, 8) };
+        }
+
+        private static Button BotonUsuario(string nombre, string texto)
+        {
+            var boton = new Button { Name = nombre, Text = texto, Dock = DockStyle.Fill, Height = 38, BackColor = Color.White, Margin = new Padding(0, 0, 4, 0), FlatStyle = FlatStyle.Flat, Cursor = Cursors.Hand };
+            boton.FlatAppearance.BorderColor = Color.FromArgb(211, 220, 231);
+            return boton;
+        }
     }
 }

@@ -38,8 +38,8 @@ namespace SIGAT.BLL
         public static void ValidarCatalogo(EstadoRoles estado)
         {
             EstadoRoles esperado = CrearCatalogo();
-            if (estado.Permisos.Count != 7 || estado.Roles.Count != 5)
-                throw new InvalidOperationException("La matriz debe tener exactamente cinco roles y siete permisos.");
+            if (estado.Permisos.Count != 7)
+                throw new InvalidOperationException("El catálogo debe conservar los siete permisos del sistema.");
             HashSet<int> ids = new HashSet<int>();
             foreach (Permiso permiso in estado.Permisos)
             {
@@ -51,27 +51,22 @@ namespace SIGAT.BLL
                     throw new InvalidOperationException("El permiso o su jerarquía no coincide con la matriz.");
             }
             ids.Clear();
+            var nombres = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             foreach (Rol rol in estado.Roles)
             {
-                if (!ids.Add(rol.Id)) throw new InvalidOperationException("Rol duplicado.");
-                Rol? definido = null;
-                foreach (Rol candidato in esperado.Roles)
-                    if (candidato.Id == rol.Id && candidato.Nombre == rol.Nombre) definido = candidato;
-                if (definido == null || definido.Permisos.Count != rol.Permisos.Count)
-                    throw new InvalidOperationException("El rol no coincide con la matriz.");
-                HashSet<int> asignados = new HashSet<int>();
+                if (rol.Id <= 0 || !ids.Add(rol.Id)) throw new InvalidOperationException("Rol duplicado o inválido.");
+                if (string.IsNullOrWhiteSpace(rol.Nombre) || rol.Nombre != rol.Nombre.Trim() || rol.Nombre.Length > 150 || !nombres.Add(rol.Nombre))
+                    throw new InvalidOperationException("El nombre del rol es obligatorio, único y admite hasta 150 caracteres.");
                 foreach (Permiso permiso in rol.Permisos)
-                {
-                    bool existe = false;
-                    bool permitido = false;
-                    foreach (Permiso catalogado in estado.Permisos)
-                        if (ReferenceEquals(catalogado, permiso)) existe = true;
-                    foreach (Permiso requerido in definido.Permisos)
-                        if (requerido.Id == permiso.Id) permitido = true;
-                    if (!existe || !permitido || !asignados.Add(permiso.Id))
-                        throw new InvalidOperationException("El rol contiene un componente no autorizado.");
-                }
+                    if (!estado.Permisos.Contains(permiso)) throw new InvalidOperationException("Permiso fuera del catálogo.");
+                foreach (Rol hijo in rol.Roles)
+                    if (!estado.Roles.Contains(hijo)) throw new InvalidOperationException("Rol anidado fuera del catálogo.");
             }
+            Rol? admin = estado.Roles.Find(r => r.Id == 1);
+            Rol baseAdmin = esperado.Roles[0];
+            if (admin == null || admin.Nombre != baseAdmin.Nombre || admin.Roles.Count != 0 ||
+                !admin.Permisos.Select(p => p.Id).Order().SequenceEqual(baseAdmin.Permisos.Select(p => p.Id).Order()))
+                throw new InvalidOperationException("El rol Administrador está protegido y debe conservar sus permisos originales.");
         }
     }
 }

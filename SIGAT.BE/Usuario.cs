@@ -2,6 +2,7 @@ namespace SIGAT.BE
 {
     public class Usuario
     {
+        public bool EsAdministradorOriginal { get; set; }
         // Alias compatible con el modelo del TP y con el DAL existente.
         public int Id { get { return IdUsuario; } set { IdUsuario = value; } }
         private readonly List<Rol> roles = new List<Rol>();
@@ -44,7 +45,7 @@ namespace SIGAT.BE
         public string Nombre { get; set; }  
         public string Apellido { get; set; }
         public bool Activo { get; set; }
-        public int IdPerfil { get; set; }
-        public Perfil Perfil { get; set; }
+
+
     }
 }

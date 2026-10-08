@@ -74,8 +74,7 @@ public class CompositeTests
                 using var form = new SIGAT.UI.FormGestionRoles();
                 var cargar = typeof(SIGAT.UI.FormGestionRoles).GetMethod("InicializarDatos",
                     System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!;
-                var cuenta = new Usuario { IdUsuario = 42, NombreUsuario = "cuentaRegistrada", Activo = true,
-                    Perfil = new Perfil { NombrePerfil = "Administrador" } };
+                var cuenta = new Usuario { IdUsuario = 42, NombreUsuario = "cuentaRegistrada", Activo = true };
                 EstadoRoles datos = MatrizRoles.CrearCatalogo();
                 cuenta.AsignarRol(datos.Roles[0]);
                 datos.Usuarios.Add(cuenta);
@@ -90,7 +89,9 @@ public class CompositeTests
                 Assert.AreEqual(6, usuario.Nodes[0].Nodes.Count);
                 Assert.IsInstanceOfType<Rol>(usuario.Nodes[0].Tag);
                 var combo = (System.Windows.Forms.ComboBox)form.Controls.Find("cbUsuarios", true)[0];
-                Assert.AreEqual(2, combo.Items.Count);
+                Assert.AreEqual(3, combo.Items.Count);
+                foreach (string boton in new[] { "btnAsignarARol", "btnCrearRol", "btnCrearRolAnidado", "btnEliminarRol", "btnQuitarDeRol" })
+                    Assert.HasCount(1, form.Controls.Find(boton, true));
                 Assert.AreEqual("cuentaRegistrada", ((Usuario)combo.Items[0]).NombreUsuario);
                 Assert.AreEqual(42, ((Usuario)combo.Items[0]).IdUsuario);
                 Assert.AreEqual(1, cuenta.Roles.Count);
