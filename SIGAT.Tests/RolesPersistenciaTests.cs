@@ -51,7 +51,8 @@ public class RolesPersistenciaTests
         Assert.ThrowsExactly<InvalidOperationException>(() => MatrizRoles.ValidarCatalogo(estado));
         estado = MatrizRoles.CrearCatalogo();
         estado.Permisos[2].Agregar(estado.Permisos[1]);
-        Assert.ThrowsExactly<InvalidOperationException>(() => MatrizRoles.ValidarCatalogo(estado));
+        MatrizRoles.ValidarCatalogo(estado);
+        Assert.IsTrue(estado.Roles[1].TienePermiso("Consultar inventario"));
         estado = MatrizRoles.CrearCatalogo();
         estado.Permisos[2] = new PermisoSimple { Id = 3, Nombre = "Gestión de activos" };
         Assert.ThrowsExactly<InvalidOperationException>(() => MatrizRoles.ValidarCatalogo(estado));

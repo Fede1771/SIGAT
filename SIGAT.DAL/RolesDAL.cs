@@ -29,8 +29,8 @@ namespace SIGAT.DAL
             using SqlTransaction transaccion = conexion.BeginTransaction(IsolationLevel.Serializable);
             EstadoRoles estado = new EstadoRoles();
             using (SqlCommand comando = new SqlCommand(@"
-                IF OBJECT_ID('dbo.RolHijo','U') IS NULL
-                    THROW 50001, 'Ejecute Querys/13_Roles_Editables_Admin_Protegido.sql antes de iniciar SIGAT.', 1;
+                IF OBJECT_ID('dbo.PermisoHijo','U') IS NULL
+                    THROW 50001, 'Ejecute Querys/14_Familias_Editables.sql antes de iniciar SIGAT.', 1;
                 SELECT Version FROM dbo.SeguridadVersion WITH (HOLDLOCK) WHERE Id = 1;", conexion, transaccion))
             {
                 estado.Version = Convert.ToInt64(comando.ExecuteScalar());
@@ -50,6 +50,9 @@ namespace SIGAT.DAL
                     estado.Permisos.Add(permiso);
                 }
             }
+            using (SqlCommand comando = new SqlCommand("SELECT IdPadre,IdHijo FROM dbo.PermisoHijo", conexion, transaccion))
+            using (SqlDataReader lector = comando.ExecuteReader())
+                while (lector.Read()) permisos[lector.GetInt32(0)].Agregar(permisos[lector.GetInt32(1)]);
             Dictionary<int, Rol> roles = new Dictionary<int, Rol>();
             using (SqlCommand comando = new SqlCommand("SELECT Id, Nombre FROM dbo.Rol ORDER BY Id", conexion, transaccion))
             using (SqlDataReader lector = comando.ExecuteReader())
@@ -116,6 +119,10 @@ namespace SIGAT.DAL
             if (!estado.Usuarios.Any(u => u.IdUsuario == protegido && u.Activo && u.Roles.Any(r => r.Id == 1)))
                 throw new InvalidOperationException("No se puede quitar el rol Administrador a la cuenta original.");
             Ejecutar(conexion, transaccion, "DELETE FROM dbo.UsuarioRol; DELETE FROM dbo.RolHijo; DELETE FROM dbo.RolPermiso;");
+            Ejecutar(conexion, transaccion, "DELETE FROM dbo.PermisoHijo;");
+            foreach (Permiso permiso in estado.Permisos)
+                foreach (Permiso hijo in permiso.ObtenerHijos())
+                    InsertarPar(conexion, transaccion, "INSERT dbo.PermisoHijo VALUES (@Uno,@Dos)", permiso.Id, hijo.Id);
             foreach (Rol rol in estado.Roles)
             {
                 using SqlCommand comando = new SqlCommand(@"UPDATE dbo.Rol SET Nombre=@Nombre WHERE Id=@Id;

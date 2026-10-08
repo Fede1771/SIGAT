@@ -50,6 +50,8 @@ public class RolesEditablesTests
         try
         {
             var estado = dal.Cargar();
+            var familia = estado.Permisos.Find(p => p.Id == 6)!;
+            familia.Agregar(estado.Permisos.Find(p => p.Id == 2)!);
             var nuevo = new Rol { Id = estado.Roles.Max(r => r.Id) + 1, Nombre = "Prueba anidado" };
             nuevo.AgregarRol(estado.Roles.Find(r => r.Id == 5)!);
             estado.Roles.Add(nuevo);
@@ -58,6 +60,12 @@ public class RolesEditablesTests
             otro.AsignarRol(nuevo);
             dal.Guardar(estado);
             var recargado = dal.Cargar();
+            Assert.IsTrue(recargado.Permisos.Find(p => p.Id == 6)!.ContienePermiso("Consultar inventario"));
+            Assert.HasCount(1, recargado.Permisos.Find(p => p.Id == 6)!.ObtenerHijos());
+            var familiaRecargada = recargado.Permisos.Find(p => p.Id == 6)!;
+            familiaRecargada.Quitar(familiaRecargada.ObtenerHijos()[0]);
+            dal.Guardar(recargado);
+            Assert.IsEmpty(dal.Cargar().Permisos.Find(p => p.Id == 6)!.ObtenerHijos());
             Assert.IsTrue(recargado.Roles.Find(r => r.Id == nuevo.Id)!.TienePermiso(MatrizRoles.Bitacora));
             var usuarios = new UsuarioDAL(cadena);
             Assert.ThrowsExactly<InvalidOperationException>(() => usuarios.Eliminar(estado.IdAdministradorOriginal));

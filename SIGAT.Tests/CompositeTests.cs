@@ -86,11 +86,20 @@ public class CompositeTests
                 var jerarquia = (System.Windows.Forms.TreeView)form.Controls.Find("tvRolesJerarquia", true)[0];
                 var usuario = (System.Windows.Forms.TreeView)form.Controls.Find("tvUsuarioPermisos", true)[0];
                 Assert.AreEqual(5, jerarquia.Nodes.Count);
+                var catalogo = (System.Windows.Forms.TreeView)form.Controls.Find("tvCatalogoGeneral", true)[0];
+                Assert.HasCount(2, catalogo.Nodes);
+                Assert.AreEqual("PERMISOS SIMPLES", catalogo.Nodes[0].Text);
+                Assert.AreEqual("PERMISOS COMPUESTOS (FAMILIAS)", catalogo.Nodes[1].Text);
+                foreach (System.Windows.Forms.TreeNode grupo in catalogo.Nodes)
+                    foreach (System.Windows.Forms.TreeNode componente in grupo.Nodes)
+                        Assert.IsInstanceOfType<Permiso>(componente.Tag);
+                Assert.HasCount(1, form.Controls.Find("btnEditarFamilia", true));
                 Assert.AreEqual(6, usuario.Nodes[0].Nodes.Count);
                 Assert.IsInstanceOfType<Rol>(usuario.Nodes[0].Tag);
                 var combo = (System.Windows.Forms.ComboBox)form.Controls.Find("cbUsuarios", true)[0];
                 Assert.AreEqual(3, combo.Items.Count);
-                foreach (string boton in new[] { "btnAsignarARol", "btnCrearRol", "btnCrearRolAnidado", "btnEliminarRol", "btnQuitarDeRol" })
+                Assert.IsEmpty(form.Controls.Find("btnCrearRolAnidado", true));
+                foreach (string boton in new[] { "btnAsignarARol", "btnCrearRol", "btnEliminarRol", "btnQuitarDeRol" })
                     Assert.HasCount(1, form.Controls.Find(boton, true));
                 Assert.AreEqual("cuentaRegistrada", ((Usuario)combo.Items[0]).NombreUsuario);
                 Assert.AreEqual(42, ((Usuario)combo.Items[0]).IdUsuario);

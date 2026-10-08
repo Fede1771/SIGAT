@@ -47,8 +47,11 @@ namespace SIGAT.BLL
                 bool coincide = false;
                 foreach (Permiso definido in esperado.Permisos)
                     if (permiso.Id == definido.Id && permiso.Nombre == definido.Nombre && permiso.GetType() == definido.GetType()) coincide = true;
-                if (!coincide || permiso.ObtenerHijos().Count != 0)
+                if (!coincide)
                     throw new InvalidOperationException("El permiso o su jerarquía no coincide con la matriz.");
+                foreach (Permiso hijo in permiso.ObtenerHijos())
+                    if (!estado.Permisos.Contains(hijo))
+                        throw new InvalidOperationException("La familia contiene un permiso fuera del catálogo.");
             }
             ids.Clear();
             var nombres = new HashSet<string>(StringComparer.OrdinalIgnoreCase);

@@ -16,18 +16,20 @@ LEFT JOIN dbo.UsuarioRol ur ON ur.IdUsuario=u.IdUsuario
 LEFT JOIN dbo.Rol r ON r.Id=ur.IdRol
 ORDER BY u.NombreUsuario,r.Nombre;
 GO
--- Requiere script 13. Incluye la herencia transitiva de roles anidados.
+-- Requiere script 14. Incluye roles anidados y componentes de familias.
 DECLARE @Usuario varchar(50)='valen1';
 ;WITH RolesEfectivos AS (
  SELECT ur.IdRol FROM dbo.UsuarioRol ur JOIN dbo.Usuarios u ON u.IdUsuario=ur.IdUsuario
  WHERE u.NombreUsuario=@Usuario AND u.Activo=1
  UNION ALL
  SELECT rh.IdHijo FROM RolesEfectivos re JOIN dbo.RolHijo rh ON rh.IdPadre=re.IdRol
+), PermisosEfectivos AS (
+ SELECT rp.IdPermiso FROM RolesEfectivos re JOIN dbo.RolPermiso rp ON rp.IdRol=re.IdRol
+ UNION ALL
+ SELECT ph.IdHijo FROM PermisosEfectivos pe JOIN dbo.PermisoHijo ph ON ph.IdPadre=pe.IdPermiso
 )
 SELECT DISTINCT p.Nombre AS Permiso,p.EsCompuesto
-FROM RolesEfectivos re
-JOIN dbo.RolPermiso rp ON rp.IdRol=re.IdRol
-JOIN dbo.Permiso p ON p.Id=rp.IdPermiso
+FROM PermisosEfectivos pe JOIN dbo.Permiso p ON p.Id=pe.IdPermiso
 OPTION (MAXRECURSION 100);
 GO
 SELECT padre.Nombre AS RolPadre,hijo.Nombre AS RolAnidado

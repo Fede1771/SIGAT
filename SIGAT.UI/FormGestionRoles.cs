@@ -87,8 +87,6 @@ namespace SIGAT.UI
             roles.AddRange(estado.Roles);
             ActualizarDestinos();
             foreach (Rol rol in roles) CargarRol(tvRolesJerarquia.Nodes, rol);
-            TreeNode catalogoRoles = tvCatalogoGeneral.Nodes.Add("ROLES");
-            foreach (Rol rol in roles) CargarRol(catalogoRoles.Nodes, rol);
             TreeNode simples = tvCatalogoGeneral.Nodes.Add("PERMISOS SIMPLES");
             TreeNode familias = tvCatalogoGeneral.Nodes.Add("PERMISOS COMPUESTOS (FAMILIAS)");
             foreach (Permiso permiso in estado.Permisos)
@@ -149,9 +147,9 @@ namespace SIGAT.UI
         private void AsignarARol()
         {
             Rol destino = Destino();
-            if (tvCatalogoGeneral.SelectedNode?.Tag is Rol rol) destino.AgregarRol(rol);
-            else if (tvCatalogoGeneral.SelectedNode?.Tag is Permiso permiso) destino.AgregarPermiso(permiso);
-            else throw new InvalidOperationException("Seleccione un rol o permiso en el catálogo inferior izquierdo.");
+            if (origenUsuario is Rol rol) destino.AgregarRol(rol);
+            else if (origenUsuario is Permiso permiso) destino.AgregarPermiso(permiso);
+            else throw new InvalidOperationException("Seleccione un permiso en el catálogo o un rol en el árbol superior.");
         }
 
         private void CrearRol(bool anidado)
@@ -187,9 +185,29 @@ namespace SIGAT.UI
         private void QuitarDeRol()
         {
             Rol destino = Destino();
-            if (tvCatalogoGeneral.SelectedNode?.Tag is Rol rol && destino.Roles.Contains(rol)) destino.QuitarRol(rol);
-            else if (tvCatalogoGeneral.SelectedNode?.Tag is Permiso permiso && destino.Permisos.Contains(permiso)) destino.QuitarPermiso(permiso);
-            else throw new InvalidOperationException("Seleccione en el catálogo una asignación directa del rol destino.");
+            if (origenUsuario is Rol rol && destino.Roles.Contains(rol)) destino.QuitarRol(rol);
+            else if (origenUsuario is Permiso permiso && destino.Permisos.Contains(permiso)) destino.QuitarPermiso(permiso);
+            else throw new InvalidOperationException("Seleccione una asignación directa del rol destino. Los permisos heredados se quitan del rol o familia que los contiene.");
+        }
+
+        private void EditarFamilia()
+        {
+            if (!(tvCatalogoGeneral.SelectedNode?.Tag is PermisoCompuesto familia))
+                throw new InvalidOperationException("Seleccione un permiso compuesto del catálogo. Los permisos simples no se editan.");
+            using Form dialogo = new Form { Text = "Componentes de " + familia.Nombre, ClientSize = new Size(460, 360),
+                StartPosition = FormStartPosition.CenterParent, FormBorderStyle = FormBorderStyle.FixedDialog, MinimizeBox = false, MaximizeBox = false };
+            var ayuda = new Label { Text = "Marcá los permisos que integran esta familia.\nEl cambio afecta a todos los roles que la utilizan.", Left = 16, Top = 16, Width = 428, Height = 45 };
+            var lista = new CheckedListBox { Left = 16, Top = 65, Width = 428, Height = 230, CheckOnClick = true, DisplayMember = "Nombre" };
+            foreach (Permiso permiso in estado.Permisos)
+                if (!ReferenceEquals(permiso, familia)) lista.Items.Add(permiso, familia.ObtenerHijos().Contains(permiso));
+            var guardar = new Button { Text = "Guardar", Left = 274, Top = 315, DialogResult = DialogResult.OK };
+            var cancelar = new Button { Text = "Cancelar", Left = 364, Top = 315, DialogResult = DialogResult.Cancel };
+            dialogo.Controls.AddRange(new Control[] { ayuda, lista, guardar, cancelar });
+            dialogo.AcceptButton = guardar;
+            dialogo.CancelButton = cancelar;
+            if (dialogo.ShowDialog(this) != DialogResult.OK) throw new OperationCanceledException();
+            foreach (Permiso hijo in familia.ObtenerHijos()) familia.Quitar(hijo);
+            foreach (Permiso hijo in lista.CheckedItems) familia.Agregar(hijo);
         }
         private void Ejecutar(Action accion)
         {
@@ -233,7 +251,7 @@ namespace SIGAT.UI
             tabla.Controls.Add(Sector("Roles y componentes", tvRolesJerarquia), 0, 0);
             tabla.Controls.Add(Sector("Roles y permisos asignados al usuario", tvUsuarioPermisos), 2, 0);
             tabla.SetRowSpan(tvUsuarioPermisos.Parent, 2);
-            tabla.Controls.Add(Sector("Catálogo de roles y permisos", tvCatalogoGeneral), 0, 1);
+            tabla.Controls.Add(Sector("Catálogo de permisos", tvCatalogoGeneral), 0, 1);
             FlowLayoutPanel gestion = PanelBotones();
             tabla.Controls.Add(gestion, 1, 1);
             gestion.Controls.Add(new Label { Text = "Rol destino", AutoSize = true });
@@ -244,9 +262,9 @@ namespace SIGAT.UI
             gestion.Controls.Add(Boton("btnAsignarARol", "Asignar rol / permiso a rol", AsignarARol));
             gestion.Controls.Add(Boton("btnQuitarDeRol", "Quitar rol / permiso de rol", QuitarDeRol));
             gestion.Controls.Add(Boton("btnCrearRol", "Crear rol", () => CrearRol(false)));
-            gestion.Controls.Add(Boton("btnCrearRolAnidado", "Crear rol anidado", () => CrearRol(true)));
             gestion.Controls.Add(Boton("btnEliminarRol", "Eliminar rol", EliminarRol));
-            gestion.Controls.Add(new Label { AutoSize = true, MaximumSize = new Size(270, 0), Text = "Elegí el rol destino y un componente del catálogo. El rol destino hereda los permisos de sus roles anidados. Administrador está protegido." });
+            gestion.Controls.Add(Boton("btnEditarFamilia", "Modificar permiso compuesto", EditarFamilia));
+            gestion.Controls.Add(new Label { AutoSize = true, MaximumSize = new Size(270, 0), Text = "Permisos: seleccioná en el catálogo inferior. Roles: seleccioná en el árbol superior. Elegí el rol destino para agregar o quitar componentes. Los permisos simples son fijos; las familias permiten modificar sus componentes. Administrador está protegido." });
             FlowLayoutPanel superior = PanelBotones();
             tabla.Controls.Add(superior, 1, 0);
             superior.Controls.Add(new Label { Text = "Usuario de SIGAT", AutoSize = true });
