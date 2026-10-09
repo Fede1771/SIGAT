@@ -15,15 +15,6 @@ namespace SIGAT.UI
         {
             InitializeComponent();
 
-            foreach (Control controlActual in this.Controls)
-            {
-                if (controlActual is MdiClient)
-                {
-                    controlActual.BackColor = Color.FromArgb(245, 247, 250);
-                    break;
-                }
-            }
-
             Usuario usuarioLogueado = SesionServicio.ObtenerInstancia().UsuarioActual;
             itemUsuarios.Visible = usuarioLogueado != null && usuarioLogueado.TienePermiso(MatrizRoles.Administracion);
             itemBitacora.Visible = usuarioLogueado != null && usuarioLogueado.TienePermiso(MatrizRoles.Bitacora);
@@ -44,6 +35,7 @@ namespace SIGAT.UI
                 if (PuedeAbrir(MatrizRoles.Administracion)) AbrirFormulario(new FormGestionRoles());
             };
             itemSistema.DropDownItems.Add(itemRoles);
+            CrearMarcoVisual(itemRoles);
             this.FormClosed += FrmPrincipal_FormClosed;
         }
 
@@ -58,6 +50,7 @@ namespace SIGAT.UI
 
         private void FrmPrincipal_FormClosed(object sender, FormClosedEventArgs e)
         {
+            CerrarFormularioActual();
             IdiomaManager.ObtenerInstancia().Desuscribir(this);
         }
 
@@ -131,7 +124,7 @@ namespace SIGAT.UI
             string nombreUsuario = SesionServicio.ObtenerInstancia().UsuarioActual.NombreUsuario;
 
             _bitacora.Registrar(nombreUsuario, "Logout", "Cierre de sesión seguro.");
-            foreach (Form hijo in MdiChildren) hijo.Close();
+            CerrarFormularioActual();
             SesionServicio.ObtenerInstancia().CerrarSesion();
 
             this.Hide();
@@ -169,6 +162,7 @@ namespace SIGAT.UI
             }
             this.Text = "SIGAT - " + txtUsuario + ": " + nombreUsu
                 + " | Roles: " + (nombresRoles == "" ? "Sin roles asignados" : nombresRoles);
+            ActualizarMarcoVisual();
         }
 
         private bool PuedeAbrir(string permiso)
@@ -180,13 +174,16 @@ namespace SIGAT.UI
 
         private void AbrirFormulario(Form formHijo)
         {
-            foreach (Form formularioAbierto in this.MdiChildren)
-            {
-                formularioAbierto.Close();
-            }
-
-            formHijo.MdiParent = this;
-            formHijo.WindowState = FormWindowState.Maximized;
+            CerrarFormularioActual();
+            foreach (Control control in panelContenido.Controls.Cast<Control>().ToArray()) control.Dispose();
+            formularioActual = formHijo;
+            formHijo.TopLevel = false;
+            formHijo.FormBorderStyle = FormBorderStyle.None;
+            formHijo.WindowState = FormWindowState.Normal;
+            formHijo.MinimumSize = Size.Empty;
+            formHijo.Dock = DockStyle.Fill;
+            panelContenido.Controls.Add(formHijo);
+            SeleccionarSeccion(formHijo.GetType().Name);
             formHijo.Show();
         }
     }

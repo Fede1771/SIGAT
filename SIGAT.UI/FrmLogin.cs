@@ -7,10 +7,12 @@ namespace SIGAT.UI
     {
         private UsuarioBLL _usuarioBLL = new UsuarioBLL();
 
-        public FrmLogin()
+        public FrmLogin() : this(true) { }
+
+        internal FrmLogin(bool inicializarAdministrador)
         {
             InitializeComponent();
-            CrearUsuarioAdminInicial();
+            if (inicializarAdministrador) CrearUsuarioAdminInicial();
         }
 
         private void CrearUsuarioAdminInicial()

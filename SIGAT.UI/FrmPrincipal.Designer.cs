@@ -17,7 +17,9 @@
 
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             this.menu = new MenuStrip();
+            components.Add(this.menu);
             this.itemSistema = new ToolStripMenuItem();
             this.itemUsuarios = new ToolStripMenuItem();
             this.itemBitacora = new ToolStripMenuItem();
@@ -83,11 +85,12 @@
             this.AutoScaleDimensions = new SizeF(7F, 15F);
             this.AutoScaleMode = AutoScaleMode.Font;
             this.ClientSize = new Size(1000, 600);
-            this.Controls.Add(this.menu);
-            this.IsMdiContainer = true;
+            this.menu.Visible = false;
+            TemaVisual.Formulario(this);
+            this.MinimumSize = new Size(1100, 720);
             this.MainMenuStrip = this.menu;
             this.Name = "FrmPrincipal";
-            this.Text = "FrmPrincipal";
+            this.Text = "SIGAT";
             this.WindowState = FormWindowState.Maximized;
             this.menu.ResumeLayout(false);
             this.menu.PerformLayout();

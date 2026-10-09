@@ -1,136 +1,61 @@
-﻿namespace SIGAT.UI
+namespace SIGAT.UI
 {
     partial class FrmLogin
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private System.ComponentModel.IContainer components;
+        private PictureBox picLogo;
+        private Label lblUsuario, lblPassword;
+        private TextBox txtUsuario, txtPassword;
+        private Button btnLogin;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
-            {
-                components.Dispose();
-            }
+            if (disposing) components?.Dispose();
             base.Dispose(disposing);
         }
 
-        #region Windows Form Designer generated code
-
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmLogin));
-            picLogo = new PictureBox();
-            lblUsuario = new Label();
-            txtUsuario = new TextBox();
-            lblPassword = new Label();
-            txtPassword = new TextBox();
-            btnLogin = new Button();
-            ((System.ComponentModel.ISupportInitialize)picLogo).BeginInit();
+            components = new System.ComponentModel.Container();
+            var resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmLogin));
             SuspendLayout();
-            // 
-            // picLogo
-            // 
-            picLogo.Image = (Image)resources.GetObject("picLogo.Image");
-            picLogo.Location = new Point(90, 20);
-            picLogo.Name = "picLogo";
-            picLogo.Size = new Size(150, 150);
-            picLogo.SizeMode = PictureBoxSizeMode.Zoom;
-            picLogo.TabIndex = 0;
-            picLogo.TabStop = false;
-            // 
-            // lblUsuario
-            // 
-            lblUsuario.AutoSize = true;
-            lblUsuario.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            lblUsuario.Location = new Point(65, 180);
-            lblUsuario.Name = "lblUsuario";
-            lblUsuario.Size = new Size(52, 15);
-            lblUsuario.TabIndex = 1;
-            lblUsuario.Text = "Usuario:";
-            // 
-            // txtUsuario
-            // 
-            txtUsuario.Font = new Font("Segoe UI", 10F);
-            txtUsuario.Location = new Point(65, 202);
-            txtUsuario.Name = "txtUsuario";
-            txtUsuario.Size = new Size(200, 25);
-            txtUsuario.TabIndex = 2;
-            // 
-            // lblPassword
-            // 
-            lblPassword.AutoSize = true;
-            lblPassword.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            lblPassword.Location = new Point(65, 240);
-            lblPassword.Name = "lblPassword";
-            lblPassword.Size = new Size(72, 15);
-            lblPassword.TabIndex = 3;
-            lblPassword.Text = "Contraseña:";
-            // 
-            // txtPassword
-            // 
-            txtPassword.Font = new Font("Segoe UI", 10F);
-            txtPassword.Location = new Point(65, 262);
-            txtPassword.Name = "txtPassword";
-            txtPassword.Size = new Size(200, 25);
-            txtPassword.TabIndex = 4;
-            txtPassword.UseSystemPasswordChar = true;
-            // 
-            // btnLogin
-            // 
-            btnLogin.BackColor = Color.FromArgb(0, 120, 215);
-            btnLogin.Cursor = Cursors.Hand;
-            btnLogin.FlatAppearance.BorderSize = 0;
-            btnLogin.FlatStyle = FlatStyle.Flat;
-            btnLogin.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            btnLogin.ForeColor = Color.White;
-            btnLogin.Location = new Point(105, 315);
-            btnLogin.Name = "btnLogin";
-            btnLogin.Size = new Size(120, 40);
-            btnLogin.TabIndex = 5;
-            btnLogin.Text = "Ingresar";
-            btnLogin.UseVisualStyleBackColor = false;
-            btnLogin.Click += BtnLogin_Click;
-            // 
-            // FrmLogin
-            // 
-            AcceptButton = btnLogin;
-            AutoScaleDimensions = new SizeF(7F, 15F);
-            AutoScaleMode = AutoScaleMode.Font;
+            TemaVisual.Formulario(this);
             BackColor = Color.White;
-            ClientSize = new Size(350, 430);
-            Controls.Add(picLogo);
-            Controls.Add(lblUsuario);
-            Controls.Add(txtUsuario);
-            Controls.Add(lblPassword);
-            Controls.Add(txtPassword);
-            Controls.Add(btnLogin);
+            Name = "FrmLogin";
+            Text = "SIGAT · Iniciar sesión";
+            ClientSize = new Size(460, 610);
+            AutoScaleDimensions = CurrentAutoScaleDimensions;
             FormBorderStyle = FormBorderStyle.FixedSingle;
             MaximizeBox = false;
-            Name = "FrmLogin";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "SIGAT - Iniciar Sesión";
-            ((System.ComponentModel.ISupportInitialize)picLogo).EndInit();
-            ResumeLayout(false);
-            PerformLayout();
+            Padding = new Padding(32);
+
+            var form = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 1, RowCount = 11, Padding = new Padding(28, 22, 28, 22), BackColor = Color.White };
+            form.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+            foreach (int height in new[] { 100, 38, 46, 26, 36, 12, 26, 36, 20, 46 })
+                form.RowStyles.Add(new RowStyle(SizeType.Absolute, height));
+            form.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
+            picLogo = new PictureBox { Name = "picLogo", Image = (Image)resources.GetObject("picLogo.Image"), SizeMode = PictureBoxSizeMode.Zoom, Size = new Size(112, 104), Anchor = AnchorStyles.None, TabStop = false };
+            form.Controls.Add(picLogo, 0, 0);
+            form.Controls.Add(new Label { Text = "Bienvenido a SIGAT", Dock = DockStyle.Fill, TextAlign = ContentAlignment.MiddleCenter, Font = new Font("Segoe UI", 19F, FontStyle.Bold), ForeColor = TemaVisual.Texto }, 0, 1);
+            form.Controls.Add(new Label { Text = "Ingresá con tu cuenta para acceder al sistema.", Dock = DockStyle.Fill, TextAlign = ContentAlignment.TopCenter, ForeColor = TemaVisual.Secundario }, 0, 2);
+            lblUsuario = TemaVisual.Etiqueta("Usuario");
+            txtUsuario = new TextBox { Name = "txtUsuario", Dock = DockStyle.Fill, Font = new Font("Segoe UI", 12F), TabIndex = 0, MaxLength = 50, Margin = Padding.Empty };
+            lblPassword = TemaVisual.Etiqueta("Contraseña");
+            txtPassword = new TextBox { Name = "txtPassword", Dock = DockStyle.Fill, Font = new Font("Segoe UI", 12F), TabIndex = 1, UseSystemPasswordChar = true, Margin = Padding.Empty };
+            btnLogin = TemaVisual.Boton("btnLogin", "Ingresar", true);
+            btnLogin.Dock = DockStyle.Fill;
+            btnLogin.Margin = Padding.Empty;
+            btnLogin.TabIndex = 2;
+            btnLogin.Click += BtnLogin_Click;
+            form.Controls.Add(lblUsuario, 0, 3);
+            form.Controls.Add(txtUsuario, 0, 4);
+            form.Controls.Add(lblPassword, 0, 6);
+            form.Controls.Add(txtPassword, 0, 7);
+            form.Controls.Add(btnLogin, 0, 9);
+            Controls.Add(form);
+            AcceptButton = btnLogin;
+            ResumeLayout(true);
         }
-
-        #endregion
-
-        private PictureBox picLogo;
-        private Label lblUsuario;
-        private TextBox txtUsuario;
-        private Label lblPassword;
-        private TextBox txtPassword;
-        private Button btnLogin;
     }
 }

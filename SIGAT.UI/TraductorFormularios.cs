@@ -29,6 +29,8 @@ namespace SIGAT.UI
         {
             foreach (Control control in controles)
             {
+                // Las pantallas alojadas tienen su propio nombre y observador de idioma.
+                if (control is Form) continue;
                 if (control.Tag != null)
                 {
                     RegistrarClave(nombreForm, control.Tag.ToString(), control.Text);

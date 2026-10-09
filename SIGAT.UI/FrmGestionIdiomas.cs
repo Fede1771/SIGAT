@@ -140,22 +140,46 @@ namespace SIGAT.UI
             int idIdioma = (int)cmbIdiomas.SelectedValue;
             _traduccionesActuales = _idiomaBLL.ObtenerTraduccionesParaGestion(idIdioma);
             dgvTraducciones.DataSource = _traduccionesActuales;
+            ConfigurarColumnasTraducciones();
+        }
 
+        private void ConfigurarColumnasTraducciones()
+        {
             if (dgvTraducciones.Columns.Count == 0) return;
 
             dgvTraducciones.Columns["IdIdioma"].Visible = false;
             dgvTraducciones.Columns["IdControl"].Visible = false;
             dgvTraducciones.Columns["DigitoVerificador"].Visible = false;
-            dgvTraducciones.Columns["FormNombre"].HeaderText = "Formulario";
-            dgvTraducciones.Columns["ControlNombre"].HeaderText = "Clave";
-            dgvTraducciones.Columns["TextoBase"].HeaderText = "Español";
-            dgvTraducciones.Columns["Texto"].HeaderText = "Traducción";
-            dgvTraducciones.Columns["Estado"].HeaderText = "Estado";
+            int orden = 0;
+            foreach (var (nombre, titulo, clave, peso) in new[]
+            {
+                ("FormNombre", "Formulario", "col_formulario", 110),
+                ("ControlNombre", "Clave", "col_clave", 120),
+                ("TextoBase", "Español", "col_texto_base", 160),
+                ("Texto", "Traducción", "col_traduccion", 180),
+                ("Estado", "Estado", "col_estado", 85)
+            })
+            {
+                var columna = dgvTraducciones.Columns[nombre];
+                columna.Tag = clave;
+                columna.HeaderText = IdiomaManager.ObtenerInstancia().Traducir(Name, clave, titulo);
+                columna.DisplayIndex = orden++;
+                columna.ReadOnly = nombre != "Texto";
+                columna.MinimumWidth = nombre == "Estado" ? 95 : 110;
+                columna.FillWeight = peso;
+            }
+        }
 
-            dgvTraducciones.Columns["FormNombre"].ReadOnly = true;
-            dgvTraducciones.Columns["ControlNombre"].ReadOnly = true;
-            dgvTraducciones.Columns["TextoBase"].ReadOnly = true;
-            dgvTraducciones.Columns["Estado"].ReadOnly = true;
+        private void FormatearEstadoTraduccion(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            if (e.RowIndex < 0 || dgvTraducciones.Columns[e.ColumnIndex].Name != "Estado") return;
+            bool completa = string.Equals(e.Value?.ToString(), "Completa", StringComparison.OrdinalIgnoreCase);
+            e.CellStyle.BackColor = completa ? TemaVisual.VerdeSuave : TemaVisual.AmbarSuave;
+            e.CellStyle.ForeColor = completa ? TemaVisual.Verde : TemaVisual.Ambar;
+            e.CellStyle.SelectionBackColor = e.CellStyle.BackColor;
+            e.CellStyle.SelectionForeColor = e.CellStyle.ForeColor;
+            e.CellStyle.Font = TemaVisual.FuenteEstado;
+            e.CellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
         }
 
         private void btnGuardarTraduccion_Click(object sender, EventArgs e)
@@ -307,6 +331,7 @@ namespace SIGAT.UI
         public void ActualizarIdioma()
         {
             TraductorFormularios.TraducirFormulario(this);
+            ConfigurarColumnasTraducciones();
             // Renovar las etiquetas sin cambiar el idioma elegido para editar traducciones.
             if (cmbIdiomas.DataSource != null)
                 ((CurrencyManager)cmbIdiomas.BindingContext[cmbIdiomas.DataSource]).Refresh();

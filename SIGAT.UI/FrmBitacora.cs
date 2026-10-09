@@ -86,6 +86,14 @@ namespace SIGAT.UI
             }
 
             TraducirColumnasVisibles();
+            if (dgv.Columns.Contains("Fecha"))
+            {
+                dgv.Columns["Fecha"].DefaultCellStyle.Format = "dd/MM/yyyy HH:mm";
+                dgv.Columns["Fecha"].FillWeight = 140;
+                dgv.Columns["Fecha"].MinimumWidth = 150;
+            }
+            if (dgv.Columns.Contains("IdBitacora")) dgv.Columns["IdBitacora"].FillWeight = 45;
+            if (dgv.Columns.Contains("InformacionAsociada")) dgv.Columns["InformacionAsociada"].FillWeight = 220;
         }
 
         private void TraducirColumnasVisibles()

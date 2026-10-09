@@ -13,8 +13,7 @@ namespace SIGAT.UI
             SuspendLayout();
             Name = "FrmGestionUsuarios";
             Text = "Gestión de usuarios";
-            Font = new Font("Segoe UI", 10F);
-            BackColor = Color.FromArgb(245, 247, 250);
+            TemaVisual.Formulario(this);
             ClientSize = new Size(1160, 620);
             MinimumSize = new Size(940, 540);
             // El marco estándar permite que MDI calcule correctamente el área maximizada.
@@ -40,8 +39,8 @@ namespace SIGAT.UI
             encabezado.Controls.Add(new Label
             {
                 Text = "Gestión de usuarios", Tag = "frmgestionusuarios_titulo", AutoSize = true,
-                Font = new Font("Segoe UI", 20F, FontStyle.Bold),
-                ForeColor = Color.FromArgb(35, 55, 78), Margin = new Padding(0, 0, 0, 6)
+                Font = new Font("Segoe UI", 22F, FontStyle.Bold),
+                ForeColor = TemaVisual.Texto, Margin = new Padding(0, 0, 0, 6)
             });
             encabezado.Controls.Add(new Label
             {
@@ -78,6 +77,7 @@ namespace SIGAT.UI
             };
             dgvUsuarios.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(247, 249, 252);
             dgvUsuarios.RowTemplate.Height = 38;
+            TemaVisual.Grilla(dgvUsuarios);
             layout.Controls.Add(dgvUsuarios, 0, 1);
 
             Panel contenedor = new Panel { Dock = DockStyle.Fill, AutoScroll = true, BackColor = Color.White, Margin = Padding.Empty };
@@ -115,10 +115,8 @@ namespace SIGAT.UI
             btnGuardar = BotonUsuario("btnGuardar", "Guardar");
             btnEliminar = BotonUsuario("btnEliminar", "Baja");
             btnLimpiar = BotonUsuario("btnLimpiar", "Limpiar");
-            btnGuardar.BackColor = Color.FromArgb(35, 101, 175);
-            btnGuardar.ForeColor = Color.White;
-            btnGuardar.FlatAppearance.BorderSize = 0;
-            btnEliminar.ForeColor = Color.FromArgb(160, 45, 45);
+            TemaVisual.EstilizarBoton(btnGuardar, primary: true);
+            TemaVisual.EstilizarBoton(btnEliminar, danger: true);
             btnGuardar.Click += BtnGuardar_Click;
             btnEliminar.Click += BtnEliminar_Click;
             btnLimpiar.Click += BtnLimpiar_Click;
@@ -151,8 +149,11 @@ namespace SIGAT.UI
 
         private static Button BotonUsuario(string nombre, string texto)
         {
-            var boton = new Button { Name = nombre, Text = texto, Dock = DockStyle.Fill, Height = 38, BackColor = Color.White, Margin = new Padding(0, 0, 4, 0), FlatStyle = FlatStyle.Flat, Cursor = Cursors.Hand };
-            boton.FlatAppearance.BorderColor = Color.FromArgb(211, 220, 231);
+            var boton = TemaVisual.Boton(nombre, texto);
+            boton.Dock = DockStyle.Fill;
+            boton.AutoSize = false;
+            boton.MinimumSize = new Size(0, 40);
+            boton.Margin = new Padding(0, 0, 6, 0);
             return boton;
         }
     }

@@ -43,10 +43,10 @@ namespace SIGAT.UI
             AgregarColumna("NombreUsuario", "Usuario", "col_nombreusuario", 130, 100);
             AgregarColumna("Nombre", "Nombre", "col_nombre", 120, 90);
             AgregarColumna("Apellido", "Apellido", "col_apellido", 120, 90);
-            dgvUsuarios.Columns.Add(new DataGridViewCheckBoxColumn
+            dgvUsuarios.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "Activo", DataPropertyName = "Activo", HeaderText = "Activo", Tag = "col_activo",
-                FillWeight = 60, MinimumWidth = 60, SortMode = DataGridViewColumnSortMode.NotSortable
+                FillWeight = 85, MinimumWidth = 85, SortMode = DataGridViewColumnSortMode.NotSortable
             });
             AgregarColumna("Roles", "Roles asignados", "col_roles_asignados", 200, 150);
             dgvUsuarios.Columns["Roles"].DataPropertyName = "";
@@ -65,6 +65,18 @@ namespace SIGAT.UI
                     e.FormattingApplied = true;
                 }
                 if (!usuario.Activo) e.CellStyle.ForeColor = Color.DimGray;
+                if (dgvUsuarios.Columns[e.ColumnIndex].Name == "Activo")
+                {
+                    e.Value = IdiomaManager.ObtenerInstancia().Traducir(Name,
+                        usuario.Activo ? "chk_activo" : "estado_inactivo", usuario.Activo ? "Activo" : "Inactivo");
+                    e.CellStyle.BackColor = usuario.Activo ? TemaVisual.VerdeSuave : TemaVisual.Fondo;
+                    e.CellStyle.ForeColor = usuario.Activo ? TemaVisual.Verde : TemaVisual.Secundario;
+                    e.CellStyle.SelectionBackColor = e.CellStyle.BackColor;
+                    e.CellStyle.SelectionForeColor = e.CellStyle.ForeColor;
+                    e.CellStyle.Font = TemaVisual.FuenteEstado;
+                    e.CellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                    e.FormattingApplied = true;
+                }
             };
             dgvUsuarios.CellClick += (s, e) => { if (e.RowIndex >= 0) SeleccionarFila(); };
             dgvUsuarios.KeyUp += (s, e) =>
