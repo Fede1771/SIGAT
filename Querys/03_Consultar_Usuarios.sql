@@ -1,4 +1,4 @@
--- La baja de cuentas debe hacerse desde Gestión de usuarios:
+﻿-- La baja de cuentas debe hacerse desde Gestión de usuarios:
 -- valida el último administrador y conserva las asignaciones y la auditoría.
 USE [SIGAT];
 GO

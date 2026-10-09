@@ -1,4 +1,4 @@
-USE [SIGAT];
+﻿USE [SIGAT];
 GO
 -- Componentes directos actuales; inicialmente hay 16 relaciones.
 SELECT r.Nombre AS Rol,
@@ -16,7 +16,7 @@ LEFT JOIN dbo.UsuarioRol ur ON ur.IdUsuario=u.IdUsuario
 LEFT JOIN dbo.Rol r ON r.Id=ur.IdRol
 ORDER BY u.NombreUsuario,r.Nombre;
 GO
--- Requiere script 14. Incluye roles anidados y componentes de familias.
+-- Requiere instalación completa o actualización (01/02). Incluye roles anidados y componentes de familias.
 DECLARE @Usuario varchar(50)='valen1';
 ;WITH RolesEfectivos AS (
  SELECT ur.IdRol FROM dbo.UsuarioRol ur JOIN dbo.Usuarios u ON u.IdUsuario=ur.IdUsuario

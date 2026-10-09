@@ -1,32 +1,15 @@
-/* =========================================================================
-   SIGAT - Resetear contraseña de un usuario
-
-   OJO: tus contraseñas están guardadas como hash SHA-256 (64 caracteres hex).
-   Si tu aplicación le agrega algo extra al hash (una "sal"/salt, un prefijo,
-   etc.) antes de guardarlo, el hash generado acá con HASHBYTES puede NO
-   coincidir con lo que espera la app al momento de loguearse. Si no estás
-   seguro de cómo genera el hash tu código, probá primero con un usuario
-   de prueba antes de tocar el admin.
-   ========================================================================= */
-
-USE [SIGAT]
+﻿-- Cambiar únicamente la contraseña de la cuenta indicada.
+-- SQL Server 2019+: UTF-8 coincide con HashHelper, también para tildes y símbolos.
+USE [SIGAT];
+SET NOCOUNT ON;
+DECLARE @Usuario varchar(50) = 'admin';
+DECLARE @NuevaPass nvarchar(100) = N'NuevaClave123'; -- Editar antes de ejecutar.
+IF NULLIF(LTRIM(RTRIM(@NuevaPass)),N'') IS NULL
+    THROW 50001, 'La contraseña no puede estar vacía.', 1;
+IF NOT EXISTS (SELECT 1 FROM dbo.Usuarios WHERE NombreUsuario=@Usuario)
+    THROW 50001, 'No existe la cuenta indicada.', 1;
+DECLARE @Hash varchar(64) = LOWER(CONVERT(varchar(64),HASHBYTES('SHA2_256',
+    CONVERT(varchar(max),@NuevaPass COLLATE Latin1_General_100_BIN2_UTF8)),2));
+UPDATE dbo.Usuarios SET Password=@Hash WHERE NombreUsuario=@Usuario;
+SELECT NombreUsuario,Activo FROM dbo.Usuarios WHERE NombreUsuario=@Usuario;
 GO
-
--- Ver el formato actual del hash guardado (para comparar longitudes/formato)
-SELECT NombreUsuario, Password, LEN(Password) AS LargoHash
-FROM Usuarios
-WHERE NombreUsuario = 'admin';
-GO
-
--- Opción A: si tu app usa SHA-256 simple (sin salt), esto genera el hash en hex minúscula
-DECLARE @usuario VARCHAR(50) = 'admin';
-DECLARE @nuevaPass VARCHAR(100) = 'NuevaClave123'; -- <-- cambiar acá
-DECLARE @hash VARCHAR(256) = LOWER(CONVERT(VARCHAR(256), HASHBYTES('SHA2_256', @nuevaPass), 2));
-
-UPDATE Usuarios
-SET Password = @hash
-WHERE NombreUsuario = @usuario;
-GO
-
--- Opción B: si ya tenés el hash calculado desde afuera (por tu app/código), pegalo directo
--- UPDATE Usuarios SET Password = 'HASH_YA_CALCULADO_ACA' WHERE NombreUsuario = 'admin';
