@@ -1,0 +1,102 @@
+﻿Clave	Formulario	Español	Traduccion
+accesos_usuario	FormGestionRoles	Accesos del usuario	User access
+asignar_componente	FormGestionRoles	Asignar componente	Assign component
+asignar_rol_usuario	FormGestionRoles	Asignar rol	Assign role
+ayuda_administrador	FormGestionRoles	El rol Administrador está protegido. Los cambios se aplican al volver a iniciar sesión.	The Administrator role is protected. Changes take effect the next time you sign in.
+ayuda_asignacion	FormGestionRoles	Para asignar, seleccioná un rol a la izquierda. Para quitar, seleccioná el rol asignado en este panel.	To assign a role, select it on the left. To remove a role, select the assigned role in this panel.
+ayuda_composicion	FormGestionRoles	Seleccioná un rol o permiso a la izquierda y elegí dónde asignarlo.	Select a role or permission on the left and choose where to assign it.
+catalogo_permisos	FormGestionRoles	Catálogo de permisos	Permission catalog
+composicion_rol	FormGestionRoles	Composición del rol	Role components
+crear_rol	FormGestionRoles	Crear rol	Create role
+editar_familia	FormGestionRoles	Editar familia de permisos	Edit permission group
+eliminar_rol	FormGestionRoles	Eliminar rol	Delete role
+gestion_roles_descripcion	FormGestionRoles	Organizá los accesos de cada usuario y los componentes de cada rol.	Manage each user's access and the components of each role.
+gestion_roles_titulo	FormGestionRoles	Gestión de roles y permisos	Role and permission management
+quitar_componente	FormGestionRoles	Quitar componente	Remove component
+quitar_rol_usuario	FormGestionRoles	Quitar rol	Remove role
+rol_destino	FormGestionRoles	Rol destino	Target role
+roles_disponibles	FormGestionRoles	Roles disponibles	Available roles
+btn_buscar	FrmBitacora	Buscar	Search
+chk_fechas	FrmBitacora	Fechas:	Dates:
+col_actividad	FrmBitacora	Actividad	Activity
+col_fecha	FrmBitacora	Fecha	Date
+col_id	FrmBitacora	Id	ID
+col_informacion	FrmBitacora	Información	Information
+col_usuario	FrmBitacora	Usuario	User
+frmbitacora_titulo	FrmBitacora	Consulta de Bitácora	Activity log
+lbl_actividad	FrmBitacora	Actividad:	Activity:
+lbl_descripcion_bitacora	FrmBitacora	Consultá la actividad del sistema y sus registros de auditoría.	View system activity and audit records.
+lbl_usuario	FrmBitacora	Usuario:	User:
+btn_aplicar_idioma	FrmGestionIdiomas	Aplicar	Apply
+btn_cambiar_estado	FrmGestionIdiomas	Activar / desactivar	Activate / deactivate
+btn_exportar_traducciones	FrmGestionIdiomas	Exportar traducciones	Export translations
+btn_guardar_traduccion	FrmGestionIdiomas	Guardar traducción	Save translation
+btn_importar_traducciones	FrmGestionIdiomas	Importar traducciones	Import translations
+btn_nuevo_idioma	FrmGestionIdiomas	Crear idioma	Create language
+chk_idioma_activo	FrmGestionIdiomas	Activo	Active
+frmgestionidiomas_titulo	FrmGestionIdiomas	Gestión de idiomas	Language management
+lbl_ayuda_nuevo_idioma	FrmGestionIdiomas	Las traducciones nuevas quedan pendientes hasta que las completes.	New translations remain pending until you complete them.
+lbl_codigo_idioma	FrmGestionIdiomas	Código:	Code:
+lbl_descripcion_idiomas	FrmGestionIdiomas	Administrá idiomas y completá las traducciones del sistema.	Manage languages and complete the system translations.
+lbl_idioma_activo	FrmGestionIdiomas	Idioma:	Language:
+lbl_nombre_nativo	FrmGestionIdiomas	Nombre nativo:	Native name:
+lbl_nuevo_idioma	FrmGestionIdiomas	Nombre:	Name:
+lbl_titulo_nuevo_idioma	FrmGestionIdiomas	Nuevo idioma	New language
+lbl_titulo_traducciones	FrmGestionIdiomas	Traducciones	Translations
+btn_eliminar	FrmGestionUsuarios	Baja	Deactivate
+btn_guardar	FrmGestionUsuarios	Guardar	Save
+btn_limpiar	FrmGestionUsuarios	Limpiar	Clear
+chk_activo	FrmGestionUsuarios	Activo	Active
+col_activo	FrmGestionUsuarios	Activo	Active
+col_apellido	FrmGestionUsuarios	Apellido	Last name
+col_idusuario	FrmGestionUsuarios	Id	ID
+col_nombre	FrmGestionUsuarios	Nombre	First name
+col_nombreusuario	FrmGestionUsuarios	Usuario	Username
+col_perfil	FrmGestionUsuarios	Perfil	Role
+col_roles_asignados	FrmGestionUsuarios	Roles asignados	Assigned roles
+frmgestionusuarios_titulo	FrmGestionUsuarios	Gestión de Usuarios	User management
+lbl_apellido	FrmGestionUsuarios	Apellido:	Last name:
+lbl_ayuda_roles	FrmGestionUsuarios	Las cuentas nuevas se crean sin roles. Asigná sus accesos desde Gestión de roles y permisos.  Para reactivar una cuenta, seleccionála, marcá Activo y guardá.	New accounts are created without roles. Assign their access in Role and permission management. To reactivate an account, select it, check Active, and save.
+lbl_clave	FrmGestionUsuarios	Clave (vacío no cambia):	Password (leave blank to keep unchanged):
+lbl_datos_cuenta	FrmGestionUsuarios	Datos de la cuenta	Account details
+lbl_descripcion_usuarios	FrmGestionUsuarios	Seleccioná una cuenta para editarla o completá el formulario para crear un usuario.	Select an account to edit it, or fill out the form to create a user.
+lbl_nombre	FrmGestionUsuarios	Nombre:	First name:
+lbl_perfil	FrmGestionUsuarios	Perfil:	Role:
+lbl_usuario_gu	FrmGestionUsuarios	Usuario:	Username:
+1	FrmPrincipal	Español	Spanish
+2	FrmPrincipal	Portugués	Portuguese
+3	FrmPrincipal	Inglés	English
+4	FrmPrincipal	Ruso	Russian
+btn_aplicar_idioma	FrmPrincipal	Aplicar	Apply
+btn_buscar	FrmPrincipal	Поиск	Search
+btn_cambiar_estado	FrmPrincipal	Activar / desactivar	Activate / deactivate
+btn_exportar_traducciones	FrmPrincipal	Exportar traducciones	Export translations
+btn_guardar_traduccion	FrmPrincipal	Guardar traducción	Save translation
+btn_importar_traducciones	FrmPrincipal	Importar traducciones	Import translations
+btn_nuevo_idioma	FrmPrincipal	Crear idioma	Create language
+chk_fechas	FrmPrincipal	Fechas:	Dates:
+chk_idioma_activo	FrmPrincipal	Activo	Active
+col_actividad	FrmPrincipal	Actividad	Activity
+col_fecha	FrmPrincipal	Fecha	Date
+col_id	FrmPrincipal	IdBitacora	ID
+col_informacion	FrmPrincipal	InformacionAsociada	Related information
+col_usuario	FrmPrincipal	Usuario	User
+frmbitacora_titulo	FrmPrincipal	Consulta de Bitácora	Activity log
+frmgestionidiomas_titulo	FrmPrincipal	Gestión de idiomas	Language management
+inicio_descripcion	FrmPrincipal	Seleccioná una sección para comenzar.	Select a section to get started.
+inicio_titulo	FrmPrincipal	Tu espacio de trabajo	Your workspace
+lbl_actividad	FrmPrincipal	Actividad:	Activity:
+lbl_codigo_idioma	FrmPrincipal	Código:	Code:
+lbl_idioma_activo	FrmPrincipal	Idioma:	Language:
+lbl_nombre_nativo	FrmPrincipal	Nombre nativo:	Native name:
+lbl_nuevo_idioma	FrmPrincipal	Nombre:	Name:
+lbl_usuario	FrmPrincipal	Usuario:	User:
+menu_bitacora	FrmPrincipal	Bitácora	Activity log
+menu_gestion_idiomas	FrmPrincipal	Gestionar idiomas...	Manage languages...
+menu_idioma	FrmPrincipal	Idioma	Language
+menu_inicio	FrmPrincipal	Inicio	Home
+menu_logout	FrmPrincipal	Cerrar Sesión	Sign out
+menu_roles	FrmPrincipal	Gestión de roles y permisos	Role and permission management
+menu_sistema	FrmPrincipal	Sistema	System
+menu_usuarios	FrmPrincipal	Gestión de Usuarios	User management
+titulo_ventana	FrmPrincipal	FrmPrincipal	SIGAT
