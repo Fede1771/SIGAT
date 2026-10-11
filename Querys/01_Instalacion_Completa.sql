@@ -597,6 +597,12 @@ CREATE TABLE dbo.PermisoHijo (
 INSERT dbo.SeguridadVersion (Id,Version,Esquema) VALUES (1,1,2);
 INSERT dbo.UsuarioRol (IdUsuario,IdRol) VALUES (1,1);
 INSERT dbo.AdministradorOriginal (Id,IdUsuario) VALUES (1,1);
+CREATE TABLE dbo.UsuarioIdioma (
+ IdUsuario int NOT NULL CONSTRAINT PK_UsuarioIdioma PRIMARY KEY,
+ IdIdioma int NOT NULL,
+ CONSTRAINT FK_UsuarioIdioma_Usuario FOREIGN KEY (IdUsuario) REFERENCES dbo.Usuarios(IdUsuario),
+ CONSTRAINT FK_UsuarioIdioma_Idioma FOREIGN KEY (IdIdioma) REFERENCES dbo.Idioma(Id)
+);
 EXEC(N''CREATE OR ALTER TRIGGER dbo.TR_Usuarios_AdministradorOriginal ON dbo.Usuarios
 AFTER UPDATE, DELETE AS
 BEGIN

@@ -7,7 +7,7 @@ DECLARE @Requeridas TABLE (Nombre sysname);
 INSERT @Requeridas VALUES
  ('Usuarios'),('Bitacora'),('Idioma'),('Control'),('Traduccion'),
  ('SeguridadVersion'),('Permiso'),('Rol'),('RolPermiso'),('UsuarioRol'),
- ('AdministradorOriginal'),('RolHijo'),('PermisoHijo');
+ ('AdministradorOriginal'),('RolHijo'),('PermisoHijo'),('UsuarioIdioma');
 SELECT Nombre AS TablaFaltante FROM @Requeridas
 WHERE OBJECT_ID(N'dbo.' + Nombre,'U') IS NULL;
 IF EXISTS (SELECT 1 FROM @Requeridas WHERE OBJECT_ID(N'dbo.' + Nombre,'U') IS NULL)

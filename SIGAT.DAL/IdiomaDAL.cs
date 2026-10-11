@@ -1,10 +1,45 @@
-﻿using Microsoft.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using SIGAT.BE.Idiomas;
 
 namespace SIGAT.DAL
 {
     public class IdiomaDAL
     {
+        private readonly string? cadena;
+
+        public IdiomaDAL(string? cadenaConexion = null) { cadena = cadenaConexion; }
+
+        private SqlConnection Conectar()
+            => cadena == null ? ConexionBD.ObtenerConexion() : new SqlConnection(cadena);
+
+        public int? ObtenerIdiomaPreferido(int idUsuario)
+        {
+            using SqlConnection conexion = Conectar();
+            using SqlCommand comando = new SqlCommand("SELECT IdIdioma FROM dbo.UsuarioIdioma WHERE IdUsuario=@Usuario", conexion);
+            comando.Parameters.Add("@Usuario", System.Data.SqlDbType.Int).Value = idUsuario;
+            conexion.Open();
+            object? valor = comando.ExecuteScalar();
+            return valor == null ? null : Convert.ToInt32(valor);
+        }
+
+        public void GuardarIdiomaPreferido(int idUsuario, int idIdioma)
+        {
+            using SqlConnection conexion = Conectar();
+            conexion.Open();
+            using SqlTransaction transaccion = conexion.BeginTransaction(System.Data.IsolationLevel.Serializable);
+            using SqlCommand comando = new SqlCommand(@"
+                IF NOT EXISTS (SELECT 1 FROM dbo.Usuarios WITH (HOLDLOCK) WHERE IdUsuario=@Usuario AND Activo=1)
+                    THROW 50001, 'No se puede guardar el idioma de una cuenta inexistente o inactiva.', 1;
+                IF NOT EXISTS (SELECT 1 FROM dbo.Idioma WITH (HOLDLOCK) WHERE Id=@Idioma AND Activo=1)
+                    THROW 50001, 'El idioma no existe o está inactivo.', 1;
+                UPDATE dbo.UsuarioIdioma WITH (UPDLOCK,HOLDLOCK) SET IdIdioma=@Idioma WHERE IdUsuario=@Usuario;
+                IF @@ROWCOUNT=0 INSERT dbo.UsuarioIdioma (IdUsuario,IdIdioma) VALUES (@Usuario,@Idioma);", conexion, transaccion);
+            comando.Parameters.Add("@Usuario", System.Data.SqlDbType.Int).Value = idUsuario;
+            comando.Parameters.Add("@Idioma", System.Data.SqlDbType.Int).Value = idIdioma;
+            comando.ExecuteNonQuery();
+            transaccion.Commit();
+        }
+
         public List<Idioma> ObtenerIdiomas()
         {
             return ObtenerIdiomasPorEstado(true);
@@ -15,7 +50,7 @@ namespace SIGAT.DAL
             List<Idioma> lista = new List<Idioma>();
             string consulta = "SELECT Id, Nombre, Codigo, NombreNativo, Activo FROM Idioma ORDER BY Nombre";
 
-            using (SqlConnection conexion = ConexionBD.ObtenerConexion())
+            using (SqlConnection conexion = Conectar())
             using (SqlCommand comando = new SqlCommand(consulta, conexion))
             {
                 conexion.Open();
@@ -36,7 +71,7 @@ namespace SIGAT.DAL
             string consulta = @"SELECT Id, Nombre, Codigo, NombreNativo, Activo
                                 FROM Idioma WHERE Activo = @Activo ORDER BY Nombre";
 
-            using (SqlConnection conexion = ConexionBD.ObtenerConexion())
+            using (SqlConnection conexion = Conectar())
             using (SqlCommand comando = new SqlCommand(consulta, conexion))
             {
                 comando.Parameters.AddWithValue("@Activo", activo);
@@ -68,7 +103,7 @@ namespace SIGAT.DAL
             string consulta = @"SELECT Id, Nombre, Codigo, NombreNativo, Activo
                                 FROM Idioma WHERE Id = @IdIdioma";
 
-            using (SqlConnection conexion = ConexionBD.ObtenerConexion())
+            using (SqlConnection conexion = Conectar())
             using (SqlCommand comando = new SqlCommand(consulta, conexion))
             {
                 comando.Parameters.AddWithValue("@IdIdioma", idIdioma);
@@ -83,7 +118,7 @@ namespace SIGAT.DAL
 
         public int ObtenerIdIdiomaPorCodigo(string codigo)
         {
-            using (SqlConnection conexion = ConexionBD.ObtenerConexion())
+            using (SqlConnection conexion = Conectar())
             using (SqlCommand comando = new SqlCommand("SELECT Id FROM Idioma WHERE Codigo = @Codigo", conexion))
             {
                 comando.Parameters.AddWithValue("@Codigo", codigo);
@@ -106,7 +141,7 @@ namespace SIGAT.DAL
         private bool ExisteIdioma(string columna, string valor)
         {
             string consulta = "SELECT COUNT(*) FROM Idioma WHERE " + columna + " = @Valor";
-            using (SqlConnection conexion = ConexionBD.ObtenerConexion())
+            using (SqlConnection conexion = Conectar())
             using (SqlCommand comando = new SqlCommand(consulta, conexion))
             {
                 comando.Parameters.AddWithValue("@Valor", valor);
@@ -121,7 +156,7 @@ namespace SIGAT.DAL
                                 OUTPUT INSERTED.Id
                                 VALUES (@Nombre, @Codigo, @NombreNativo, @Activo)";
 
-            using (SqlConnection conexion = ConexionBD.ObtenerConexion())
+            using (SqlConnection conexion = Conectar())
             using (SqlCommand comando = new SqlCommand(consulta, conexion))
             {
                 comando.Parameters.AddWithValue("@Nombre", idioma.Nombre);
@@ -135,7 +170,7 @@ namespace SIGAT.DAL
 
         public void CambiarEstadoIdioma(int idIdioma, bool activo)
         {
-            using (SqlConnection conexion = ConexionBD.ObtenerConexion())
+            using (SqlConnection conexion = Conectar())
             using (SqlCommand comando = new SqlCommand("UPDATE Idioma SET Activo = @Activo WHERE Id = @IdIdioma", conexion))
             {
                 comando.Parameters.AddWithValue("@Activo", activo);
@@ -152,7 +187,7 @@ namespace SIGAT.DAL
                                 FROM Traduccion t INNER JOIN Control c ON c.Id = t.Id_Control
                                 WHERE t.Id_Idioma = @IdIdioma AND t.Texto IS NOT NULL";
 
-            using (SqlConnection conexion = ConexionBD.ObtenerConexion())
+            using (SqlConnection conexion = Conectar())
             using (SqlCommand comando = new SqlCommand(consulta, conexion))
             {
                 comando.Parameters.AddWithValue("@IdIdioma", idIdioma);
@@ -188,7 +223,7 @@ namespace SIGAT.DAL
                                 WHERE t.Id_Idioma = @IdIdioma
                                 ORDER BY c.Form, c.Control";
 
-            using (SqlConnection conexion = ConexionBD.ObtenerConexion())
+            using (SqlConnection conexion = Conectar())
             using (SqlCommand comando = new SqlCommand(consulta, conexion))
             {
                 comando.Parameters.AddWithValue("@IdIdioma", idIdioma);
@@ -214,7 +249,7 @@ namespace SIGAT.DAL
 
         public int ObtenerOCrearControl(string nombreControl, string nombreForm)
         {
-            using (SqlConnection conexion = ConexionBD.ObtenerConexion())
+            using (SqlConnection conexion = Conectar())
             {
                 conexion.Open();
                 string buscar = "SELECT Id FROM Control WHERE Control = @Control AND Form = @Form";
@@ -239,7 +274,7 @@ namespace SIGAT.DAL
         public bool ExisteControl(string nombreControl, string nombreForm)
         {
             string consulta = "SELECT COUNT(*) FROM Control WHERE Control = @Control AND Form = @Form";
-            using (SqlConnection conexion = ConexionBD.ObtenerConexion())
+            using (SqlConnection conexion = Conectar())
             using (SqlCommand comando = new SqlCommand(consulta, conexion))
             {
                 comando.Parameters.AddWithValue("@Control", nombreControl);
@@ -256,7 +291,7 @@ namespace SIGAT.DAL
                                 FROM Control c
                                 WHERE NOT EXISTS
                                 (SELECT 1 FROM Traduccion t WHERE t.Id_Idioma = @IdIdioma AND t.Id_Control = c.Id)";
-            using (SqlConnection conexion = ConexionBD.ObtenerConexion())
+            using (SqlConnection conexion = Conectar())
             using (SqlCommand comando = new SqlCommand(consulta, conexion))
             {
                 comando.Parameters.AddWithValue("@IdIdioma", idIdioma);
@@ -275,7 +310,7 @@ namespace SIGAT.DAL
                                 FROM Idioma i
                                 WHERE NOT EXISTS
                                 (SELECT 1 FROM Traduccion t WHERE t.Id_Idioma = i.Id AND t.Id_Control = @IdControl)";
-            using (SqlConnection conexion = ConexionBD.ObtenerConexion())
+            using (SqlConnection conexion = Conectar())
             using (SqlCommand comando = new SqlCommand(consulta, conexion))
             {
                 comando.Parameters.AddWithValue("@IdControl", idControl);
@@ -290,7 +325,7 @@ namespace SIGAT.DAL
         {
             string consulta = @"UPDATE Traduccion SET Texto = @Texto, Estado = @Estado, DigitoVerificador = @DVH
                                 WHERE Id_Idioma = @IdIdioma AND Id_Control = @IdControl";
-            using (SqlConnection conexion = ConexionBD.ObtenerConexion())
+            using (SqlConnection conexion = Conectar())
             using (SqlCommand comando = new SqlCommand(consulta, conexion))
             {
                 comando.Parameters.AddWithValue("@IdIdioma", idIdioma);

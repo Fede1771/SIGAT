@@ -142,6 +142,29 @@ public class PresentacionVisualTests
                 Application.DoEvents();
                 ComprobarGrillas(form);
                 Guardar(principal, directory, "sigat-" + name);
+                if (name == "roles")
+                {
+                    var composition = (ScrollableControl)form.Controls.Find("cbRolDestino", true)[0].Parent!.Parent!;
+                    Assert.IsFalse(composition.VerticalScroll.Visible, $"Composición debe caber: panel {composition.Size}, contenido {composition.Controls[0].Size}, ventana {principal.Size}, vista {form.Size}.");
+                    Assert.IsTrue(composition.Controls[0].Bottom <= composition.ClientSize.Height,
+                        $"El contenido de composición debe caber: {composition.Controls[0].Bottom} / {composition.ClientSize.Height}.");
+                    foreach (string treeName in new[] { "tvRolesJerarquia", "tvCatalogoGeneral" })
+                    {
+                        var tree = (TreeView)form.Controls.Find(treeName, true)[0];
+                        foreach (TreeNode root in tree.Nodes)
+                            Assert.IsTrue(root.IsExpanded, "Ajustar las filas no debe plegar los roles ni los grupos de permisos.");
+                        void ComprobarNodos(TreeNodeCollection nodes)
+                        {
+                            foreach (TreeNode node in nodes)
+                            {
+                                Assert.IsTrue(node.Bounds.Top >= 0 && node.Bounds.Bottom <= tree.ClientSize.Height,
+                                    $"El elemento {node.Text} debe verse completo en {treeName}: {node.Bounds}, área {tree.ClientSize}, fila {tree.ItemHeight}.");
+                                if (node.IsExpanded) ComprobarNodos(node.Nodes);
+                            }
+                        }
+                        ComprobarNodos(tree.Nodes);
+                    }
+                }
             }
         });
     }

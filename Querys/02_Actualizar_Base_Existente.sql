@@ -202,6 +202,15 @@ BEGIN
     );
     UPDATE dbo.SeguridadVersion SET Version=Version+1 WHERE Id=1;
 END;'');
+IF OBJECT_ID(''dbo.UsuarioIdioma'',''U'') IS NULL
+BEGIN
+    CREATE TABLE dbo.UsuarioIdioma (
+        IdUsuario int NOT NULL CONSTRAINT PK_UsuarioIdioma PRIMARY KEY,
+        IdIdioma int NOT NULL,
+        CONSTRAINT FK_UsuarioIdioma_Usuario FOREIGN KEY (IdUsuario) REFERENCES dbo.Usuarios(IdUsuario),
+        CONSTRAINT FK_UsuarioIdioma_Idioma FOREIGN KEY (IdIdioma) REFERENCES dbo.Idioma(Id)
+    );
+END;
 COMMIT TRANSACTION;';
     EXEC sys.sp_executesql @Sql;
     PRINT N'Actualización completa finalizada. Revise las cuentas sin rol con 03_Consultar_Usuarios.sql.';

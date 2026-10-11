@@ -99,8 +99,19 @@ public class CompositeTests
                 var combo = (System.Windows.Forms.ComboBox)form.Controls.Find("cbUsuarios", true)[0];
                 Assert.AreEqual(3, combo.Items.Count);
                 Assert.IsEmpty(form.Controls.Find("btnCrearRolAnidado", true));
-                foreach (string boton in new[] { "btnAsignarARol", "btnCrearRol", "btnEliminarRol", "btnQuitarDeRol" })
+                Assert.IsEmpty(form.Controls.Find("btnCrearRol", true));
+                Assert.IsEmpty(form.Controls.Find("btnEliminarRol", true));
+                foreach (string boton in new[] { "btnAsignarARol", "btnQuitarDeRol" })
                     Assert.HasCount(1, form.Controls.Find(boton, true));
+                var distribucion = (System.Windows.Forms.TableLayoutPanel)combo.Parent!.Parent!;
+                Assert.AreEqual(1, distribucion.GetColumn(combo.Parent));
+                var destino = form.Controls.Find("cbRolDestino", true)[0];
+                Assert.AreEqual(2, distribucion.GetColumn(destino.Parent!.Parent!));
+                Assert.AreEqual(1, distribucion.GetRowSpan(destino.Parent!.Parent!));
+                Assert.AreEqual(2, distribucion.GetRowSpan(jerarquia.Parent!.Parent!));
+                Assert.AreEqual(0, distribucion.GetColumn(jerarquia.Parent!.Parent!));
+                Assert.AreEqual(2, distribucion.GetColumn(catalogo.Parent!.Parent!));
+                Assert.AreEqual(1, distribucion.GetRow(catalogo.Parent!.Parent!));
                 Assert.AreEqual("cuentaRegistrada", ((Usuario)combo.Items[0]).NombreUsuario);
                 Assert.AreEqual(42, ((Usuario)combo.Items[0]).IdUsuario);
                 Assert.AreEqual(1, cuenta.Roles.Count);

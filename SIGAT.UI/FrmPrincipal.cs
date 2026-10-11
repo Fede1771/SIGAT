@@ -70,7 +70,7 @@ namespace SIGAT.UI
             itemIdioma.DropDownItems.Add(itemGestionIdiomas);
         }
 
-        // Al arrancar, se aplica Español automaticamente
+        // Cada sesión empieza con la preferencia persistida de su propia cuenta.
         private void AplicarIdiomaPorDefecto(List<Idioma> idiomas)
         {
             if (IdiomaManager.ObtenerInstancia().IdiomaActual != null)
@@ -79,19 +79,7 @@ namespace SIGAT.UI
                 return;
             }
 
-            foreach (Idioma idioma in idiomas)
-            {
-                if (string.Equals(idioma.Codigo, "es", StringComparison.OrdinalIgnoreCase))
-                {
-                    _idiomaBLL.CambiarIdioma(idioma.Id);
-                    return;
-                }
-            }
-
-            if (idiomas.Count > 0)
-            {
-                _idiomaBLL.CambiarIdioma(idiomas[0].Id);
-            }
+            _idiomaBLL.RestablecerIdiomaUsuario();
         }
 
         private void OpcionDeIdioma_Click(object sender, EventArgs e)

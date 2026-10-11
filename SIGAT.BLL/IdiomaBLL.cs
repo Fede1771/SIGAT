@@ -7,7 +7,9 @@ namespace SIGAT.BLL
 {
     public class IdiomaBLL
     {
-        private IdiomaDAL _dal = new IdiomaDAL();
+        private readonly IdiomaDAL _dal;
+
+        public IdiomaBLL(IdiomaDAL? dal = null) { _dal = dal ?? new IdiomaDAL(); }
 
         public List<Idioma> ObtenerIdiomas()
         {
@@ -20,6 +22,25 @@ namespace SIGAT.BLL
         }
 
         public void CambiarIdioma(int idIdioma)
+        {
+            CargarIdioma(idIdioma, guardarPreferencia: true);
+        }
+
+        public void RestablecerIdiomaUsuario()
+        {
+            var usuario = SesionServicio.ObtenerInstancia().UsuarioActual
+                ?? throw new InvalidOperationException("Debe iniciar sesión para cargar su idioma.");
+            var idiomas = _dal.ObtenerIdiomas();
+            int? preferido = _dal.ObtenerIdiomaPreferido(usuario.IdUsuario);
+            Idioma? idioma = idiomas.Find(i => i.Id == preferido)
+                ?? idiomas.Find(i => string.Equals(i.Codigo, "es", StringComparison.OrdinalIgnoreCase))
+                ?? idiomas.FirstOrDefault();
+            if (idioma == null) throw new InvalidOperationException("No hay idiomas activos disponibles.");
+            // El idioma de respaldo no reemplaza una preferencia temporalmente inactiva.
+            CargarIdioma(idioma.Id, guardarPreferencia: false);
+        }
+
+        private void CargarIdioma(int idIdioma, bool guardarPreferencia)
         {
             Idioma idiomaElegido = _dal.ObtenerIdiomaPorId(idIdioma);
 
@@ -38,6 +59,12 @@ namespace SIGAT.BLL
                 diccionario[clave] = traduccion.Texto;
             }
 
+            if (guardarPreferencia)
+            {
+                var usuario = SesionServicio.ObtenerInstancia().UsuarioActual
+                    ?? throw new InvalidOperationException("Debe iniciar sesión para guardar su idioma.");
+                _dal.GuardarIdiomaPreferido(usuario.IdUsuario, idIdioma);
+            }
             IdiomaManager.ObtenerInstancia().CargarIdioma(idiomaElegido, diccionario);
         }
 

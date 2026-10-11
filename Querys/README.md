@@ -7,7 +7,7 @@
 3. Abrir `01_Instalacion_Completa.sql`, cambiar `@ClaveAdmin` y ejecutar **todo el archivo**. Dejar `@Base = N'SIGAT'` para la conexión actual.
 4. Ejecutar `04_Verificacion_Integridad.sql` y abrir SIGAT. Ingresar con `admin` y la contraseña elegida.
 
-**El archivo 01 es autónomo:** instala las 13 tablas de la aplicación y sus relaciones, idiomas y traducciones, 5 roles iniciales, 7 permisos y 16 relaciones entre roles y permisos. Incluye administrador protegido, roles editables, roles anidados y componentes de familias. La bitácora empieza vacía y solo se crea la cuenta `admin`. Las traducciones pendientes del catálogo siguen pendientes; la aplicación registra nuevas claves al abrir formularios.
+**El archivo 01 es autónomo:** instala las 14 tablas de la aplicación y sus relaciones, idiomas y traducciones, 5 roles iniciales, 7 permisos y 16 relaciones entre roles y permisos. Incluye administrador protegido, roles editables, roles anidados y componentes de familias. La bitácora empieza vacía y solo se crea la cuenta `admin`. Las traducciones pendientes del catálogo siguen pendientes; la aplicación registra nuevas claves al abrir formularios.
 
 El instalador utiliza el nivel de compatibilidad del motor, sin exigir 170 a versiones anteriores. Se detiene si la base ya existe, incluso vacía. Si falla al crear la estructura, revierte tablas y datos, pero puede quedar una base vacía: revisar el error y esa base antes de repetir. Ejecutar todo el archivo permite detenerlo ante errores, también desde SSMS sin modo SQLCMD.
 
@@ -38,6 +38,7 @@ Sobre el esquema actual conserva roles personalizados y asignaciones. Se puede r
 | `08_Reportes_Bitacora.sql` | Consultar eventos y estadísticas; editar fechas y usuario. |
 | `09_Limpieza_Bitacora.sql` | Revisar y archivar eventos antiguos. |
 | `10_Consultar_Roles.sql` | Consultar roles, asignaciones y permisos efectivos. |
+| `11_Idioma_Por_Usuario.sql` | Agregar preferencias de idioma a una base que ya tiene el esquema actual. |
 
 Las tareas de mantenimiento se conservan separadas porque se ejecutan en momentos distintos. Backup, restore, cambio de contraseña y limpieza no se ejecutan automáticamente al instalar.
 
@@ -62,3 +63,9 @@ Los originales de instalación y migración, junto con los T05, quedan en `Histo
 Probado en SQL Server Express 2025 usando bases temporales exclusivas: instalación nueva, rechazo de reinstalación sobre una base existente, protección del administrador, actualización del esquema de perfiles, reversión completa ante un fallo intermedio, repetición de la actualización, conservación de cuentas/contraseñas/bitácora y roles personalizados, consultas, hash UTF-8 con tildes y caracteres chinos, y archivo de bitácora sin duplicaciones. `CHECKDB` no informó errores. Las bases temporales se eliminaron al finalizar; la base SIGAT actual no se migró.
 
 El instalador requiere SQL Server 2019 o posterior, pero las pruebas de ejecución se hicieron en el motor disponible de esta PC. El backup pasó la comprobación de sintaxis sin generar un archivo. El restore se conserva para uso manual y no fue ejecutado.
+
+## Idioma preferido por usuario
+
+Cada cuenta conserva en SQL el idioma elegido mediante Aplicar o el selector superior. Al volver a iniciar sesión se recupera su propia preferencia; otra cuenta no la hereda. Sin elección previa se utiliza español. Si el idioma guardado está inactivo, se usa español sin borrar la preferencia.
+
+El instalador 01 y la actualización 02 incluyen UsuarioIdioma. Para una base que ya tiene las demás tablas actuales, ejecutar únicamente 11_Idioma_Por_Usuario.sql. Se puede repetir y no borra preferencias.

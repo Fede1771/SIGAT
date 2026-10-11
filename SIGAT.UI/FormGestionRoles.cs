@@ -270,45 +270,63 @@ namespace SIGAT.UI
             layout.Controls.Add(TemaVisual.Encabezado("Roles y permisos", "Organizá los accesos de cada usuario y los componentes de cada rol.", "gestion_roles_titulo", "gestion_roles_descripcion"), 0, 0);
             var workspace = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 3, RowCount = 2, Margin = Padding.Empty };
             workspace.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 34));
-            workspace.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 30));
             workspace.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 36));
-            workspace.RowStyles.Add(new RowStyle(SizeType.Percent, 52));
-            workspace.RowStyles.Add(new RowStyle(SizeType.Percent, 48));
+            workspace.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 30));
+            workspace.RowStyles.Add(new RowStyle(SizeType.Absolute, 320));
+            workspace.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
             layout.Controls.Add(workspace, 0, 1);
 
             tvRolesJerarquia.Name = "tvRolesJerarquia";
             tvCatalogoGeneral.Name = "tvCatalogoGeneral";
             tvUsuarioPermisos.Name = "tvUsuarioPermisos";
-            foreach (var tree in new[] { tvRolesJerarquia, tvCatalogoGeneral, tvUsuarioPermisos }) TemaVisual.Arbol(tree);
-            workspace.Controls.Add(Sector("Roles disponibles", "roles_disponibles", tvRolesJerarquia), 0, 0);
+            foreach (var tree in new[] { tvRolesJerarquia, tvCatalogoGeneral, tvUsuarioPermisos })
+            {
+                TemaVisual.Arbol(tree);
+                bool pendiente = false;
+                void ProgramarAjuste()
+                {
+                    if (pendiente || tree.IsDisposed || !tree.IsHandleCreated) return;
+                    pendiente = true;
+                    // Ajustar al terminar el mensaje nativo de tamaño/expansión del árbol.
+                    tree.BeginInvoke((Action)(() =>
+                    {
+                        pendiente = false;
+                        if (!tree.IsDisposed) AjustarFilasArbol(tree);
+                    }));
+                }
+                tree.HandleCreated += (_, _) => ProgramarAjuste();
+                tree.ClientSizeChanged += (_, _) => ProgramarAjuste();
+                tree.AfterExpand += (_, _) => ProgramarAjuste();
+                tree.AfterCollapse += (_, _) => ProgramarAjuste();
+            }
+            var rolesCard = Sector("Roles disponibles", "roles_disponibles", tvRolesJerarquia);
+            workspace.Controls.Add(rolesCard, 0, 0);
+            workspace.SetRowSpan(rolesCard, 2);
             var catalog = Sector("Catálogo de permisos", "catalogo_permisos", tvCatalogoGeneral);
-            catalog.Margin = new Padding(0, 16, 16, 0);
-            workspace.Controls.Add(catalog, 0, 1);
+            catalog.Margin = new Padding(0, 16, 0, 0);
+            workspace.Controls.Add(catalog, 2, 1);
 
-            var editor = new TableLayoutPanel { Dock = DockStyle.Top, AutoSize = true, ColumnCount = 1, Padding = new Padding(18) };
+            var editor = new TableLayoutPanel { Dock = DockStyle.Top, AutoSize = false, ColumnCount = 1, Padding = new Padding(12) };
             editor.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
-            editor.Controls.Add(TemaVisual.Etiqueta("Composición del rol", "composicion_rol", true));
+            var tituloComposicion = TemaVisual.Etiqueta("Composición del rol", "composicion_rol", true);
+            tituloComposicion.Margin = new Padding(0, 0, 0, 8);
+            editor.Controls.Add(tituloComposicion);
             editor.Controls.Add(TemaVisual.Etiqueta("Rol destino", "rol_destino"));
             cbRolDestino.Name = "cbRolDestino";
             cbRolDestino.DropDownStyle = ComboBoxStyle.DropDownList;
             cbRolDestino.Dock = DockStyle.Fill;
-            cbRolDestino.Margin = new Padding(0, 0, 0, 16);
+            cbRolDestino.Margin = new Padding(0, 0, 0, 6);
             editor.Controls.Add(cbRolDestino);
-            editor.Controls.Add(Ayuda("Seleccioná un rol o permiso a la izquierda y elegí dónde asignarlo.", "ayuda_composicion"));
+            editor.Controls.Add(Ayuda("Seleccioná un rol o permiso y elegí el destino.", "ayuda_composicion_destino"));
             editor.Controls.Add(Boton("btnAsignarARol", "Asignar componente", AsignarARol, "asignar_componente", primary: true));
             editor.Controls.Add(Boton("btnQuitarDeRol", "Quitar componente", QuitarDeRol, "quitar_componente"));
             editor.Controls.Add(Boton("btnEditarFamilia", "Editar familia de permisos", EditarFamilia, "editar_familia"));
-            var divider = new Panel { Height = 1, Dock = DockStyle.Top, BackColor = TemaVisual.Borde, Margin = new Padding(0, 12, 0, 16) };
-            editor.Controls.Add(divider);
-            editor.Controls.Add(Boton("btnCrearRol", "Crear rol", () => CrearRol(false), "crear_rol"));
-            editor.Controls.Add(Boton("btnEliminarRol", "Eliminar rol", EliminarRol, "eliminar_rol", danger: true));
-            editor.Controls.Add(Ayuda("El rol Administrador está protegido. Los cambios se aplican al volver a iniciar sesión.", "ayuda_administrador"));
-            var editorCard = new Panel { Dock = DockStyle.Fill, BackColor = Color.White, AutoScroll = true, Margin = new Padding(0, 0, 16, 0) };
+            editor.Controls.Add(Ayuda("El rol Administrador está protegido.", "ayuda_administrador_protegido"));
+            var editorCard = new Panel { Dock = DockStyle.Fill, BackColor = Color.White, AutoScroll = true, Margin = Padding.Empty };
             editorCard.Controls.Add(editor);
-            workspace.Controls.Add(editorCard, 1, 0);
-            workspace.SetRowSpan(editorCard, 2);
+            workspace.Controls.Add(editorCard, 2, 0);
 
-            var userCard = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 1, RowCount = 5, BackColor = Color.White, Padding = new Padding(18), Margin = Padding.Empty };
+            var userCard = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 1, RowCount = 5, BackColor = Color.White, Padding = new Padding(18), Margin = new Padding(0, 0, 16, 0) };
             userCard.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
             for (int row = 0; row < 4; row++) userCard.RowStyles.Add(new RowStyle(SizeType.AutoSize));
             userCard.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
@@ -335,8 +353,23 @@ namespace SIGAT.UI
             userCard.Controls.Add(Ayuda("Para asignar, seleccioná un rol a la izquierda. Para quitar, seleccioná el rol asignado en este panel.", "ayuda_asignacion"), 0, 3);
             tvUsuarioPermisos.Dock = DockStyle.Fill;
             userCard.Controls.Add(tvUsuarioPermisos, 0, 4);
-            workspace.Controls.Add(userCard, 2, 0);
+            workspace.Controls.Add(userCard, 1, 0);
             workspace.SetRowSpan(userCard, 2);
+            workspace.Layout += (_, _) =>
+            {
+                if (workspace.Height <= 0 || editorCard.Width <= 0) return;
+                int filaMinima = Math.Max(tvCatalogoGeneral.Font.Height + 3, 22);
+                int altoCatalogo = ContarFilasVisibles(tvCatalogoGeneral.Nodes) * filaMinima + 76;
+                int ancho = Math.Max(1, editorCard.ClientSize.Width - editor.Padding.Horizontal);
+                int preferido = editor.Padding.Vertical + editor.Controls.Cast<Control>().Sum(control =>
+                    control.GetPreferredSize(new Size(Math.Max(1, ancho - control.Margin.Horizontal), 0)).Height
+                    + control.Margin.Vertical) + 8;
+                if (editor.Height != preferido) editor.Height = preferido;
+                int alto = Math.Min(preferido, Math.Max(160, workspace.Height - altoCatalogo));
+                if (Math.Abs(workspace.RowStyles[0].Height - alto) > 1)
+                    workspace.RowStyles[0].Height = alto;
+                editorCard.AutoScroll = preferido > alto;
+            };
 
             lblEstado.AutoSize = true;
             lblEstado.Dock = DockStyle.Fill;
@@ -362,25 +395,67 @@ namespace SIGAT.UI
             layout.Controls.Add(TemaVisual.Etiqueta(title, key, true), 0, 0);
             tree.Dock = DockStyle.Fill;
             layout.Controls.Add(tree, 0, 1);
-            var card = TemaVisual.Tarjeta(layout);
+            var card = TemaVisual.Tarjeta(layout, 14);
             card.Margin = new Padding(0, 0, 16, 0);
             return card;
         }
 
         private static Label Ayuda(string text, string key)
-            => new Label { Text = text, Tag = key, Dock = DockStyle.Fill, AutoSize = true, ForeColor = TemaVisual.Secundario, Margin = new Padding(0, 0, 0, 14) };
+            => new Label { Text = text, Tag = key, Dock = DockStyle.Fill, AutoSize = true, Font = new Font("Segoe UI", 9F), ForeColor = TemaVisual.Secundario, Margin = new Padding(0, 0, 0, 6) };
 
         private Button Boton(string name, string text, Action action, string key, bool primary = false, bool danger = false)
         {
             var button = TemaVisual.Boton(name, text, primary, danger);
+            button.MinimumSize = new Size(96, 34);
+            button.Height = 34;
             button.Tag = key;
             button.Dock = DockStyle.Fill;
             button.AutoSize = true;
-            button.Margin = new Padding(0, 0, 0, 10);
+            button.Margin = new Padding(0, 0, 0, 4);
             button.Click += (_, _) => Ejecutar(action);
             return button;
         }
 
         public void ActualizarIdioma() => TraductorFormularios.TraducirFormulario(this);
+
+        private static int ContarFilasVisibles(TreeNodeCollection nodos)
+        {
+            int cantidad = 0;
+            foreach (TreeNode nodo in nodos)
+                cantidad += 1 + (nodo.IsExpanded ? ContarFilasVisibles(nodo.Nodes) : 0);
+            return cantidad;
+        }
+
+        private static void AjustarFilasArbol(TreeView arbol)
+        {
+            int cantidad = ContarFilasVisibles(arbol.Nodes);
+            if (cantidad == 0 || arbol.ClientSize.Height <= 0) return;
+            int minimo = Math.Max(arbol.Font.Height + 3, arbol.ImageList?.ImageSize.Height + 2 ?? 22);
+            int maximo = Math.Max(minimo, (int)Math.Round(28 * arbol.DeviceDpi / 96F));
+            int altura = Math.Clamp((arbol.ClientSize.Height - 4) / cantidad, minimo, maximo);
+            if (arbol.ItemHeight == altura) return;
+            var expandidos = new List<TreeNode>();
+            void Recordar(TreeNodeCollection nodos)
+            {
+                foreach (TreeNode nodo in nodos)
+                {
+                    if (nodo.IsExpanded) expandidos.Add(nodo);
+                    Recordar(nodo.Nodes);
+                }
+            }
+            Recordar(arbol.Nodes);
+            var seleccionado = arbol.SelectedNode;
+            var superior = arbol.TopNode;
+            arbol.BeginUpdate();
+            try
+            {
+                // El control nativo recrea su ventana al cambiar ItemHeight.
+                arbol.ItemHeight = altura;
+                foreach (var nodo in expandidos) nodo.Expand();
+                arbol.SelectedNode = seleccionado;
+                arbol.TopNode = cantidad * altura <= arbol.ClientSize.Height - 4 ? arbol.Nodes[0] : superior;
+            }
+            finally { arbol.EndUpdate(); }
+        }
     }
 }

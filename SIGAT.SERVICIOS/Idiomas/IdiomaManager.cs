@@ -12,7 +12,7 @@ namespace SIGAT.SERVICIOS.Idiomas
 
         public Idioma? IdiomaActual { get; private set; }
 
-        // Estado local del proceso: nunca persiste la selección en el servidor.
+        // Limpia la sesión; IdiomaBLL recupera la preferencia de la cuenta desde SQL.
         public void ReiniciarSesion()
         {
             IdiomaActual = null;
