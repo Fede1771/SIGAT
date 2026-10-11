@@ -211,6 +211,11 @@ BEGIN
         CONSTRAINT FK_UsuarioIdioma_Idioma FOREIGN KEY (IdIdioma) REFERENCES dbo.Idioma(Id)
     );
 END;
+IF OBJECT_ID(''dbo.IntegridadTabla'',''U'') IS NULL
+    CREATE TABLE dbo.IntegridadTabla (
+        Tabla nvarchar(30) NOT NULL PRIMARY KEY,HashVertical char(64) NOT NULL,Cantidad bigint NOT NULL,
+        IdBase uniqueidentifier NOT NULL,Version int NOT NULL CHECK(Version=1)
+    );
 COMMIT TRANSACTION;';
     EXEC sys.sp_executesql @Sql;
     PRINT N'Actualización completa finalizada. Revise las cuentas sin rol con 03_Consultar_Usuarios.sql.';

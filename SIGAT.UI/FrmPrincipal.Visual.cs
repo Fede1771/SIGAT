@@ -10,6 +10,7 @@ public partial class FrmPrincipal
     private Label lblCuenta, lblRoles, lblSeccion;
     private Button btnIdiomaVisual;
     private ContextMenuStrip selectorIdioma;
+    private ToolStripMenuItem itemIntegridad;
     private readonly Dictionary<string, BotonNavegacion> navegacion = new();
     private readonly List<(string Seccion, ToolStripMenuItem Menu, IconoVisual Icono)> accesos = new();
 
@@ -58,7 +59,8 @@ public partial class FrmPrincipal
             ("FrmGestionUsuarios", itemUsuarios, IconoVisual.Usuarios, "menu_usuarios"),
             ("FormGestionRoles", itemRoles, IconoVisual.Roles, "menu_roles"),
             ("FrmGestionIdiomas", itemGestionIdiomas, IconoVisual.Idiomas, "menu_gestion_idiomas"),
-            ("FrmBitacora", itemBitacora, IconoVisual.Bitacora, "menu_bitacora")
+            ("FrmBitacora", itemBitacora, IconoVisual.Bitacora, "menu_bitacora"),
+            ("FrmIntegridad", itemIntegridad, IconoVisual.Roles, "menu_integridad")
         })
         {
             // Available conserva la condición de permisos aunque el menú no esté mostrado.

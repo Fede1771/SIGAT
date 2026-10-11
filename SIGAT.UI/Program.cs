@@ -3,6 +3,7 @@ using System.Threading;
 using System.Windows.Forms;
 using SIGAT.BLL;
 using SIGAT.SERVICIOS;
+using SIGAT.BE.Integridad;
 
 namespace SIGAT.UI
 {
@@ -21,7 +22,23 @@ namespace SIGAT.UI
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(ManejarErrorDeFondo);
 
             // Arrancamos el sistema mostrando la pantalla de login
-            Application.Run(new FrmLogin());
+            try
+            {
+                var informe = new IntegridadBLL().Verificar();
+                if (!informe.Correcta)
+                {
+                    IntegridadBLL.RegistrarIncidente(informe);
+                    using var recuperar = new FrmIntegridad(informe, bloquearInicio: true);
+                    if (recuperar.ShowDialog() != DialogResult.OK) return;
+                    new IntegridadBLL().ExigirIntegridad();
+                }
+                Application.Run(new FrmLogin());
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("No se pudo verificar la integridad de SIGAT.\n" + ex.Message,
+                    "Inicio bloqueado", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         // Método que atrapa errores de la interfaz
@@ -42,6 +59,14 @@ namespace SIGAT.UI
         // Lógica central para registrar y mostrar el error sin que el sistema muera
         static void ManejarErrorCritico(Exception excepcion)
         {
+            if (excepcion is IntegridadException integridad)
+            {
+                try { IntegridadBLL.RegistrarIncidente(integridad.Informe); } catch { }
+                using var recuperar = new FrmIntegridad(integridad.Informe, bloquearInicio: true);
+                if (recuperar.ShowDialog(Form.ActiveForm) == DialogResult.OK) Application.Restart();
+                Application.Exit();
+                return;
+            }
             try
             {
                 BitacoraBLL bitacoraBLL = new BitacoraBLL();

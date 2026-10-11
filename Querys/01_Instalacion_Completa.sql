@@ -594,6 +594,10 @@ CREATE TABLE dbo.PermisoHijo (
  PRIMARY KEY (IdPadre,IdHijo),
  CHECK (IdPadre IN (3,4,5,6,7) AND IdPadre<>IdHijo)
 );
+CREATE TABLE dbo.IntegridadTabla (
+ Tabla nvarchar(30) NOT NULL PRIMARY KEY,HashVertical char(64) NOT NULL,Cantidad bigint NOT NULL,
+ IdBase uniqueidentifier NOT NULL,Version int NOT NULL CHECK(Version=1)
+);
 INSERT dbo.SeguridadVersion (Id,Version,Esquema) VALUES (1,1,2);
 INSERT dbo.UsuarioRol (IdUsuario,IdRol) VALUES (1,1);
 INSERT dbo.AdministradorOriginal (Id,IdUsuario) VALUES (1,1);

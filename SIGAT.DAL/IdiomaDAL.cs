@@ -6,8 +6,9 @@ namespace SIGAT.DAL
     public class IdiomaDAL
     {
         private readonly string? cadena;
+        private readonly IntegridadDAL integridad;
 
-        public IdiomaDAL(string? cadenaConexion = null) { cadena = cadenaConexion; }
+        public IdiomaDAL(string? cadenaConexion = null) { cadena = cadenaConexion; integridad = new IntegridadDAL(cadenaConexion); }
 
         private SqlConnection Conectar()
             => cadena == null ? ConexionBD.ObtenerConexion() : new SqlConnection(cadena);
@@ -180,72 +181,29 @@ namespace SIGAT.DAL
             }
         }
 
-        public List<Traduccion> ObtenerTraduccionesPorIdioma(int idIdioma)
-        {
-            List<Traduccion> lista = new List<Traduccion>();
-            string consulta = @"SELECT t.Id_Idioma, t.Id_Control, t.Texto, t.DigitoVerificador, c.Control, c.Form, t.Estado
-                                FROM Traduccion t INNER JOIN Control c ON c.Id = t.Id_Control
-                                WHERE t.Id_Idioma = @IdIdioma AND t.Texto IS NOT NULL";
+        public List<Traduccion> ObtenerTraduccionesPorIdioma(int idIdioma) => ConsultarTraducciones(idIdioma, false);
+        public List<Traduccion> ObtenerTraduccionesParaGestion(int idIdioma) => ConsultarTraducciones(idIdioma, true);
 
-            using (SqlConnection conexion = Conectar())
-            using (SqlCommand comando = new SqlCommand(consulta, conexion))
+        private List<Traduccion> ConsultarTraducciones(int idIdioma, bool gestion)
+            => integridad.LeerVerificado((conexion, transaccion) =>
             {
-                comando.Parameters.AddWithValue("@IdIdioma", idIdioma);
-                conexion.Open();
-                using (SqlDataReader lector = comando.ExecuteReader())
+                var lista = new List<Traduccion>();
+                using var comando = new SqlCommand(@"SELECT t.Id_Idioma,t.Id_Control,t.Texto,t.DigitoVerificador,t.Estado,c.Control,c.Form,
+                    ISNULL(tb.Texto,'') AS TextoBase FROM dbo.Traduccion t JOIN dbo.Control c ON c.Id=t.Id_Control
+                    LEFT JOIN dbo.Idioma es ON es.Codigo='es'
+                    LEFT JOIN dbo.Traduccion tb ON tb.Id_Idioma=es.Id AND tb.Id_Control=t.Id_Control
+                    WHERE t.Id_Idioma=@Idioma AND (@Gestion=1 OR t.Texto IS NOT NULL) ORDER BY c.Form,c.Control", conexion, transaccion);
+                comando.Parameters.AddWithValue("@Idioma", idIdioma);
+                comando.Parameters.AddWithValue("@Gestion", gestion);
+                using var lector = comando.ExecuteReader();
+                while (lector.Read()) lista.Add(new Traduccion
                 {
-                    while (lector.Read())
-                    {
-                        Traduccion traduccion = new Traduccion();
-                        traduccion.IdIdioma = lector.GetInt32(0);
-                        traduccion.IdControl = lector.GetInt32(1);
-                        traduccion.Texto = lector.GetString(2);
-                        traduccion.DigitoVerificador = lector.IsDBNull(3) ? null : lector.GetString(3);
-                        traduccion.ControlNombre = lector.GetString(4);
-                        traduccion.FormNombre = lector.GetString(5);
-                        traduccion.Estado = lector.GetString(6);
-                        lista.Add(traduccion);
-                    }
-                }
-            }
-            return lista;
-        }
-
-        public List<Traduccion> ObtenerTraduccionesParaGestion(int idIdioma)
-        {
-            List<Traduccion> lista = new List<Traduccion>();
-            string consulta = @"SELECT t.Id_Idioma, t.Id_Control, t.Texto, t.Estado, c.Control, c.Form,
-                                       ISNULL(tBase.Texto, '') AS TextoBase
-                                FROM Traduccion t
-                                INNER JOIN Control c ON c.Id = t.Id_Control
-                                LEFT JOIN Idioma idiomaBase ON idiomaBase.Codigo = 'es'
-                                LEFT JOIN Traduccion tBase ON tBase.Id_Idioma = idiomaBase.Id AND tBase.Id_Control = t.Id_Control
-                                WHERE t.Id_Idioma = @IdIdioma
-                                ORDER BY c.Form, c.Control";
-
-            using (SqlConnection conexion = Conectar())
-            using (SqlCommand comando = new SqlCommand(consulta, conexion))
-            {
-                comando.Parameters.AddWithValue("@IdIdioma", idIdioma);
-                conexion.Open();
-                using (SqlDataReader lector = comando.ExecuteReader())
-                {
-                    while (lector.Read())
-                    {
-                        Traduccion traduccion = new Traduccion();
-                        traduccion.IdIdioma = lector.GetInt32(0);
-                        traduccion.IdControl = lector.GetInt32(1);
-                        traduccion.Texto = lector.IsDBNull(2) ? "" : lector.GetString(2);
-                        traduccion.Estado = lector.GetString(3);
-                        traduccion.ControlNombre = lector.GetString(4);
-                        traduccion.FormNombre = lector.GetString(5);
-                        traduccion.TextoBase = lector.GetString(6);
-                        lista.Add(traduccion);
-                    }
-                }
-            }
-            return lista;
-        }
+                    IdIdioma=lector.GetInt32(0), IdControl=lector.GetInt32(1), Texto=lector.IsDBNull(2)?"":lector.GetString(2),
+                    DigitoVerificador=lector.IsDBNull(3)?null:lector.GetString(3), Estado=lector.GetString(4),
+                    ControlNombre=lector.GetString(5), FormNombre=lector.GetString(6), TextoBase=lector.GetString(7)
+                });
+                return lista;
+            });
 
         public int ObtenerOCrearControl(string nombreControl, string nombreForm)
         {
@@ -286,56 +244,43 @@ namespace SIGAT.DAL
 
         public void CrearTraduccionesPendientes(int idIdioma)
         {
-            string consulta = @"INSERT INTO Traduccion (Id_Idioma, Id_Control, Texto, DigitoVerificador, Estado)
-                                SELECT @IdIdioma, c.Id, NULL, NULL, 'Pendiente'
-                                FROM Control c
-                                WHERE NOT EXISTS
-                                (SELECT 1 FROM Traduccion t WHERE t.Id_Idioma = @IdIdioma AND t.Id_Control = c.Id)";
-            using (SqlConnection conexion = Conectar())
-            using (SqlCommand comando = new SqlCommand(consulta, conexion))
+            integridad.Cambiar("Traduccion", (conexion, transaccion) =>
             {
-                comando.Parameters.AddWithValue("@IdIdioma", idIdioma);
-                conexion.Open();
-                comando.ExecuteNonQuery();
-            }
+                using var cmd = new SqlCommand(@"INSERT dbo.Traduccion(Id_Idioma,Id_Control,Texto,DigitoVerificador,Estado)
+                    SELECT @Idioma,c.Id,NULL,NULL,'Pendiente' FROM dbo.Control c
+                    WHERE NOT EXISTS(SELECT 1 FROM dbo.Traduccion t WHERE t.Id_Idioma=@Idioma AND t.Id_Control=c.Id)", conexion, transaccion);
+                cmd.Parameters.AddWithValue("@Idioma",idIdioma);
+                return cmd.ExecuteNonQuery();
+            });
         }
 
-        public void CrearPendientesParaTodosLosIdiomas(int idControl, int idIdiomaBase, string textoBase)
+        public void CrearPendientesParaTodosLosIdiomas(int idControl,int idIdiomaBase,string textoBase)
         {
-            string consulta = @"INSERT INTO Traduccion (Id_Idioma, Id_Control, Texto, DigitoVerificador, Estado)
-                                SELECT i.Id, @IdControl,
-                                    CASE WHEN i.Id = @IdIdiomaBase THEN @TextoBase ELSE NULL END,
-                                    NULL,
-                                    CASE WHEN i.Id = @IdIdiomaBase THEN 'Completa' ELSE 'Pendiente' END
-                                FROM Idioma i
-                                WHERE NOT EXISTS
-                                (SELECT 1 FROM Traduccion t WHERE t.Id_Idioma = i.Id AND t.Id_Control = @IdControl)";
-            using (SqlConnection conexion = Conectar())
-            using (SqlCommand comando = new SqlCommand(consulta, conexion))
+            integridad.Cambiar("Traduccion", (conexion, transaccion) =>
             {
-                comando.Parameters.AddWithValue("@IdControl", idControl);
-                comando.Parameters.AddWithValue("@IdIdiomaBase", idIdiomaBase);
-                comando.Parameters.AddWithValue("@TextoBase", textoBase);
-                conexion.Open();
-                comando.ExecuteNonQuery();
-            }
+                using var cmd = new SqlCommand(@"INSERT dbo.Traduccion(Id_Idioma,Id_Control,Texto,DigitoVerificador,Estado)
+                    SELECT i.Id,@Control,CASE WHEN i.Id=@Base THEN @Texto ELSE NULL END,NULL,
+                    CASE WHEN i.Id=@Base THEN 'Completa' ELSE 'Pendiente' END FROM dbo.Idioma i
+                    WHERE NOT EXISTS(SELECT 1 FROM dbo.Traduccion t WHERE t.Id_Idioma=i.Id AND t.Id_Control=@Control)", conexion, transaccion);
+                cmd.Parameters.AddWithValue("@Control",idControl); cmd.Parameters.AddWithValue("@Base",idIdiomaBase); cmd.Parameters.AddWithValue("@Texto",textoBase);
+                return cmd.ExecuteNonQuery();
+            });
         }
 
-        public void ActualizarTraduccion(int idIdioma, int idControl, string texto, string estado, string digitoVerificador)
+        public void ActualizarTraduccion(int idIdioma,int idControl,string texto,string estado,string digitoVerificador)
         {
-            string consulta = @"UPDATE Traduccion SET Texto = @Texto, Estado = @Estado, DigitoVerificador = @DVH
-                                WHERE Id_Idioma = @IdIdioma AND Id_Control = @IdControl";
-            using (SqlConnection conexion = Conectar())
-            using (SqlCommand comando = new SqlCommand(consulta, conexion))
+            integridad.Cambiar("Traduccion", (conexion, transaccion) =>
             {
-                comando.Parameters.AddWithValue("@IdIdioma", idIdioma);
-                comando.Parameters.AddWithValue("@IdControl", idControl);
-                comando.Parameters.AddWithValue("@Texto", string.IsNullOrWhiteSpace(texto) ? DBNull.Value : texto);
-                comando.Parameters.AddWithValue("@Estado", estado);
-                comando.Parameters.AddWithValue("@DVH", string.IsNullOrWhiteSpace(digitoVerificador) ? DBNull.Value : digitoVerificador);
-                conexion.Open();
-                comando.ExecuteNonQuery();
-            }
+                string? normalizado=string.IsNullOrWhiteSpace(texto)?null:texto;
+                using var cmd = new SqlCommand(@"UPDATE dbo.Traduccion SET Texto=@Texto,Estado=@Estado,DigitoVerificador=@DV
+                    WHERE Id_Idioma=@Idioma AND Id_Control=@Control",conexion,transaccion);
+                cmd.Parameters.AddWithValue("@Texto",(object?)normalizado??DBNull.Value); cmd.Parameters.AddWithValue("@Estado",estado);
+                cmd.Parameters.AddWithValue("@DV",SIGAT.SERVICIOS.VerificadorSHA256.Traduccion(idIdioma,idControl,normalizado,estado));
+                cmd.Parameters.AddWithValue("@Idioma",idIdioma); cmd.Parameters.AddWithValue("@Control",idControl);
+                int filas=cmd.ExecuteNonQuery();
+                if(filas!=1) throw new InvalidOperationException("La traducción ya no existe.");
+                return filas;
+            });
         }
     }
 }

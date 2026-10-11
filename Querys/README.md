@@ -7,7 +7,7 @@
 3. Abrir `01_Instalacion_Completa.sql`, cambiar `@ClaveAdmin` y ejecutar **todo el archivo**. Dejar `@Base = N'SIGAT'` para la conexión actual.
 4. Ejecutar `04_Verificacion_Integridad.sql` y abrir SIGAT. Ingresar con `admin` y la contraseña elegida.
 
-**El archivo 01 es autónomo:** instala las 14 tablas de la aplicación y sus relaciones, idiomas y traducciones, 5 roles iniciales, 7 permisos y 16 relaciones entre roles y permisos. Incluye administrador protegido, roles editables, roles anidados y componentes de familias. La bitácora empieza vacía y solo se crea la cuenta `admin`. Las traducciones pendientes del catálogo siguen pendientes; la aplicación registra nuevas claves al abrir formularios.
+**El archivo 01 es autónomo:** instala las 15 tablas de la aplicación y sus relaciones, idiomas y traducciones, 5 roles iniciales, 7 permisos y 16 relaciones entre roles y permisos. Incluye administrador protegido, roles editables, roles anidados y componentes de familias. La bitácora empieza vacía y solo se crea la cuenta `admin`. Las traducciones pendientes del catálogo siguen pendientes; la aplicación registra nuevas claves al abrir formularios.
 
 El instalador utiliza el nivel de compatibilidad del motor, sin exigir 170 a versiones anteriores. Se detiene si la base ya existe, incluso vacía. Si falla al crear la estructura, revierte tablas y datos, pero puede quedar una base vacía: revisar el error y esa base antes de repetir. Ejecutar todo el archivo permite detenerlo ante errores, también desde SSMS sin modo SQLCMD.
 
@@ -39,6 +39,7 @@ Sobre el esquema actual conserva roles personalizados y asignaciones. Se puede r
 | `09_Limpieza_Bitacora.sql` | Revisar y archivar eventos antiguos. |
 | `10_Consultar_Roles.sql` | Consultar roles, asignaciones y permisos efectivos. |
 | `11_Idioma_Por_Usuario.sql` | Agregar preferencias de idioma a una base que ya tiene el esquema actual. |
+| `12_Control_Integridad.sql` | Crear la estructura de DVH/DVV; la referencia se prepara desde SIGAT. |
 
 Las tareas de mantenimiento se conservan separadas porque se ejecutan en momentos distintos. Backup, restore, cambio de contraseña y limpieza no se ejecutan automáticamente al instalar.
 
@@ -69,3 +70,7 @@ El instalador requiere SQL Server 2019 o posterior, pero las pruebas de ejecuci�
 Cada cuenta conserva en SQL el idioma elegido mediante Aplicar o el selector superior. Al volver a iniciar sesión se recupera su propia preferencia; otra cuenta no la hereda. Sin elección previa se utiliza español. Si el idioma guardado está inactivo, se usa español sin borrar la preferencia.
 
 El instalador 01 y la actualización 02 incluyen UsuarioIdioma. Para una base que ya tiene las demás tablas actuales, ejecutar únicamente 11_Idioma_Por_Usuario.sql. Se puede repetir y no borra preferencias.
+
+## Integridad SHA-256
+
+El control actual protege Bitacora y Traduccion con DVH y DVV. El instalador 01 y la actualización 02 incluyen IntegridadTabla. Ver GUIA_INTEGRIDAD.md para la preparación, los backups comprobados, la recuperación y la demostración en una copia de pruebas. El script 12 crea solo la estructura; no acepta ni recalcula automáticamente datos alterados.

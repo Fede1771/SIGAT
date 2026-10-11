@@ -1,4 +1,4 @@
-﻿-- Solo lectura. Ejecutar después del instalador o de la actualización.
+-- Solo lectura. Ejecutar después del instalador o de la actualización.
 USE [SIGAT];
 SET NOCOUNT ON;
 DBCC CHECKDB ('SIGAT') WITH NO_INFOMSGS;
@@ -7,7 +7,7 @@ DECLARE @Requeridas TABLE (Nombre sysname);
 INSERT @Requeridas VALUES
  ('Usuarios'),('Bitacora'),('Idioma'),('Control'),('Traduccion'),
  ('SeguridadVersion'),('Permiso'),('Rol'),('RolPermiso'),('UsuarioRol'),
- ('AdministradorOriginal'),('RolHijo'),('PermisoHijo'),('UsuarioIdioma');
+ ('AdministradorOriginal'),('RolHijo'),('PermisoHijo'),('UsuarioIdioma'),('IntegridadTabla');
 SELECT Nombre AS TablaFaltante FROM @Requeridas
 WHERE OBJECT_ID(N'dbo.' + Nombre,'U') IS NULL;
 IF EXISTS (SELECT 1 FROM @Requeridas WHERE OBJECT_ID(N'dbo.' + Nombre,'U') IS NULL)
@@ -35,4 +35,8 @@ ORDER BY c.Form,c.Control,i.Nombre;
 SELECT i.Nombre,t.Estado,COUNT(*) AS Cantidad
 FROM dbo.Traduccion t JOIN dbo.Idioma i ON i.Id=t.Id_Idioma
 GROUP BY i.Nombre,t.Estado ORDER BY i.Nombre,t.Estado;
+GO
+
+-- Para comparar SHA-256 de los registros y conjuntos, usar Integridad y recuperación en SIGAT.
+SELECT Tabla,Cantidad,Version FROM dbo.IntegridadTabla;
 GO

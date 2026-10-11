@@ -35,6 +35,16 @@ namespace SIGAT.UI
                 if (PuedeAbrir(MatrizRoles.Administracion)) AbrirFormulario(new FormGestionRoles());
             };
             itemSistema.DropDownItems.Add(itemRoles);
+            itemIntegridad = new ToolStripMenuItem("Integridad y recuperación");
+            itemIntegridad.Visible = usuarioLogueado != null && usuarioLogueado.TienePermiso(MatrizRoles.Administracion);
+            itemIntegridad.Click += (_, _) =>
+            {
+                if (!PuedeAbrir(MatrizRoles.Administracion)) return;
+                using var dialogo = new FrmIntegridad();
+                dialogo.ShowDialog(this);
+                if (new IntegridadBLL().Verificar().Correcta) _idiomaBLL.RestablecerIdiomaUsuario();
+            };
+            itemSistema.DropDownItems.Add(itemIntegridad);
             CrearMarcoVisual(itemRoles);
             this.FormClosed += FrmPrincipal_FormClosed;
         }

@@ -117,12 +117,8 @@ namespace SIGAT.BLL
         public void GuardarTraduccionPorControl(int idIdioma, int idControl, string texto)
         {
             string estado = string.IsNullOrWhiteSpace(texto) ? "Pendiente" : "Completa";
-            string digitoVerificador = null;
-
-            if (!string.IsNullOrWhiteSpace(texto))
-            {
-                digitoVerificador = HashHelper.ObtenerHashSHA256(idIdioma + "|" + idControl + "|" + texto);
-            }
+            string digitoVerificador = VerificadorSHA256.Traduccion(idIdioma, idControl,
+                string.IsNullOrWhiteSpace(texto) ? null : texto, estado);
 
             _dal.ActualizarTraduccion(idIdioma, idControl, texto, estado, digitoVerificador);
         }

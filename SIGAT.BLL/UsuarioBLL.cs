@@ -26,6 +26,7 @@ namespace SIGAT.BLL
 
         public ResultadoLogin Autenticar(string nombreUsuario, string passwordPlana, out Usuario usuarioValidado)
         {
+            new IntegridadBLL().ExigirIntegridad();
             usuarioValidado = _dal.ObtenerPorNombreUsuario(nombreUsuario);
             string hashCalculado = HashHelper.ObtenerHashSHA256(passwordPlana);
 

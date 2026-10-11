@@ -15,6 +15,33 @@ namespace SIGAT.Tests;
 public class PresentacionVisualTests
 {
     [TestMethod]
+    public void RecuperacionNoPermiteContinuarConDatosDaniados()
+    {
+        EnInterfaz(() =>
+        {
+            var informe = new SIGAT.BE.Integridad.InformeIntegridad { Configurada = true };
+            informe.Problemas.Add(new("Traduccion", "1|1", "El SHA-256 del registro no coincide."));
+            informe.Problemas.Add(new("Bitacora", "Tabla", "El conjunto de registros no coincide con el DVV."));
+            using var form = new FrmIntegridad(informe, bloquearInicio: true);
+            var key = typeof(Form).GetField("s_shownEvent", BindingFlags.Static | BindingFlags.NonPublic)!.GetValue(null)!;
+            var events = (EventHandlerList)typeof(Component).GetProperty("Events", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(form)!;
+            events.RemoveHandler(key, events[key]); // Datos locales, sin llamadas SQL.
+            typeof(FrmIntegridad).GetField("administrador", BindingFlags.Instance | BindingFlags.NonPublic)!.SetValue(form, true);
+            Preparar(form, new Size(1040, 670));
+            var tarea = (Task)typeof(FrmIntegridad).GetMethod("Operar", BindingFlags.Instance | BindingFlags.NonPublic)!
+                .Invoke(form, new object[] { (Func<string>)(() => ""), false })!;
+            var limite = DateTime.UtcNow.AddSeconds(5);
+            while (!tarea.IsCompleted && DateTime.UtcNow < limite) { Application.DoEvents(); Thread.Sleep(10); }
+            Assert.IsTrue(tarea.IsCompleted);
+            tarea.GetAwaiter().GetResult();
+            Assert.IsFalse(form.Controls.Find("btnContinuar", true)[0].Enabled);
+            Assert.IsTrue(form.Controls.Find("btnRecuperar", true)[0].Enabled);
+            Assert.IsFalse(form.Controls.Find("btnBackupVerificado", true)[0].Enabled);
+            Guardar(form, Environment.GetEnvironmentVariable("SIGAT_VISUAL_PREVIEW"), "integridad");
+        });
+    }
+
+    [TestMethod]
     public void SelectorDeIdiomaSeAbreDebajoDelBotonYConservaLasOpciones()
     {
         EnInterfaz(() =>
@@ -206,6 +233,7 @@ public class PresentacionVisualTests
     private static void Guardar(Form form, string? directory, string name)
     {
         if (directory == null) return;
+        Directory.CreateDirectory(directory);
         using var bitmap = new Bitmap(form.Width, form.Height);
         form.DrawToBitmap(bitmap, new Rectangle(Point.Empty, bitmap.Size));
         bitmap.Save(Path.Combine(directory, name + ".png"));
