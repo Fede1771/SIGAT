@@ -5,7 +5,7 @@ namespace SIGAT.SERVICIOS
 {
     public static class HashHelper
     {
-        // Función de Hash (Una vía): Transforma la clave en una cadena irreversible
+        // SHA-256 genera una huella de la clave para compararla en el login. No es cifrado y no se descifra.
         public static string ObtenerHashSHA256(string texto)
         {
             using (SHA256 sha256 = SHA256.Create())

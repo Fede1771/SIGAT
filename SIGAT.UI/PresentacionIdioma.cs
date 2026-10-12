@@ -4,6 +4,7 @@ namespace SIGAT.UI
 {
     public static class PresentacionIdioma
     {
+        // El símbolo se agrega solamente al idioma activo. Los demás mantienen su nombre sin marca.
         public static string Etiqueta(Idioma idioma, int? idActivo)
         {
             string codigo = (idioma.Codigo ?? "").Trim().ToLowerInvariant().Split('-', '_')[0];

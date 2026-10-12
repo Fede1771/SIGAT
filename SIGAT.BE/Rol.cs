@@ -6,11 +6,13 @@ namespace SIGAT.BE
         public int Id { get; set; }
         public string Nombre { get; set; } = "";
         private readonly List<Rol> roles = new List<Rol>();
+        // Devolvemos una copia para que las relaciones solo cambien mediante los métodos que validan la jerarquía.
         public List<Rol> Roles { get { return new List<Rol>(roles); } }
         public bool ContieneRol(Rol buscado)
         {
             return ReferenceEquals(this, buscado) || roles.Any(r => r.ContieneRol(buscado));
         }
+        // Un rol puede heredar otro, pero no puede terminar conteniéndose a sí mismo: eso produciría una recursión sin fin.
         public void AgregarRol(Rol rol)
         {
             ArgumentNullException.ThrowIfNull(rol);
@@ -41,6 +43,7 @@ namespace SIGAT.BE
             }
         }
 
+        // Un permiso puede venir de una asignación directa o de un rol anidado. Ambas fuentes forman los permisos efectivos.
         public bool TienePermiso(string nombre)
         {
             foreach (Rol rol in roles)

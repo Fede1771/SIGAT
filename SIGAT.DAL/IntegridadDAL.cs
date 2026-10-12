@@ -12,6 +12,7 @@ public sealed class IntegridadDAL
 {
     private readonly string? cadena;
     private static readonly object LogLock = new();
+    // Este control protege Bitacora y Traduccion. No cubre todas las tablas del sistema.
     private static readonly string[] Tablas = { "Bitacora", "Traduccion" };
     private static readonly Dictionary<string, string[]> Columnas = new()
     {
@@ -45,6 +46,7 @@ public sealed class IntegridadDAL
         using var cmd = Comando(c, t, sql);
         cmd.ExecuteNonQuery();
     }
+    // El bloqueo compartido permite lecturas; el exclusivo coordina escrituras y recuperaciones de los datos protegidos.
     private static void Bloquear(SqlConnection c, SqlTransaction t, bool escritura)
     {
         using var cmd = Comando(c, t, @"DECLARE @r int; EXEC @r=sys.sp_getapplock @Resource=N'SIGAT.Integridad',
@@ -72,9 +74,11 @@ public sealed class IntegridadDAL
         }
         return result;
     }
+    // DVV resume las filas ordenadas y su cantidad. Sirve para detectar diferencias en el conjunto, no solo en una fila.
     private static string Vertical(string tabla, List<Fila> filas) => VerificadorSHA256.Hexadecimal(
         VerificadorSHA256.Canonico(tabla, filas.Count) + string.Concat(filas.Select(f => VerificadorSHA256.Canonico(f.Clave, f.Calculado))));
 
+    // DVH comprueba cada registro; DVV comprueba el conjunto. Comparamos los valores calculados con la referencia guardada.
     private static Estado Examinar(SqlConnection c, SqlTransaction t)
     {
         var estado = new Estado();
@@ -122,6 +126,7 @@ public sealed class IntegridadDAL
         return estado.Informe;
     }
 
+    // El callback representa la consulta y T su resultado. Se ejecuta dentro de la transacción solo si la integridad es correcta.
     public T LeerVerificado<T>(Func<SqlConnection, SqlTransaction, T> leer)
     {
         using var c = Conectar(); c.Open();
@@ -133,6 +138,7 @@ public sealed class IntegridadDAL
         return resultado;
     }
 
+    // Verificamos antes de escribir y de confirmar. El callback, los verificadores y la confirmación comparten una transacción.
     public T Cambiar<T>(string tabla, Func<SqlConnection, SqlTransaction, T> cambiar)
     {
         if (!Tablas.Contains(tabla)) throw new ArgumentException("Tabla no protegida.");
@@ -141,6 +147,7 @@ public sealed class IntegridadDAL
         Bloquear(c, t, true);
         Exigir(Examinar(c, t).Informe);
         T resultado = cambiar(c, t);
+        // El cambio todavía no está confirmado: primero dejamos consistentes los verificadores.
         // Solo las filas nuevas/actualizadas por el comando autorizado reciben el nuevo DVH.
         foreach (var fila in LeerFilas(c, t, tabla))
             if (fila.Guardado == null) GuardarHash(c, t, fila);
@@ -210,6 +217,7 @@ public sealed class IntegridadDAL
         if (!EsAdministrador(c)) throw new UnauthorizedAccessException("La recuperación requiere una cuenta SQL administradora de la base con permiso de crear/restaurar bases auxiliares.");
     }
 
+    // La primera referencia se prepara una sola vez. Comprobamos los verificadores legados y guardamos un respaldo previo.
     public string InicializarBaseConfiable()
     {
         using var c = Conectar(); c.Open(); ExigirAdministrador(c);
@@ -275,6 +283,7 @@ public sealed class IntegridadDAL
         throw new IntegridadException(informe);
     }
 
+    // Un backup no es confiable solo por existir. Lo restauramos en una base auxiliar y comprobamos sus verificadores.
     public string CrearRespaldoConfiable(string? destino = null)
     {
         using var c = Conectar(); c.Open(); ExigirAdministrador(c);
@@ -313,6 +322,7 @@ public sealed class IntegridadDAL
         }
     }
 
+    // Copiamos a un archivo temporal y comparamos su SHA-256. El nombre final se asigna cuando la copia coincide.
     private static void ExportarRespaldo(string origen, string destino)
     {
         string temporal = destino + "." + Guid.NewGuid().ToString("N") + ".tmp";
@@ -385,6 +395,7 @@ public sealed class IntegridadDAL
         }
     }
 
+    // SQL Server lee con su cuenta de servicio. Damos acceso a una carpeta temporal para compartir el archivo con esa cuenta.
     private static string PrepararCarpetaCompartida(SqlConnection conexion)
     {
         if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException("La importación local requiere Windows.");
@@ -412,6 +423,7 @@ public sealed class IntegridadDAL
         }
     }
 
+    // Restauramos con un nombre único para revisar el backup sin reemplazar la base actual. El finally retira la base auxiliar.
     private T ConBaseAuxiliarServidor<T>(string ruta, Func<Estado, T> accion)
     {
         using var conexion = Conectar(); conexion.Open(); ExigirAdministrador(conexion);
@@ -459,6 +471,7 @@ public sealed class IntegridadDAL
         }
     }
 
+    // Usamos un respaldo verificado de la misma base. La transacción permite cancelar toda la recuperación si no alcanza para reparar.
     public InformeIntegridad Recuperar(string ruta, bool restaurarTablasCompletas = false)
     {
         if (string.IsNullOrWhiteSpace(ruta)) throw new ArgumentException("Seleccione un respaldo comprobado.");
@@ -477,6 +490,7 @@ public sealed class IntegridadDAL
             {
                 if (restaurarTablasCompletas && actual.Informe.Problemas.Any(p => p.Tabla == tabla))
                 {
+                    // Esta opción reemplaza toda la tabla afectada por la versión del respaldo, incluidos sus verificadores.
                     Ejecutar(c, t, $"DELETE FROM dbo.{Id(tabla)}");
                     foreach (var fila in origen.Filas[tabla]) RestaurarFila(c, t, fila, true);
                     using var control = Comando(c, t, "UPDATE dbo.IntegridadTabla SET HashVertical=@Hash,Cantidad=@Cantidad,Version=1 WHERE Tabla=@Tabla");
@@ -487,6 +501,7 @@ public sealed class IntegridadDAL
                     continue;
                 }
                 var backup = origen.Filas[tabla].ToDictionary(f => f.Clave);
+                // En recuperación por registros buscamos cada fila dañada por su clave, conservando las demás.
                 var clavesActuales = actual.Filas[tabla].Select(f => f.Clave).ToHashSet();
                 var afectadas = actual.Informe.Problemas.Where(p => p.Tabla == tabla && p.Registro != "Tabla").Select(p => p.Registro).Distinct();
                 foreach (string clave in afectadas)
@@ -498,6 +513,7 @@ public sealed class IntegridadDAL
                     && actual.Controles[tabla].Cantidad > clavesActuales.Count)
                     foreach (var fila in origen.Filas[tabla].Where(f => !clavesActuales.Contains(f.Clave))) RestaurarFila(c, t, fila, true);
                 var reparadas = LeerFilas(c, t, tabla);
+                // Recalculamos el conjunto reparado para comprobar que coincide con una referencia admitida.
                 string hash = Vertical(tabla, reparadas);
                 // Se admite el control actual intacto o el del respaldo si todos los datos coinciden con él.
                 if (hash == actual.Controles[tabla].Hash && reparadas.Count == actual.Controles[tabla].Cantidad) continue;
@@ -512,12 +528,14 @@ public sealed class IntegridadDAL
                 cmd.ExecuteNonQuery();
             }
             var final = Examinar(c, t);
+            // La última comprobación ocurre antes del Commit: si sigue habiendo daño, no se confirma la reparación.
             Exigir(final.Informe);
             t.Commit();
             Registrar("Recuperación verificada " + (restaurarTablasCompletas ? "de tablas completas" : "por registros") + " desde " + ruta + ". Incidentes: " + string.Join("; ", actual.Informe.Problemas));
             return final.Informe;
         });
     }
+    // Conservamos los IDs del respaldo. IDENTITY_INSERT permite reponer un evento faltante con su identificador original.
     private static void RestaurarFila(SqlConnection c, SqlTransaction t, Fila fila, bool insertar)
     {
         var cols = Columnas[fila.Tabla];
@@ -536,6 +554,7 @@ public sealed class IntegridadDAL
         finally { if (identity) Ejecutar(c, t, "SET IDENTITY_INSERT dbo.Bitacora OFF"); }
     }
 
+    // El log queda fuera de SQL para registrar incidentes incluso cuando los datos de la base no son utilizables.
     public static void Registrar(string mensaje)
     {
         lock (LogLock)

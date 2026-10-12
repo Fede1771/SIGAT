@@ -26,6 +26,7 @@ namespace SIGAT.BLL
             CargarIdioma(idIdioma, guardarPreferencia: true);
         }
 
+        // Leemos la preferencia de esta cuenta desde SQL. Si su idioma está inactivo, usamos otro sin borrar la elección guardada.
         public void RestablecerIdiomaUsuario()
         {
             var usuario = SesionServicio.ObtenerInstancia().UsuarioActual
@@ -40,6 +41,7 @@ namespace SIGAT.BLL
             CargarIdioma(idioma.Id, guardarPreferencia: false);
         }
 
+        // Construimos un diccionario con claves de formulario y control. El Observer notifica a las pantallas para actualizar sus textos.
         private void CargarIdioma(int idIdioma, bool guardarPreferencia)
         {
             Idioma idiomaElegido = _dal.ObtenerIdiomaPorId(idIdioma);
@@ -61,6 +63,7 @@ namespace SIGAT.BLL
 
             if (guardarPreferencia)
             {
+                // Solo una elección explícita cambia la preferencia; cargar un idioma de respaldo no la reemplaza.
                 var usuario = SesionServicio.ObtenerInstancia().UsuarioActual
                     ?? throw new InvalidOperationException("Debe iniciar sesión para guardar su idioma.");
                 _dal.GuardarIdiomaPreferido(usuario.IdUsuario, idIdioma);
@@ -68,6 +71,7 @@ namespace SIGAT.BLL
             IdiomaManager.ObtenerInstancia().CargarIdioma(idiomaElegido, diccionario);
         }
 
+        // Validamos nombre y código antes de crear el idioma. Sus traducciones se generan inicialmente como pendientes.
         public int CrearIdioma(string nombre, string codigo, string nombreNativo, bool activo)
         {
             if (string.IsNullOrWhiteSpace(nombre))
@@ -123,6 +127,7 @@ namespace SIGAT.BLL
             _dal.ActualizarTraduccion(idIdioma, idControl, texto, estado, digitoVerificador);
         }
 
+        // Cada etiqueta se identifica por formulario y clave. Las nuevas etiquetas reciben texto base y pendientes para los demás idiomas.
         public void RegistrarClaveNueva(string nombreForm, string nombreControl, string textoBase)
         {
             if (_dal.ExisteControl(nombreControl, nombreForm)) return;

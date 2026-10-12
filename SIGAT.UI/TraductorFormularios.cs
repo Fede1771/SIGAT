@@ -7,6 +7,7 @@ namespace SIGAT.UI
     {
         private static IdiomaBLL _idiomaBLL = new IdiomaBLL();
 
+        // Tag identifica la clave de traducción y Text contiene el texto visible. Recorremos el formulario sin cambiar sus eventos.
         public static void TraducirFormulario(Form formulario)
         {
             string nombreForm = formulario.Name;

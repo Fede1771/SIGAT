@@ -91,6 +91,7 @@ public sealed class FrmIntegridad : Form
         FormClosing += (_, e) => { if (ocupada) e.Cancel = true; };
     }
 
+    // Task.Run mantiene la interfaz disponible mientras trabaja SQL. Deshabilitamos las acciones para evitar operaciones simultáneas.
     private async Task Operar(Func<string> accion, bool mostrarRuta = false)
     {
         UseWaitCursor = true;
@@ -99,12 +100,14 @@ public sealed class FrmIntegridad : Form
         try
         {
             string mensaje = await Task.Run(accion);
+            // Después del await volvemos al hilo de la interfaz para mostrar el resultado de la operación.
             if (mostrarRuta && mensaje.Contains('\n')) archivo.Text = mensaje[(mensaje.LastIndexOf('\n') + 1)..];
             if (!string.IsNullOrEmpty(mensaje)) MessageBox.Show(this, mensaje, "SIGAT", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
         catch (Exception ex) { MessageBox.Show(this, ex.Message, "No se completó la operación", MessageBoxButtons.OK, MessageBoxIcon.Error); }
         finally
         {
+            // También si hubo un error, quitamos el estado ocupado y habilitamos solo las acciones permitidas por el informe.
             UseWaitCursor = false;
             ocupada = false;
             grilla.DataSource = informe?.Problemas.ToList();

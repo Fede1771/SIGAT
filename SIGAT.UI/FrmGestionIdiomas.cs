@@ -143,6 +143,7 @@ namespace SIGAT.UI
             ConfigurarColumnasTraducciones();
         }
 
+        // Solo el texto traducido es editable. Los IDs y el verificador son datos internos y quedan ocultos.
         private void ConfigurarColumnasTraducciones()
         {
             if (dgvTraducciones.Columns.Count == 0) return;
@@ -256,6 +257,7 @@ namespace SIGAT.UI
             }
         }
 
+        // Identificamos las filas por formulario y clave. Las desconocidas se omiten; las conocidas se guardan una por una.
         private void btnImportarTraducciones_Click(object sender, EventArgs e)
         {
             try

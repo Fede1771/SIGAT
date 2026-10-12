@@ -164,6 +164,7 @@ namespace SIGAT.UI
             ActualizarMarcoVisual();
         }
 
+        // Consultamos los permisos cargados en la sesión antes de abrir una sección. Es el control de acceso de la navegación.
         private bool PuedeAbrir(string permiso)
         {
             if (SesionServicio.ObtenerInstancia().UsuarioActual?.TienePermiso(permiso) == true) return true;
@@ -171,6 +172,7 @@ namespace SIGAT.UI
             return false;
         }
 
+        // Alojamos la pantalla dentro del panel central. Cerramos la anterior para no acumular formularios ni observadores.
         private void AbrirFormulario(Form formHijo)
         {
             CerrarFormularioActual();

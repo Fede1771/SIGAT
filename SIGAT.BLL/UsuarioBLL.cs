@@ -24,9 +24,11 @@ namespace SIGAT.BLL
             return "Sistema";
         }
 
+        // Ingreso: verificamos integridad, credenciales y estado de la cuenta. Luego cargamos sus roles para construir la sesión.
         public ResultadoLogin Autenticar(string nombreUsuario, string passwordPlana, out Usuario usuarioValidado)
         {
             new IntegridadBLL().ExigirIntegridad();
+            // Buscamos la cuenta y calculamos la huella de la clave ingresada para compararla con la guardada.
             usuarioValidado = _dal.ObtenerPorNombreUsuario(nombreUsuario);
             string hashCalculado = HashHelper.ObtenerHashSHA256(passwordPlana);
 
@@ -51,6 +53,7 @@ namespace SIGAT.BLL
             }
 
             new RolesBLL().CargarRolesUsuario(usuarioValidado);
+            // La cuenta ya pasó las validaciones; la sesión conserva el usuario y los roles recién cargados.
             SesionServicio.ObtenerInstancia().IniciarSesion(usuarioValidado);
 
             // USAMOS LA FÁBRICA: Login Exitoso
@@ -61,6 +64,7 @@ namespace SIGAT.BLL
             return ResultadoLogin.Exito;
         }
 
+        // Completamos las cuentas con sus roles y la marca del administrador original para presentarlas en la grilla.
         public List<Usuario> ObtenerTodos()
         {
             List<Usuario> usuarios = _dal.ObtenerTodos();
@@ -74,6 +78,7 @@ namespace SIGAT.BLL
             return usuarios;
         }
 
+        // La BLL valida los datos y transforma la clave en hash. El alta común deja la cuenta sin roles.
         public void CrearUsuario(Usuario nuevoUsuario, string passwordPlana)
         {
             ValidarDatos(nuevoUsuario);
@@ -93,6 +98,7 @@ namespace SIGAT.BLL
             _bitacora.Registrar(evento);
         }
 
+        // Una clave vacía conserva la anterior; una nueva se convierte en hash antes de enviarla al DAL.
         public void ActualizarUsuario(Usuario usuarioEditado, string passwordPlana)
         {
             ValidarDatos(usuarioEditado);
@@ -108,6 +114,7 @@ namespace SIGAT.BLL
             _bitacora.Registrar(evento);
         }
 
+        // La baja desactiva la cuenta y registra el evento. Conservamos el usuario para mantener su historial.
         public void BajaLogicaUsuario(int idUsuario, string nombreUsuario)
         {
             _dal.Eliminar(idUsuario);
@@ -126,6 +133,7 @@ namespace SIGAT.BLL
             _dal.Insertar(usuario, true);
         }
 
+        // Centralizamos las reglas de los campos para que el alta y la edición usen las mismas validaciones.
         public static void ValidarDatos(Usuario usuario)
         {
             usuario.NombreUsuario = (usuario.NombreUsuario ?? "").Trim();

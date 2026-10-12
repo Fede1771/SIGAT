@@ -10,6 +10,7 @@ namespace SIGAT.UI
     internal static class Program
     {
         [STAThread]
+        // Antes del login revisamos integridad. Si hay problemas, el inicio pasa por la pantalla de recuperación.
         static void Main()
         {
             ApplicationConfiguration.Initialize();

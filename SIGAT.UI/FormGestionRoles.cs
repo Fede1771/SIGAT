@@ -78,6 +78,7 @@ namespace SIGAT.UI
                 CargarNodosRecursivo(nodo, hijo);
         }
 
+        // La recursión agrega permisos y roles anidados al árbol. La jerarquía visual representa las relaciones del catálogo.
         private void CargarRol(TreeNodeCollection nodos, Rol rol)
         {
             TreeNode nodo = new TreeNode(rol.Nombre) { Tag = rol, ImageKey = "Roles", SelectedImageKey = "Roles" };
@@ -153,6 +154,7 @@ namespace SIGAT.UI
             return rol;
         }
 
+        // El origen puede ser un permiso o un rol. El combo Rol destino indica dónde agregamos ese componente.
         private void AsignarARol()
         {
             Rol destino = Destino();
@@ -195,6 +197,7 @@ namespace SIGAT.UI
             else throw new OperationCanceledException();
         }
 
+        // Quitamos relaciones directas. Un permiso heredado se modifica en el rol o familia que lo contiene.
         private void QuitarDeRol()
         {
             Rol destino = Destino();
@@ -203,6 +206,7 @@ namespace SIGAT.UI
             else throw new InvalidOperationException("Seleccione una asignación directa del rol destino. Los permisos heredados se quitan del rol o familia que los contiene.");
         }
 
+        // Las marcas del diálogo representan hijos directos. La familia es compartida: editarla afecta a los roles que la utilizan.
         private void EditarFamilia()
         {
             if (!(tvCatalogoGeneral.SelectedNode?.Tag is PermisoCompuesto familia))
@@ -225,8 +229,10 @@ namespace SIGAT.UI
             lista.BorderStyle = BorderStyle.None;
             if (dialogo.ShowDialog(this) != DialogResult.OK) throw new OperationCanceledException();
             foreach (Permiso hijo in familia.ObtenerHijos()) familia.Quitar(hijo);
+            // Reemplazamos los hijos anteriores por los marcados. Agregar sigue comprobando duplicados y ciclos.
             foreach (Permiso hijo in lista.CheckedItems) familia.Agregar(hijo);
         }
+        // Todos los botones pasan por este bloque. Guardamos y refrescamos; si falla, recargamos el estado desde SQL.
         private void Ejecutar(Action accion)
         {
             try
@@ -240,6 +246,7 @@ namespace SIGAT.UI
                 lblEstado.ForeColor = TemaVisual.Verde;
             }
             catch (OperationCanceledException) { }
+            // Cancelar el diálogo es una salida normal; los otros errores se muestran y obligan a recargar el estado.
             catch (Exception ex)
             {
                 lblEstado.Text = "No se guardó el cambio.";

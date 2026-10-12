@@ -9,6 +9,7 @@ namespace SIGAT.BLL
         private readonly RolesDAL dal;
         public RolesBLL(RolesDAL? repositorio = null) { dal = repositorio ?? new RolesDAL(); }
 
+        // La gestión exige un catálogo válido y una cuenta con acceso a Administración del sistema.
         public EstadoRoles CargarParaGestion()
         {
             EstadoRoles estado = dal.Cargar();
@@ -17,6 +18,7 @@ namespace SIGAT.BLL
             return estado;
         }
 
+        // Al iniciar sesión reemplazamos los roles en memoria por las asignaciones persistidas en SQL.
         public void CargarRolesUsuario(Usuario usuario)
         {
             EstadoRoles estado = dal.Cargar();
@@ -30,6 +32,7 @@ namespace SIGAT.BLL
             }
         }
 
+        // Volvemos a consultar la autorización en la base antes de guardar. Los permisos de la sesión podrían haber cambiado.
         public void Guardar(EstadoRoles estado)
         {
             ExigirGestion(dal.Cargar());
@@ -47,6 +50,7 @@ namespace SIGAT.BLL
             throw new InvalidOperationException("No tiene permiso para gestionar roles.");
         }
 
+        // Controlamos que las asignaciones pertenezcan al catálogo y que el administrador original conserve su acceso.
         public static void Validar(EstadoRoles estado)
         {
             MatrizRoles.ValidarCatalogo(estado);

@@ -21,6 +21,7 @@ public static class VerificadorSHA256
     public static string Traduccion(int idioma, int control, string? texto, string estado)
         => Hexadecimal(Canonico(idioma, control, texto, estado));
 
+    // Calculamos sobre el detalle cifrado que queda en SQL. El verificador no depende del texto descifrado de la pantalla.
     public static string Bitacora(int id, DateTime fecha, string? usuario, string? actividad, string? cifrado)
         => Base64(Canonico(id, fecha, usuario, actividad, cifrado));
 }

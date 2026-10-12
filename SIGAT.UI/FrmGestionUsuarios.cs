@@ -7,6 +7,7 @@ namespace SIGAT.UI
     public partial class FrmGestionUsuarios : Form, IIdiomaObserver
     {
         private readonly UsuarioBLL _usuarioBLL = new UsuarioBLL();
+        // ID cero indica alta; un ID seleccionado indica edición. Así el mismo formulario resuelve las dos operaciones.
         private int _idSeleccionado;
 
         public FrmGestionUsuarios()
@@ -101,6 +102,7 @@ namespace SIGAT.UI
             dgvUsuarios.CurrentCell = null;
         }
 
+        // Pasamos la cuenta al editor y vaciamos la clave. También aplicamos el bloqueo visual del administrador original.
         private void SeleccionarFila()
         {
             if (dgvUsuarios.CurrentRow?.DataBoundItem is not Usuario usuario) return;
@@ -115,6 +117,7 @@ namespace SIGAT.UI
             chkActivo.Enabled = !usuario.EsAdministradorOriginal;
         }
 
+        // La UI reúne los valores, la BLL aplica las reglas y el DAL persiste. Este evento decide entre alta y edición.
         private void BtnGuardar_Click(object sender, EventArgs e)
         {
             try

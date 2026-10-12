@@ -40,6 +40,7 @@ namespace SIGAT.SERVICIOS
             }
         }
 
+        // Limpiamos el idioma y los observadores anteriores antes de asignar la nueva cuenta.
         public void IniciarSesion(Usuario usuarioLogueado)
         {
             ArgumentNullException.ThrowIfNull(usuarioLogueado);
@@ -49,6 +50,7 @@ namespace SIGAT.SERVICIOS
             UsuarioActual = usuarioLogueado;
         }
 
+        // Quitamos el usuario y el estado del idioma para que la siguiente cuenta no herede la sesión anterior.
         public void CerrarSesion()
         {
             Idiomas.IdiomaManager.ObtenerInstancia().ReiniciarSesion();

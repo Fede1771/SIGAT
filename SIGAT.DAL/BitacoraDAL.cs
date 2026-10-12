@@ -12,6 +12,7 @@ public class BitacoraDAL
     private readonly EncriptadorServicio encriptador = new();
     public BitacoraDAL(string? cadenaConexion = null) => integridad = new IntegridadDAL(cadenaConexion);
 
+    // Ajustamos la fecha al formato de SQL y ciframos el detalle. La operación de integridad calcula los verificadores antes de confirmar.
     public void Insertar(Bitacora registro)
     {
         integridad.Cambiar("Bitacora", (conexion, transaccion) =>
@@ -29,6 +30,7 @@ public class BitacoraDAL
         });
     }
 
+    // Primero comprobamos integridad; después desciframos los detalles para mostrarlos en la tabla.
     public List<Bitacora> Buscar(DateTime? desde, DateTime? hasta, string usuario, string actividad)
         => integridad.LeerVerificado((conexion, transaccion) =>
         {

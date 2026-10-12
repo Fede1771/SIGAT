@@ -5,7 +5,9 @@ namespace SIGAT.UI;
 internal static partial class TemaVisual
 {
     public static bool EsOscuro { get; private set; }
+    // La bandera evita confundir los colores del tema aplicado con los originales que necesitamos para volver al modo claro.
     private static bool aplicando;
+    // Recordamos colores por control sin mantener en memoria una ventana que ya se cerró.
     private static readonly ConditionalWeakTable<Control, ColoresOriginales> originales = new();
     private sealed class ColoresOriginales
     {
@@ -35,6 +37,7 @@ internal static partial class TemaVisual
         }
     }
 
+    // El tema se guarda localmente por ID de cuenta. Esta preferencia no necesita una tabla SQL.
     public static string RutaPreferencia(int idUsuario) => Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "SIGAT", "preferencias", $"tema-{idUsuario}.txt");
 
@@ -56,6 +59,7 @@ internal static partial class TemaVisual
         CambiarModo(oscuro);
     }
 
+    // Repintamos las ventanas existentes. No las recreamos ni descartamos los datos que se estaban editando.
     public static void CambiarModo(bool oscuro)
     {
         EsOscuro = oscuro;
@@ -88,6 +92,7 @@ internal static partial class TemaVisual
     {
         if (control.IsDisposed) return;
         Capturar(control);
+        // Mientras pintamos, los eventos de cambio de color no deben sobrescribir la referencia del modo claro.
         bool anterior = aplicando;
         aplicando = true;
         try { Pintar(control); }
@@ -102,6 +107,7 @@ internal static partial class TemaVisual
         return color;
     }
 
+    // Primero recordamos todo el árbol: algunos hijos heredan colores del padre y cambiarlo antes alteraría la captura.
     private static void Capturar(Control control)
     {
         originales.GetValue(control, c => new ColoresOriginales(c));
@@ -123,6 +129,7 @@ internal static partial class TemaVisual
         }
         if (control is DataGridView grilla)
         {
+            // Las tablas tienen colores propios para cabecera, filas y selección; cambiar solo el fondo no alcanza.
             grilla.BackgroundColor = ColorActual(original.FondoGrilla);
             grilla.GridColor = ColorActual(original.Lineas);
             grilla.ColumnHeadersDefaultCellStyle = Estilo(original.Cabecera);
@@ -140,6 +147,7 @@ internal static partial class TemaVisual
         control.Invalidate();
     }
 
+    // Clonamos el estilo y cambiamos solo colores. Conservamos formato, alineación y espaciado.
     private static DataGridViewCellStyle Estilo(DataGridViewCellStyle original)
     {
         var estilo = original.Clone();

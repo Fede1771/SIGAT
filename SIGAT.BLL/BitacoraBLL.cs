@@ -8,13 +8,13 @@ namespace SIGAT.BLL
     {
         private BitacoraDAL _dal = new BitacoraDAL();
 
-        // --- NUEVO MÉTODO (Usa el Patrón Factory y el Mapper) ---
+        // Recibimos el evento creado por la fábrica y lo adaptamos al formato que guarda la bitácora.
         public void Registrar(IBitacoraEvento evento)
         {
             // 1. Convertimos la interfaz genérica a nuestro objeto concreto
             Bitacora eventoConcreto = (Bitacora)evento;
 
-            // 2. Pasamos el evento por el Mapper para adaptar las propiedades nuevas a la base de datos vieja
+            // El Mapper transforma los datos del evento en las columnas de la tabla Bitacora.
             BitacoraMapper.PrepararParaBaseDeDatos(eventoConcreto);
 
             // 3. Lo mandamos a guardar

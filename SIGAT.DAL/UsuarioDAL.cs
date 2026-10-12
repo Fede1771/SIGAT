@@ -36,6 +36,7 @@ namespace SIGAT.DAL
             return usuarios;
         }
 
+        // La transacción confirma el alta completa o revierte sus cambios. La cuenta inicial es un caso separado del alta común.
         public void Insertar(Usuario usuario, bool administradorInicial = false)
         {
             using SqlConnection conexion = Conectar();
@@ -63,6 +64,7 @@ namespace SIGAT.DAL
             usuario.IdUsuario = id;
         }
 
+        // La protección del administrador se verifica también en el DAL. Deshabilitar un botón no alcanza para proteger los datos.
         public void Actualizar(Usuario usuario)
         {
             if (!usuario.Activo && EsAdministradorOriginal(usuario.IdUsuario))
@@ -82,6 +84,7 @@ namespace SIGAT.DAL
             transaccion.Commit();
         }
 
+        // La baja es lógica: actualizamos Activo a cero. No borramos físicamente la cuenta.
         public void Eliminar(int idUsuario)
         {
             if (EsAdministradorOriginal(idUsuario))
@@ -123,6 +126,7 @@ namespace SIGAT.DAL
                 throw new InvalidOperationException("No se puede dar de baja al último administrador activo.");
         }
 
+        // Los datos viajan como parámetros, separados del texto SQL. Así no se interpretan como instrucciones de la consulta.
         private static void Parametros(SqlCommand comando, Usuario usuario)
         {
             comando.Parameters.Add("@Usuario", SqlDbType.VarChar, 50).Value = usuario.NombreUsuario;

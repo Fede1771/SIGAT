@@ -21,6 +21,7 @@ namespace SIGAT.DAL
             comando.ExecuteNonQuery();
         }
 
+        // Reconstruimos el catálogo con objetos compartidos: permisos, familias, roles y usuarios apuntan a las mismas instancias.
         public EstadoRoles Cargar()
         {
             using SqlConnection conexion = Conectar();
@@ -98,6 +99,7 @@ namespace SIGAT.DAL
             return estado;
         }
 
+        // Catálogo y asignaciones se guardan en una transacción. La versión rechaza cambios realizados desde una lectura desactualizada.
         public void Guardar(EstadoRoles estado)
         {
             // Catálogo, jerarquía y asignaciones se guardan juntos.
@@ -114,11 +116,13 @@ namespace SIGAT.DAL
                     throw new InvalidOperationException("Otro usuario modificó los roles. Se recargarán los datos; vuelva a realizar el cambio.");
             }
             int protegido;
+            // Leemos el ID protegido desde SQL, sin confiar en la marca que pueda traer la pantalla.
             using (SqlCommand comando = new SqlCommand("SELECT IdUsuario FROM dbo.AdministradorOriginal WHERE Id=1", conexion, transaccion))
                 protegido = Convert.ToInt32(comando.ExecuteScalar());
             if (!estado.Usuarios.Any(u => u.IdUsuario == protegido && u.Activo && u.Roles.Any(r => r.Id == 1)))
                 throw new InvalidOperationException("No se puede quitar el rol Administrador a la cuenta original.");
             Ejecutar(conexion, transaccion, "DELETE FROM dbo.UsuarioRol; DELETE FROM dbo.RolHijo; DELETE FROM dbo.RolPermiso;");
+            // Reemplazamos las relaciones dentro de la transacción. Si algo falla, SQL revierte también los DELETE.
             Ejecutar(conexion, transaccion, "DELETE FROM dbo.PermisoHijo;");
             foreach (Permiso permiso in estado.Permisos)
                 foreach (Permiso hijo in permiso.ObtenerHijos())
@@ -132,6 +136,7 @@ namespace SIGAT.DAL
                 comando.ExecuteNonQuery();
             }
             var existentes = new List<int>();
+            // Los roles que ya no figuran en el estado se eliminan después de retirar sus relaciones.
             using (SqlCommand comando = new SqlCommand("SELECT Id FROM dbo.Rol", conexion, transaccion))
             using (SqlDataReader lector = comando.ExecuteReader())
                 while (lector.Read()) existentes.Add(lector.GetInt32(0));
@@ -155,6 +160,7 @@ namespace SIGAT.DAL
             }
             transaccion.Commit();
             estado.Version++;
+            // Avanzamos la versión en memoria solo después de confirmar el guardado en SQL.
         }
 
         private static void Ejecutar(SqlConnection conexion, SqlTransaction transaccion, string sql)

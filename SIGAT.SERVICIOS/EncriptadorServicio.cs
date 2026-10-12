@@ -5,7 +5,7 @@ namespace SIGAT.SERVICIOS
 {
     public class EncriptadorServicio
     {
-        // Claves maestras para la encriptación Simétrica (AES)
+        // AES permite recuperar el detalle de la bitácora. Esta implementación usa una clave y un vector fijos.
         private readonly byte[] _key = SHA256.HashData(Encoding.UTF8.GetBytes("ClaveSecretaSIGAT2026"));
         private readonly byte[] _iv = MD5.HashData(Encoding.UTF8.GetBytes("VectorSIGAT2026"));
 
@@ -71,7 +71,7 @@ namespace SIGAT.SERVICIOS
             }
         }
 
-        // Se usa para crear el Dígito Verificador sumando datos y aplicando un hash rápido
+        // Verificador del formato legado: calculamos SHA-256 sobre la cadena recibida para comprobar datos anteriores.
         public string? CalcularDV(string? cadenaConcatenada)
         {
             if (string.IsNullOrEmpty(cadenaConcatenada))

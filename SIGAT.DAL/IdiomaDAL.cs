@@ -23,6 +23,7 @@ namespace SIGAT.DAL
             return valor == null ? null : Convert.ToInt32(valor);
         }
 
+        // La preferencia se vincula al ID del usuario, aunque cambie su nombre. La transacción valida la cuenta y el idioma.
         public void GuardarIdiomaPreferido(int idUsuario, int idIdioma)
         {
             using SqlConnection conexion = Conectar();
@@ -184,6 +185,7 @@ namespace SIGAT.DAL
         public List<Traduccion> ObtenerTraduccionesPorIdioma(int idIdioma) => ConsultarTraducciones(idIdioma, false);
         public List<Traduccion> ObtenerTraduccionesParaGestion(int idIdioma) => ConsultarTraducciones(idIdioma, true);
 
+        // Leemos dentro de una operación verificada: las traducciones dañadas se bloquean antes de utilizarlas.
         private List<Traduccion> ConsultarTraducciones(int idIdioma, bool gestion)
             => integridad.LeerVerificado((conexion, transaccion) =>
             {
@@ -267,6 +269,7 @@ namespace SIGAT.DAL
             });
         }
 
+        // Guardamos texto, estado y verificador juntos. El hash se calcula sobre los mismos valores que quedan en SQL.
         public void ActualizarTraduccion(int idIdioma,int idControl,string texto,string estado,string digitoVerificador)
         {
             integridad.Cambiar("Traduccion", (conexion, transaccion) =>

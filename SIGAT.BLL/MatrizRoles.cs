@@ -2,12 +2,13 @@ using SIGAT.BE;
 
 namespace SIGAT.BLL
 {
-    // Única definición de la matriz en C#. Las familias no reciben hijos inventados.
+    // Catálogo inicial y reglas de validación. Las familias empiezan vacías y sus hijos se administran después.
     public static class MatrizRoles
     {
         public const string Administracion = "Administración del sistema";
         public const string Bitacora = "Ver bitácora";
 
+        // Define la matriz inicial de cinco roles y siete permisos. Los roles se pueden editar después, salvo Administrador.
         public static EstadoRoles CrearCatalogo()
         {
             EstadoRoles estado = new EstadoRoles();
@@ -35,6 +36,7 @@ namespace SIGAT.BLL
             estado.Roles.Add(rol);
         }
 
+        // Los permisos conservan su identidad y tipo; las familias pueden cambiar de hijos. También protegemos el rol Administrador.
         public static void ValidarCatalogo(EstadoRoles estado)
         {
             EstadoRoles esperado = CrearCatalogo();

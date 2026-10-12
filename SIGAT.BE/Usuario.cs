@@ -3,7 +3,7 @@ namespace SIGAT.BE
     public class Usuario
     {
         public bool EsAdministradorOriginal { get; set; }
-        // Alias compatible con el modelo del TP y con el DAL existente.
+        // Id e IdUsuario representan la misma cuenta; el alias conserva compatibilidad con los usos existentes.
         public int Id { get { return IdUsuario; } set { IdUsuario = value; } }
         private readonly List<Rol> roles = new List<Rol>();
         public List<Rol> Roles { get { return new List<Rol>(roles); } }
@@ -30,6 +30,7 @@ namespace SIGAT.BE
             }
         }
 
+        // El usuario obtiene sus accesos a través de los roles asignados. Basta con que uno de ellos otorgue el permiso.
         public bool TienePermiso(string nombre)
         {
             foreach (Rol rol in roles)
@@ -41,6 +42,7 @@ namespace SIGAT.BE
 
         public int IdUsuario { get; set; }
         public string NombreUsuario { get; set; }
+        // Guardamos el hash de la clave. Para autenticar comparamos hashes, no recuperamos la contraseña original.
         public string Password { get; set; }
         public string Nombre { get; set; }  
         public string Apellido { get; set; }

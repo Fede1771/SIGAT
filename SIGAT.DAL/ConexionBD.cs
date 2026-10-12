@@ -6,6 +6,7 @@ namespace SIGAT.DAL
     {
         private static readonly string CadenaConexion = @"Data Source=.\SQLEXPRESS;Initial Catalog=SIGAT;Integrated Security=True;TrustServerCertificate=True;";
 
+        // Cada operación recibe una conexión nueva. La configuración de pruebas solo admite bases con el prefijo reservado.
         public static SqlConnection ObtenerConexion()
         {
             string? basePruebas = Environment.GetEnvironmentVariable("SIGAT_BASE_PRUEBAS");

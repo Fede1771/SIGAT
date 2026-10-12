@@ -44,6 +44,7 @@ namespace SIGAT.SERVICIOS.Idiomas
             _observadores.Remove(observador);
         }
 
+        // Cada formulario suscripto recibe el aviso de cambio de idioma. El administrador no necesita conocer sus controles.
         public void NotificarObservadores()
         {
             foreach (IIdiomaObserver observador in _observadores)
@@ -60,6 +61,7 @@ namespace SIGAT.SERVICIOS.Idiomas
             NotificarObservadores();
         }
 
+        // Si una clave no tiene traducción, conservamos el texto recibido como respaldo.
         public string Traducir(string nombreForm, string nombreControl, string textoOriginal)
         {
             string clave = ClaveDe(nombreForm, nombreControl);

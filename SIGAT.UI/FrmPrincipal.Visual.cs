@@ -15,6 +15,7 @@ public partial class FrmPrincipal
     private readonly Dictionary<string, BotonNavegacion> navegacion = new();
     private readonly List<(string Seccion, ToolStripMenuItem Menu, IconoVisual Icono)> accesos = new();
 
+    // Armamos el encabezado y la navegación. Los botones reutilizan las acciones de los menús existentes.
     private void CrearMarcoVisual(ToolStripMenuItem itemRoles)
     {
         SuspendLayout();
@@ -210,6 +211,7 @@ public partial class FrmPrincipal
         }
     }
 
+    // El botón muestra el modo al que vamos a cambiar, no el modo que ya está activo.
     private void ActualizarBotonTema()
     {
         if (btnTemaVisual == null) return;

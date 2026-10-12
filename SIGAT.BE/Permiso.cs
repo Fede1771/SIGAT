@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace SIGAT.BE
 {
+    // Composite: una acción simple y una familia comparten las mismas operaciones. Así consultamos permisos sin depender de su tipo concreto.
     public abstract class Permiso
     {
         public int Id { get; set; }
@@ -13,6 +14,7 @@ namespace SIGAT.BE
         public abstract List<Permiso> ObtenerHijos();
     }
 
+    // Es la hoja del Composite: representa una acción y no admite otros permisos como hijos.
     public class PermisoSimple : Permiso
     {
         public override bool ContienePermiso(string nombre)
@@ -36,6 +38,7 @@ namespace SIGAT.BE
         }
     }
 
+    // Es el componente compuesto: agrupa permisos y recorre sus hijos para resolver la consulta.
     public class PermisoCompuesto : Permiso
     {
         private readonly List<Permiso> hijos = new List<Permiso>();
@@ -53,6 +56,7 @@ namespace SIGAT.BE
             hijos.Add(permiso);
         }
 
+        // Buscamos el mismo objeto dentro de la jerarquía. Esto permite rechazar ciclos antes de agregar un hijo.
         private static bool ContieneReferencia(Permiso origen, Permiso buscado)
         {
             if (ReferenceEquals(origen, buscado)) return true;

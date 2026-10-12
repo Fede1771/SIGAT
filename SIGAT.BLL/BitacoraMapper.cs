@@ -6,13 +6,13 @@ namespace SIGAT.BLL
     {
         public static void PrepararParaBaseDeDatos(Bitacora evento)
         {
-            // 1. Pasamos el Identificador que armó la fábrica a tu columna "Usuario"
+            // El identificador del evento se guarda en la columna Usuario.
             evento.Usuario = evento.IdentificadorUsuario;
 
-            // 2. Convertimos el Enum de la acción a texto para tu columna "Actividad"
+            // La acción se define con un enum y se persiste como texto en Actividad.
             evento.Actividad = evento.Accion.ToString();
 
-            // 3. Juntamos toda la información de auditoría avanzada en tu columna "InformacionAsociada"
+            // Agrupamos módulo, nivel, equipo y descripción en el detalle que luego cifra el DAL.
             evento.InformacionAsociada = "Módulo: " + evento.Modulo.ToString() +
                                          " | Nivel: " + evento.Nivel.ToString() +
                                          " | PC: " + evento.Equipo +

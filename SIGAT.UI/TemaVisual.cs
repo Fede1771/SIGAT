@@ -77,6 +77,7 @@ internal static partial class TemaVisual
         button.FlatAppearance.MouseDownBackColor = primary ? Color.FromArgb(23, 69, 126) : Color.FromArgb(215, 230, 250);
     }
 
+    // Centralizamos el aspecto de las tablas. Los formularios conservan sus propias columnas y datos.
     public static void Grilla(DataGridView grid)
     {
         grid.Font = new Font("Segoe UI", 10F);
@@ -185,6 +186,7 @@ internal sealed class BotonNavegacion : Button
         UseVisualStyleBackColor = false;
     }
 
+    // Dibujamos selección e icono según el tema actual. Esto cambia la presentación, no la acción del botón.
     protected override void OnPaint(PaintEventArgs e)
     {
         Color actual = TemaVisual.ColorActual(TemaVisual.Azul);

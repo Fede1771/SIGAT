@@ -4,7 +4,7 @@ namespace SIGAT.BLL.Fabricas
 {
     public abstract class BitacoraFactory
     {
-        // Método principal (Template Method) que orquesta la creación del evento
+        // Factory Method: la clase hija define el tipo de evento; acá completamos los datos comunes.
         public IBitacoraEvento Crear(string identificadorUsuario, string descripcion)
         {
             // 1. Llama al método abstracto que implementarán las fábricas hijas
