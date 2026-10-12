@@ -59,7 +59,19 @@ public sealed class FrmIntegridad : Form
             if (MessageBox.Show(this, "Esta preparación establece la primera referencia de integridad. Confirme que los datos actuales son los que desea conservar. Se comprobarán los dígitos antiguos y se guardará un backup previo. No se permite reinicializar una base ya protegida.", "Preparación inicial", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
             await Operar(() => { string ruta = servicio.InicializarBaseConfiable(); informe = servicio.Verificar(); return "Referencia inicial y respaldo comprobado creados:\n" + ruta; }, true);
         };
-        respaldo.Click += async (_, _) => await Operar(() => "Respaldo comprobado creado:\n" + servicio.CrearRespaldoConfiable(), true);
+        respaldo.Click += async (_, _) =>
+        {
+            using var dialogo = new SaveFileDialog
+            {
+                Title = "Guardar respaldo comprobado",
+                Filter = "Respaldo SQL (*.bak)|*.bak",
+                DefaultExt = "bak", AddExtension = true,
+                FileName = "SIGAT_confiable_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".bak"
+            };
+            if (dialogo.ShowDialog(this) != DialogResult.OK) return;
+            string destino = dialogo.FileName;
+            await Operar(() => "Respaldo comprobado creado:\n" + servicio.CrearRespaldoConfiable(destino), true);
+        };
         recuperar.Click += async (_, _) =>
         {
             string ruta = archivo.Text; bool total = completas.Checked;

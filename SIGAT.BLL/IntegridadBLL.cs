@@ -21,7 +21,7 @@ public sealed class IntegridadBLL
         if (!EsAdministradorAplicacion()) throw new UnauthorizedAccessException("Esta cuenta de SIGAT no puede administrar la recuperación.");
     }
     public string InicializarBaseConfiable() { ExigirAdministradorAplicacion(); return dal.InicializarBaseConfiable(); }
-    public string CrearRespaldoConfiable() { ExigirAdministradorAplicacion(); return dal.CrearRespaldoConfiable(); }
+    public string CrearRespaldoConfiable(string? destino = null) { ExigirAdministradorAplicacion(); return dal.CrearRespaldoConfiable(destino); }
     public int ArchivarBitacora(int dias) { ExigirAdministradorAplicacion(); return dal.ArchivarBitacora(dias); }
     public InformeIntegridad Recuperar(string ruta, bool tablasCompletas = false) { ExigirAdministradorAplicacion(); return dal.Recuperar(ruta, tablasCompletas); }
     public void ExigirIntegridad()

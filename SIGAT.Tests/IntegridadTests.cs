@@ -68,7 +68,14 @@ public class IntegridadTests
         idioma.ActualizarTraduccion(1, 1, "Texto correcto ñ中文", "Completa", "");
         bitacora.Insertar(new Bitacora { Fecha = fecha, Usuario = "admin", Actividad = "Nuevo", InformacionAsociada = "Información correcta" });
         Assert.IsTrue(integridad.Verificar().Correcta);
-        backup = integridad.CrearRespaldoConfiable();
+        string carpetaExportada = Path.Combine(Path.GetTempPath(), "SIGAT exportación " + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(carpetaExportada);
+        string elegido = Path.Combine(carpetaExportada, "respaldo elegido.bak");
+        backup = integridad.CrearRespaldoConfiable(elegido);
+        Assert.AreEqual(elegido, backup);
+        Assert.IsTrue(File.Exists(elegido));
+        Assert.ThrowsExactly<InvalidOperationException>(() => integridad.CrearRespaldoConfiable(elegido));
+        Assert.ThrowsExactly<ArgumentException>(() => integridad.CrearRespaldoConfiable("relativo.bak"));
 
         Sql("UPDATE dbo.Traduccion SET Texto=N'Texto alterado' WHERE Id_Idioma=1 AND Id_Control=1");
         Assert.IsFalse(integridad.Verificar().Correcta);
@@ -76,7 +83,10 @@ public class IntegridadTests
         Assert.ThrowsExactly<IntegridadException>(() => idioma.ActualizarTraduccion(1, 1, "Aceptar alteración", "Completa", ""));
         Assert.ThrowsExactly<IntegridadException>(() => integridad.CrearRespaldoConfiable());
         // Un .bak físicamente válido puede contener datos cuyo SHA-256 está roto.
-        string corrupto = Path.Combine(Path.GetDirectoryName(backup)!, Path.GetFileNameWithoutExtension(backup) + "_corrupto.bak");
+        using var conexionCarpeta = new SqlConnection(cadena); conexionCarpeta.Open();
+        using var consultaCarpeta = new SqlCommand("SELECT CONVERT(nvarchar(2000),SERVERPROPERTY('InstanceDefaultBackupPath'))", conexionCarpeta);
+        string corrupto = Path.Combine(Convert.ToString(consultaCarpeta.ExecuteScalar())!,
+            new SqlConnectionStringBuilder(cadena).InitialCatalog + "_corrupto_" + Guid.NewGuid().ToString("N") + ".bak");
         using (var c = new SqlConnection(cadena))
         {
             c.Open();
@@ -115,5 +125,7 @@ public class IntegridadTests
         bitacora.Insertar(new Bitacora { Fecha=DateTime.Now.AddDays(-200),Usuario="admin",Actividad="Antiguo",InformacionAsociada="Archivar" });
         Assert.AreEqual(1, integridad.ArchivarBitacora(180));
         Assert.IsTrue(integridad.Verificar().Correcta, "El archivo legítimo debe actualizar el control del conjunto.");
+        File.Delete(elegido);
+        Directory.Delete(carpetaExportada);
     }
 }

@@ -1,5 +1,7 @@
 using System.Data;
 using System.Globalization;
+using System.Security.AccessControl;
+using System.Security.Principal;
 using Microsoft.Data.SqlClient;
 using SIGAT.BE.Integridad;
 using SIGAT.SERVICIOS;
@@ -273,19 +275,76 @@ public sealed class IntegridadDAL
         throw new IntegridadException(informe);
     }
 
-    public string CrearRespaldoConfiable()
+    public string CrearRespaldoConfiable(string? destino = null)
     {
         using var c = Conectar(); c.Open(); ExigirAdministrador(c);
         Exigir(Verificar());
-        string ruta = CrearArchivoBackup(c, "confiable");
-        ConBaseAuxiliar(ruta, auxiliar => { Exigir(auxiliar.Informe); return 0; });
+        if (destino != null)
+        {
+            if (string.IsNullOrWhiteSpace(destino) || !Path.IsPathFullyQualified(destino) ||
+                !string.Equals(Path.GetExtension(destino), ".bak", StringComparison.OrdinalIgnoreCase))
+                throw new ArgumentException("Seleccione una ruta absoluta para un archivo .bak.", nameof(destino));
+            if (File.Exists(destino))
+                throw new InvalidOperationException("Ya existe un respaldo con ese nombre. Elija otro nombre para conservar el anterior.");
+            using var equipo = Comando(c, null, "SELECT CONVERT(nvarchar(128),SERVERPROPERTY('MachineName'))");
+            if (!string.Equals(Convert.ToString(equipo.ExecuteScalar()), Environment.MachineName, StringComparison.OrdinalIgnoreCase))
+                throw new InvalidOperationException("Para exportar a una carpeta de este equipo, SQL Server debe estar instalado en el mismo PC. Cree el respaldo en el servidor y cópielo desde allí.");
+        }
+        // SQL Server trabaja en una carpeta local compartida; nunca en la unidad virtual de Drive.
+        string? carpetaExportacion = destino == null ? null : PrepararCarpetaCompartida(c);
+        string ruta = CrearArchivoBackup(c, "confiable", carpetaExportacion);
+        ConBaseAuxiliarServidor(ruta, auxiliar => { Exigir(auxiliar.Informe); return 0; });
         Registrar("Respaldo comprobado: " + ruta);
-        return ruta;
+        if (destino == null) return ruta;
+        try
+        {
+            ExportarRespaldo(ruta, destino);
+            Registrar("Respaldo comprobado exportado a: " + destino);
+            // Solo retirar la copia local después de confirmar la exportación.
+            try { File.Delete(ruta); Directory.Delete(carpetaExportacion!); }
+            catch (Exception ex) when (ex is IOException || ex is UnauthorizedAccessException)
+            { Registrar("Copia local conservada: " + ruta + ". " + ex.Message); }
+            return destino;
+        }
+        catch (Exception ex) when (ex is IOException || ex is UnauthorizedAccessException || ex is SqlException)
+        {
+            throw new IOException("El respaldo fue creado y comprobado, pero no pudo copiarse a la carpeta elegida. " +
+                "La copia confiable permanece en:\n" + ruta + "\nDetalle: " + ex.Message, ex);
+        }
     }
-    private static string CrearArchivoBackup(SqlConnection c, string sufijo)
+
+    private static void ExportarRespaldo(string origen, string destino)
+    {
+        string temporal = destino + "." + Guid.NewGuid().ToString("N") + ".tmp";
+        try
+        {
+            using var hash = System.Security.Cryptography.IncrementalHash.CreateHash(System.Security.Cryptography.HashAlgorithmName.SHA256);
+            using (var original = File.OpenRead(origen))
+            using (var salida = new FileStream(temporal, FileMode.CreateNew, FileAccess.Write, FileShare.None))
+            {
+                byte[] buffer = new byte[81920];
+                int cantidad;
+                while ((cantidad = original.Read(buffer, 0, buffer.Length)) != 0)
+                {
+                    salida.Write(buffer, 0, cantidad);
+                    hash.AppendData(buffer, 0, cantidad);
+                }
+            }
+            using (var copia = File.OpenRead(temporal))
+                if (!hash.GetHashAndReset().AsSpan().SequenceEqual(System.Security.Cryptography.SHA256.HashData(copia)))
+                    throw new IOException("La copia del archivo no coincide con el respaldo comprobado.");
+            File.Move(temporal, destino, overwrite: false);
+        }
+        finally
+        {
+            if (File.Exists(temporal)) File.Delete(temporal);
+        }
+    }
+
+    private static string CrearArchivoBackup(SqlConnection c, string sufijo, string? carpetaCompartida = null)
     {
         using var carpetaCmd = Comando(c, null, "SELECT CONVERT(nvarchar(2000),SERVERPROPERTY('InstanceDefaultBackupPath'))");
-        string carpeta = Convert.ToString(carpetaCmd.ExecuteScalar()) ?? "";
+        string carpeta = carpetaCompartida ?? Convert.ToString(carpetaCmd.ExecuteScalar()) ?? "";
         if (string.IsNullOrWhiteSpace(carpeta)) throw new InvalidOperationException("SQL Server no informó una carpeta de backups.");
         string ruta = Path.Combine(carpeta, c.Database + "_" + sufijo + "_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + "_" + Guid.NewGuid().ToString("N") + ".bak");
         using var cmd = Comando(c, null, $"BACKUP DATABASE {Id(c.Database)} TO DISK=@Ruta WITH COPY_ONLY,NOINIT,CHECKSUM");
@@ -295,6 +354,65 @@ public sealed class IntegridadDAL
     }
 
     private T ConBaseAuxiliar<T>(string ruta, Func<Estado, T> accion)
+    {
+        using var conexion = Conectar(); conexion.Open(); ExigirAdministrador(conexion);
+        using var equipo = Comando(conexion, null, "SELECT CONVERT(nvarchar(128),SERVERPROPERTY('MachineName'))");
+        bool local = string.Equals(Convert.ToString(equipo.ExecuteScalar()), Environment.MachineName, StringComparison.OrdinalIgnoreCase);
+        using var carpetaCmd = Comando(conexion, null, "SELECT CONVERT(nvarchar(2000),SERVERPROPERTY('InstanceDefaultBackupPath'))");
+        string carpeta = Convert.ToString(carpetaCmd.ExecuteScalar()) ?? "";
+        if (!local || !File.Exists(ruta) || string.IsNullOrWhiteSpace(carpeta) ||
+            string.Equals(Path.GetDirectoryName(Path.GetFullPath(ruta))?.TrimEnd(Path.DirectorySeparatorChar),
+                carpeta.TrimEnd(Path.DirectorySeparatorChar), StringComparison.OrdinalIgnoreCase))
+            return ConBaseAuxiliarServidor(ruta, accion);
+
+        // La cuenta de SQL Server no tiene acceso a unidades personales como Google Drive.
+        string carpetaTemporal = PrepararCarpetaCompartida(conexion);
+        string temporal = Path.Combine(carpetaTemporal, "respaldo.bak");
+        try
+        {
+            try { File.Copy(ruta, temporal, overwrite: false); }
+            catch (Exception ex) when (ex is IOException || ex is UnauthorizedAccessException)
+            {
+                throw new IOException("No se pudo preparar el respaldo para SQL Server. Copie el .bak a " + carpeta +
+                    " y selecciónelo desde allí. Detalle: " + ex.Message, ex);
+            }
+            return ConBaseAuxiliarServidor(temporal, accion);
+        }
+        finally
+        {
+            if (File.Exists(temporal)) File.Delete(temporal);
+            Directory.Delete(carpetaTemporal);
+        }
+    }
+
+    private static string PrepararCarpetaCompartida(SqlConnection conexion)
+    {
+        if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException("La importación local requiere Windows.");
+        using var servicio = Comando(conexion, null,
+            "SELECT service_account FROM sys.dm_server_services WHERE process_id=CONVERT(int,SERVERPROPERTY('ProcessID'))");
+        string cuenta = Convert.ToString(servicio.ExecuteScalar()) ?? "";
+        if (string.IsNullOrWhiteSpace(cuenta)) throw new InvalidOperationException("No se pudo identificar la cuenta de SQL Server.");
+        string carpeta = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
+            "SIGAT", "Importaciones", Guid.NewGuid().ToString("N"));
+        var directorio = Directory.CreateDirectory(carpeta);
+        try
+        {
+            var permisos = directorio.GetAccessControl();
+            permisos.AddAccessRule(new FileSystemAccessRule(WindowsIdentity.GetCurrent().User!, FileSystemRights.FullControl,
+                InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit, PropagationFlags.None, AccessControlType.Allow));
+            permisos.AddAccessRule(new FileSystemAccessRule(new NTAccount(cuenta), FileSystemRights.Modify,
+                InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit, PropagationFlags.None, AccessControlType.Allow));
+            directorio.SetAccessControl(permisos);
+            return carpeta;
+        }
+        catch
+        {
+            Directory.Delete(carpeta);
+            throw;
+        }
+    }
+
+    private T ConBaseAuxiliarServidor<T>(string ruta, Func<Estado, T> accion)
     {
         using var conexion = Conectar(); conexion.Open(); ExigirAdministrador(conexion);
         var builder = new SqlConnectionStringBuilder(conexion.ConnectionString) { InitialCatalog = "master" };
