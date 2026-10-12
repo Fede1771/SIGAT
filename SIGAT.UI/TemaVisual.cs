@@ -4,7 +4,7 @@ namespace SIGAT.UI;
 
 internal enum IconoVisual { Inicio, Usuarios, Roles, Idiomas, Bitacora, Salir, Familia, Permiso }
 
-internal static class TemaVisual
+internal static partial class TemaVisual
 {
     public static readonly Color Fondo = Color.FromArgb(245, 247, 251);
     public static readonly Color Texto = Color.FromArgb(30, 45, 65);
@@ -20,6 +20,7 @@ internal static class TemaVisual
 
     public static void Formulario(Form form)
     {
+        form.Shown += (_, _) => Aplicar(form);
         form.Font = new Font("Segoe UI", 10F);
         form.BackColor = Fondo;
         form.ForeColor = Texto;
@@ -163,11 +164,15 @@ internal sealed class BotonNavegacion : Button
 {
     [System.ComponentModel.DefaultValue(false)]
     public bool Seleccionado { get; set; }
-    private readonly Bitmap icon;
+    private Bitmap icon;
+    private readonly IconoVisual tipo;
+    private Color colorIcono;
 
     public BotonNavegacion(IconoVisual tipo)
     {
-        icon = TemaVisual.Icono(tipo, TemaVisual.Azul);
+        this.tipo = tipo;
+        colorIcono = TemaVisual.ColorActual(TemaVisual.Azul);
+        icon = TemaVisual.Icono(tipo, colorIcono);
         FlatStyle = FlatStyle.Flat;
         FlatAppearance.BorderSize = 0;
         FlatAppearance.MouseOverBackColor = TemaVisual.AzulSuave;
@@ -182,10 +187,17 @@ internal sealed class BotonNavegacion : Button
 
     protected override void OnPaint(PaintEventArgs e)
     {
-        BackColor = Seleccionado ? TemaVisual.AzulSuave : Color.White;
-        ForeColor = Seleccionado ? TemaVisual.Azul : TemaVisual.Texto;
+        Color actual = TemaVisual.ColorActual(TemaVisual.Azul);
+        if (actual != colorIcono)
+        {
+            icon.Dispose();
+            colorIcono = actual;
+            icon = TemaVisual.Icono(tipo, colorIcono);
+        }
+        BackColor = TemaVisual.ColorActual(Seleccionado ? TemaVisual.AzulSuave : Color.White);
+        ForeColor = TemaVisual.ColorActual(Seleccionado ? TemaVisual.Azul : TemaVisual.Texto, true);
         base.OnPaint(e);
-        if (Seleccionado) using (var brush = new SolidBrush(TemaVisual.Azul)) e.Graphics.FillRectangle(brush, 0, 10, 3, Height - 20);
+        if (Seleccionado) using (var brush = new SolidBrush(actual)) e.Graphics.FillRectangle(brush, 0, 10, 3, Height - 20);
         e.Graphics.DrawImage(icon, 12, (Height - 24) / 2, 24, 24);
     }
 
@@ -195,3 +207,4 @@ internal sealed class BotonNavegacion : Button
         base.Dispose(disposing);
     }
 }
+

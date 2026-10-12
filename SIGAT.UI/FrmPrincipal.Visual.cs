@@ -9,6 +9,7 @@ public partial class FrmPrincipal
     private Form formularioActual;
     private Label lblCuenta, lblRoles, lblSeccion;
     private Button btnIdiomaVisual;
+    private Button btnTemaVisual;
     private ContextMenuStrip selectorIdioma;
     private ToolStripMenuItem itemIntegridad;
     private readonly Dictionary<string, BotonNavegacion> navegacion = new();
@@ -25,8 +26,9 @@ public partial class FrmPrincipal
         var marca = new Label { Text = "SIGAT", Dock = DockStyle.Fill, BackColor = Color.White, ForeColor = TemaVisual.Azul, Font = new Font("Segoe UI", 22F, FontStyle.Bold), TextAlign = ContentAlignment.MiddleLeft, Padding = new Padding(26, 0, 0, 0), Margin = Padding.Empty };
         marco.Controls.Add(marca, 0, 0);
 
-        var header = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 3, BackColor = Color.White, Padding = new Padding(24, 12, 24, 12), Margin = Padding.Empty };
+        var header = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 4, BackColor = Color.White, Padding = new Padding(24, 12, 24, 12), Margin = Padding.Empty };
         header.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+        header.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
         header.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
         header.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
         lblSeccion = new Label { Text = "Inicio", Dock = DockStyle.Fill, TextAlign = ContentAlignment.MiddleLeft, Font = new Font("Segoe UI", 12F, FontStyle.Bold), AutoEllipsis = true };
@@ -40,9 +42,24 @@ public partial class FrmPrincipal
             ForeColor = TemaVisual.Texto, Padding = new Padding(4), ShowImageMargin = false, ShowCheckMargin = true
         };
         btnIdiomaVisual.Click += (_, _) => MostrarSelectorIdioma();
+        btnTemaVisual = TemaVisual.Boton("btnTemaVisual", "Modo oscuro");
+        btnTemaVisual.Margin = new Padding(0, 0, 12, 0);
+        btnTemaVisual.Click += (_, _) =>
+        {
+            try
+            {
+                int id = SesionServicio.ObtenerInstancia().UsuarioActual?.IdUsuario ?? 0;
+                TemaVisual.GuardarPreferencia(id, !TemaVisual.EsOscuro);
+                ActualizarBotonTema();
+                TemaVisual.Aplicar(selectorIdioma);
+            }
+            catch (Exception ex) when (ex is IOException || ex is UnauthorizedAccessException || ex is InvalidOperationException)
+            { MessageBox.Show(this, "No se pudo guardar el tema.\n" + ex.Message, "Apariencia", MessageBoxButtons.OK, MessageBoxIcon.Information); }
+        };
         header.Controls.Add(lblSeccion, 0, 0);
         header.Controls.Add(lblCuenta, 1, 0);
-        header.Controls.Add(btnIdiomaVisual, 2, 0);
+        header.Controls.Add(btnTemaVisual, 2, 0);
+        header.Controls.Add(btnIdiomaVisual, 3, 0);
         marco.Controls.Add(header, 1, 0);
 
         var sidebar = new TableLayoutPanel { Dock = DockStyle.Fill, BackColor = Color.White, ColumnCount = 1, RowCount = 3, Padding = new Padding(12, 20, 12, 16), Margin = Padding.Empty };
@@ -108,6 +125,7 @@ public partial class FrmPrincipal
             }
         }
         selectorIdioma.MinimumSize = new Size(Math.Max(210, btnIdiomaVisual.Width), 0);
+        TemaVisual.Aplicar(selectorIdioma);
         // Un menú independiente evita que el MenuStrip oculto lo reposicione sobre el logo.
         selectorIdioma.Show(btnIdiomaVisual, new Point(btnIdiomaVisual.Width, btnIdiomaVisual.Height + 6), ToolStripDropDownDirection.BelowLeft);
     }
@@ -152,6 +170,7 @@ public partial class FrmPrincipal
         home.Controls.Add(cards, 0, 1);
         panelContenido.Controls.Add(home);
         SeleccionarSeccion("Inicio");
+        TemaVisual.Aplicar(home);
     }
 
     private void CerrarFormularioActual()
@@ -175,6 +194,7 @@ public partial class FrmPrincipal
     private void ActualizarMarcoVisual()
     {
         if (lblCuenta == null) return;
+        ActualizarBotonTema();
         var user = SesionServicio.ObtenerInstancia().UsuarioActual;
         lblCuenta.Text = user?.NombreUsuario ?? "";
         lblRoles.Text = user == null || user.Roles.Count == 0
@@ -188,5 +208,13 @@ public partial class FrmPrincipal
             entry.Value.Text = IdiomaManager.ObtenerInstancia().Traducir(Name, entry.Value.Tag.ToString(), entry.Value.Text);
             if (entry.Value.Seleccionado) lblSeccion.Text = entry.Value.Text;
         }
+    }
+
+    private void ActualizarBotonTema()
+    {
+        if (btnTemaVisual == null) return;
+        btnTemaVisual.Text = IdiomaManager.ObtenerInstancia().Traducir(Name,
+            TemaVisual.EsOscuro ? "tema_claro" : "tema_oscuro", TemaVisual.EsOscuro ? "Modo claro" : "Modo oscuro");
+        btnTemaVisual.AccessibleName = btnTemaVisual.Text;
     }
 }

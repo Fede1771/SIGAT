@@ -64,13 +64,13 @@ namespace SIGAT.UI
                     e.Value = nombres == "" ? IdiomaManager.ObtenerInstancia().Traducir(Name, "sin_roles", "Sin roles asignados") : nombres;
                     e.FormattingApplied = true;
                 }
-                if (!usuario.Activo) e.CellStyle.ForeColor = Color.DimGray;
+                if (!usuario.Activo) e.CellStyle.ForeColor = TemaVisual.ColorActual(Color.DimGray, true);
                 if (dgvUsuarios.Columns[e.ColumnIndex].Name == "Activo")
                 {
                     e.Value = IdiomaManager.ObtenerInstancia().Traducir(Name,
                         usuario.Activo ? "chk_activo" : "estado_inactivo", usuario.Activo ? "Activo" : "Inactivo");
-                    e.CellStyle.BackColor = usuario.Activo ? TemaVisual.VerdeSuave : TemaVisual.Fondo;
-                    e.CellStyle.ForeColor = usuario.Activo ? TemaVisual.Verde : TemaVisual.Secundario;
+                    e.CellStyle.BackColor = TemaVisual.ColorActual(usuario.Activo ? TemaVisual.VerdeSuave : TemaVisual.Fondo);
+                    e.CellStyle.ForeColor = TemaVisual.ColorActual(usuario.Activo ? TemaVisual.Verde : TemaVisual.Secundario, true);
                     e.CellStyle.SelectionBackColor = e.CellStyle.BackColor;
                     e.CellStyle.SelectionForeColor = e.CellStyle.ForeColor;
                     e.CellStyle.Font = TemaVisual.FuenteEstado;

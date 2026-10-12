@@ -13,6 +13,7 @@ namespace SIGAT.UI
 
         public FrmPrincipal()
         {
+            TemaVisual.CargarPreferencia(SesionServicio.ObtenerInstancia().UsuarioActual?.IdUsuario ?? 0);
             InitializeComponent();
 
             Usuario usuarioLogueado = SesionServicio.ObtenerInstancia().UsuarioActual;
@@ -183,6 +184,7 @@ namespace SIGAT.UI
             panelContenido.Controls.Add(formHijo);
             SeleccionarSeccion(formHijo.GetType().Name);
             formHijo.Show();
+            TemaVisual.Aplicar(formHijo);
         }
     }
 }

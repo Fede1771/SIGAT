@@ -1,4 +1,4 @@
-﻿using System.Text;
+using System.Text;
 using SIGAT.BE.Idiomas;
 using SIGAT.BLL;
 using SIGAT.SERVICIOS.Idiomas;
@@ -174,8 +174,8 @@ namespace SIGAT.UI
         {
             if (e.RowIndex < 0 || dgvTraducciones.Columns[e.ColumnIndex].Name != "Estado") return;
             bool completa = string.Equals(e.Value?.ToString(), "Completa", StringComparison.OrdinalIgnoreCase);
-            e.CellStyle.BackColor = completa ? TemaVisual.VerdeSuave : TemaVisual.AmbarSuave;
-            e.CellStyle.ForeColor = completa ? TemaVisual.Verde : TemaVisual.Ambar;
+            e.CellStyle.BackColor = TemaVisual.ColorActual(completa ? TemaVisual.VerdeSuave : TemaVisual.AmbarSuave);
+            e.CellStyle.ForeColor = TemaVisual.ColorActual(completa ? TemaVisual.Verde : TemaVisual.Ambar, true);
             e.CellStyle.SelectionBackColor = e.CellStyle.BackColor;
             e.CellStyle.SelectionForeColor = e.CellStyle.ForeColor;
             e.CellStyle.Font = TemaVisual.FuenteEstado;

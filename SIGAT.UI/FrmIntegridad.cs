@@ -110,8 +110,8 @@ public sealed class FrmIntegridad : Form
             grilla.DataSource = informe?.Problemas.ToList();
             bool correcta = informe?.Correcta == true;
             estado.Text = correcta ? "Integridad correcta. Los datos protegidos pueden utilizarse." : "Se requiere atención. Los datos afectados están bloqueados hasta su recuperación.";
-            estado.BackColor = correcta ? TemaVisual.VerdeSuave : TemaVisual.AmbarSuave;
-            estado.ForeColor = correcta ? TemaVisual.Verde : TemaVisual.Ambar;
+            estado.BackColor = TemaVisual.ColorActual(correcta ? TemaVisual.VerdeSuave : TemaVisual.AmbarSuave);
+            estado.ForeColor = TemaVisual.ColorActual(correcta ? TemaVisual.Verde : TemaVisual.Ambar, true);
             comprobar.Enabled = true;
             inicializar.Visible = informe?.Configurada == false;
             inicializar.Enabled = administrador && informe?.Configurada == false;
