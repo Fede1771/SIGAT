@@ -366,4 +366,5 @@ FodyWeavers.xsd
 /tmp/roles-pruebas
 /Querys/GUIA_INTEGRIDAD.md
 *.md
+!/README.md
 /Recursos/SIGAT LOGO.png
