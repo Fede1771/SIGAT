@@ -15,4 +15,12 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <!-- Esta parte de la clase no es otro formulario: comparte FrmPrincipal.resx. -->
+    <Compile Update="FrmPrincipal.Visual.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <EmbeddedResource Remove="FrmPrincipal.Visual.resx" />
+  </ItemGroup>
+
 </Project>
