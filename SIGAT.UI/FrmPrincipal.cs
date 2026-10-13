@@ -183,10 +183,16 @@ namespace SIGAT.UI
             formHijo.WindowState = FormWindowState.Normal;
             formHijo.MinimumSize = Size.Empty;
             formHijo.Dock = DockStyle.Fill;
-            panelContenido.Controls.Add(formHijo);
-            SeleccionarSeccion(formHijo.GetType().Name);
-            formHijo.Show();
+            // La pantalla recibe el tema estando oculta, antes de cargar datos o mostrar controles nativos.
             TemaVisual.Aplicar(formHijo);
+            panelContenido.SuspendLayout();
+            try
+            {
+                panelContenido.Controls.Add(formHijo);
+                SeleccionarSeccion(formHijo.GetType().Name);
+                formHijo.Show();
+            }
+            finally { panelContenido.ResumeLayout(true); }
         }
     }
 }

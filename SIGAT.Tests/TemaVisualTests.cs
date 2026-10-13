@@ -80,6 +80,72 @@ public class TemaVisualTests
     }
 
     [TestMethod]
+    public void PantallasRecibenTemaOscuroAntesDeLaCargaYDeMostrarse()
+    {
+        Exception? error = null;
+        var hilo = new Thread(() =>
+        {
+            try
+            {
+                var admin = new Usuario { IdUsuario = int.MaxValue - 60, NombreUsuario = "tema_sin_destello", Activo = true };
+                var catalogo = MatrizRoles.CrearCatalogo();
+                admin.AsignarRol(catalogo.Roles[0]);
+                catalogo.Usuarios.Add(admin);
+                SesionServicio.ObtenerInstancia().IniciarSesion(admin);
+                using var principal = new FrmPrincipal();
+                QuitarCarga(principal, "FrmPrincipal_Load");
+                principal.ShowInTaskbar = false;
+                principal.Opacity = 0;
+                principal.Show();
+                Invocar("CambiarModo", true);
+                var abrir = typeof(FrmPrincipal).GetMethod("AbrirFormulario", BindingFlags.Instance | BindingFlags.NonPublic)!;
+                int cargas = 0;
+                for (int vuelta = 0; vuelta < 3; vuelta++)
+                {
+                    var usuarios = new FrmGestionUsuarios();
+                    QuitarCarga(usuarios, "FrmGestionUsuarios_Load");
+                    var roles = new FormGestionRoles();
+                    QuitarCarga(roles, "CargarDatos");
+                    foreach (Form pantalla in new Form[] { usuarios, roles })
+                    {
+                        pantalla.Load += (_, _) =>
+                        {
+                            cargas++;
+                            Assert.IsTrue(pantalla.BackColor.GetBrightness() < 0.2, "El fondo debe ser oscuro antes de cargar datos.");
+                            if (pantalla is FormGestionRoles)
+                            {
+                                typeof(FormGestionRoles).GetMethod("InicializarDatos", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(pantalla, new object[] { catalogo });
+                                var arbol = (TreeView)pantalla.Controls.Find("tvRolesJerarquia", true)[0];
+                                Assert.IsTrue(arbol.BackColor.GetBrightness() < 0.2);
+                            }
+                        };
+                        pantalla.VisibleChanged += (_, _) =>
+                        {
+                            if (pantalla.Visible) Assert.IsTrue(pantalla.BackColor.GetBrightness() < 0.2, "No debe mostrarse con el fondo claro.");
+                        };
+                        abrir.Invoke(principal, new object[] { pantalla });
+                        Application.DoEvents();
+                    }
+                    typeof(FrmPrincipal).GetMethod("MostrarInicio", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(principal, null);
+                    Assert.IsTrue(principal.Controls.Find("panelContenido", true)[0].Controls[0].BackColor.GetBrightness() < 0.2);
+                }
+                Assert.AreEqual(6, cargas);
+            }
+            catch (Exception ex) { error = ex; }
+            finally { Invocar("CambiarModo", false); SesionServicio.ObtenerInstancia().CerrarSesion(); }
+        });
+        hilo.SetApartmentState(ApartmentState.STA);
+        hilo.Start(); hilo.Join();
+        if (error != null) throw error;
+    }
+
+    private static void QuitarCarga(Form form, string metodo)
+    {
+        var carga = form.GetType().GetMethod(metodo, BindingFlags.Instance | BindingFlags.NonPublic)!;
+        form.Load -= (EventHandler)carga.CreateDelegate(typeof(EventHandler), form);
+    }
+
+    [TestMethod]
     public void PreferenciaSeGuardaPorIdDeCuentaEnElCliente()
     {
         int uno = int.MaxValue - 51, dos = int.MaxValue - 52;

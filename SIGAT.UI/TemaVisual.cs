@@ -20,7 +20,9 @@ internal static partial class TemaVisual
 
     public static void Formulario(Form form)
     {
-        form.Shown += (_, _) => Aplicar(form);
+        // Preparamos los colores antes de mostrar la ventana: Shown llega después del primer dibujo.
+        form.HandleCreated += (_, _) => Aplicar(form);
+        form.Load += (_, _) => Aplicar(form);
         form.Font = new Font("Segoe UI", 10F);
         form.BackColor = Fondo;
         form.ForeColor = Texto;

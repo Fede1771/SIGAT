@@ -169,9 +169,9 @@ public partial class FrmPrincipal
             cards.Controls.Add(button);
         }
         home.Controls.Add(cards, 0, 1);
+        TemaVisual.Aplicar(home);
         panelContenido.Controls.Add(home);
         SeleccionarSeccion("Inicio");
-        TemaVisual.Aplicar(home);
     }
 
     private void CerrarFormularioActual()
