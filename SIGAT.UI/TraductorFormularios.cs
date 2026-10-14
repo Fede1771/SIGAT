@@ -26,6 +26,7 @@ namespace SIGAT.UI
             TraducirControles(nombreForm, formulario.Controls);
         }
 
+        // Recorremos los hijos de cada contenedor; solo las etiquetas identificadas para traducir cambian su texto visible.
         private static void TraducirControles(string nombreForm, Control.ControlCollection controles)
         {
             foreach (Control control in controles)

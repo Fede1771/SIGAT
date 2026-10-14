@@ -38,6 +38,7 @@ namespace SIGAT.DAL
             }
             using (SqlCommand comando = new SqlCommand("SELECT IdUsuario FROM dbo.AdministradorOriginal WHERE Id=1", conexion, transaccion))
                 estado.IdAdministradorOriginal = Convert.ToInt32(comando.ExecuteScalar());
+            // Primero creamos los objetos por ID; después enlazamos sus relaciones. Así una familia compartida no se duplica.
             Dictionary<int, Permiso> permisos = new Dictionary<int, Permiso>();
             using (SqlCommand comando = new SqlCommand("SELECT Id, Nombre, EsCompuesto FROM dbo.Permiso ORDER BY Id", conexion, transaccion))
             using (SqlDataReader lector = comando.ExecuteReader())

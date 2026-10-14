@@ -135,6 +135,7 @@ namespace SIGAT.DAL
             comando.Parameters.Add("@Activo", SqlDbType.Bit).Value = usuario.Activo;
         }
 
+        // Convertimos una fila SQL en una entidad. La carga de roles se realiza aparte para no mezclar cuenta y catálogo.
         private static Usuario MapearUsuario(SqlDataReader lector)
         {
             return new Usuario

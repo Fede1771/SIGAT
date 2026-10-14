@@ -19,5 +19,6 @@ public partial class DlgFamiliaPermisos : Form
             if (!ReferenceEquals(permiso, familia))
                 lista.Items.Add(permiso, familia.ObtenerHijos().Contains(permiso));
     }
+    // El diálogo devuelve la selección sin guardar en SQL; la pantalla de roles valida y persiste al aceptar.
     public IEnumerable<Permiso> Seleccionados => lista.CheckedItems.Cast<Permiso>();
 }

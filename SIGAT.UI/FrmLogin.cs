@@ -17,6 +17,7 @@ namespace SIGAT.UI
             if (inicializarAdministrador) CrearUsuarioAdminInicial();
         }
 
+        // Solo intentamos el alta inicial si no hay cuentas; una instalación SQL normal ya contiene su administrador.
         private void CrearUsuarioAdminInicial()
         {
             try
@@ -37,6 +38,7 @@ namespace SIGAT.UI
             {}
         }
 
+        // La BLL distingue credenciales incorrectas, cuenta inactiva e ingreso válido; aquí presentamos el resultado.
         private void BtnLogin_Click(object sender, EventArgs e)
         {
             Usuario usuarioValidado;

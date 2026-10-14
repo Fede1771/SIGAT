@@ -53,7 +53,7 @@ namespace SIGAT.Tests
             Assert.AreSame(instancia1, instancia2, "El patrón Singleton falló: se crearon dos objetos distintos en memoria.");
         }
 
-        // 3. Test de HashHelper (SHA-256): Verifica la encriptación de una sola vía (Irreversible)
+        // SHA-256 genera una huella para comparar contraseñas; no es cifrado y no existe una operación de descifrado.
         [TestMethod]
         public void HashHelper_ValidaConsistenciaYDiferencia()
         {
@@ -67,7 +67,7 @@ namespace SIGAT.Tests
             // Regla 1: La misma contraseña siempre debe generar el mismo hash
             Assert.AreEqual(hash1_intento1, hash1_intento2, "El mismo texto debe generar el mismo hash.");
 
-            // Regla 2: Contraseñas distintas deben generar hashes totalmente distintos (Evitar colisiones)
+            // Para estas dos entradas esperamos huellas distintas. Esta prueba no demuestra que el algoritmo carezca de colisiones.
             Assert.AreNotEqual(hash1_intento1, hash2, "Textos distintos deben generar hashes distintos.");
         }
 

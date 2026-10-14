@@ -13,6 +13,7 @@ namespace SIGAT.DAL
         private SqlConnection Conectar()
             => cadena == null ? ConexionBD.ObtenerConexion() : new SqlConnection(cadena);
 
+        // Sin una elección guardada devolvemos null; la BLL decide qué idioma de respaldo usar.
         public int? ObtenerIdiomaPreferido(int idUsuario)
         {
             using SqlConnection conexion = Conectar();
@@ -207,6 +208,7 @@ namespace SIGAT.DAL
                 return lista;
             });
 
+        // La identidad de una etiqueta combina formulario y control: nombres iguales en pantallas distintas no se confunden.
         public int ObtenerOCrearControl(string nombreControl, string nombreForm)
         {
             using (SqlConnection conexion = Conectar())

@@ -33,6 +33,7 @@ namespace SIGAT.UI
             catch (Exception ex) { MessageBox.Show(ex.Message, "Gestión de usuarios", MessageBoxButtons.OK, MessageBoxIcon.Error); }
         }
 
+        // Formateamos roles y estado para la lectura; la entidad conserva sus valores originales para editar y guardar.
         private void ConfigurarGrilla()
         {
             dgvUsuarios.CellFormatting += (s, e) =>
@@ -128,6 +129,7 @@ namespace SIGAT.UI
 
         private void BtnLimpiar_Click(object sender, EventArgs e) { Limpiar(); }
 
+        // Volvemos al modo alta y descartamos la selección y la clave escrita para no reutilizar datos de otra cuenta.
         private void Limpiar()
         {
             _idSeleccionado = 0;

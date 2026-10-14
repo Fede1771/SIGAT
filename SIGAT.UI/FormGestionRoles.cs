@@ -45,6 +45,7 @@ namespace SIGAT.UI
             }
         }
 
+        // Reemplazamos el estado de trabajo con la lectura de SQL y conservamos la cuenta seleccionada, si todavía existe.
         private void InicializarDatos(EstadoRoles datos)
         {
             int? seleccionado = (cbUsuarios.SelectedItem as Usuario)?.IdUsuario;
@@ -117,6 +118,7 @@ namespace SIGAT.UI
             throw new InvalidOperationException("Seleccione un usuario.");
         }
 
+        // Asignamos roles completos a cuentas; los permisos se administran dentro del rol y se heredan al consultarlos.
         private void AsignarAUsuario()
         {
             if (!(origenUsuario is Rol rol))
@@ -156,6 +158,7 @@ namespace SIGAT.UI
             else throw new InvalidOperationException("Seleccione un permiso en el catálogo o un rol en el árbol superior.");
         }
 
+        // Crear un rol anidado agrega también la relación con su padre; Ejecutar se encarga del guardado del estado completo.
         private void CrearRol(bool anidado)
         {
             Rol padre = anidado ? Destino() : null;
@@ -290,6 +293,7 @@ namespace SIGAT.UI
             return cantidad;
         }
 
+        // Ajustamos el alto de las filas al espacio y al DPI, conservando selección y expansión durante el cambio visual.
         private static void AjustarFilasArbol(TreeView arbol)
         {
             int cantidad = ContarFilasVisibles(arbol.Nodes);

@@ -160,6 +160,7 @@ namespace SIGAT.UI
             e.CellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
         }
 
+        // Confirmamos la edición de la fila seleccionada y la enviamos a la BLL, que define su estado y calcula su DVH.
         private void btnGuardarTraduccion_Click(object sender, EventArgs e)
         {
             try
@@ -188,6 +189,7 @@ namespace SIGAT.UI
             }
         }
 
+        // El archivo de intercambio conserva clave, formulario y texto base para reconocer las filas al importar la traducción.
         private void btnExportarTraducciones_Click(object sender, EventArgs e)
         {
             try

@@ -33,6 +33,7 @@ namespace SIGAT.BLL
             _dal.Insertar(registroClasico);
         }
 
+        // Los filtros son opcionales; la DAL verifica la integridad antes de devolver los eventos para su consulta.
         public List<Bitacora> Buscar(DateTime? desde, DateTime? hasta, string? usuario, string? actividad)
         {
             return _dal.Buscar(desde, hasta, usuario, actividad);

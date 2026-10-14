@@ -19,6 +19,7 @@ public sealed class IntegridadDAL
         ["Bitacora"] = new[] { "IdBitacora", "Fecha", "Usuario", "Actividad", "InformacionAsociada", "DigitoVerificador" },
         ["Traduccion"] = new[] { "Id_Idioma", "Id_Control", "Texto", "Estado", "DigitoVerificador" }
     };
+    // Reunimos los valores de una fila y su DVH en el mismo formato para comparar datos actuales y datos del respaldo.
     private sealed record Fila(string Tabla, object?[] Valores)
     {
         public string Clave => Tabla == "Bitacora" ? Convert.ToString(Valores[0], CultureInfo.InvariantCulture)!
@@ -60,6 +61,7 @@ public sealed class IntegridadDAL
         using var cmd = Comando(c, t, "SELECT CASE WHEN OBJECT_ID('dbo.IntegridadTabla','U') IS NULL THEN 0 ELSE 1 END");
         return (int)cmd.ExecuteScalar()! == 1;
     }
+    // El orden por clave es estable: leer las mismas filas en otro orden no debe producir un DVV diferente.
     private static List<Fila> LeerFilas(SqlConnection c, SqlTransaction t, string tabla)
     {
         var result = new List<Fila>();

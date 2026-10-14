@@ -13,7 +13,7 @@ namespace SIGAT.BLL
         private UsuarioDAL _dal = new UsuarioDAL();
         private BitacoraBLL _bitacora = new BitacoraBLL();
 
-        // Método auxiliar para no repetir código
+        // Identificamos al responsable de la operación para la bitácora; sin sesión usamos el identificador Sistema.
         private string ObtenerNombreUsuarioActual()
         {
             Usuario usuarioLogueado = SesionServicio.ObtenerInstancia().UsuarioActual;
@@ -125,6 +125,7 @@ namespace SIGAT.BLL
             _bitacora.Registrar(evento);
         }
 
+        // El alta inicial tiene su propio camino: el DAL exige una base sin cuentas y asigna el rol Administrador.
         public void CrearAdministradorInicial(Usuario usuario, string passwordPlana)
         {
             ValidarDatos(usuario);

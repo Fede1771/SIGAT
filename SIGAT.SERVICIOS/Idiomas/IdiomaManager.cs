@@ -22,6 +22,7 @@ namespace SIGAT.SERVICIOS.Idiomas
 
         private IdiomaManager() { }
 
+        // Creamos el administrador al primer uso; las pantallas comparten el idioma y el diccionario de esta sesión.
         public static IdiomaManager ObtenerInstancia()
         {
             if (_instancia == null)
@@ -39,6 +40,7 @@ namespace SIGAT.SERVICIOS.Idiomas
             }
         }
 
+        // Al cerrar una pantalla retiramos su referencia para que no reciba avisos ni quede retenida en la lista.
         public void Desuscribir(IIdiomaObserver observador)
         {
             _observadores.Remove(observador);

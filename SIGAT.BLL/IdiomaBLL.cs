@@ -11,6 +11,7 @@ namespace SIGAT.BLL
 
         public IdiomaBLL(IdiomaDAL? dal = null) { _dal = dal ?? new IdiomaDAL(); }
 
+        // Para elegir el idioma de la sesión ofrecemos solo los activos; la gestión también necesita ver los desactivados.
         public List<Idioma> ObtenerIdiomas()
         {
             return _dal.ObtenerIdiomas();
@@ -118,6 +119,7 @@ namespace SIGAT.BLL
             return _dal.ObtenerTraduccionesParaGestion(idIdioma);
         }
 
+        // Un texto vacío queda pendiente. El DVH incluye idioma, control, texto y estado para detectar cambios en esa traducción.
         public void GuardarTraduccionPorControl(int idIdioma, int idControl, string texto)
         {
             string estado = string.IsNullOrWhiteSpace(texto) ? "Pendiente" : "Completa";

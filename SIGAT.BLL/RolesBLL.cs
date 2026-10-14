@@ -7,6 +7,7 @@ namespace SIGAT.BLL
     public class RolesBLL
     {
         private readonly RolesDAL dal;
+        // Permitir otro repositorio facilita probar la misma lógica sobre una base de ensayo sin cambiar la conexión habitual.
         public RolesBLL(RolesDAL? repositorio = null) { dal = repositorio ?? new RolesDAL(); }
 
         // La gestión exige un catálogo válido y una cuenta con acceso a Administración del sistema.

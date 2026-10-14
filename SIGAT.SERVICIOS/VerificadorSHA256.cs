@@ -6,7 +6,7 @@ namespace SIGAT.SERVICIOS;
 
 public static class VerificadorSHA256
 {
-    // Longitud + valor evita confundir campos que contienen separadores.
+    // Longitud + valor evita confundir campos que contienen separadores. También distinguimos null de texto vacío y fijamos el formato de fechas.
     public static string Canonico(params object?[] valores) => string.Concat(valores.Select(valor =>
     {
         if (valor == null || valor == DBNull.Value) return "-1:";
