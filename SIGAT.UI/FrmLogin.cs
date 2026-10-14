@@ -12,6 +12,8 @@ namespace SIGAT.UI
         internal FrmLogin(bool inicializarAdministrador)
         {
             InitializeComponent();
+            if (EntornoDiseno.Activo) return;
+            TemaVisual.Formulario(this);
             if (inicializarAdministrador) CrearUsuarioAdminInicial();
         }
 

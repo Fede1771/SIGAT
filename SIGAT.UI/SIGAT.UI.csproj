@@ -16,11 +16,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- Esta parte de la clase no es otro formulario: comparte FrmPrincipal.resx. -->
-    <Compile Update="FrmPrincipal.Visual.cs">
-      <SubType>Code</SubType>
+    <!-- Solo los archivos principales se presentan como formularios en Visual Studio. -->
+    <Compile Update="FrmPrincipal.cs;FrmLogin.cs;FrmGestionUsuarios.cs;FrmGestionIdiomas.cs;FrmBitacora.cs;FormGestionRoles.cs;FrmIntegridad.cs;DlgNombreRol.cs;DlgFamiliaPermisos.cs">
+      <SubType>Form</SubType>
     </Compile>
-    <EmbeddedResource Remove="FrmPrincipal.Visual.resx" />
   </ItemGroup>
 
 </Project>

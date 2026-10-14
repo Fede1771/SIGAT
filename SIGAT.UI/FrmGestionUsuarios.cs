@@ -13,16 +13,13 @@ namespace SIGAT.UI
         public FrmGestionUsuarios()
         {
             InitializeComponent();
+            // El enlace usa las columnas del diseñador; nunca expone propiedades internas.
+            dgvUsuarios.AutoGenerateColumns = false;
+            if (EntornoDiseno.Activo) return;
+            TemaVisual.Formulario(this);
+            WindowState = FormWindowState.Maximized;
             Tag = "frmgestionusuarios_titulo";
-            lblUsuario.Tag = "lbl_usuario_gu";
-            lblClave.Tag = "lbl_clave";
-            lblNombre.Tag = "lbl_nombre";
-            lblApellido.Tag = "lbl_apellido";
-            chkActivo.Tag = "chk_activo";
-            btnGuardar.Tag = "btn_guardar";
-            btnEliminar.Tag = "btn_eliminar";
-            btnLimpiar.Tag = "btn_limpiar";
-            lblAyuda.Tag = "lbl_ayuda_roles";
+
             ConfigurarGrilla();
             Load += FrmGestionUsuarios_Load;
             FormClosed += (s, e) => IdiomaManager.ObtenerInstancia().Desuscribir(this);
@@ -38,19 +35,6 @@ namespace SIGAT.UI
 
         private void ConfigurarGrilla()
         {
-            // Columnas explícitas: no se generan Id duplicado, Password ni colecciones.
-            dgvUsuarios.AutoGenerateColumns = false;
-            AgregarColumna("IdUsuario", "ID", "col_idusuario", 45, 45);
-            AgregarColumna("NombreUsuario", "Usuario", "col_nombreusuario", 130, 100);
-            AgregarColumna("Nombre", "Nombre", "col_nombre", 120, 90);
-            AgregarColumna("Apellido", "Apellido", "col_apellido", 120, 90);
-            dgvUsuarios.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                Name = "Activo", DataPropertyName = "Activo", HeaderText = "Activo", Tag = "col_activo",
-                FillWeight = 85, MinimumWidth = 85, SortMode = DataGridViewColumnSortMode.NotSortable
-            });
-            AgregarColumna("Roles", "Roles asignados", "col_roles_asignados", 200, 150);
-            dgvUsuarios.Columns["Roles"].DataPropertyName = "";
             dgvUsuarios.CellFormatting += (s, e) =>
             {
                 if (e.RowIndex < 0 || dgvUsuarios.Rows[e.RowIndex].DataBoundItem is not Usuario usuario) return;
@@ -84,15 +68,6 @@ namespace SIGAT.UI
             {
                 if (e.KeyCode == Keys.Up || e.KeyCode == Keys.Down || e.KeyCode == Keys.Enter) SeleccionarFila();
             };
-        }
-
-        private void AgregarColumna(string propiedad, string titulo, string clave, float ancho, int minimo)
-        {
-            dgvUsuarios.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                Name = propiedad, DataPropertyName = propiedad, HeaderText = titulo, Tag = clave,
-                FillWeight = ancho, MinimumWidth = minimo, SortMode = DataGridViewColumnSortMode.NotSortable
-            });
         }
 
         private void CargarGrilla()

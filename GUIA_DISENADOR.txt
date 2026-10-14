@@ -1,0 +1,42 @@
+DISEÑO Y CÓDIGO DE LOS FORMULARIOS DE SIGAT
+
+Cada pantalla tiene tres archivos:
+- Nombre.cs: eventos, validaciones, carga de datos y llamadas a BLL.
+- Nombre.Designer.cs: controles, columnas, distribución y propiedades visuales.
+- Nombre.resx: recursos del formulario.
+
+En Visual Studio, abrir SIGAT.slnx, compilar y usar Ver diseñador sobre el
+archivo principal .cs. No abrir el Designer.cs como si fuera otro formulario.
+
+Pantallas: FrmLogin, FrmPrincipal, FrmGestionUsuarios, FormGestionRoles,
+FrmGestionIdiomas, FrmBitacora y FrmIntegridad.
+Diálogos: DlgNombreRol y DlgFamiliaPermisos.
+
+FrmPrincipal.Visual.cs se integró en FrmPrincipal.cs. Su resx duplicado se
+eliminó; el recurso del formulario principal sigue siendo FrmPrincipal.resx.
+
+Los controles existen desde InitializeComponent. En ejecución se aplican el
+tema, el idioma, los permisos y los datos; no se reconstruye el diseño base.
+EntornoDiseno evita ejecutar la inicialización de sesión/SQL dentro del diseñador.
+Los árboles muestran su estructura de controles en diseño: sus nodos reales
+se cargan desde la base en ejecución.
+El diseñador presenta todos los accesos; cada sesión filtra los autorizados.
+Las grillas tienen columnas declaradas en Designer y conservan sus propiedades
+de enlace a datos, edición, traducción y formato.
+
+VERIFICACIÓN REALIZADA
+- Compilación sin errores.
+- 35 pruebas aprobadas, incluidas cinco de integración con SQL Server.
+- Verificación posterior de las 30 pruebas sin SQL tras los ajustes de columnas.
+- Construcción de los nueve formularios en contexto de diseño sin sesión.
+- Navegación, cierre de pantallas anteriores, cambios de tema y distribución.
+- CRUD de usuarios, claves, bajas, roles, preferencia de idioma e integridad SQL
+  comprobados en bases exclusivas SIGAT_Roles_Pruebas_Diseno_*, sin modificar SIGAT.
+- Revisión de imágenes de pantallas completas y tamaños reducidos.
+
+LÍMITE DE LA VERIFICACIÓN
+Se comprobó automáticamente la construcción en modo diseño. No se verificó
+interactivamente la apertura, edición y guardado de cada formulario dentro
+del diseñador de Visual Studio. Esa comprobación debe hacerse en el IDE.
+Se conservan advertencias previas de nulabilidad y recomendaciones de tests;
+no se cambiaron las capas de negocio ni datos para eliminarlas.

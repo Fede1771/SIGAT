@@ -8,26 +8,23 @@ using SIGAT.SERVICIOS.Idiomas;
 
 namespace SIGAT.UI
 {
-    public class FormGestionRoles : Form, IIdiomaObserver
+    public partial class FormGestionRoles : Form, IIdiomaObserver
     {
         private readonly List<Rol> roles = new List<Rol>();
 
         private readonly List<Usuario> usuarios = new List<Usuario>();
 
-        private readonly TreeView tvRolesJerarquia = new TreeView();
-        private readonly TreeView tvUsuarioPermisos = new TreeView();
-        private readonly TreeView tvCatalogoGeneral = new TreeView();
-        private readonly ComboBox cbUsuarios = new ComboBox();
-        private readonly ComboBox cbRolDestino = new ComboBox();
         private object origenUsuario;
 
         private EstadoRoles estado = new EstadoRoles();
         private readonly RolesBLL rolesBLL = new RolesBLL();
-        private readonly Label lblEstado = new Label();
 
         public FormGestionRoles()
         {
-            CrearControles();
+            InitializeComponent();
+            if (EntornoDiseno.Activo) return;
+            TemaVisual.Formulario(this);
+            ConfigurarComportamiento();
             Load += CargarDatos;
             Load += (_, _) =>
             {
@@ -165,21 +162,10 @@ namespace SIGAT.UI
 
         private void CrearRol(bool anidado)
         {
-            Rol? padre = anidado ? Destino() : null;
-            using Form dialogo = new Form { Text = anidado ? "Crear rol anidado" : "Crear rol", ClientSize = new Size(400, 135),
-                StartPosition = FormStartPosition.CenterParent, FormBorderStyle = FormBorderStyle.FixedDialog, MinimizeBox = false, MaximizeBox = false };
-            var nombre = new TextBox { Left = 16, Top = 40, Width = 368, MaxLength = 150 };
-            var aceptar = new Button { Text = "Crear", Left = 204, Top = 88, DialogResult = DialogResult.OK };
-            var cancelar = new Button { Text = "Cancelar", Left = 294, Top = 88, DialogResult = DialogResult.Cancel };
-            dialogo.Controls.AddRange(new Control[] { new Label { Text = "Nombre del rol", Left = 16, Top = 16, AutoSize = true }, nombre, aceptar, cancelar });
-            dialogo.AcceptButton = aceptar;
-            dialogo.CancelButton = cancelar;
-            TemaVisual.Formulario(dialogo);
-            TemaVisual.EstilizarBoton(aceptar, primary: true);
-            TemaVisual.EstilizarBoton(cancelar);
-            aceptar.Size = cancelar.Size = new Size(88, 36);
+            Rol padre = anidado ? Destino() : null;
+            using var dialogo = new DlgNombreRol { Text = anidado ? "Crear rol anidado" : "Crear rol" };
             if (dialogo.ShowDialog(this) != DialogResult.OK) throw new OperationCanceledException();
-            string texto = nombre.Text.Trim();
+            string texto = dialogo.NombreRol.Trim();
             if (texto.Length == 0 || estado.Roles.Any(r => string.Equals(r.Nombre, texto, StringComparison.OrdinalIgnoreCase)))
                 throw new InvalidOperationException("Ingrese un nombre de rol único y no vacío.");
             Rol nuevo = new Rol { Id = estado.Roles.Max(r => r.Id) + 1, Nombre = texto };
@@ -211,26 +197,12 @@ namespace SIGAT.UI
         {
             if (!(tvCatalogoGeneral.SelectedNode?.Tag is PermisoCompuesto familia))
                 throw new InvalidOperationException("Seleccione un permiso compuesto del catálogo. Los permisos simples no se editan.");
-            using Form dialogo = new Form { Text = "Componentes de " + familia.Nombre, ClientSize = new Size(460, 360),
-                StartPosition = FormStartPosition.CenterParent, FormBorderStyle = FormBorderStyle.FixedDialog, MinimizeBox = false, MaximizeBox = false };
-            var ayuda = new Label { Text = "Marcá los permisos que integran esta familia.\nEl cambio afecta a todos los roles que la utilizan.", Left = 16, Top = 16, Width = 428, Height = 45 };
-            var lista = new CheckedListBox { Left = 16, Top = 65, Width = 428, Height = 230, CheckOnClick = true, DisplayMember = "Nombre" };
-            foreach (Permiso permiso in estado.Permisos)
-                if (!ReferenceEquals(permiso, familia)) lista.Items.Add(permiso, familia.ObtenerHijos().Contains(permiso));
-            var guardar = new Button { Text = "Guardar", Left = 274, Top = 315, DialogResult = DialogResult.OK };
-            var cancelar = new Button { Text = "Cancelar", Left = 364, Top = 315, DialogResult = DialogResult.Cancel };
-            dialogo.Controls.AddRange(new Control[] { ayuda, lista, guardar, cancelar });
-            dialogo.AcceptButton = guardar;
-            dialogo.CancelButton = cancelar;
-            TemaVisual.Formulario(dialogo);
-            TemaVisual.EstilizarBoton(guardar, primary: true);
-            TemaVisual.EstilizarBoton(cancelar);
-            guardar.Size = cancelar.Size = new Size(88, 36);
-            lista.BorderStyle = BorderStyle.None;
+            using var dialogo = new DlgFamiliaPermisos();
+            dialogo.Cargar(familia, estado.Permisos);
             if (dialogo.ShowDialog(this) != DialogResult.OK) throw new OperationCanceledException();
             foreach (Permiso hijo in familia.ObtenerHijos()) familia.Quitar(hijo);
             // Reemplazamos los hijos anteriores por los marcados. Agregar sigue comprobando duplicados y ciclos.
-            foreach (Permiso hijo in lista.CheckedItems) familia.Agregar(hijo);
+            foreach (Permiso hijo in dialogo.Seleccionados) familia.Agregar(hijo);
         }
         // Todos los botones pasan por este bloque. Guardamos y refrescamos; si falla, recargamos el estado desde SQL.
         private void Ejecutar(Action accion)
@@ -258,37 +230,11 @@ namespace SIGAT.UI
             }
         }
 
-        // La presentación conserva los mismos comandos de asignación y persistencia.
-        private void CrearControles()
+        private void ConfigurarComportamiento()
         {
-            SuspendLayout();
-            TemaVisual.Formulario(this);
-            Name = "FormGestionRoles";
-            Text = "Gestión de roles y permisos";
-            Tag = "gestion_roles_titulo";
-            ClientSize = new Size(1240, 780);
-            MinimumSize = new Size(1000, 650);
-            StartPosition = FormStartPosition.CenterParent;
-            var layout = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 1, RowCount = 3, Padding = new Padding(24) };
-            layout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
-            layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-            layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
-            layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-            layout.Controls.Add(TemaVisual.Encabezado("Roles y permisos", "Organizá los accesos de cada usuario y los componentes de cada rol.", "gestion_roles_titulo", "gestion_roles_descripcion"), 0, 0);
-            var workspace = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 3, RowCount = 2, Margin = Padding.Empty };
-            workspace.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 34));
-            workspace.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 36));
-            workspace.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 30));
-            workspace.RowStyles.Add(new RowStyle(SizeType.Absolute, 320));
-            workspace.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
-            layout.Controls.Add(workspace, 0, 1);
-
-            tvRolesJerarquia.Name = "tvRolesJerarquia";
-            tvCatalogoGeneral.Name = "tvCatalogoGeneral";
-            tvUsuarioPermisos.Name = "tvUsuarioPermisos";
             foreach (var tree in new[] { tvRolesJerarquia, tvCatalogoGeneral, tvUsuarioPermisos })
             {
-                TemaVisual.Arbol(tree);
+                TemaVisual.CargarIconosArbol(tree);
                 bool pendiente = false;
                 void ProgramarAjuste()
                 {
@@ -306,122 +252,37 @@ namespace SIGAT.UI
                 tree.AfterExpand += (_, _) => ProgramarAjuste();
                 tree.AfterCollapse += (_, _) => ProgramarAjuste();
             }
-            var rolesCard = Sector("Roles disponibles", "roles_disponibles", tvRolesJerarquia);
-            workspace.Controls.Add(rolesCard, 0, 0);
-            workspace.SetRowSpan(rolesCard, 2);
-            var catalog = Sector("Catálogo de permisos", "catalogo_permisos", tvCatalogoGeneral);
-            catalog.Margin = new Padding(0, 16, 0, 0);
-            workspace.Controls.Add(catalog, 2, 1);
-
-            var editor = new TableLayoutPanel { Dock = DockStyle.Top, AutoSize = false, ColumnCount = 1, Padding = new Padding(12) };
-            editor.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
-            var tituloComposicion = TemaVisual.Etiqueta("Composición del rol", "composicion_rol", true);
-            tituloComposicion.Margin = new Padding(0, 0, 0, 8);
-            editor.Controls.Add(tituloComposicion);
-            editor.Controls.Add(TemaVisual.Etiqueta("Rol destino", "rol_destino"));
-            cbRolDestino.Name = "cbRolDestino";
-            cbRolDestino.DropDownStyle = ComboBoxStyle.DropDownList;
-            cbRolDestino.Dock = DockStyle.Fill;
-            cbRolDestino.Margin = new Padding(0, 0, 0, 6);
-            editor.Controls.Add(cbRolDestino);
-            editor.Controls.Add(Ayuda("Seleccioná un rol o permiso y elegí el destino.", "ayuda_composicion_destino"));
-            editor.Controls.Add(Boton("btnAsignarARol", "Asignar componente", AsignarARol, "asignar_componente", primary: true));
-            editor.Controls.Add(Boton("btnQuitarDeRol", "Quitar componente", QuitarDeRol, "quitar_componente"));
-            editor.Controls.Add(Boton("btnEditarFamilia", "Editar familia de permisos", EditarFamilia, "editar_familia"));
-            editor.Controls.Add(Ayuda("El rol Administrador está protegido.", "ayuda_administrador_protegido"));
-            var editorCard = new Panel { Dock = DockStyle.Fill, BackColor = Color.White, AutoScroll = true, Margin = Padding.Empty };
-            editorCard.Controls.Add(editor);
-            workspace.Controls.Add(editorCard, 2, 0);
-
-            var userCard = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 1, RowCount = 5, BackColor = Color.White, Padding = new Padding(18), Margin = new Padding(0, 0, 16, 0) };
-            userCard.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
-            for (int row = 0; row < 4; row++) userCard.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-            userCard.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
-            userCard.Controls.Add(TemaVisual.Etiqueta("Accesos del usuario", "accesos_usuario", true), 0, 0);
-            cbUsuarios.Name = "cbUsuarios";
-            cbUsuarios.DropDownStyle = ComboBoxStyle.DropDownList;
-            cbUsuarios.Dock = DockStyle.Fill;
-            cbUsuarios.Margin = new Padding(0, 0, 0, 14);
-            cbUsuarios.FormattingEnabled = true;
             cbUsuarios.Format += (s, e) =>
             {
                 if (e.ListItem is Usuario usuario)
                     e.Value = usuario.NombreUsuario + (usuario.Activo ? "" : " (inactivo)");
             };
-            userCard.Controls.Add(cbUsuarios, 0, 1);
-            var actions = new FlowLayoutPanel { AutoSize = true, Dock = DockStyle.Top, WrapContents = true, Margin = Padding.Empty };
-            var assign = Boton("btnAsignarAUsuario", "Asignar rol", AsignarAUsuario, "asignar_rol_usuario", primary: true);
-            var remove = Boton("btnQuitarAUsuario", "Quitar rol", QuitarAUsuario, "quitar_rol_usuario");
-            assign.Dock = remove.Dock = DockStyle.None;
-            assign.AutoSize = remove.AutoSize = true;
-            assign.Width = remove.Width = 126;
-            actions.Controls.AddRange(new Control[] { assign, remove });
-            userCard.Controls.Add(actions, 0, 2);
-            userCard.Controls.Add(Ayuda("Para asignar, seleccioná un rol a la izquierda. Para quitar, seleccioná el rol asignado en este panel.", "ayuda_asignacion"), 0, 3);
-            tvUsuarioPermisos.Dock = DockStyle.Fill;
-            userCard.Controls.Add(tvUsuarioPermisos, 0, 4);
-            workspace.Controls.Add(userCard, 1, 0);
-            workspace.SetRowSpan(userCard, 2);
-            workspace.Layout += (_, _) =>
+            layoutRoles.Layout += (_, _) =>
             {
-                if (workspace.Height <= 0 || editorCard.Width <= 0) return;
+                if (layoutRoles.Height <= 0 || panelComposicion.Width <= 0) return;
                 int filaMinima = Math.Max(tvCatalogoGeneral.Font.Height + 3, 22);
                 int altoCatalogo = ContarFilasVisibles(tvCatalogoGeneral.Nodes) * filaMinima + 76;
-                int ancho = Math.Max(1, editorCard.ClientSize.Width - editor.Padding.Horizontal);
-                int preferido = editor.Padding.Vertical + editor.Controls.Cast<Control>().Sum(control =>
+                int ancho = Math.Max(1, panelComposicion.ClientSize.Width - editorComposicion.Padding.Horizontal);
+                int preferido = editorComposicion.Padding.Vertical + editorComposicion.Controls.Cast<Control>().Sum(control =>
                     control.GetPreferredSize(new Size(Math.Max(1, ancho - control.Margin.Horizontal), 0)).Height
                     + control.Margin.Vertical) + 8;
-                if (editor.Height != preferido) editor.Height = preferido;
-                int alto = Math.Min(preferido, Math.Max(160, workspace.Height - altoCatalogo));
-                if (Math.Abs(workspace.RowStyles[0].Height - alto) > 1)
-                    workspace.RowStyles[0].Height = alto;
-                editorCard.AutoScroll = preferido > alto;
+                if (editorComposicion.Height != preferido) editorComposicion.Height = preferido;
+                int alto = Math.Min(preferido, Math.Max(160, layoutRoles.Height - altoCatalogo));
+                if (Math.Abs(layoutRoles.RowStyles[0].Height - alto) > 1)
+                    layoutRoles.RowStyles[0].Height = alto;
+                panelComposicion.AutoScroll = preferido > alto;
             };
 
-            lblEstado.AutoSize = true;
-            lblEstado.Dock = DockStyle.Fill;
-            lblEstado.Padding = new Padding(14, 12, 14, 12);
-            lblEstado.Margin = new Padding(0, 16, 0, 0);
-            lblEstado.BackColor = TemaVisual.AzulSuave;
-            lblEstado.ForeColor = TemaVisual.Azul;
-            lblEstado.Text = "Los cambios se guardan automáticamente.";
-            layout.Controls.Add(lblEstado, 0, 2);
-            Controls.Add(layout);
-            cbUsuarios.SelectedIndexChanged += (s, e) => RefrescarUsuario();
-            tvRolesJerarquia.AfterSelect += (s, e) => origenUsuario = e.Node.Tag;
-            tvCatalogoGeneral.AfterSelect += (s, e) => origenUsuario = e.Node.Tag;
-            ResumeLayout(true);
-        }
 
-        private static Panel Sector(string title, string key, TreeView tree)
-        {
-            var layout = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 1, RowCount = 2 };
-            layout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
-            layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-            layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
-            layout.Controls.Add(TemaVisual.Etiqueta(title, key, true), 0, 0);
-            tree.Dock = DockStyle.Fill;
-            layout.Controls.Add(tree, 0, 1);
-            var card = TemaVisual.Tarjeta(layout, 14);
-            card.Margin = new Padding(0, 0, 16, 0);
-            return card;
+            cbUsuarios.SelectedIndexChanged += (_, _) => RefrescarUsuario();
+            tvRolesJerarquia.AfterSelect += (_, e) => origenUsuario = e.Node.Tag;
+            tvCatalogoGeneral.AfterSelect += (_, e) => origenUsuario = e.Node.Tag;
         }
-
-        private static Label Ayuda(string text, string key)
-            => new Label { Text = text, Tag = key, Dock = DockStyle.Fill, AutoSize = true, Font = new Font("Segoe UI", 9F), ForeColor = TemaVisual.Secundario, Margin = new Padding(0, 0, 0, 6) };
-
-        private Button Boton(string name, string text, Action action, string key, bool primary = false, bool danger = false)
-        {
-            var button = TemaVisual.Boton(name, text, primary, danger);
-            button.MinimumSize = new Size(96, 34);
-            button.Height = 34;
-            button.Tag = key;
-            button.Dock = DockStyle.Fill;
-            button.AutoSize = true;
-            button.Margin = new Padding(0, 0, 0, 4);
-            button.Click += (_, _) => Ejecutar(action);
-            return button;
-        }
+        private void AsignarComponente_Click(object sender, EventArgs e) => Ejecutar(AsignarARol);
+        private void QuitarComponente_Click(object sender, EventArgs e) => Ejecutar(QuitarDeRol);
+        private void EditarFamilia_Click(object sender, EventArgs e) => Ejecutar(EditarFamilia);
+        private void AsignarUsuario_Click(object sender, EventArgs e) => Ejecutar(AsignarAUsuario);
+        private void QuitarUsuario_Click(object sender, EventArgs e) => Ejecutar(QuitarAUsuario);
 
         public void ActualizarIdioma() => TraductorFormularios.TraducirFormulario(this);
 

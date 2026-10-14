@@ -2,7 +2,7 @@ using System.Drawing.Drawing2D;
 
 namespace SIGAT.UI;
 
-internal enum IconoVisual { Inicio, Usuarios, Roles, Idiomas, Bitacora, Salir, Familia, Permiso }
+public enum IconoVisual { Inicio, Usuarios, Roles, Idiomas, Bitacora, Salir, Familia, Permiso }
 
 internal static partial class TemaVisual
 {
@@ -23,106 +23,12 @@ internal static partial class TemaVisual
         // Preparamos los colores antes de mostrar la ventana: Shown llega después del primer dibujo.
         form.HandleCreated += (_, _) => Aplicar(form);
         form.Load += (_, _) => Aplicar(form);
-        form.Font = new Font("Segoe UI", 10F);
-        form.BackColor = Fondo;
-        form.ForeColor = Texto;
-        form.AutoScaleMode = AutoScaleMode.Font;
-        form.AutoScaleDimensions = form.CurrentAutoScaleDimensions;
+        // Fuente, colores base y escalado están definidos en el diseñador.
     }
 
-    public static Label Etiqueta(string text, string key = null, bool title = false)
-        => new Label
-        {
-            Text = text, Tag = key, AutoSize = true, Dock = DockStyle.Fill,
-            Font = new Font("Segoe UI", title ? 13F : 10F, FontStyle.Bold),
-            ForeColor = Texto, Margin = new Padding(0, 0, 0, title ? 14 : 6)
-        };
-
-    public static TableLayoutPanel Encabezado(string title, string subtitle, string titleKey, string subtitleKey)
+    // Los iconos se generan al ejecutar; la estructura del árbol está en el diseñador.
+    public static void CargarIconosArbol(TreeView tree)
     {
-        var panel = new TableLayoutPanel { Dock = DockStyle.Top, AutoSize = true, ColumnCount = 1, Margin = new Padding(0, 0, 0, 22) };
-        panel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
-        var heading = Etiqueta(title, titleKey);
-        heading.Font = new Font("Segoe UI", 22F, FontStyle.Bold);
-        var description = new Label { Text = subtitle, Tag = subtitleKey, AutoSize = true, Dock = DockStyle.Fill, ForeColor = Secundario, Margin = Padding.Empty };
-        panel.Controls.Add(heading);
-        panel.Controls.Add(description);
-        return panel;
-    }
-
-    public static Panel Tarjeta(Control content, int padding = 18)
-    {
-        var card = new Panel { Dock = DockStyle.Fill, BackColor = Color.White, Padding = new Padding(padding), Margin = Padding.Empty };
-        content.Dock = DockStyle.Fill;
-        card.Controls.Add(content);
-        return card;
-    }
-
-    public static Button Boton(string name, string text, bool primary = false, bool danger = false)
-    {
-        var button = new Button { Name = name, Text = text, AutoSize = true, MinimumSize = new Size(96, 40), Height = 40, Margin = new Padding(0, 0, 8, 8) };
-        EstilizarBoton(button, primary, danger);
-        return button;
-    }
-
-    public static void EstilizarBoton(Button button, bool primary = false, bool danger = false)
-    {
-        button.FlatStyle = FlatStyle.Flat;
-        button.Cursor = Cursors.Hand;
-        button.UseVisualStyleBackColor = false;
-        button.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-        button.BackColor = primary ? Azul : Color.White;
-        button.ForeColor = primary ? Color.White : danger ? Color.FromArgb(164, 48, 59) : Texto;
-        button.FlatAppearance.BorderSize = primary ? 0 : 1;
-        button.FlatAppearance.BorderColor = Borde;
-        button.FlatAppearance.MouseOverBackColor = primary ? Color.FromArgb(28, 82, 146) : AzulSuave;
-        button.FlatAppearance.MouseDownBackColor = primary ? Color.FromArgb(23, 69, 126) : Color.FromArgb(215, 230, 250);
-    }
-
-    // Centralizamos el aspecto de las tablas. Los formularios conservan sus propias columnas y datos.
-    public static void Grilla(DataGridView grid)
-    {
-        grid.Font = new Font("Segoe UI", 10F);
-        grid.BackgroundColor = Color.White;
-        grid.BorderStyle = BorderStyle.None;
-        grid.AllowUserToAddRows = false;
-        grid.AllowUserToDeleteRows = false;
-        grid.AllowUserToResizeRows = false;
-        grid.RowHeadersVisible = false;
-        grid.MultiSelect = false;
-        grid.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-        grid.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
-        grid.GridColor = Color.FromArgb(234, 239, 246);
-        grid.EnableHeadersVisualStyles = false;
-        grid.ColumnHeadersHeight = 44;
-        grid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-        grid.ColumnHeadersDefaultCellStyle = new DataGridViewCellStyle
-        {
-            BackColor = Color.FromArgb(236, 241, 248), ForeColor = Texto,
-            SelectionBackColor = Color.FromArgb(236, 241, 248), SelectionForeColor = Texto,
-            Font = new Font("Segoe UI", 10F, FontStyle.Bold), Padding = new Padding(10, 0, 10, 0)
-        };
-        grid.DefaultCellStyle = new DataGridViewCellStyle
-        {
-            BackColor = Color.White, ForeColor = Texto, Padding = new Padding(10, 5, 10, 5),
-            SelectionBackColor = AzulSuave, SelectionForeColor = Texto
-        };
-        grid.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(249, 251, 254);
-        grid.RowTemplate.Height = 40;
-    }
-
-    public static void Arbol(TreeView tree)
-    {
-        tree.BorderStyle = BorderStyle.None;
-        tree.BackColor = Color.White;
-        tree.ForeColor = Texto;
-        tree.Font = new Font("Segoe UI", 10F);
-        tree.ItemHeight = 32;
-        tree.Indent = 22;
-        tree.HideSelection = false;
-        tree.FullRowSelect = true;
-        tree.ShowLines = false;
-        tree.ShowNodeToolTips = true;
         var images = new ImageList { ImageSize = new Size(20, 20), ColorDepth = ColorDepth.Depth32Bit };
         foreach (var icon in new[] { IconoVisual.Roles, IconoVisual.Familia, IconoVisual.Permiso })
             images.Images.Add(icon.ToString(), Icono(icon, Azul, 20));
@@ -163,14 +69,29 @@ internal static partial class TemaVisual
     }
 }
 
-internal sealed class BotonNavegacion : Button
+public sealed class BotonNavegacion : Button
 {
     [System.ComponentModel.DefaultValue(false)]
     public bool Seleccionado { get; set; }
     private Bitmap icon;
-    private readonly IconoVisual tipo;
+    private IconoVisual tipo;
     private Color colorIcono;
 
+    // Constructor y propiedad públicos para que Visual Studio pueda editar el control.
+    public BotonNavegacion() : this(IconoVisual.Inicio) { }
+
+    [System.ComponentModel.DefaultValue(IconoVisual.Inicio)]
+    public IconoVisual Icono
+    {
+        get => tipo;
+        set
+        {
+            tipo = value;
+            icon?.Dispose();
+            icon = TemaVisual.Icono(tipo, colorIcono);
+            Invalidate();
+        }
+    }
     public BotonNavegacion(IconoVisual tipo)
     {
         this.tipo = tipo;

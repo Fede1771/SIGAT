@@ -13,6 +13,10 @@ namespace SIGAT.UI
         public FrmGestionIdiomas()
         {
             InitializeComponent();
+            // El enlace usa las columnas del diseñador; nunca expone propiedades internas.
+            dgvTraducciones.AutoGenerateColumns = false;
+            if (EntornoDiseno.Activo) return;
+            TemaVisual.Formulario(this);
             cmbIdiomas.FormattingEnabled = true;
             cmbIdiomas.Format += (sender, e) =>
             {
@@ -22,22 +26,14 @@ namespace SIGAT.UI
             };
 
             Tag = "frmgestionidiomas_titulo";
-            lblIdiomaActivo.Tag = "lbl_idioma_activo";
-            btnAplicarIdioma.Tag = "btn_aplicar_idioma";
-            lblNuevoIdioma.Tag = "lbl_nuevo_idioma";
-            lblCodigoIdioma.Tag = "lbl_codigo_idioma";
-            lblNombreNativo.Tag = "lbl_nombre_nativo";
-            chkIdiomaActivo.Tag = "chk_idioma_activo";
-            btnNuevoIdioma.Tag = "btn_nuevo_idioma";
-            btnGuardarTraduccion.Tag = "btn_guardar_traduccion";
-            btnCambiarEstado.Tag = "btn_cambiar_estado";
-            btnExportarTraducciones.Tag = "btn_exportar_traducciones";
-            btnImportarTraducciones.Tag = "btn_importar_traducciones";
+
 
             chkIdiomaActivo.Checked = true;
             Load += FrmGestionIdiomas_Load;
             FormClosed += FrmGestionIdiomas_FormClosed;
         }
+
+        private void Traducciones_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e) => ConfigurarColumnasTraducciones();
 
         private void FrmGestionIdiomas_Load(object sender, EventArgs e)
         {
@@ -146,29 +142,10 @@ namespace SIGAT.UI
         // Solo el texto traducido es editable. Los IDs y el verificador son datos internos y quedan ocultos.
         private void ConfigurarColumnasTraducciones()
         {
-            if (dgvTraducciones.Columns.Count == 0) return;
-
-            dgvTraducciones.Columns["IdIdioma"].Visible = false;
-            dgvTraducciones.Columns["IdControl"].Visible = false;
-            dgvTraducciones.Columns["DigitoVerificador"].Visible = false;
-            int orden = 0;
-            foreach (var (nombre, titulo, clave, peso) in new[]
-            {
-                ("FormNombre", "Formulario", "col_formulario", 110),
-                ("ControlNombre", "Clave", "col_clave", 120),
-                ("TextoBase", "Español", "col_texto_base", 160),
-                ("Texto", "Traducción", "col_traduccion", 180),
-                ("Estado", "Estado", "col_estado", 85)
-            })
-            {
-                var columna = dgvTraducciones.Columns[nombre];
-                columna.Tag = clave;
-                columna.HeaderText = IdiomaManager.ObtenerInstancia().Traducir(Name, clave, titulo);
-                columna.DisplayIndex = orden++;
-                columna.ReadOnly = nombre != "Texto";
-                columna.MinimumWidth = nombre == "Estado" ? 95 : 110;
-                columna.FillWeight = peso;
-            }
+            // La estructura y edición de columnas están en Designer; aquí cambia solo el idioma.
+            foreach (DataGridViewColumn columna in dgvTraducciones.Columns)
+                if (columna.Tag is string clave)
+                    columna.HeaderText = IdiomaManager.ObtenerInstancia().Traducir(Name, clave, columna.HeaderText);
         }
 
         private void FormatearEstadoTraduccion(object sender, DataGridViewCellFormattingEventArgs e)

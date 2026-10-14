@@ -10,15 +10,19 @@ namespace SIGAT.UI
         public FrmBitacora()
         {
             InitializeComponent();
+            // El enlace usa las columnas del diseñador; nunca expone propiedades internas.
+            dgv.AutoGenerateColumns = false;
+            if (EntornoDiseno.Activo) return;
+            TemaVisual.Formulario(this);
 
-            this.Tag = "frmbitacora_titulo";
-            chkFechas.Tag = "chk_fechas";
-            lblUser.Tag = "lbl_usuario";
-            lblAct.Tag = "lbl_actividad";
-            btnBuscar.Tag = "btn_buscar";
 
-            // La grilla arma sus columnas solas al recibir datos, hay que esperar a que termine para poder taguearlas
+            // Después de cargar datos actualizamos los títulos con el idioma de la sesión.
             dgv.DataBindingComplete += Dgv_DataBindingComplete;
+            dgv.CellToolTipTextNeeded += (sender, e) =>
+            {
+                if (e.RowIndex >= 0 && e.ColumnIndex >= 0 && dgv.Columns[e.ColumnIndex].Name == "DigitoVerificador")
+                    e.ToolTipText = dgv.Rows[e.RowIndex].Cells[e.ColumnIndex].Value?.ToString() ?? "";
+            };
 
             this.Load += FrmBitacora_Load;
             this.FormClosed += FrmBitacora_FormClosed;
@@ -57,43 +61,8 @@ namespace SIGAT.UI
 
         private void Dgv_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
         {
-            foreach (DataGridViewColumn columna in dgv.Columns)
-            {
-                if (columna.Name == "IdBitacora")
-                {
-                    columna.Tag = "col_id";
-                }
-                else if (columna.Name == "Fecha")
-                {
-                    columna.Tag = "col_fecha";
-                }
-                else if (columna.Name == "Usuario")
-                {
-                    columna.Tag = "col_usuario";
-                }
-                else if (columna.Name == "Actividad")
-                {
-                    columna.Tag = "col_actividad";
-                }
-                else if (columna.Name == "InformacionAsociada")
-                {
-                    columna.Tag = "col_informacion";
-                }
-                else
-                {
-                    columna.Visible = false;
-                }
-            }
-
+            // Las columnas están en Designer; el DVH muestra el valor almacenado, sin recalcularlo.
             TraducirColumnasVisibles();
-            if (dgv.Columns.Contains("Fecha"))
-            {
-                dgv.Columns["Fecha"].DefaultCellStyle.Format = "dd/MM/yyyy HH:mm";
-                dgv.Columns["Fecha"].FillWeight = 140;
-                dgv.Columns["Fecha"].MinimumWidth = 150;
-            }
-            if (dgv.Columns.Contains("IdBitacora")) dgv.Columns["IdBitacora"].FillWeight = 45;
-            if (dgv.Columns.Contains("InformacionAsociada")) dgv.Columns["InformacionAsociada"].FillWeight = 220;
         }
 
         private void TraducirColumnasVisibles()
