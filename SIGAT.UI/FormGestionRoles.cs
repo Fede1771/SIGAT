@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Windows.Forms;
 using SIGAT.BE;
 using SIGAT.BLL;
 using SIGAT.SERVICIOS.Idiomas;

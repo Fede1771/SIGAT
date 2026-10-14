@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace SIGAT.BE.Idiomas
+﻿namespace SIGAT.BE.Idiomas
 {
     // Se llama "ControlIdioma" para no chocar con System.Windows.Forms.Control
     public class ControlIdioma

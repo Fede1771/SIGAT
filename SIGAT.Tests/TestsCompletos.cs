@@ -1,5 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SIGAT.SERVICIOS;
+﻿using SIGAT.SERVICIOS;
 using System.Reflection;
 
 namespace SIGAT.Tests

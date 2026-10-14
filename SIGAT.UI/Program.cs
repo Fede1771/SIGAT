@@ -1,6 +1,3 @@
-using System;
-using System.Threading;
-using System.Windows.Forms;
 using SIGAT.BLL;
 using SIGAT.SERVICIOS;
 using SIGAT.BE.Integridad;

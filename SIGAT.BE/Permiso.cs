@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 namespace SIGAT.BE
 {
     // Composite: una acción simple y una familia comparten las mismas operaciones. Así consultamos permisos sin depender de su tipo concreto.
