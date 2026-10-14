@@ -2,7 +2,7 @@ namespace SIGAT.UI
 {
     partial class FrmLogin
     {
-        private System.ComponentModel.IContainer components;
+        private System.ComponentModel.IContainer components = null;
         private TableLayoutPanel tablelayoutpanel1;
         private PictureBox picLogo;
         private Label label2;

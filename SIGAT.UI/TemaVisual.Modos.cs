@@ -20,6 +20,8 @@ internal static partial class TemaVisual
             Fondo = ColorOriginal(control.BackColor); Texto = ColorOriginal(control.ForeColor, true);
             control.BackColorChanged += (_, _) => { if (!aplicando) Fondo = ColorOriginal(control.BackColor); };
             control.ForeColorChanged += (_, _) => { if (!aplicando) Texto = ColorOriginal(control.ForeColor, true); };
+            if (control is Button || control is CheckBox)
+                control.Paint += PintarTextoDeshabilitado;
             if (control is Button boton)
             {
                 BordeBoton = boton.FlatAppearance.BorderColor;
@@ -145,6 +147,35 @@ internal static partial class TemaVisual
         if (control.ContextMenuStrip != null) Aplicar(control.ContextMenuStrip);
         foreach (Control hijo in control.Controls) Pintar(hijo);
         control.Invalidate();
+    }
+
+    // Windows ignora ForeColor al deshabilitar estos controles. Repintamos solo
+    // su texto en oscuro; la acción sigue bloqueada y la casilla conserva su estado.
+    private static void PintarTextoDeshabilitado(object sender, PaintEventArgs e)
+    {
+        if (!EsOscuro || sender is not ButtonBase control || control.Enabled) return;
+        Rectangle texto = control.ClientRectangle;
+        TextFormatFlags formato = TextFormatFlags.VerticalCenter | TextFormatFlags.SingleLine;
+        if (control is CheckBox casilla)
+        {
+            var estado = casilla.Checked
+                ? System.Windows.Forms.VisualStyles.CheckBoxState.CheckedDisabled
+                : System.Windows.Forms.VisualStyles.CheckBoxState.UncheckedDisabled;
+            int anchoMarca = CheckBoxRenderer.GetGlyphSize(e.Graphics, estado).Width + 4;
+            texto.X += anchoMarca;
+            texto.Width -= anchoMarca;
+            formato |= TextFormatFlags.Left;
+        }
+        else
+        {
+            texto.Inflate(-3, -3);
+            formato |= TextFormatFlags.HorizontalCenter;
+        }
+        if (texto.Width <= 0 || texto.Height <= 0) return;
+        using var fondo = new SolidBrush(control.BackColor);
+        e.Graphics.FillRectangle(fondo, texto);
+        TextRenderer.DrawText(e.Graphics, control.Text, control.Font, texto,
+            Color.FromArgb(173, 188, 206), formato);
     }
 
     // Clonamos el estilo y cambiamos solo colores. Conservamos formato, alineación y espaciado.

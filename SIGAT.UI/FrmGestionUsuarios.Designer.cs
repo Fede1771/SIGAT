@@ -2,7 +2,7 @@ namespace SIGAT.UI
 {
     partial class FrmGestionUsuarios
     {
-        private System.ComponentModel.IContainer components;
+        private System.ComponentModel.IContainer components = null;
         private DataGridViewTextBoxColumn IdUsuario;
         private DataGridViewTextBoxColumn NombreUsuario;
         private DataGridViewTextBoxColumn Nombre;

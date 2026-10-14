@@ -2,7 +2,7 @@ namespace SIGAT.UI
 {
     partial class FrmGestionIdiomas
     {
-        private System.ComponentModel.IContainer components;
+        private System.ComponentModel.IContainer components = null;
         private DataGridViewTextBoxColumn FormNombre;
         private DataGridViewTextBoxColumn ControlNombre;
         private DataGridViewTextBoxColumn TextoBase;

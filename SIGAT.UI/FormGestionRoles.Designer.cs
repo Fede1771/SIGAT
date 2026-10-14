@@ -2,7 +2,7 @@ namespace SIGAT.UI
 {
     partial class FormGestionRoles
     {
-        private System.ComponentModel.IContainer components;
+        private System.ComponentModel.IContainer components = null;
         private TableLayoutPanel layoutPrincipal;
         private TableLayoutPanel tablelayoutpanel2;
         private Label label3;

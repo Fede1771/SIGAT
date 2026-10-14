@@ -2,7 +2,7 @@ namespace SIGAT.UI
 {
     partial class FrmBitacora
     {
-        private System.ComponentModel.IContainer components;
+        private System.ComponentModel.IContainer components = null;
         private DataGridViewTextBoxColumn IdBitacora;
         private DataGridViewTextBoxColumn Fecha;
         private DataGridViewTextBoxColumn Usuario;

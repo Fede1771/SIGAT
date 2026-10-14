@@ -16,6 +16,53 @@ public class TemaVisualTests
     private static object? Invocar(string nombre, params object[] argumentos) => Tema.GetMethod(nombre)!.Invoke(null, argumentos);
 
     [TestMethod]
+    public void TextoDeshabilitadoEsLegibleEnOscuroSinHabilitarLasAcciones()
+    {
+        Exception? error = null;
+        var hilo = new Thread(() =>
+        {
+            try
+            {
+                using var form = new Form();
+                var boton = new Button { Text = "Deactivate", Enabled = false, FlatStyle = FlatStyle.Flat,
+                    BackColor = Color.White, ForeColor = Color.Black, Size = new Size(150, 40) };
+                var casilla = new CheckBox { Text = "Active", Enabled = false, Checked = true,
+                    BackColor = Color.White, ForeColor = Color.Black, Size = new Size(130, 30), Top = 50 };
+                form.Controls.AddRange(new Control[] { boton, casilla });
+                Invocar("CambiarModo", true);
+                Invocar("Aplicar", form);
+                foreach (Control control in new Control[] { boton, casilla })
+                {
+                    control.CreateControl();
+                    using var bitmap = new Bitmap(control.Width, control.Height);
+                    control.DrawToBitmap(bitmap, control.ClientRectangle);
+                    int claros = 0;
+                    int izquierda = control is CheckBox ? 24 : 5;
+                    for (int y = 5; y < bitmap.Height - 5; y++)
+                        for (int x = izquierda; x < bitmap.Width - 5; x++)
+                        {
+                            Color pixel = bitmap.GetPixel(x, y);
+                            if (Math.Abs(pixel.R - 173) <= 3 && Math.Abs(pixel.G - 188) <= 3 && Math.Abs(pixel.B - 206) <= 3)
+                                claros++;
+                        }
+                    Assert.IsTrue(claros > 10, "El texto deshabilitado debe dibujarse con el gris claro del tema.");
+                    Assert.IsFalse(control.Enabled);
+                }
+                Assert.IsTrue(casilla.Checked);
+                Invocar("CambiarModo", false);
+                Invocar("Aplicar", form);
+                Assert.AreEqual(Color.Black, boton.ForeColor);
+                Assert.AreEqual(Color.Black, casilla.ForeColor);
+            }
+            catch (Exception ex) { error = ex; }
+            finally { Invocar("CambiarModo", false); }
+        });
+        hilo.SetApartmentState(ApartmentState.STA);
+        hilo.Start(); hilo.Join();
+        if (error != null) throw error;
+    }
+
+    [TestMethod]
     public void AlternarTemaConservaCamposAsignacionesYColoresOriginales()
     {
         Exception? error = null;

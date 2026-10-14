@@ -2,7 +2,7 @@ namespace SIGAT.UI
 {
     partial class FrmIntegridad
     {
-        private System.ComponentModel.IContainer components;
+        private System.ComponentModel.IContainer components = null;
         private DataGridViewTextBoxColumn Tabla;
         private DataGridViewTextBoxColumn Registro;
         private DataGridViewTextBoxColumn Motivo;
