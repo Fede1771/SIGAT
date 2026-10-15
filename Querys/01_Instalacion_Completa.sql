@@ -617,19 +617,13 @@ BEGIN
         THROW 50001, ''''No se puede eliminar ni desactivar al administrador original.'''', 1;
 END;'');
 -- Familias dinámicas e integridad de las tablas de seguridad. No se aceptan datos mediante recálculo automático.
-DECLARE @MigrarFamilias bit = CASE WHEN OBJECT_ID(''dbo.CK_Permiso_Matriz'',''C'') IS NOT NULL THEN 1 ELSE 0 END;
-IF @MigrarFamilias=1 ALTER TABLE dbo.Permiso DROP CONSTRAINT CK_Permiso_Matriz;
+IF OBJECT_ID(''dbo.CK_Permiso_Matriz'',''C'') IS NOT NULL
+    ALTER TABLE dbo.Permiso DROP CONSTRAINT CK_Permiso_Matriz;
 DECLARE @QuitarChecks nvarchar(max)=N'''';
 SELECT @QuitarChecks=@QuitarChecks+N''ALTER TABLE dbo.PermisoHijo DROP CONSTRAINT ''+QUOTENAME(name)+N'';''
 FROM sys.check_constraints WHERE parent_object_id=OBJECT_ID(''dbo.PermisoHijo'');
 EXEC sys.sp_executesql @QuitarChecks;
 ALTER TABLE dbo.PermisoHijo ADD CONSTRAINT CK_PermisoHijo_SinAutorreferencia CHECK(IdPadre<>IdHijo);
-IF @MigrarFamilias=1 AND NOT EXISTS(SELECT 1 FROM dbo.Permiso WHERE Nombre=N''Consultas de activos'')
-BEGIN
-    DECLARE @Familia int=(SELECT MAX(Id)+1 FROM dbo.Permiso);
-    INSERT dbo.Permiso(Id,Nombre,EsCompuesto) VALUES(@Familia,N''Consultas de activos'',1);
-    INSERT dbo.PermisoHijo(IdPadre,IdHijo) VALUES(3,@Familia),(@Familia,2);
-END;
 IF COL_LENGTH(''dbo.Usuarios'',''DigitoVerificador'') IS NULL
     ALTER TABLE dbo.Usuarios ADD DigitoVerificador char(64) NULL;
 IF COL_LENGTH(''dbo.UsuarioRol'',''DigitoVerificador'') IS NULL

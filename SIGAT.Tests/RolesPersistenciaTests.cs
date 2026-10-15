@@ -1,4 +1,4 @@
-using SIGAT.BE;
+﻿using SIGAT.BE;
 using SIGAT.BLL;
 using SIGAT.DAL;
 using SIGAT.SERVICIOS;
@@ -17,12 +17,12 @@ public class RolesPersistenciaTests
         string[] nombres = { "Administrador", "Responsable de Inventario", "Técnico de Mantenimiento", "Mesa de Ayuda", "Auditor" };
         int[][] ids = { new[] {1,3,4,5,6,7}, new[] {3,4,6}, new[] {5,2}, new[] {4,2}, new[] {1,2,6} };
         Assert.AreEqual(5, estado.Roles.Count);
-        Assert.AreEqual(8, estado.Permisos.Count);
+        Assert.AreEqual(7, estado.Permisos.Count);
         int simples = 0;
         foreach (Permiso permiso in estado.Permisos)
         {
             if (permiso is PermisoSimple) simples++;
-            if (permiso is PermisoSimple) Assert.IsEmpty(permiso.ObtenerHijos());
+            Assert.IsEmpty(permiso.ObtenerHijos(), "El catálogo inicial debe conservar las familias originales sin hijos agregados.");
         }
         Assert.AreEqual(2, simples);
         for (int i = 0; i < nombres.Length; i++)

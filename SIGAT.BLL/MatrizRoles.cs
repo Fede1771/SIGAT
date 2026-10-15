@@ -8,7 +8,7 @@ namespace SIGAT.BLL
         public const string Administracion = "Administración del sistema";
         public const string Bitacora = "Ver bitácora";
 
-        // Define cinco roles, siete permisos base y una subfamilia de ejemplo. Los roles se pueden editar después, salvo Administrador.
+        // Define cinco roles y los siete permisos originales. Los roles se pueden editar después, salvo Administrador.
         public static EstadoRoles CrearCatalogo()
         {
             EstadoRoles estado = new EstadoRoles();
@@ -24,10 +24,6 @@ namespace SIGAT.BLL
             AgregarRol(estado, 3, "Técnico de Mantenimiento", new[] { 5, 2 });
             AgregarRol(estado, 4, "Mesa de Ayuda", new[] { 4, 2 });
             AgregarRol(estado, 5, "Auditor", new[] { 1, 2, 6 });
-            var consultas = new PermisoCompuesto { Id = 8, Nombre = "Consultas de activos" };
-            consultas.Agregar(estado.Permisos[1]);
-            estado.Permisos[2].Agregar(consultas);
-            estado.Permisos.Add(consultas);
             return estado;
         }
 

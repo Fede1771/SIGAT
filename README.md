@@ -103,7 +103,7 @@ Los roles reúnen permisos y pueden heredar otros roles. La jerarquía de permis
 | Mesa de Ayuda | Movimientos y Consultar inventario. |
 | Auditor | Ver bitácora, Consultar inventario y Reportes. |
 
-Ver bitácora y Consultar inventario son permisos simples. Los otros cinco componentes base son permisos compuestos. La semilla incluye Gestión de activos → Consultas de activos → Consultar inventario, por lo que los roles que reciben Gestión de activos también heredan esa consulta. Los nuevos permisos del catálogo deben ser compuestos; los siete permisos base conservan nombre, identidad y tipo.
+Ver bitácora y Consultar inventario son permisos simples. Los otros cinco componentes base son permisos compuestos. El catálogo inicial conserva las familias originales sin agregar subfamilias ni permisos heredados de ejemplo. Los nuevos permisos del catálogo deben ser compuestos; los siete permisos base conservan nombre, identidad y tipo.
 
 La tabla describe la configuración inicial. Las asignaciones y las familias editables se guardan en SQL; no se restablecen automáticamente al cerrar sesión. El administrador original y la composición del rol Administrador están protegidos.
 

@@ -7,7 +7,7 @@
 3. Abrir `01_Instalacion_Completa.sql`, cambiar `@ClaveAdmin` y ejecutar **todo el archivo**. Dejar `@Base = N'SIGAT'` para la conexión actual.
 4. Ejecutar `04_Verificacion_Integridad.sql` y abrir SIGAT. Preparar la primera referencia de integridad y el respaldo comprobado; luego ingresar con `admin` y la contraseña elegida.
 
-**El archivo 01 es autónomo:** instala las 15 tablas de la aplicación y sus relaciones, idiomas y traducciones, 5 roles iniciales, 7 permisos base, la familia Consultas de activos y 16 relaciones directas entre roles y permisos. Incluye administrador protegido, roles editables, roles anidados y componentes de familias. La bitácora empieza vacía y solo se crea la cuenta `admin`. Las traducciones pendientes del catálogo siguen pendientes; la aplicación registra nuevas claves al abrir formularios.
+**El archivo 01 es autónomo:** instala las 15 tablas de la aplicación y sus relaciones, idiomas y traducciones, 5 roles iniciales, 7 permisos base y 16 relaciones directas entre roles y permisos. Incluye administrador protegido, roles editables, roles anidados y componentes de familias. La bitácora empieza vacía y solo se crea la cuenta `admin`. Las traducciones pendientes del catálogo siguen pendientes; la aplicación registra nuevas claves al abrir formularios.
 
 El instalador utiliza el nivel de compatibilidad del motor, sin exigir 170 a versiones anteriores. Se detiene si la base ya existe, incluso vacía. Si falla al crear la estructura, revierte tablas y datos, pero puede quedar una base vacía: revisar el error y esa base antes de repetir. Ejecutar todo el archivo permite detenerlo ante errores, también desde SSMS sin modo SQLCMD.
 
@@ -78,4 +78,4 @@ El control actual protege **Usuarios y UsuarioRol** con DVH y DVV. El instalador
 
 Ver [GUIA_INTEGRIDAD.md](GUIA_INTEGRIDAD.md) para preparar la referencia, probar alteraciones y recuperar datos. Las columnas antiguas de verificadores de Bitacora/Traduccion se conservan en SQL por compatibilidad histórica; el código ya no las utiliza ni las muestra.
 
-Las familias nuevas admiten IDs mayores a 7 y deben ser compuestas. La migración agrega una vez la subfamilia de ejemplo y conserva las ediciones posteriores. Los siete permisos base mantienen su identidad y tipo en la validación de negocio. No hay un límite fijo de niveles en Composite.
+Las familias nuevas admiten IDs mayores a 7 y deben ser compuestas. El catálogo inicial conserva los siete permisos originales. La actualización retira únicamente la familia de ejemplo Consultas de activos si conserva sus dos relaciones originales y no recibió asignaciones adicionales; respeta las familias personalizadas. Los siete permisos base mantienen su identidad y tipo en la validación de negocio. No hay un límite fijo de niveles en Composite.
