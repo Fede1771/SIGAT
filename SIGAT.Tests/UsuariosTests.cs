@@ -32,7 +32,7 @@ public class UsuariosTests
             {
                 using var form = new SIGAT.UI.FrmGestionUsuarios();
                 var grid = (DataGridView)form.Controls.Find("dgvUsuarios", true)[0];
-                Assert.AreEqual(6, grid.Columns.Count);
+                Assert.AreEqual(7, grid.Columns.Count);
                 Assert.IsFalse(grid.AutoGenerateColumns);
                 Assert.IsFalse(grid.Columns.Contains("Id"));
                 Assert.IsFalse(grid.Columns.Contains("Password"));
@@ -87,6 +87,7 @@ public class UsuariosTests
         if (string.IsNullOrWhiteSpace(cadena)) { Assert.Inconclusive("Requiere base exclusiva de pruebas."); return; }
         if (!new SqlConnectionStringBuilder(cadena).InitialCatalog.StartsWith("SIGAT_Roles_Pruebas_", StringComparison.Ordinal))
             throw new InvalidOperationException("Base de pruebas requerida.");
+        SqlPruebas.Preparar(cadena);
         var dal = new UsuarioDAL(cadena);
         Usuario nuevo = new Usuario { NombreUsuario = "crud_" + Guid.NewGuid().ToString("N").Substring(0, 10), Nombre = "Ana", Apellido = "Pérez", Activo = true, Password = HashHelper.ObtenerHashSHA256("Inicial123") };
         try
@@ -122,11 +123,12 @@ public class UsuariosTests
         }
         finally
         {
-            using var conexion = new SqlConnection(cadena);
-            conexion.Open();
-            using var comando = new SqlCommand("DELETE FROM dbo.Usuarios WHERE IdUsuario=@Id", conexion);
-            comando.Parameters.AddWithValue("@Id", nuevo.IdUsuario);
-            comando.ExecuteNonQuery();
+            new IntegridadDAL(cadena).Cambiar("Usuarios", (conexion, transaccion) =>
+            {
+                using var comando = new SqlCommand("DELETE FROM dbo.Usuarios WHERE IdUsuario=@Id", conexion, transaccion);
+                comando.Parameters.AddWithValue("@Id", nuevo.IdUsuario);
+                return comando.ExecuteNonQuery();
+            });
         }
     }
 }

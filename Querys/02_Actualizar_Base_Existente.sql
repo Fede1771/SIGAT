@@ -19,6 +19,7 @@ IF DB_ID(@Base) IS NULL
 BEGIN TRY
     DECLARE @Sql nvarchar(max) = N'USE ' + QUOTENAME(@Base) + N'; ' +
 N'SET ANSI_NULLS ON; SET QUOTED_IDENTIFIER ON;
+SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
 BEGIN TRANSACTION;
 EXEC(N''SET XACT_ABORT ON;
 SET ANSI_NULLS ON;
@@ -216,6 +217,28 @@ IF OBJECT_ID(''dbo.IntegridadTabla'',''U'') IS NULL
         Tabla nvarchar(30) NOT NULL PRIMARY KEY,HashVertical char(64) NOT NULL,Cantidad bigint NOT NULL,
         IdBase uniqueidentifier NOT NULL,Version int NOT NULL CHECK(Version=1)
     );
+-- Familias dinámicas e integridad de las tablas de seguridad. No se aceptan datos mediante recálculo automático.
+DECLARE @MigrarFamilias bit = CASE WHEN OBJECT_ID(''dbo.CK_Permiso_Matriz'',''C'') IS NOT NULL THEN 1 ELSE 0 END;
+IF @MigrarFamilias=1 ALTER TABLE dbo.Permiso DROP CONSTRAINT CK_Permiso_Matriz;
+DECLARE @QuitarChecks nvarchar(max)=N'''';
+SELECT @QuitarChecks=@QuitarChecks+N''ALTER TABLE dbo.PermisoHijo DROP CONSTRAINT ''+QUOTENAME(name)+N'';''
+FROM sys.check_constraints WHERE parent_object_id=OBJECT_ID(''dbo.PermisoHijo'');
+EXEC sys.sp_executesql @QuitarChecks;
+ALTER TABLE dbo.PermisoHijo ADD CONSTRAINT CK_PermisoHijo_SinAutorreferencia CHECK(IdPadre<>IdHijo);
+IF @MigrarFamilias=1 AND NOT EXISTS(SELECT 1 FROM dbo.Permiso WHERE Nombre=N''Consultas de activos'')
+BEGIN
+    DECLARE @Familia int=(SELECT MAX(Id)+1 FROM dbo.Permiso);
+    INSERT dbo.Permiso(Id,Nombre,EsCompuesto) VALUES(@Familia,N''Consultas de activos'',1);
+    INSERT dbo.PermisoHijo(IdPadre,IdHijo) VALUES(3,@Familia),(@Familia,2);
+END;
+IF COL_LENGTH(''dbo.Usuarios'',''DigitoVerificador'') IS NULL
+    ALTER TABLE dbo.Usuarios ADD DigitoVerificador char(64) NULL;
+IF COL_LENGTH(''dbo.UsuarioRol'',''DigitoVerificador'') IS NULL
+    ALTER TABLE dbo.UsuarioRol ADD DigitoVerificador char(64) NULL;
+-- Los verificadores anteriores se retiran. Se prepara una nueva referencia explícita desde SIGAT para Usuarios y UsuarioRol.
+DELETE dbo.IntegridadTabla WHERE Tabla IN (''Bitacora'',''Traduccion'');
+IF NOT EXISTS(SELECT 1 FROM sys.indexes WHERE object_id=OBJECT_ID(''dbo.UsuarioIdioma'') AND name=''IX_UsuarioIdioma_IdIdioma'')
+    CREATE INDEX IX_UsuarioIdioma_IdIdioma ON dbo.UsuarioIdioma(IdIdioma);
 COMMIT TRANSACTION;';
     EXEC sys.sp_executesql @Sql;
     PRINT N'Actualización completa finalizada. Revise las cuentas sin rol con 03_Consultar_Usuarios.sql.';

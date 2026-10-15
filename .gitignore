@@ -364,9 +364,9 @@ FodyWeavers.xsd
 /entregables
 /scratch
 /tmp/roles-pruebas
-/Querys/GUIA_INTEGRIDAD.md
 *.md
 !/README.md
+!/Querys/GUIA_INTEGRIDAD.md
 /Recursos/SIGAT LOGO.png
 /Documentacion/Diagramas
 /Documentacion

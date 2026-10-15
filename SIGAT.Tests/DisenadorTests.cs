@@ -35,6 +35,11 @@ public class DisenadorTests
                     Assert.IsTrue(formulario.Controls.Count > 0, tipo.Name + " debe tener diseño sin ejecutar su lógica.");
                     Assert.IsNotNull(tipo.GetMethod("InitializeComponent", BindingFlags.NonPublic | BindingFlags.Instance));
                     Assert.IsTrue(formulario.Controls.Cast<Control>().All(c => !c.IsDisposed));
+                    if (formulario is FormGestionRoles)
+                        foreach (string nombre in new[] { "btnCrearFamilia", "btnCrearFamiliaAnidada", "btnEliminarFamilia" })
+                            Assert.IsInstanceOfType<Button>(formulario.Controls.Find(nombre, true).Single());
+                    if (formulario is FrmIntegridad)
+                        Assert.IsInstanceOfType<Button>(formulario.Controls.Find("btnRecalcular", true).Single());
                     formulario.PerformLayout();
                     void VerificarFilas(Control control)
                     {
@@ -67,7 +72,7 @@ public class DisenadorTests
                     if (formulario is FrmGestionIdiomas)
                     {
                         var grilla = (DataGridView)formulario.Controls.Find("dgvTraducciones", true)[0];
-                        Assert.HasCount(8, grilla.Columns, "El diseñador debe conservar las columnas de traducciones.");
+                        Assert.HasCount(7, grilla.Columns, "El diseñador debe conservar las columnas de traducciones.");
                         Assert.IsFalse(grilla.Columns["Texto"]!.ReadOnly);
                         Assert.IsTrue(grilla.Columns["TextoBase"]!.ReadOnly);
                         Assert.IsFalse(grilla.AutoGenerateColumns);
@@ -76,7 +81,7 @@ public class DisenadorTests
                     {
                         var grilla = (DataGridView)formulario.Controls.Find("dgvUsuarios", true)[0];
                         Assert.IsFalse(grilla.AutoGenerateColumns);
-                        Assert.HasCount(6, grilla.Columns);
+                        Assert.HasCount(7, grilla.Columns);
                         Assert.IsInstanceOfType<DataGridViewTextBoxColumn>(grilla.Columns["Activo"]!);
                         Assert.IsFalse(grilla.Columns.Contains("Password"));
                         Assert.IsFalse(grilla.Columns.Contains("EsAdministradorOriginal"));
@@ -85,8 +90,8 @@ public class DisenadorTests
                     {
                         var grilla = (DataGridView)formulario.Controls.Find("dgv", true)[0];
                         Assert.IsFalse(grilla.AutoGenerateColumns);
-                        Assert.HasCount(6, grilla.Columns);
-                        Assert.IsTrue(grilla.Columns.Contains("DigitoVerificador"));
+                        Assert.HasCount(5, grilla.Columns);
+                        Assert.IsFalse(grilla.Columns.Contains("DigitoVerificador"));
                     }
                     Assert.IsNull(SIGAT.SERVICIOS.SesionServicio.ObtenerInstancia().UsuarioActual);
                 }

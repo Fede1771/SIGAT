@@ -18,10 +18,11 @@ public static class VerificadorSHA256
     public static string Hexadecimal(string texto) => Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(texto))).ToLowerInvariant();
     public static string Base64(string texto) => Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(texto)));
 
-    public static string Traduccion(int idioma, int control, string? texto, string estado)
-        => Hexadecimal(Canonico(idioma, control, texto, estado));
+    // La cuenta y sus asignaciones se verifican por separado: identidad y autorización tienen claves distintas.
+    public static string Usuario(int idUsuario, string? nombreUsuario, string? password, string? nombre, string? apellido, bool activo)
+        => Hexadecimal(Canonico(idUsuario, nombreUsuario, password, nombre, apellido, activo));
 
-    // Calculamos sobre el detalle cifrado que queda en SQL. El verificador no depende del texto descifrado de la pantalla.
-    public static string Bitacora(int id, DateTime fecha, string? usuario, string? actividad, string? cifrado)
-        => Base64(Canonico(id, fecha, usuario, actividad, cifrado));
+    public static string UsuarioRol(int idUsuario, int idRol)
+        => Hexadecimal(Canonico(idUsuario, idRol));
+
 }

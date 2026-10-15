@@ -25,6 +25,9 @@ namespace SIGAT.UI
         private Button btnAsignarARol;
         private Button btnQuitarDeRol;
         private Button btnEditarFamilia;
+        private Button btnCrearFamilia;
+        private Button btnCrearFamiliaAnidada;
+        private Button btnEliminarFamilia;
         private Label label17;
         private TableLayoutPanel panelAccesos;
         private Label label19;
@@ -67,6 +70,9 @@ namespace SIGAT.UI
             btnAsignarARol = new Button();
             btnQuitarDeRol = new Button();
             btnEditarFamilia = new Button();
+            btnCrearFamilia = new Button();
+            btnCrearFamiliaAnidada = new Button();
+            btnEliminarFamilia = new Button();
             label17 = new Label();
             panelAccesos = new TableLayoutPanel();
             label19 = new Label();
@@ -340,13 +346,20 @@ namespace SIGAT.UI
             editorComposicion.Controls.Add(btnAsignarARol, 0, 4);
             editorComposicion.Controls.Add(btnQuitarDeRol, 0, 5);
             editorComposicion.Controls.Add(btnEditarFamilia, 0, 6);
-            editorComposicion.Controls.Add(label17, 0, 7);
+            editorComposicion.Controls.Add(btnCrearFamilia, 0, 7);
+            editorComposicion.Controls.Add(btnCrearFamiliaAnidada, 0, 8);
+            editorComposicion.Controls.Add(btnEliminarFamilia, 0, 9);
+            editorComposicion.Controls.Add(label17, 0, 10);
+            editorComposicion.RowCount = 11;
             editorComposicion.Dock = DockStyle.Top;
             editorComposicion.Font = new Font("Segoe UI", 10F);
             editorComposicion.ForeColor = Color.FromArgb(30, 45, 65);
             editorComposicion.Location = new Point(0, 0);
             editorComposicion.Name = "editorComposicion";
             editorComposicion.Padding = new Padding(12);
+            editorComposicion.RowStyles.Add(new RowStyle());
+            editorComposicion.RowStyles.Add(new RowStyle());
+            editorComposicion.RowStyles.Add(new RowStyle());
             editorComposicion.RowStyles.Add(new RowStyle());
             editorComposicion.RowStyles.Add(new RowStyle());
             editorComposicion.RowStyles.Add(new RowStyle());
@@ -462,6 +475,57 @@ namespace SIGAT.UI
             btnQuitarDeRol.UseVisualStyleBackColor = false;
             btnQuitarDeRol.Click += QuitarComponente_Click;
             // 
+            // btnCrearFamilia
+            //
+            btnCrearFamilia.AutoSize = true;
+            btnCrearFamilia.Dock = DockStyle.Fill;
+            btnCrearFamilia.BackColor = Color.White;
+            btnCrearFamilia.ForeColor = Color.FromArgb(30, 45, 65);
+            btnCrearFamilia.FlatStyle = FlatStyle.Flat;
+            btnCrearFamilia.FlatAppearance.BorderColor = Color.FromArgb(223, 230, 239);
+            btnCrearFamilia.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            btnCrearFamilia.Margin = new Padding(0, 0, 0, 6);
+            btnCrearFamilia.MinimumSize = new Size(96, 34);
+            btnCrearFamilia.Name = "btnCrearFamilia";
+            btnCrearFamilia.Tag = "btncrearfamilia";
+            btnCrearFamilia.Text = "Crear familia";
+            btnCrearFamilia.UseVisualStyleBackColor = false;
+            btnCrearFamilia.Click += CrearFamilia_Click;
+            //
+            // btnCrearFamiliaAnidada
+            //
+            btnCrearFamiliaAnidada.AutoSize = true;
+            btnCrearFamiliaAnidada.Dock = DockStyle.Fill;
+            btnCrearFamiliaAnidada.BackColor = Color.White;
+            btnCrearFamiliaAnidada.ForeColor = Color.FromArgb(30, 45, 65);
+            btnCrearFamiliaAnidada.FlatStyle = FlatStyle.Flat;
+            btnCrearFamiliaAnidada.FlatAppearance.BorderColor = Color.FromArgb(223, 230, 239);
+            btnCrearFamiliaAnidada.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            btnCrearFamiliaAnidada.Margin = new Padding(0, 0, 0, 6);
+            btnCrearFamiliaAnidada.MinimumSize = new Size(96, 34);
+            btnCrearFamiliaAnidada.Name = "btnCrearFamiliaAnidada";
+            btnCrearFamiliaAnidada.Tag = "btncrearfamiliaanidada";
+            btnCrearFamiliaAnidada.Text = "Crear familia hija de la seleccionada";
+            btnCrearFamiliaAnidada.UseVisualStyleBackColor = false;
+            btnCrearFamiliaAnidada.Click += CrearFamiliaAnidada_Click;
+            //
+            // btnEliminarFamilia
+            //
+            btnEliminarFamilia.AutoSize = true;
+            btnEliminarFamilia.Dock = DockStyle.Fill;
+            btnEliminarFamilia.BackColor = Color.White;
+            btnEliminarFamilia.ForeColor = Color.FromArgb(30, 45, 65);
+            btnEliminarFamilia.FlatStyle = FlatStyle.Flat;
+            btnEliminarFamilia.FlatAppearance.BorderColor = Color.FromArgb(223, 230, 239);
+            btnEliminarFamilia.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            btnEliminarFamilia.Margin = new Padding(0, 0, 0, 6);
+            btnEliminarFamilia.MinimumSize = new Size(96, 34);
+            btnEliminarFamilia.Name = "btnEliminarFamilia";
+            btnEliminarFamilia.Tag = "btneliminarfamilia";
+            btnEliminarFamilia.Text = "Eliminar familia personalizada";
+            btnEliminarFamilia.UseVisualStyleBackColor = false;
+            btnEliminarFamilia.Click += EliminarFamilia_Click;
+            //
             // btnEditarFamilia
             // 
             btnEditarFamilia.AutoSize = true;

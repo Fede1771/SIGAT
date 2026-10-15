@@ -13,8 +13,12 @@ DECLARE @Limite datetime = DATEADD(DAY, -@DiasRetencion, GETDATE());
 SELECT @Limite AS FechaLimite, COUNT(*) AS RegistrosAArchivar
 FROM dbo.Bitacora WHERE Fecha < @Limite;
 IF @Aplicar=0 RETURN;
+-- Compatibilidad: una base anterior todavía podría proteger Bitacora con DVV.
 IF OBJECT_ID('dbo.IntegridadTabla','U') IS NOT NULL
-    THROW 50001,'Esta base utiliza DVV. Archive desde Integridad y recuperación en SIGAT para actualizarlo en la misma transacción.',1;
+BEGIN
+    IF EXISTS(SELECT 1 FROM dbo.IntegridadTabla WHERE Tabla='Bitacora')
+        THROW 50001,'Actualice primero la base con el script 02 o archive desde la versión anterior de SIGAT.',1;
+END;
 BEGIN TRY
     BEGIN TRANSACTION;
     IF OBJECT_ID('dbo.Bitacora_Historico','U') IS NULL

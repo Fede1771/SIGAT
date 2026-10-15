@@ -40,3 +40,13 @@ GO
 -- Para comparar SHA-256 de los registros y conjuntos, usar Integridad y recuperación en SIGAT.
 SELECT Tabla,Cantidad,Version FROM dbo.IntegridadTabla;
 GO
+
+-- La aplicación realiza la comparación criptográfica. Estas consultas muestran su alcance y preparación.
+SELECT Tabla,HashVertical,Cantidad,IdBase,Version FROM dbo.IntegridadTabla;
+IF COL_LENGTH('dbo.Usuarios','DigitoVerificador') IS NULL OR COL_LENGTH('dbo.UsuarioRol','DigitoVerificador') IS NULL
+    THROW 50001, 'Faltan verificadores de seguridad. Ejecute 02_Actualizar_Base_Existente.sql.', 1;
+IF NOT EXISTS(SELECT 1 FROM dbo.IntegridadTabla WHERE Tabla='Usuarios')
+ OR NOT EXISTS(SELECT 1 FROM dbo.IntegridadTabla WHERE Tabla='UsuarioRol')
+    PRINT N'Prepare la referencia DVH/DVV de Usuarios y UsuarioRol desde SIGAT antes del login.';
+SELECT IdUsuario,NombreUsuario,DigitoVerificador FROM dbo.Usuarios;
+SELECT IdUsuario,IdRol,DigitoVerificador FROM dbo.UsuarioRol;

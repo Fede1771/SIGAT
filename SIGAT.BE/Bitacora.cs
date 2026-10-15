@@ -11,7 +11,6 @@ namespace SIGAT.BE
         public string? Usuario { get; set; }
         public string? Actividad { get; set; }
         public string? InformacionAsociada { get; set; }
-        public string? DigitoVerificador { get; set; }
 
         // --- 2. Propiedades requeridas por la Interfaz IBitacoraEvento ---
         public int Id { get; set; }

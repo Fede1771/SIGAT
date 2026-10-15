@@ -23,6 +23,7 @@ namespace SIGAT.UI
         private Button btnInicializar;
         private Button btnBackupVerificado;
         private Button btnRecuperar;
+        private Button btnRecalcular;
         private Button btnArchivar;
         private Button btnContinuar;
 
@@ -56,6 +57,7 @@ namespace SIGAT.UI
             btnInicializar = new Button();
             btnBackupVerificado = new Button();
             btnRecuperar = new Button();
+            btnRecalcular = new Button();
             btnArchivar = new Button();
             btnContinuar = new Button();
             tablelayoutpanel1.SuspendLayout();
@@ -137,7 +139,7 @@ namespace SIGAT.UI
             label4.Name = "label4";
             label4.Size = new Size(992, 19);
             label4.TabIndex = 1;
-            label4.Text = "SHA-256: verificar los datos, comprobar un respaldo y recuperar los registros originales.";
+            label4.Text = "SHA-256: verificar Usuarios y UsuarioRol, comprobar un respaldo y recuperar las cuentas y asignaciones.";
             // 
             // estado
             // 
@@ -281,7 +283,7 @@ namespace SIGAT.UI
             completas.Name = "completas";
             completas.Size = new Size(556, 23);
             completas.TabIndex = 4;
-            completas.Text = "Restaurar las tablas afectadas completas (descarta sus cambios posteriores al respaldo)";
+            completas.Text = "Restaurar Usuarios y UsuarioRol completos (descarta sus cambios posteriores al respaldo)";
             completas.UseVisualStyleBackColor = false;
             // 
             // flowlayoutpanel8
@@ -292,6 +294,7 @@ namespace SIGAT.UI
             flowlayoutpanel8.Controls.Add(btnInicializar);
             flowlayoutpanel8.Controls.Add(btnBackupVerificado);
             flowlayoutpanel8.Controls.Add(btnRecuperar);
+            flowlayoutpanel8.Controls.Add(btnRecalcular);
             flowlayoutpanel8.Controls.Add(btnArchivar);
             flowlayoutpanel8.Controls.Add(btnContinuar);
             flowlayoutpanel8.Dock = DockStyle.Top;
@@ -399,6 +402,20 @@ namespace SIGAT.UI
             btnArchivar.Text = "Archivar bitácora antigua";
             btnArchivar.UseVisualStyleBackColor = false;
             // 
+            // btnRecalcular
+            //
+            btnRecalcular.AutoSize = true;
+            btnRecalcular.BackColor = Color.FromArgb(255, 245, 219);
+            btnRecalcular.ForeColor = Color.FromArgb(132, 84, 17);
+            btnRecalcular.FlatStyle = FlatStyle.Flat;
+            btnRecalcular.FlatAppearance.BorderColor = Color.FromArgb(223, 230, 239);
+            btnRecalcular.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            btnRecalcular.Margin = new Padding(0, 0, 8, 8);
+            btnRecalcular.MinimumSize = new Size(96, 40);
+            btnRecalcular.Name = "btnRecalcular";
+            btnRecalcular.Text = "Recalcular dígitos (asumir pérdida)";
+            btnRecalcular.UseVisualStyleBackColor = false;
+            //
             // btnContinuar
             // 
             btnContinuar.AutoSize = true;

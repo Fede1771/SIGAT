@@ -1,4 +1,8 @@
-﻿-- Cambiar únicamente la contraseña de la cuenta indicada.
+﻿-- Mantenimiento excepcional: preferir el cambio de contraseña desde SIGAT.
+-- Esta escritura externa invalida el DVH/DVV de Usuarios. Tras comprobar TODOS
+-- los datos actuales, un administrador debe aceptar el estado y recalcular
+-- desde Integridad y recuperación. No modifica verificadores automáticamente.
+-- Cambiar únicamente la contraseña de la cuenta indicada.
 -- SQL Server 2019+: UTF-8 coincide con HashHelper, también para tildes y símbolos.
 USE [SIGAT];
 SET NOCOUNT ON;

@@ -8,7 +8,6 @@ namespace SIGAT.UI
         private DataGridViewTextBoxColumn Usuario;
         private DataGridViewTextBoxColumn Actividad;
         private DataGridViewTextBoxColumn InformacionAsociada;
-        private DataGridViewTextBoxColumn DigitoVerificador;
 
 
         private TableLayoutPanel tablelayoutpanel1;
@@ -66,7 +65,6 @@ namespace SIGAT.UI
             Usuario = new DataGridViewTextBoxColumn();
             Actividad = new DataGridViewTextBoxColumn();
             InformacionAsociada = new DataGridViewTextBoxColumn();
-            DigitoVerificador = new DataGridViewTextBoxColumn();
             tablelayoutpanel1.SuspendLayout();
             tablelayoutpanel2.SuspendLayout();
             panelFiltros.SuspendLayout();
@@ -429,16 +427,7 @@ namespace SIGAT.UI
             InformacionAsociada.Visible = true;
             InformacionAsociada.SortMode = DataGridViewColumnSortMode.NotSortable;
             InformacionAsociada.Tag = "col_informacion";
-            DigitoVerificador.Name = "DigitoVerificador";
-            DigitoVerificador.DataPropertyName = "DigitoVerificador";
-            DigitoVerificador.HeaderText = "Dígito verificador (DVH)";
-            DigitoVerificador.FillWeight = 260F;
-            DigitoVerificador.MinimumWidth = 340;
-            DigitoVerificador.ReadOnly = true;
-            DigitoVerificador.Visible = true;
-            DigitoVerificador.SortMode = DataGridViewColumnSortMode.NotSortable;
-            DigitoVerificador.Tag = "col_dvh";
-            dgv.Columns.AddRange(new DataGridViewColumn[] { IdBitacora, Fecha, Usuario, Actividad, InformacionAsociada, DigitoVerificador });
+            dgv.Columns.AddRange(new DataGridViewColumn[] { IdBitacora, Fecha, Usuario, Actividad, InformacionAsociada });
             dgv.Name = "dgv";
             dgv.ReadOnly = true;
             dgv.RowHeadersVisible = false;

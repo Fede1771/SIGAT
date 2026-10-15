@@ -8,7 +8,12 @@ namespace SIGAT.BLL;
 public sealed class IntegridadBLL
 {
     private readonly IntegridadDAL dal;
-    public IntegridadBLL(IntegridadDAL? repositorio = null) => dal = repositorio ?? new IntegridadDAL();
+    private readonly BitacoraBLL bitacora;
+    public IntegridadBLL(IntegridadDAL? repositorio = null, BitacoraBLL? auditoria = null)
+    {
+        dal = repositorio ?? new IntegridadDAL();
+        bitacora = auditoria ?? new BitacoraBLL();
+    }
     public InformeIntegridad Verificar() => dal.Verificar();
     // Para administrar la recuperación se necesitan permisos en SIGAT y permisos administrativos en SQL Server.
     public bool PuedeAdministrar() => EsAdministradorAplicacion() && dal.PuedeAdministrar();
@@ -26,7 +31,18 @@ public sealed class IntegridadBLL
     public string CrearRespaldoConfiable(string? destino = null) { ExigirAdministradorAplicacion(); return dal.CrearRespaldoConfiable(destino); }
     public int ArchivarBitacora(int dias) { ExigirAdministradorAplicacion(); return dal.ArchivarBitacora(dias); }
     public InformeIntegridad Recuperar(string ruta, bool tablasCompletas = false) { ExigirAdministradorAplicacion(); return dal.Recuperar(ruta, tablasCompletas); }
-    // Un informe incorrecto detiene la operación con una excepción específica; no aceptamos los datos recalculando sus hashes.
+    // Aceptar el estado actual es una decisión administrativa explícita y queda registrada en SQL y en el log externo.
+    public InformeIntegridad RecalcularIntegridad()
+    {
+        ExigirAdministradorAplicacion();
+        var informe = dal.RecalcularIntegridad();
+        string responsable = SesionServicio.ObtenerInstancia().UsuarioActual?.NombreUsuario ?? "SQL:" + Environment.UserName;
+        bitacora.Registrar(responsable, "RecalculoIntegridad",
+            "El administrador aceptó el estado actual, incluidas posibles alteraciones o pérdidas, y recalculó DVH/DVV de Usuarios y UsuarioRol.");
+        return informe;
+    }
+
+    // Las operaciones normales se bloquean si hay diferencias; nunca recalculan automáticamente para permitir el acceso.
     public void ExigirIntegridad()
     {
         var informe = Verificar();

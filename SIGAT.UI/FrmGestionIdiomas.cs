@@ -119,8 +119,8 @@ namespace SIGAT.UI
 
                 if (respuesta != DialogResult.Yes) return;
 
-                _idiomaBLL.CambiarEstadoIdioma(idioma.Id, nuevoEstado);
-                CargarComboIdiomas();
+                try { _idiomaBLL.CambiarEstadoIdioma(idioma.Id, nuevoEstado); }
+                finally { CargarComboIdiomas(); cmbIdiomas.SelectedValue = idioma.Id; }
             }
             catch (Exception ex)
             {
@@ -160,7 +160,7 @@ namespace SIGAT.UI
             e.CellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
         }
 
-        // Confirmamos la edición de la fila seleccionada y la enviamos a la BLL, que define su estado y calcula su DVH.
+        // Confirmamos la edición de la fila seleccionada y la enviamos a la BLL, que valida el texto y define su estado.
         private void btnGuardarTraduccion_Click(object sender, EventArgs e)
         {
             try

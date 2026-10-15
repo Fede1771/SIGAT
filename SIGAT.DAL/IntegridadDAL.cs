@@ -1,4 +1,4 @@
-using System.Data;
+﻿using System.Data;
 using System.Globalization;
 using System.Security.AccessControl;
 using System.Security.Principal;
@@ -12,22 +12,23 @@ public sealed class IntegridadDAL
 {
     private readonly string? cadena;
     private static readonly object LogLock = new();
-    // Este control protege Bitacora y Traduccion. No cubre todas las tablas del sistema.
-    private static readonly string[] Tablas = { "Bitacora", "Traduccion" };
+    // Protegemos los datos de las cuentas y sus asignaciones; bitácora y traducciones no participan del DVH/DVV.
+    private static readonly string[] Tablas = { "Usuarios", "UsuarioRol" };
     private static readonly Dictionary<string, string[]> Columnas = new()
     {
-        ["Bitacora"] = new[] { "IdBitacora", "Fecha", "Usuario", "Actividad", "InformacionAsociada", "DigitoVerificador" },
-        ["Traduccion"] = new[] { "Id_Idioma", "Id_Control", "Texto", "Estado", "DigitoVerificador" }
+        ["Usuarios"] = new[] { "IdUsuario", "NombreUsuario", "Password", "Nombre", "Apellido", "Activo", "DigitoVerificador" },
+        ["UsuarioRol"] = new[] { "IdUsuario", "IdRol", "DigitoVerificador" }
     };
-    // Reunimos los valores de una fila y su DVH en el mismo formato para comparar datos actuales y datos del respaldo.
+    // El verificador se calcula con el mismo orden y los mismos tipos leídos de SQL.
     private sealed record Fila(string Tabla, object?[] Valores)
     {
-        public string Clave => Tabla == "Bitacora" ? Convert.ToString(Valores[0], CultureInfo.InvariantCulture)!
+        public string Clave => Tabla == "Usuarios" ? Convert.ToString(Valores[0], CultureInfo.InvariantCulture)!
             : $"{Valores[0]}|{Valores[1]}";
         public string? Guardado => Valores[^1] as string;
-        public string Calculado => Tabla == "Bitacora"
-            ? VerificadorSHA256.Bitacora((int)Valores[0]!, (DateTime)Valores[1]!, Valores[2] as string, Valores[3] as string, Valores[4] as string)
-            : VerificadorSHA256.Traduccion((int)Valores[0]!, (int)Valores[1]!, Valores[2] as string, (string)Valores[3]!);
+        public string Calculado => Tabla == "Usuarios"
+            ? VerificadorSHA256.Usuario((int)Valores[0]!, Valores[1] as string, Valores[2] as string,
+                Valores[3] as string, Valores[4] as string, (bool)Valores[5]!)
+            : VerificadorSHA256.UsuarioRol((int)Valores[0]!, (int)Valores[1]!);
     }
     private sealed record Control(string Hash, long Cantidad, Guid Base, int Version);
     private sealed class Estado
@@ -65,7 +66,7 @@ public sealed class IntegridadDAL
     private static List<Fila> LeerFilas(SqlConnection c, SqlTransaction t, string tabla)
     {
         var result = new List<Fila>();
-        string orden = tabla == "Bitacora" ? "IdBitacora" : "Id_Idioma,Id_Control";
+        string orden = tabla == "Usuarios" ? "IdUsuario" : "IdUsuario,IdRol";
         using var cmd = Comando(c, t, $"SELECT {string.Join(",", Columnas[tabla].Select(Id))} FROM dbo.{Id(tabla)} WITH (HOLDLOCK) ORDER BY {orden}");
         using var reader = cmd.ExecuteReader();
         while (reader.Read())
@@ -101,12 +102,6 @@ public sealed class IntegridadDAL
             {
                 if (!string.Equals(fila.Guardado, fila.Calculado, StringComparison.Ordinal))
                     estado.Informe.Problemas.Add(new(tabla, fila.Clave, fila.Guardado == null ? "Falta el dígito por registro (DVH)." : "El SHA-256 del registro no coincide."));
-                if (tabla == "Bitacora" && fila.Valores[4] is string cifrado)
-                {
-                    try { new EncriptadorServicio().Desencriptar(cifrado); }
-                    catch (Exception ex) when (ex is FormatException or System.Security.Cryptography.CryptographicException)
-                    { estado.Informe.Problemas.Add(new(tabla, fila.Clave, "La información cifrada no se puede leer.")); }
-                }
             }
             if (!estado.Controles.TryGetValue(tabla, out var control))
                 estado.Informe.Problemas.Add(new(tabla, "Tabla", "Falta el control del conjunto (DVV)."));
@@ -140,20 +135,26 @@ public sealed class IntegridadDAL
         return resultado;
     }
 
-    // Verificamos antes de escribir y de confirmar. El callback, los verificadores y la confirmación comparten una transacción.
+    // Datos y verificadores se confirman juntos. El alta inicial puede modificar las dos tablas en la misma transacción.
     public T Cambiar<T>(string tabla, Func<SqlConnection, SqlTransaction, T> cambiar)
+        => Cambiar(new[] { tabla }, cambiar);
+
+    public T Cambiar<T>(IReadOnlyCollection<string> tablas, Func<SqlConnection, SqlTransaction, T> cambiar)
     {
-        if (!Tablas.Contains(tabla)) throw new ArgumentException("Tabla no protegida.");
+        if (tablas.Count == 0 || tablas.Any(tabla => !Tablas.Contains(tabla)))
+            throw new ArgumentException("Tabla no protegida.");
         using var c = Conectar(); c.Open();
         using var t = c.BeginTransaction(IsolationLevel.Serializable);
         Bloquear(c, t, true);
         Exigir(Examinar(c, t).Informe);
         T resultado = cambiar(c, t);
-        // El cambio todavía no está confirmado: primero dejamos consistentes los verificadores.
-        // Solo las filas nuevas/actualizadas por el comando autorizado reciben el nuevo DVH.
-        foreach (var fila in LeerFilas(c, t, tabla))
-            if (fila.Guardado == null) GuardarHash(c, t, fila);
-        ActualizarVertical(c, t, tabla);
+        foreach (string tabla in tablas.Distinct())
+        {
+            // Las escrituras autorizadas dejan su DVH en null. Nunca aceptamos un hash alterado antes de validar la base.
+            foreach (var fila in LeerFilas(c, t, tabla))
+                if (fila.Guardado == null) GuardarHash(c, t, fila);
+            ActualizarVertical(c, t, tabla);
+        }
         Exigir(Examinar(c, t).Informe);
         t.Commit();
         return resultado;
@@ -163,13 +164,13 @@ public sealed class IntegridadDAL
     {
         if (!informe.Correcta) throw new IntegridadException(informe);
     }
-    private static string Condicion(string tabla) => tabla == "Bitacora" ? "IdBitacora=@p0" : "Id_Idioma=@p0 AND Id_Control=@p1";
+    private static string Condicion(string tabla) => tabla == "Usuarios" ? "IdUsuario=@p0" : "IdUsuario=@p0 AND IdRol=@p1";
     private static void GuardarHash(SqlConnection c, SqlTransaction t, Fila fila)
     {
         using var cmd = Comando(c, t, $"UPDATE dbo.{Id(fila.Tabla)} SET DigitoVerificador=@Hash WHERE {Condicion(fila.Tabla)}");
         cmd.Parameters.AddWithValue("@Hash", fila.Calculado);
         cmd.Parameters.AddWithValue("@p0", fila.Valores[0]);
-        if (fila.Tabla == "Traduccion") cmd.Parameters.AddWithValue("@p1", fila.Valores[1]);
+        if (fila.Tabla == "UsuarioRol") cmd.Parameters.AddWithValue("@p1", fila.Valores[1]);
         cmd.ExecuteNonQuery();
     }
     private static void ActualizarVertical(SqlConnection c, SqlTransaction t, string tabla)
@@ -191,22 +192,22 @@ public sealed class IntegridadDAL
     public int ArchivarBitacora(int dias)
     {
         if (dias < 1) throw new ArgumentException("La retención debe ser de al menos un día.");
-        using (var c = Conectar()) { c.Open(); ExigirAdministrador(c); }
-        return Cambiar("Bitacora", (c, t) =>
-        {
-            using var cmd = Comando(c, t, @"IF OBJECT_ID('dbo.Bitacora_Historico','U') IS NULL
-                CREATE TABLE dbo.Bitacora_Historico(IdBitacora int NOT NULL PRIMARY KEY,Fecha datetime NOT NULL,
-                    Usuario varchar(50) NOT NULL,Actividad varchar(255) NOT NULL,
-                    InformacionAsociada nvarchar(max) NULL,DigitoVerificador nvarchar(250) NULL);
-                IF COLUMNPROPERTY(OBJECT_ID('dbo.Bitacora_Historico'),'IdBitacora','IsIdentity')=1
-                    THROW 50001,'El histórico anterior tiene IDENTITY. Revisar su estructura antes de archivar.',1;
-                DELETE dbo.Bitacora OUTPUT deleted.IdBitacora,deleted.Fecha,deleted.Usuario,deleted.Actividad,
-                    deleted.InformacionAsociada,deleted.DigitoVerificador
-                    INTO dbo.Bitacora_Historico(IdBitacora,Fecha,Usuario,Actividad,InformacionAsociada,DigitoVerificador)
-                WHERE Fecha<@Limite;");
-            cmd.Parameters.Add("@Limite", SqlDbType.DateTime).Value = DateTime.Now.AddDays(-dias);
-            return cmd.ExecuteNonQuery();
-        });
+        using var c = Conectar(); c.Open();
+        ExigirAdministrador(c);
+        using var t = c.BeginTransaction(IsolationLevel.Serializable);
+        using var cmd = Comando(c, t, @"IF OBJECT_ID('dbo.Bitacora_Historico','U') IS NULL
+            CREATE TABLE dbo.Bitacora_Historico(IdBitacora int NOT NULL PRIMARY KEY,Fecha datetime NOT NULL,
+                Usuario varchar(50) NOT NULL,Actividad varchar(255) NOT NULL,
+                InformacionAsociada nvarchar(max) NULL,DigitoVerificador nvarchar(250) NULL);
+            IF COLUMNPROPERTY(OBJECT_ID('dbo.Bitacora_Historico'),'IdBitacora','IsIdentity')=1
+                THROW 50001,'El histórico anterior tiene IDENTITY. Revisar su estructura antes de archivar.',1;
+            DELETE dbo.Bitacora OUTPUT deleted.IdBitacora,deleted.Fecha,deleted.Usuario,deleted.Actividad,
+                deleted.InformacionAsociada INTO dbo.Bitacora_Historico
+                (IdBitacora,Fecha,Usuario,Actividad,InformacionAsociada) WHERE Fecha<@Limite;");
+        cmd.Parameters.Add("@Limite", SqlDbType.DateTime).Value = DateTime.Now.AddDays(-dias);
+        int cantidad = cmd.ExecuteNonQuery();
+        t.Commit();
+        return cantidad;
     }
     private static bool EsAdministrador(SqlConnection c)
     {
@@ -227,7 +228,7 @@ public sealed class IntegridadDAL
         {
             using var existentes = Comando(c, null, "SELECT COUNT(*) FROM dbo.IntegridadTabla");
             if ((int)existentes.ExecuteScalar()! != 0)
-                throw new InvalidOperationException("La integridad ya está inicializada. Utilice recuperación, no recálculo.");
+                throw new InvalidOperationException("La integridad ya está inicializada. Utilice recuperación o el recálculo administrativo explícito.");
         }
         string previo = CrearArchivoBackup(c, "antes_integridad");
         using var t = c.BeginTransaction(IsolationLevel.Serializable);
@@ -236,7 +237,7 @@ public sealed class IntegridadDAL
             Tabla nvarchar(30) NOT NULL PRIMARY KEY,HashVertical char(64) NOT NULL,Cantidad bigint NOT NULL,
             IdBase uniqueidentifier NOT NULL,Version int NOT NULL CHECK(Version=1));");
         using (var cmd = Comando(c, t, "SELECT COUNT(*) FROM dbo.IntegridadTabla"))
-            if ((int)cmd.ExecuteScalar()! != 0) throw new InvalidOperationException("La integridad ya está inicializada. Utilice recuperación, no recálculo.");
+            if ((int)cmd.ExecuteScalar()! != 0) throw new InvalidOperationException("La integridad ya está inicializada. Utilice recuperación o el recálculo administrativo explícito.");
         Guid identidad = Guid.NewGuid();
         foreach (string tabla in Tablas)
         {
@@ -259,30 +260,42 @@ public sealed class IntegridadDAL
         return CrearRespaldoConfiable();
     }
 
+    // En la migración las cuentas aún no tienen DVH. Un valor existente debe coincidir; no se legitima una diferencia.
     private static void ValidarLegado(Fila fila)
     {
-        if (fila.Tabla == "Traduccion")
-        {
-            if (fila.Guardado == null) return; // Catálogo original y pendientes: confirmación explícita del operador.
-            string legado = HashHelper.ObtenerHashSHA256($"{fila.Valores[0]}|{fila.Valores[1]}|{fila.Valores[2]}");
-            if (fila.Guardado == legado) return;
-        }
-        else
-        {
-            DateTime fecha = (DateTime)fila.Valores[1]!;
-            string Calcular(DateTime f) => new EncriptadorServicio().CalcularDV(f.ToString("yyyyMMddHHmmss", CultureInfo.InvariantCulture) +
-                fila.Valores[2] + fila.Valores[3] + fila.Valores[4])!;
-            if (fila.Guardado == Calcular(fecha)) return;
-            // Compatibilidad limitada con el redondeo del datetime original: solo un segundo y milisegundo cero.
-            if (fecha.Millisecond == 0 && fila.Guardado == Calcular(fecha.AddSeconds(-1)))
-            {
-                Registrar("Compatibilidad reconocida para Bitacora [" + fila.Clave + "]: DV legado coincide con la fecha anterior al redondeo SQL.");
-                return;
-            }
-        }
+        if (fila.Guardado == null || fila.Guardado == fila.Calculado) return;
         var informe = new InformeIntegridad { Configurada = true };
-        informe.Problemas.Add(new(fila.Tabla, fila.Clave, "El dígito legado no coincide. No se permite inicializar aceptando datos alterados."));
+        informe.Problemas.Add(new(fila.Tabla, fila.Clave, "El DVH existente no coincide. Recupere un respaldo o acepte expresamente el estado actual."));
         throw new IntegridadException(informe);
+    }
+
+    // Esta operación acepta explícitamente los datos actuales; no recupera información perdida ni comprueba su origen.
+    public InformeIntegridad RecalcularIntegridad()
+    {
+        using var c = Conectar(); c.Open(); ExigirAdministrador(c);
+        using var t = c.BeginTransaction(IsolationLevel.Serializable);
+        Bloquear(c, t, true);
+        Ejecutar(c, t, @"IF OBJECT_ID('dbo.IntegridadTabla','U') IS NULL CREATE TABLE dbo.IntegridadTabla (
+            Tabla nvarchar(30) NOT NULL PRIMARY KEY,HashVertical char(64) NOT NULL,Cantidad bigint NOT NULL,
+            IdBase uniqueidentifier NOT NULL,Version int NOT NULL CHECK(Version=1));");
+        Guid identidad;
+        using (var cmd = Comando(c, t, "SELECT TOP(1) IdBase FROM dbo.IntegridadTabla WITH (UPDLOCK,HOLDLOCK) ORDER BY Tabla"))
+            identidad = cmd.ExecuteScalar() is Guid existente ? existente : Guid.NewGuid();
+        Ejecutar(c, t, "DELETE dbo.IntegridadTabla WHERE Tabla NOT IN ('Usuarios','UsuarioRol')");
+        foreach (string tabla in Tablas)
+        {
+            var filas = LeerFilas(c, t, tabla);
+            foreach (var fila in filas) GuardarHash(c, t, fila);
+            using var cmd = Comando(c, t, @"UPDATE dbo.IntegridadTabla SET HashVertical=@Hash,Cantidad=@Cantidad,IdBase=@Base,Version=1 WHERE Tabla=@Tabla;
+                IF @@ROWCOUNT=0 INSERT dbo.IntegridadTabla(Tabla,HashVertical,Cantidad,IdBase,Version) VALUES(@Tabla,@Hash,@Cantidad,@Base,1)");
+            cmd.Parameters.AddWithValue("@Tabla", tabla); cmd.Parameters.AddWithValue("@Hash", Vertical(tabla, filas));
+            cmd.Parameters.AddWithValue("@Cantidad", (long)filas.Count); cmd.Parameters.AddWithValue("@Base", identidad);
+            cmd.ExecuteNonQuery();
+        }
+        var informeFinal = Examinar(c, t).Informe;
+        Exigir(informeFinal); t.Commit();
+        Registrar("Recálculo administrativo de DVH/DVV asumiendo el estado actual de la base (Usuarios y UsuarioRol).");
+        return informeFinal;
     }
 
     // Un backup no es confiable solo por existir. Lo restauramos en una base auxiliar y comprobamos sus verificadores.
@@ -488,20 +501,18 @@ public sealed class IntegridadDAL
             if (actual.Controles.Values.Any(v => v.Base != origen.Controles.Values.First().Base))
                 throw new InvalidOperationException("El respaldo pertenece a otra base. No se modificó ningún registro.");
             if (actual.Informe.Correcta) { t.Commit(); return actual.Informe; }
+            if (restaurarTablasCompletas)
+            {
+                RestaurarSeguridadCompleta(c, t, origen);
+                var restaurado = Examinar(c, t).Informe;
+                Exigir(restaurado); t.Commit();
+                Registrar("Recuperación completa verificada de Usuarios y UsuarioRol desde " + ruta);
+                return restaurado;
+            }
+            if (Tablas.Any(tabla => !actual.Controles.ContainsKey(tabla)))
+                throw new InvalidOperationException("Falta un control DVV. Use la restauración completa de las tablas de seguridad desde un respaldo comprobado.");
             foreach (string tabla in Tablas)
             {
-                if (restaurarTablasCompletas && actual.Informe.Problemas.Any(p => p.Tabla == tabla))
-                {
-                    // Esta opción reemplaza toda la tabla afectada por la versión del respaldo, incluidos sus verificadores.
-                    Ejecutar(c, t, $"DELETE FROM dbo.{Id(tabla)}");
-                    foreach (var fila in origen.Filas[tabla]) RestaurarFila(c, t, fila, true);
-                    using var control = Comando(c, t, "UPDATE dbo.IntegridadTabla SET HashVertical=@Hash,Cantidad=@Cantidad,Version=1 WHERE Tabla=@Tabla");
-                    control.Parameters.AddWithValue("@Hash", origen.Controles[tabla].Hash);
-                    control.Parameters.AddWithValue("@Cantidad", origen.Controles[tabla].Cantidad);
-                    control.Parameters.AddWithValue("@Tabla", tabla);
-                    control.ExecuteNonQuery();
-                    continue;
-                }
                 var backup = origen.Filas[tabla].ToDictionary(f => f.Clave);
                 // En recuperación por registros buscamos cada fila dañada por su clave, conservando las demás.
                 var clavesActuales = actual.Filas[tabla].Select(f => f.Clave).ToHashSet();
@@ -537,23 +548,50 @@ public sealed class IntegridadDAL
             return final.Informe;
         });
     }
-    // Conservamos los IDs del respaldo. IDENTITY_INSERT permite reponer un evento faltante con su identificador original.
+    private static void RestaurarSeguridadCompleta(SqlConnection c, SqlTransaction t, Estado origen)
+    {
+        // Se restaura el conjunto coherente de cuentas y asignaciones. Conservamos las cuentas que siguen en el respaldo.
+        Ejecutar(c, t, "DELETE dbo.UsuarioRol");
+        var ids = origen.Filas["Usuarios"].Select(f => (int)f.Valores[0]!).ToHashSet();
+        var actuales = LeerFilas(c, t, "Usuarios");
+        foreach (var extra in actuales.Where(f => !ids.Contains((int)f.Valores[0]!)))
+        {
+            using var cmd = Comando(c, t, "DELETE dbo.UsuarioIdioma WHERE IdUsuario=@Id; DELETE dbo.Usuarios WHERE IdUsuario=@Id");
+            cmd.Parameters.AddWithValue("@Id", extra.Valores[0]); cmd.ExecuteNonQuery();
+        }
+        var presentes = actuales.Select(f => (int)f.Valores[0]!).ToHashSet();
+        foreach (var fila in origen.Filas["Usuarios"]) RestaurarFila(c, t, fila, !presentes.Contains((int)fila.Valores[0]!));
+        foreach (var fila in origen.Filas["UsuarioRol"]) RestaurarFila(c, t, fila, true);
+        foreach (string tabla in Tablas)
+        {
+            // El respaldo comprobado también permite reponer un control DVV que haya sido eliminado.
+            using var cmd = Comando(c, t, @"UPDATE dbo.IntegridadTabla SET HashVertical=@Hash,Cantidad=@Cantidad,Version=1 WHERE Tabla=@Tabla;
+                IF @@ROWCOUNT=0 INSERT dbo.IntegridadTabla(Tabla,HashVertical,Cantidad,IdBase,Version)
+                    VALUES(@Tabla,@Hash,@Cantidad,@Base,1)");
+            cmd.Parameters.AddWithValue("@Hash", origen.Controles[tabla].Hash);
+            cmd.Parameters.AddWithValue("@Cantidad", origen.Controles[tabla].Cantidad);
+            cmd.Parameters.AddWithValue("@Base", origen.Controles[tabla].Base);
+            cmd.Parameters.AddWithValue("@Tabla", tabla); cmd.ExecuteNonQuery();
+        }
+    }
+
+    // Conservamos los IDs de las cuentas para no cambiar sus referencias ni las asignaciones de roles.
     private static void RestaurarFila(SqlConnection c, SqlTransaction t, Fila fila, bool insertar)
     {
         var cols = Columnas[fila.Tabla];
-        int claves = fila.Tabla == "Bitacora" ? 1 : 2;
+        int claves = fila.Tabla == "Usuarios" ? 1 : 2;
         string sql = insertar
             ? $"INSERT dbo.{Id(fila.Tabla)} ({string.Join(",", cols.Select(Id))}) VALUES ({string.Join(",", cols.Select((_, n) => "@p" + n))})"
             : $"UPDATE dbo.{Id(fila.Tabla)} SET {string.Join(",", cols.Skip(claves).Select((col, n) => Id(col) + "=@p" + (n + claves)))} WHERE {Condicion(fila.Tabla)}";
-        bool identity = insertar && fila.Tabla == "Bitacora";
-        if (identity) Ejecutar(c, t, "SET IDENTITY_INSERT dbo.Bitacora ON");
+        bool identity = insertar && fila.Tabla == "Usuarios";
+        if (identity) Ejecutar(c, t, "SET IDENTITY_INSERT dbo.Usuarios ON");
         try
         {
             using var cmd = Comando(c, t, sql);
             for (int n = 0; n < cols.Length; n++) cmd.Parameters.AddWithValue("@p" + n, fila.Valores[n] ?? DBNull.Value);
             if (cmd.ExecuteNonQuery() != 1) throw new InvalidOperationException("No se pudo recuperar " + fila.Clave);
         }
-        finally { if (identity) Ejecutar(c, t, "SET IDENTITY_INSERT dbo.Bitacora OFF"); }
+        finally { if (identity) Ejecutar(c, t, "SET IDENTITY_INSERT dbo.Usuarios OFF"); }
     }
 
     // El log queda fuera de SQL para registrar incidentes incluso cuando los datos de la base no son utilizables.

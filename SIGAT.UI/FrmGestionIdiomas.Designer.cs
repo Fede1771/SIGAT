@@ -10,7 +10,6 @@ namespace SIGAT.UI
         private DataGridViewTextBoxColumn Estado;
         private DataGridViewTextBoxColumn IdIdioma;
         private DataGridViewTextBoxColumn IdControl;
-        private DataGridViewTextBoxColumn DigitoVerificador;
 
 
         private TableLayoutPanel tablelayoutpanel1;
@@ -87,7 +86,6 @@ namespace SIGAT.UI
             Estado = new DataGridViewTextBoxColumn();
             IdIdioma = new DataGridViewTextBoxColumn();
             IdControl = new DataGridViewTextBoxColumn();
-            DigitoVerificador = new DataGridViewTextBoxColumn();
             flowlayoutpanel15 = new FlowLayoutPanel();
             btnGuardarTraduccion = new Button();
             btnExportarTraducciones = new Button();
@@ -545,7 +543,7 @@ namespace SIGAT.UI
             dgvTraducciones.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
             dgvTraducciones.ColumnHeadersHeight = 44;
             dgvTraducciones.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            dgvTraducciones.Columns.AddRange(new DataGridViewColumn[] { FormNombre, ControlNombre, TextoBase, Texto, Estado, IdIdioma, IdControl, DigitoVerificador });
+            dgvTraducciones.Columns.AddRange(new DataGridViewColumn[] { FormNombre, ControlNombre, TextoBase, Texto, Estado, IdIdioma, IdControl });
             dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle3.BackColor = Color.FromArgb(255, 255, 255);
             dataGridViewCellStyle3.Font = new Font("Segoe UI", 10F);
@@ -639,12 +637,6 @@ namespace SIGAT.UI
             // 
             // DigitoVerificador
             // 
-            DigitoVerificador.DataPropertyName = "DigitoVerificador";
-            DigitoVerificador.HeaderText = "DigitoVerificador";
-            DigitoVerificador.Name = "DigitoVerificador";
-            DigitoVerificador.ReadOnly = true;
-            DigitoVerificador.SortMode = DataGridViewColumnSortMode.NotSortable;
-            DigitoVerificador.Visible = false;
             // 
             // flowlayoutpanel15
             // 

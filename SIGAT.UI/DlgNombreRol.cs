@@ -7,6 +7,11 @@ public partial class DlgNombreRol : Form
         InitializeComponent();
         if (!EntornoDiseno.Activo) TemaVisual.Formulario(this);
     }
+    public void ConfigurarFamilia()
+    {
+        Text = "Crear familia de permisos";
+        lblNombre.Text = "Nombre de la familia";
+    }
     // Devolvemos el nombre ingresado; la pantalla que abre el diálogo comprueba que no esté vacío ni repetido.
     public string NombreRol => txtNombre.Text;
 }

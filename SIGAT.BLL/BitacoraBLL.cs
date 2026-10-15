@@ -6,7 +6,8 @@ namespace SIGAT.BLL
 {
     public class BitacoraBLL
     {
-        private BitacoraDAL _dal = new BitacoraDAL();
+        private readonly BitacoraDAL _dal;
+        public BitacoraBLL(BitacoraDAL? dal = null) { _dal = dal ?? new BitacoraDAL(); }
 
         // Recibimos el evento creado por la fábrica y lo adaptamos al formato que guarda la bitácora.
         public void Registrar(IBitacoraEvento evento)
@@ -33,7 +34,7 @@ namespace SIGAT.BLL
             _dal.Insertar(registroClasico);
         }
 
-        // Los filtros son opcionales; la DAL verifica la integridad antes de devolver los eventos para su consulta.
+        // Los filtros son opcionales; la DAL devuelve los eventos sin depender de la integridad de las cuentas.
         public List<Bitacora> Buscar(DateTime? desde, DateTime? hasta, string? usuario, string? actividad)
         {
             return _dal.Buscar(desde, hasta, usuario, actividad);

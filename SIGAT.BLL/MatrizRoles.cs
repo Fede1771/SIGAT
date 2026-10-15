@@ -1,14 +1,14 @@
-using SIGAT.BE;
+﻿using SIGAT.BE;
 
 namespace SIGAT.BLL
 {
-    // Catálogo inicial y reglas de validación. Las familias empiezan vacías y sus hijos se administran después.
+    // Los siete permisos base conservan su identidad; las familias personalizadas amplían la jerarquía Composite.
     public static class MatrizRoles
     {
         public const string Administracion = "Administración del sistema";
         public const string Bitacora = "Ver bitácora";
 
-        // Define la matriz inicial de cinco roles y siete permisos. Los roles se pueden editar después, salvo Administrador.
+        // Define cinco roles, siete permisos base y una subfamilia de ejemplo. Los roles se pueden editar después, salvo Administrador.
         public static EstadoRoles CrearCatalogo()
         {
             EstadoRoles estado = new EstadoRoles();
@@ -24,6 +24,10 @@ namespace SIGAT.BLL
             AgregarRol(estado, 3, "Técnico de Mantenimiento", new[] { 5, 2 });
             AgregarRol(estado, 4, "Mesa de Ayuda", new[] { 4, 2 });
             AgregarRol(estado, 5, "Auditor", new[] { 1, 2, 6 });
+            var consultas = new PermisoCompuesto { Id = 8, Nombre = "Consultas de activos" };
+            consultas.Agregar(estado.Permisos[1]);
+            estado.Permisos[2].Agregar(consultas);
+            estado.Permisos.Add(consultas);
             return estado;
         }
 
@@ -40,14 +44,18 @@ namespace SIGAT.BLL
         public static void ValidarCatalogo(EstadoRoles estado)
         {
             EstadoRoles esperado = CrearCatalogo();
-            if (estado.Permisos.Count != 7)
-                throw new InvalidOperationException("El catálogo debe conservar los siete permisos del sistema.");
+            if (estado.Permisos.Count < 7)
+                throw new InvalidOperationException("El catálogo debe conservar los siete permisos base del sistema.");
             HashSet<int> ids = new HashSet<int>();
+            var nombresPermisos = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             foreach (Permiso permiso in estado.Permisos)
             {
-                if (!ids.Add(permiso.Id)) throw new InvalidOperationException("Permiso duplicado.");
-                bool coincide = false;
-                foreach (Permiso definido in esperado.Permisos)
+                if (permiso.Id <= 0 || !ids.Add(permiso.Id)) throw new InvalidOperationException("Permiso duplicado.");
+                if (string.IsNullOrWhiteSpace(permiso.Nombre) || permiso.Nombre != permiso.Nombre.Trim() ||
+                    permiso.Nombre.Length > 150 || !nombresPermisos.Add(permiso.Nombre))
+                    throw new InvalidOperationException("El nombre del permiso debe ser único, no vacío y de hasta 150 caracteres.");
+                bool coincide = permiso.Id > 7 && permiso is PermisoCompuesto;
+                foreach (Permiso definido in esperado.Permisos.Where(p => p.Id <= 7))
                     if (permiso.Id == definido.Id && permiso.Nombre == definido.Nombre && permiso.GetType() == definido.GetType()) coincide = true;
                 if (!coincide)
                     throw new InvalidOperationException("El permiso o su jerarquía no coincide con la matriz.");
@@ -55,6 +63,8 @@ namespace SIGAT.BLL
                     if (!estado.Permisos.Contains(hijo))
                         throw new InvalidOperationException("La familia contiene un permiso fuera del catálogo.");
             }
+            if (!Enumerable.Range(1, 7).All(id => ids.Contains(id)))
+                throw new InvalidOperationException("Falta un permiso base del sistema.");
             ids.Clear();
             var nombres = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             foreach (Rol rol in estado.Roles)

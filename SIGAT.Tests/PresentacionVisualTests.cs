@@ -20,8 +20,8 @@ public class PresentacionVisualTests
         EnInterfaz(() =>
         {
             var informe = new SIGAT.BE.Integridad.InformeIntegridad { Configurada = true };
-            informe.Problemas.Add(new("Traduccion", "1|1", "El SHA-256 del registro no coincide."));
-            informe.Problemas.Add(new("Bitacora", "Tabla", "El conjunto de registros no coincide con el DVV."));
+            informe.Problemas.Add(new("Usuarios", "2", "El SHA-256 del registro no coincide."));
+            informe.Problemas.Add(new("UsuarioRol", "Tabla", "El conjunto de registros no coincide con el DVV."));
             using var form = new FrmIntegridad(informe, bloquearInicio: true);
             var key = typeof(Form).GetField("s_shownEvent", BindingFlags.Static | BindingFlags.NonPublic)!.GetValue(null)!;
             var events = (EventHandlerList)typeof(Component).GetProperty("Events", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(form)!;
@@ -36,6 +36,7 @@ public class PresentacionVisualTests
             tarea.GetAwaiter().GetResult();
             Assert.IsFalse(form.Controls.Find("btnContinuar", true)[0].Enabled);
             Assert.IsTrue(form.Controls.Find("btnRecuperar", true)[0].Enabled);
+            Assert.IsTrue(form.Controls.Find("btnRecalcular", true)[0].Enabled);
             Assert.IsFalse(form.Controls.Find("btnBackupVerificado", true)[0].Enabled);
             Guardar(form, Environment.GetEnvironmentVariable("SIGAT_VISUAL_PREVIEW"), "integridad");
         });
@@ -135,7 +136,7 @@ public class PresentacionVisualTests
                 new() { FormNombre = "FrmPrincipal", ControlNombre = "menu_usuarios", TextoBase = "Gestión de usuarios", Texto = "User management", Estado = "Completa" },
                 new() { FormNombre = "FrmPrincipal", ControlNombre = "menu_roles", TextoBase = "Roles y permisos", Texto = "", Estado = "Pendiente" }
             };
-            foreach (string column in new[] { "IdIdioma", "IdControl", "DigitoVerificador" }) gridLanguages.Columns[column]!.Visible = false;
+            foreach (string column in new[] { "IdIdioma", "IdControl" }) gridLanguages.Columns[column]!.Visible = false;
             using var bitacora = new FrmBitacora();
             var gridLog = (DataGridView)bitacora.Controls.Find("dgv", true)[0];
             gridLog.DataSource = new List<Bitacora> { new() { Fecha = DateTime.Now, Usuario = "admin", Actividad = "Login", InformacionAsociada = "Inicio de sesión correcto" } };
@@ -184,12 +185,16 @@ public class PresentacionVisualTests
                         {
                             foreach (TreeNode node in nodes)
                             {
+                                // Las familias pueden crecer sin límite fijo: cada nodo debe ser accesible mediante el scroll nativo.
+                                node.EnsureVisible();
+                                Application.DoEvents();
                                 Assert.IsTrue(node.Bounds.Top >= 0 && node.Bounds.Bottom <= tree.ClientSize.Height,
                                     $"El elemento {node.Text} debe verse completo en {treeName}: {node.Bounds}, área {tree.ClientSize}, fila {tree.ItemHeight}.");
                                 if (node.IsExpanded) ComprobarNodos(node.Nodes);
                             }
                         }
                         ComprobarNodos(tree.Nodes);
+                        tree.TopNode = tree.Nodes[0];
                     }
                 }
             }

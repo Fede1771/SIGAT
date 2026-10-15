@@ -1,13 +1,13 @@
-# Scripts SQL de SIGAT
+﻿# Scripts SQL de SIGAT
 
 ## PC nueva: instalar desde cero
 
 1. Instalar SQL Server Express 2019 o posterior con instancia `SQLEXPRESS` y autenticación de Windows. También se necesita el entorno de .NET de la aplicación: el script prepara la base, no instala esos programas.
 2. Conectarse a `.\SQLEXPRESS` desde SQL Server Management Studio. La cuenta que instala necesita permisos para crear bases. La aplicación se conecta con la cuenta de Windows que la ejecuta.
 3. Abrir `01_Instalacion_Completa.sql`, cambiar `@ClaveAdmin` y ejecutar **todo el archivo**. Dejar `@Base = N'SIGAT'` para la conexión actual.
-4. Ejecutar `04_Verificacion_Integridad.sql` y abrir SIGAT. Ingresar con `admin` y la contraseña elegida.
+4. Ejecutar `04_Verificacion_Integridad.sql` y abrir SIGAT. Preparar la primera referencia de integridad y el respaldo comprobado; luego ingresar con `admin` y la contraseña elegida.
 
-**El archivo 01 es autónomo:** instala las 15 tablas de la aplicación y sus relaciones, idiomas y traducciones, 5 roles iniciales, 7 permisos y 16 relaciones entre roles y permisos. Incluye administrador protegido, roles editables, roles anidados y componentes de familias. La bitácora empieza vacía y solo se crea la cuenta `admin`. Las traducciones pendientes del catálogo siguen pendientes; la aplicación registra nuevas claves al abrir formularios.
+**El archivo 01 es autónomo:** instala las 15 tablas de la aplicación y sus relaciones, idiomas y traducciones, 5 roles iniciales, 7 permisos base, la familia Consultas de activos y 16 relaciones directas entre roles y permisos. Incluye administrador protegido, roles editables, roles anidados y componentes de familias. La bitácora empieza vacía y solo se crea la cuenta `admin`. Las traducciones pendientes del catálogo siguen pendientes; la aplicación registra nuevas claves al abrir formularios.
 
 El instalador utiliza el nivel de compatibilidad del motor, sin exigir 170 a versiones anteriores. Se detiene si la base ya existe, incluso vacía. Si falla al crear la estructura, revierte tablas y datos, pero puede quedar una base vacía: revisar el error y esa base antes de repetir. Ejecutar todo el archivo permite detenerlo ante errores, también desde SSMS sin modo SQLCMD.
 
@@ -18,7 +18,8 @@ Si otra cuenta de Windows va a ejecutar SIGAT, un administrador del servidor deb
 1. Cerrar SIGAT y ejecutar `05_Backup.sql`. Guardar la ruta que devuelve.
 2. Ejecutar **todo** `02_Actualizar_Base_Existente.sql` en la instancia que contiene SIGAT.
 3. Ejecutar `04_Verificacion_Integridad.sql` y `03_Consultar_Usuarios.sql`.
-4. Asignar desde la aplicación los roles de las cuentas que hayan quedado sin rol.
+4. Si se migró del control antiguo, preparar la primera referencia de Usuarios/UsuarioRol en SIGAT y generar un respaldo comprobado nuevo.
+5. Asignar desde la aplicación los roles de las cuentas que hayan quedado sin rol.
 
 El nuevo 02 reúne las migraciones anteriores **10 → 12 → 13 → 14** en una sola transacción. Conserva cuentas, contraseñas, bitácora, idiomas y traducciones. Al migrar el esquema viejo, conserva asignaciones por nombres de roles admitidos; un perfil `Operador` no se convierte automáticamente en un rol distinto. Requiere la cuenta original ID 1 activa con perfil/rol Administrador. Si una etapa falla, revierte toda la actualización.
 
@@ -67,10 +68,14 @@ El instalador requiere SQL Server 2019 o posterior, pero las pruebas de ejecuci�
 
 ## Idioma preferido por usuario
 
-Cada cuenta conserva en SQL el idioma elegido mediante Aplicar o el selector superior. Al volver a iniciar sesión se recupera su propia preferencia; otra cuenta no la hereda. Sin elección previa se utiliza español. Si el idioma guardado está inactivo, se usa español sin borrar la preferencia.
+Cada cuenta conserva en SQL el idioma elegido mediante Aplicar o el selector superior. Al volver a iniciar sesión se recupera su propia preferencia; otra cuenta no la hereda. Sin elección previa se utiliza español. No se permite desactivar español, el idioma de la sesión ni un idioma elegido por cualquier usuario registrado (incluidas cuentas inactivas). Si una base anterior ya contiene una preferencia hacia un idioma inactivo, se usa español sin borrar esa preferencia.
 
 El instalador 01 y la actualización 02 incluyen UsuarioIdioma. Para una base que ya tiene las demás tablas actuales, ejecutar únicamente 11_Idioma_Por_Usuario.sql. Se puede repetir y no borra preferencias.
 
 ## Integridad SHA-256
 
-El control actual protege Bitacora y Traduccion con DVH y DVV. El instalador 01 y la actualización 02 incluyen IntegridadTabla. Ver GUIA_INTEGRIDAD.md para la preparación, los backups comprobados, la recuperación y la demostración en una copia de pruebas. El script 12 crea solo la estructura; no acepta ni recalcula automáticamente datos alterados.
+El control actual protege **Usuarios y UsuarioRol** con DVH y DVV. El instalador 01 y la actualización 02 agregan sus columnas `char(64)` y dejan lista la inicialización desde SIGAT. El script 12 prepara únicamente esa estructura y retira los controles del alcance anterior; no acepta datos alterados ni recalcula verificadores automáticamente.
+
+Ver [GUIA_INTEGRIDAD.md](GUIA_INTEGRIDAD.md) para preparar la referencia, probar alteraciones y recuperar datos. Las columnas antiguas de verificadores de Bitacora/Traduccion se conservan en SQL por compatibilidad histórica; el código ya no las utiliza ni las muestra.
+
+Las familias nuevas admiten IDs mayores a 7 y deben ser compuestas. La migración agrega una vez la subfamilia de ejemplo y conserva las ediciones posteriores. Los siete permisos base mantienen su identidad y tipo en la validación de negocio. No hay un límite fijo de niveles en Composite.

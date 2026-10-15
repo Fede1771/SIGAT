@@ -1,4 +1,4 @@
-# SIGAT
+﻿# SIGAT
 
 **Sistema de Gestión de Activos Tecnológicos** · Proyecto académico de escritorio
 
@@ -35,13 +35,14 @@ Gestión de activos, Movimientos, Mantenimiento y Reportes forman parte del cat�
 - Cuentas nuevas sin roles; los accesos se asignan desde la gestión de roles y permisos.
 - Administrador original protegido contra baja, desactivación y retiro de su rol Administrador.
 - Roles personalizados y anidados, con asignaciones persistentes en SQL.
-- Agregado y retiro de componentes de roles; edición de los hijos de permisos compuestos.
+- Creación y eliminación de familias personalizadas; anidamiento de familias y permisos en varios niveles.
 - Validación de ciclos en las jerarquías de roles y permisos.
-- Idiomas con preferencia por cuenta guardada en SQL e indicador del idioma activo.
+- Idiomas con preferencia por cuenta guardada en SQL; se impide desactivar español, el idioma de la sesión o cualquiera elegido por un usuario registrado, aunque su cuenta esté inactiva.
 - Modos claro y oscuro con preferencia local por usuario.
 - Bitácora con detalle cifrado y consultas por fecha, usuario y actividad.
-- Control SHA-256 de registros y conjuntos de Bitacora y Traduccion.
+- Control SHA-256 de las cuentas (Usuarios) y sus asignaciones de roles (UsuarioRol), con lecturas verificadas y escrituras transaccionales.
 - Creación de respaldos comprobados y recuperación desde un respaldo de la misma base.
+- Recálculo administrativo de DVH/DVV con confirmación y auditoría, aceptando explícitamente el estado actual.
 
 Los cambios de roles se aplican al volver a iniciar sesión. El rol Administrador conserva sus componentes originales.
 
@@ -102,7 +103,7 @@ Los roles reúnen permisos y pueden heredar otros roles. La jerarquía de permis
 | Mesa de Ayuda | Movimientos y Consultar inventario. |
 | Auditor | Ver bitácora, Consultar inventario y Reportes. |
 
-Ver bitácora y Consultar inventario son permisos simples. Los otros cinco componentes son permisos compuestos.
+Ver bitácora y Consultar inventario son permisos simples. Los otros cinco componentes base son permisos compuestos. La semilla incluye Gestión de activos → Consultas de activos → Consultar inventario, por lo que los roles que reciben Gestión de activos también heredan esa consulta. Los nuevos permisos del catálogo deben ser compuestos; los siete permisos base conservan nombre, identidad y tipo.
 
 La tabla describe la configuración inicial. Las asignaciones y las familias editables se guardan en SQL; no se restablecen automáticamente al cerrar sesión. El administrador original y la composición del rol Administrador están protegidos.
 
@@ -126,7 +127,9 @@ dotnet run --project SIGAT.UI/SIGAT.UI.csproj
 
 ## Actualización de una base existente
 
-Cerrar la aplicación, crear un respaldo con `Querys/05_Backup.sql` y ejecutar `Querys/02_Actualizar_Base_Existente.sql`.
+Cerrar la aplicación, crear un respaldo con `Querys/05_Backup.sql` y ejecutar `Querys/02_Actualizar_Base_Existente.sql`. Al pasar del control anterior (Bitacora/Traduccion) al nuevo (Usuarios/UsuarioRol), abrir SIGAT, **preparar la primera referencia** y crear un **respaldo comprobado nuevo**. Los respaldos anteriores al cambio de esquema no sirven para la recuperación selectiva nueva.
+
+Ver la [guía de integridad](Querys/GUIA_INTEGRIDAD.md) para los pasos de preparación, prueba y recuperación.
 
 Consultar [las instrucciones de SQL](Querys/README.md) para los requisitos, verificaciones y operaciones de mantenimiento. Los scripts de `Querys/Historico` se conservan como referencia y no son pasos de instalación.
 
@@ -156,7 +159,7 @@ Estos recorridos permiten explicar una funcionalidad desde la pantalla hasta su 
 | Usuarios | [`FrmGestionUsuarios.cs`](SIGAT.UI/FrmGestionUsuarios.cs) reúne los datos; [`UsuarioBLL.cs`](SIGAT.BLL/UsuarioBLL.cs) valida y calcula el hash de la clave; [`UsuarioDAL.cs`](SIGAT.DAL/UsuarioDAL.cs) guarda o desactiva la cuenta. |
 | Roles y Composite | [`Permiso.cs`](SIGAT.BE/Permiso.cs), [`Rol.cs`](SIGAT.BE/Rol.cs) y [`Usuario.cs`](SIGAT.BE/Usuario.cs) resuelven los permisos efectivos. [`RolesBLL.cs`](SIGAT.BLL/RolesBLL.cs) valida y [`RolesDAL.cs`](SIGAT.DAL/RolesDAL.cs) persiste las relaciones en una transacción. |
 | Idiomas y Observer | [`IdiomaBLL.cs`](SIGAT.BLL/IdiomaBLL.cs) carga las traducciones; [`IdiomaManager.cs`](SIGAT.SERVICIOS/Idiomas/IdiomaManager.cs) notifica a los formularios; [`TraductorFormularios.cs`](SIGAT.UI/TraductorFormularios.cs) actualiza los textos. |
-| Bitácora | [`BitacoraFactory.cs`](SIGAT.BLL/Fabricas/BitacoraFactory.cs) construye eventos; [`BitacoraMapper.cs`](SIGAT.BLL/BitacoraMapper.cs) adapta sus datos; [`BitacoraDAL.cs`](SIGAT.DAL/BitacoraDAL.cs) cifra el detalle y guarda el registro con control de integridad. |
+| Bitácora | [`BitacoraFactory.cs`](SIGAT.BLL/Fabricas/BitacoraFactory.cs) construye eventos; [`BitacoraMapper.cs`](SIGAT.BLL/BitacoraMapper.cs) adapta sus datos; [`BitacoraDAL.cs`](SIGAT.DAL/BitacoraDAL.cs) cifra el detalle y guarda el evento independientemente del control de cuentas. |
 | DVH y DVV | [`VerificadorSHA256.cs`](SIGAT.SERVICIOS/VerificadorSHA256.cs) calcula las huellas; [`IntegridadDAL.cs`](SIGAT.DAL/IntegridadDAL.cs) compara filas y conjuntos con los valores guardados. [`FrmIntegridad.cs`](SIGAT.UI/FrmIntegridad.cs) presenta los problemas y las acciones de recuperación. |
 | Temas visuales | [`TemaVisual.Modos.cs`](SIGAT.UI/TemaVisual.Modos.cs) conserva los colores originales, aplica el tema y guarda la preferencia local por cuenta. |
 
@@ -169,16 +172,16 @@ Para la defensa, conviene explicar **qué recibe cada capa, qué valida y qué d
 - **DVH:** comprueba los campos de un registro y se almacena en su columna `DigitoVerificador`.
 - **DVV:** comprueba el conjunto ordenado de registros y se almacena por separado en `IntegridadTabla`.
 
-El alcance actual de DVH y DVV es **Bitacora y Traduccion**. La columna de DVH visible en la bitácora muestra el valor almacenado. La comprobación completa se realiza desde Integridad y recuperación y antes del acceso al sistema.
+El alcance actual de DVH y DVV es **Usuarios y UsuarioRol**. El DVH de Usuarios se muestra como dato de solo lectura en su grilla. La verificación precede al login y a las lecturas críticas. Cada escritura autorizada actualiza los datos y sus verificadores dentro de una misma transacción Serializable. Bitacora conserva AES, pero ni ella ni Traduccion participan de DVH/DVV.
+
+**Recuperar** repone datos originales desde un `.bak` comprobado. **Recalcular dígitos (asumir pérdida)** acepta los registros actuales, incluso si fueron alterados o eliminados: no recupera información. Exige autorización administrativa y registra la aceptación en Bitacora y en `%LOCALAPPDATA%\SIGAT\logs\integridad.log`. No se ejecuta automáticamente al verificar, iniciar sesión o guardar datos.
 
 ## Pendientes conocidos
 
-- Ajustar el espacio del panel Composición del rol: una prueba visual detecta desplazamiento vertical en determinados tamaños.
 - Unificar las operaciones de usuarios y su registro de bitácora para evitar guardados parciales si falla la auditoría.
 - Completar las validaciones de autorización de usuarios e idiomas en la capa de negocio.
 - Hacer atómica la creación de idiomas y controles con sus traducciones.
-- Resolver la recuperación cuando falta un registro de control en IntegridadTabla.
 - Ajustar el límite superior del filtro de fechas de bitácora al redondeo de SQL datetime.
 
-El control de integridad actual cubre Bitacora y Traduccion. SHA-256 se utiliza para verificadores y hashes de contraseñas; el cifrado AES del detalle de bitácora cumple una función diferente.
+El control de integridad actual cubre Usuarios y UsuarioRol. SHA-256 se utiliza para verificadores y hashes de contraseñas; el cifrado AES del detalle de bitácora cumple una función diferente.
 

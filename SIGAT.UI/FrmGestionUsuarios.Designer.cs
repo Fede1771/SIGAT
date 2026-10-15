@@ -9,6 +9,7 @@ namespace SIGAT.UI
         private DataGridViewTextBoxColumn Apellido;
         private DataGridViewTextBoxColumn Activo;
         private DataGridViewTextBoxColumn Roles;
+        private DataGridViewTextBoxColumn DigitoVerificador;
 
         private TableLayoutPanel tablelayoutpanel1;
         private TableLayoutPanel tablelayoutpanel2;
@@ -57,6 +58,7 @@ namespace SIGAT.UI
             Apellido = new DataGridViewTextBoxColumn();
             Activo = new DataGridViewTextBoxColumn();
             Roles = new DataGridViewTextBoxColumn();
+            DigitoVerificador = new DataGridViewTextBoxColumn();
             panel7 = new Panel();
             tablelayoutpanel8 = new TableLayoutPanel();
             label9 = new Label();
@@ -171,7 +173,15 @@ namespace SIGAT.UI
             dgvUsuarios.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
             dgvUsuarios.ColumnHeadersHeight = 44;
             dgvUsuarios.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            dgvUsuarios.Columns.AddRange(new DataGridViewColumn[] { IdUsuario, NombreUsuario, Nombre, Apellido, Activo, Roles });
+            DigitoVerificador.Name = "DigitoVerificador";
+            DigitoVerificador.DataPropertyName = "DigitoVerificador";
+            DigitoVerificador.HeaderText = "Dígito verificador (DVH)";
+            DigitoVerificador.Tag = "col_dvh";
+            DigitoVerificador.MinimumWidth = 150;
+            DigitoVerificador.FillWeight = 140F;
+            DigitoVerificador.ReadOnly = true;
+            DigitoVerificador.SortMode = DataGridViewColumnSortMode.NotSortable;
+            dgvUsuarios.Columns.AddRange(new DataGridViewColumn[] { IdUsuario, NombreUsuario, Nombre, Apellido, Activo, Roles, DigitoVerificador });
             dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle3.BackColor = Color.FromArgb(255, 255, 255);
             dataGridViewCellStyle3.Font = new Font("Segoe UI", 10F);

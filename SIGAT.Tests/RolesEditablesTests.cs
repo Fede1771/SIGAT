@@ -10,6 +10,71 @@ namespace SIGAT.Tests;
 public class RolesEditablesTests
 {
     [TestMethod]
+    public void FamiliasPersonalizadasAdmitenVariosNivelesYRechazanNombresInvalidos()
+    {
+        var estado = MatrizRoles.CrearCatalogo();
+        var raiz = new PermisoCompuesto { Id = 20, Nombre = "Familia raíz" };
+        var rama = new PermisoCompuesto { Id = 21, Nombre = "Familia intermedia" };
+        var hoja = new PermisoCompuesto { Id = 22, Nombre = "Familia final" };
+        raiz.Agregar(rama); rama.Agregar(hoja); hoja.Agregar(estado.Permisos[1]);
+        estado.Permisos.AddRange(new[] { raiz, rama, hoja });
+        MatrizRoles.ValidarCatalogo(estado);
+        Assert.IsTrue(raiz.ContienePermiso("Consultar inventario"));
+        Assert.ThrowsExactly<InvalidOperationException>(() => hoja.Agregar(raiz));
+        foreach (string nombre in new[] { "", "  ", "Reportes", "familia raíz", new string('x', 151) })
+        {
+            hoja.Nombre = nombre;
+            Assert.ThrowsExactly<InvalidOperationException>(() => MatrizRoles.ValidarCatalogo(estado));
+        }
+        hoja.Nombre = "Familia final";
+        estado.Permisos.Add(new PermisoSimple { Id = 23, Nombre = "Simple no permitido" });
+        Assert.ThrowsExactly<InvalidOperationException>(() => MatrizRoles.ValidarCatalogo(estado));
+    }
+
+    [TestMethod]
+    [TestCategory("SQLIntegration")]
+    public void FamiliasPersonalizadasPersistenSeRenombranYSeEliminan()
+    {
+        string? cadena = Environment.GetEnvironmentVariable("SIGAT_ROLES_TEST_CONNECTION");
+        if (string.IsNullOrWhiteSpace(cadena)) { Assert.Inconclusive("Requiere base de pruebas."); return; }
+        SqlPruebas.Preparar(cadena);
+        var dal = new RolesDAL(cadena);
+        var original = dal.Cargar();
+        try
+        {
+            var estado = dal.Cargar();
+            int id = estado.Permisos.Max(p => p.Id) + 1;
+            var raiz = new PermisoCompuesto { Id = id, Nombre = "Familia SQL raíz" };
+            var rama = new PermisoCompuesto { Id = id + 1, Nombre = "Familia SQL rama" };
+            var final = new PermisoCompuesto { Id = id + 2, Nombre = "Familia SQL final" };
+            raiz.Agregar(rama); rama.Agregar(final); final.Agregar(estado.Permisos.Single(p => p.Id == 2));
+            estado.Permisos.AddRange(new[] { raiz, rama, final });
+            estado.Roles.Single(r => r.Id == 5).AgregarPermiso(raiz);
+            MatrizRoles.ValidarCatalogo(estado);
+            dal.Guardar(estado);
+            estado = dal.Cargar();
+            var recuperada = estado.Permisos.Single(p => p.Id == id);
+            Assert.AreSame(estado.Permisos.Single(p => p.Id == id + 1), recuperada.ObtenerHijos().Single());
+            Assert.AreEqual(2, recuperada.ObtenerHijos().Single().ObtenerHijos().Single().ObtenerHijos().Single().Id);
+            Assert.IsTrue(estado.Roles.Single(r => r.Id == 5).Permisos.Contains(recuperada));
+            recuperada.Nombre = "Familia SQL renombrada";
+            dal.Guardar(estado);
+            estado = dal.Cargar();
+            Assert.AreEqual("Familia SQL renombrada", estado.Permisos.Single(p => p.Id == id).Nombre);
+            estado.Roles.Single(r => r.Id == 5).QuitarPermiso(estado.Permisos.Single(p => p.Id == id));
+            estado.Permisos.RemoveAll(p => p.Id >= id);
+            dal.Guardar(estado);
+            Assert.IsFalse(dal.Cargar().Permisos.Any(p => p.Id >= id));
+            Assert.IsTrue(new IntegridadDAL(cadena).Verificar().Correcta);
+        }
+        finally
+        {
+            original.Version = dal.Cargar().Version;
+            dal.Guardar(original);
+        }
+    }
+
+    [TestMethod]
     public void HerenciaTransitivaSinCiclosYAdministradorProtegido()
     {
         var estado = MatrizRoles.CrearCatalogo();
@@ -45,6 +110,7 @@ public class RolesEditablesTests
         if (string.IsNullOrWhiteSpace(cadena)) { Assert.Inconclusive("Requiere base de pruebas."); return; }
         if (!new SqlConnectionStringBuilder(cadena).InitialCatalog.StartsWith("SIGAT_Roles_Pruebas_"))
             throw new InvalidOperationException("Base de pruebas requerida.");
+        SqlPruebas.Preparar(cadena);
         var dal = new RolesDAL(cadena);
         var original = dal.Cargar();
         try

@@ -41,6 +41,7 @@ namespace SIGAT.BE
         }
 
         public int IdUsuario { get; set; }
+        public string? DigitoVerificador { get; set; }
         public string NombreUsuario { get; set; }
         // Guardamos el hash de la clave. Para autenticar comparamos hashes, no recuperamos la contraseña original.
         public string Password { get; set; }

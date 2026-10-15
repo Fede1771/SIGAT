@@ -45,10 +45,18 @@ public sealed partial class FrmIntegridad : Form
             string destino = dialogo.FileName;
             await Operar(() => "Respaldo comprobado creado:\n" + servicio.CrearRespaldoConfiable(destino), true);
         };
+        btnRecalcular.Click += async (_, _) =>
+        {
+            if (MessageBox.Show(this,
+                "Se aceptarán los registros actuales de Usuarios y UsuarioRol, incluidas posibles alteraciones o pérdidas. " +
+                "Se recalcularán todos sus DVH y DVV. Esta acción NO recupera datos y quedará auditada. ¿Desea continuar?",
+                "Asumir estado actual y recalcular", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes) return;
+            await Operar(() => { informe = servicio.RecalcularIntegridad(); return "Estado actual aceptado y dígitos verificadores recalculados."; });
+        };
         btnRecuperar.Click += async (_, _) =>
         {
             string ruta = archivo.Text; bool total = completas.Checked;
-            string texto = total ? "Se reemplazarán las tablas protegidas afectadas por sus datos del respaldo y se perderán sus cambios posteriores."
+            string texto = total ? "Se reemplazarán Usuarios y UsuarioRol por sus datos del respaldo y se perderán sus cambios posteriores."
                 : "Se intentará recuperar solo los registros afectados. Si el respaldo no permite conservar los demás cambios, se cancelará toda la operación.";
             if (MessageBox.Show(this, texto + "\n\nRespaldo: " + ruta, "Confirmar recuperación", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes) return;
             await Operar(() => { informe = servicio.Recuperar(ruta, total); return "Datos recuperados y verificados correctamente."; });
@@ -56,7 +64,7 @@ public sealed partial class FrmIntegridad : Form
         btnContinuar.Click += (_, _) => { DialogResult = DialogResult.OK; Close(); };
         btnArchivar.Click += async (_, _) =>
         {
-            if (MessageBox.Show(this, "Se trasladarán al histórico los eventos anteriores a 180 días y se actualizará el DVV en la misma transacción. ¿Continuar?",
+            if (MessageBox.Show(this, "Se trasladarán al histórico los eventos anteriores a 180 días en una transacción. ¿Continuar?",
                 "Archivar bitácora", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
             await Operar(() => { int cantidad = servicio.ArchivarBitacora(180); informe = servicio.Verificar(); return "Eventos archivados: " + cantidad; });
         };
@@ -69,7 +77,7 @@ public sealed partial class FrmIntegridad : Form
     {
         UseWaitCursor = true;
         ocupada = true;
-        foreach (var boton in new[] { btnInicializar, btnBackupVerificado, btnRecuperar, btnComprobar, btnContinuar, btnArchivar }) boton.Enabled = false;
+        foreach (var boton in new[] { btnInicializar, btnBackupVerificado, btnRecuperar, btnComprobar, btnContinuar, btnArchivar, btnRecalcular }) boton.Enabled = false;
         try
         {
             string mensaje = await Task.Run(accion);
@@ -93,6 +101,7 @@ public sealed partial class FrmIntegridad : Form
             btnInicializar.Enabled = administrador && informe?.Configurada == false;
             btnBackupVerificado.Enabled = administrador && correcta;
             btnArchivar.Enabled = administrador && correcta;
+            btnRecalcular.Enabled = administrador && !correcta;
             btnRecuperar.Enabled = administrador && informe?.Configurada == true && !correcta;
             btnContinuar.Enabled = !soloRecuperacion || correcta;
         }

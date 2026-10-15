@@ -17,12 +17,12 @@ public class RolesPersistenciaTests
         string[] nombres = { "Administrador", "Responsable de Inventario", "Técnico de Mantenimiento", "Mesa de Ayuda", "Auditor" };
         int[][] ids = { new[] {1,3,4,5,6,7}, new[] {3,4,6}, new[] {5,2}, new[] {4,2}, new[] {1,2,6} };
         Assert.AreEqual(5, estado.Roles.Count);
-        Assert.AreEqual(7, estado.Permisos.Count);
+        Assert.AreEqual(8, estado.Permisos.Count);
         int simples = 0;
         foreach (Permiso permiso in estado.Permisos)
         {
             if (permiso is PermisoSimple) simples++;
-            Assert.IsEmpty(permiso.ObtenerHijos());
+            if (permiso is PermisoSimple) Assert.IsEmpty(permiso.ObtenerHijos());
         }
         Assert.AreEqual(2, simples);
         for (int i = 0; i < nombres.Length; i++)
@@ -30,11 +30,11 @@ public class RolesPersistenciaTests
             Rol rol = estado.Roles[i];
             Assert.AreEqual(nombres[i], rol.Nombre);
             Assert.AreEqual(ids[i].Length, rol.Permisos.Count);
-            foreach (Permiso permiso in estado.Permisos)
+            foreach (Permiso permiso in estado.Permisos.Where(p => p.Id<=7))
             {
                 bool esperado = false;
                 foreach (int id in ids[i]) if (permiso.Id == id) esperado = true;
-                Assert.AreEqual(esperado, rol.TienePermiso(permiso.Nombre), rol.Nombre + ": " + permiso.Nombre);
+                Assert.AreEqual(esperado, rol.Permisos.Contains(permiso), rol.Nombre + ": " + permiso.Nombre);
             }
         }
         MatrizRoles.ValidarCatalogo(estado);
@@ -71,6 +71,7 @@ public class RolesPersistenciaTests
         var builder = new SqlConnectionStringBuilder(cadena);
         if (!builder.InitialCatalog.StartsWith("SIGAT_Roles_Pruebas_", StringComparison.Ordinal))
             throw new InvalidOperationException("Solo se admite una base de pruebas.");
+        SqlPruebas.Preparar(cadena);
         RolesDAL dal = new RolesDAL(cadena);
         RolesBLL servicio = new RolesBLL(dal);
         EstadoRoles original = dal.Cargar();

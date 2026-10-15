@@ -111,6 +111,13 @@ namespace SIGAT.BLL
             if (idioma.Codigo == "es" && !activo)
                 throw new InvalidOperationException("No se puede desactivar Español porque es el idioma base.");
 
+            if (!activo)
+            {
+                if (IdiomaManager.ObtenerInstancia().IdiomaActual?.Id == idIdioma)
+                    throw new InvalidOperationException("No se puede desactivar el idioma activo en la sesión actual.");
+                if (_dal.TieneUsuariosAsignados(idIdioma))
+                    throw new InvalidOperationException("No se puede desactivar el idioma porque uno o más usuarios registrados lo tienen elegido.");
+            }
             _dal.CambiarEstadoIdioma(idIdioma, activo);
         }
 
@@ -119,14 +126,11 @@ namespace SIGAT.BLL
             return _dal.ObtenerTraduccionesParaGestion(idIdioma);
         }
 
-        // Un texto vacío queda pendiente. El DVH incluye idioma, control, texto y estado para detectar cambios en esa traducción.
+        // Un texto vacío queda pendiente; las traducciones ya no forman parte del control DVH/DVV.
         public void GuardarTraduccionPorControl(int idIdioma, int idControl, string texto)
         {
             string estado = string.IsNullOrWhiteSpace(texto) ? "Pendiente" : "Completa";
-            string digitoVerificador = VerificadorSHA256.Traduccion(idIdioma, idControl,
-                string.IsNullOrWhiteSpace(texto) ? null : texto, estado);
-
-            _dal.ActualizarTraduccion(idIdioma, idControl, texto, estado, digitoVerificador);
+            _dal.ActualizarTraduccion(idIdioma, idControl, texto, estado);
         }
 
         // Cada etiqueta se identifica por formulario y clave. Las nuevas etiquetas reciben texto base y pendientes para los demás idiomas.

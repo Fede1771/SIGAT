@@ -1,8 +1,8 @@
-using System.Data;
 using System.Globalization;
 using Microsoft.Data.SqlClient;
 using SIGAT.BE;
 using SIGAT.BE.Integridad;
+using SIGAT.BLL;
 using SIGAT.DAL;
 using SIGAT.SERVICIOS;
 
@@ -17,19 +17,22 @@ public class IntegridadTests
     {
         Assert.AreNotEqual(VerificadorSHA256.Canonico("ab", "c"), VerificadorSHA256.Canonico("a", "bc"));
         Assert.AreNotEqual(VerificadorSHA256.Canonico((object?)null), VerificadorSHA256.Canonico(""));
-        Assert.AreNotEqual(VerificadorSHA256.Traduccion(1, 2, "Texto", "Completa"), VerificadorSHA256.Traduccion(1, 2, "Texto", "Pendiente"));
+        string hash = VerificadorSHA256.Usuario(1, "admin", "hash", "Ana", "Pérez", true);
+        Assert.AreNotEqual(hash, VerificadorSHA256.Usuario(1, "admin", "otro", "Ana", "Pérez", true));
+        Assert.AreNotEqual(hash, VerificadorSHA256.Usuario(1, "admin", "hash", "Ana", "Pérez", false));
+        Assert.AreNotEqual(VerificadorSHA256.UsuarioRol(1, 2), VerificadorSHA256.UsuarioRol(2, 1));
+        Assert.AreEqual(64, hash.Length);
     }
 
     [TestMethod]
     public void Sha256EsEstableEntreCulturasYConUnicode()
     {
         var anterior = CultureInfo.CurrentCulture;
-        var fecha = new DateTime(2026, 10, 10, 12, 34, 56, 997);
-        string original = VerificadorSHA256.Bitacora(4, fecha, "admin", "Prueba", "ñ中文");
+        string original = VerificadorSHA256.Usuario(4, "ñ中文", "hash", "Ana", "Pérez", true);
         try
         {
             CultureInfo.CurrentCulture = new CultureInfo("ar-SA");
-            Assert.AreEqual(original, VerificadorSHA256.Bitacora(4, fecha, "admin", "Prueba", "ñ中文"));
+            Assert.AreEqual(original, VerificadorSHA256.Usuario(4, "ñ中文", "hash", "Ana", "Pérez", true));
         }
         finally { CultureInfo.CurrentCulture = anterior; }
         Assert.AreEqual("ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad", VerificadorSHA256.Hexadecimal("abc"));
@@ -41,7 +44,8 @@ public class IntegridadTests
     {
         string? cadena = Environment.GetEnvironmentVariable("SIGAT_INTEGRIDAD_TEST_CONNECTION");
         if (string.IsNullOrWhiteSpace(cadena)) { Assert.Inconclusive("Requiere base exclusiva de pruebas."); return; }
-        if (!new SqlConnectionStringBuilder(cadena).InitialCatalog.StartsWith("SIGAT_Roles_Pruebas_", StringComparison.Ordinal))
+        string nombreBase = new SqlConnectionStringBuilder(cadena).InitialCatalog;
+        if (!nombreBase.StartsWith("SIGAT_Roles_Pruebas_", StringComparison.Ordinal))
             throw new InvalidOperationException("Solo se admite una base de pruebas.");
         void Sql(string texto)
         {
@@ -51,81 +55,112 @@ public class IntegridadTests
         var integridad = new IntegridadDAL(cadena);
         var idioma = new IdiomaDAL(cadena);
         var bitacora = new BitacoraDAL(cadena);
-        // Fila legada justo antes del redondeo a un nuevo segundo de SQL datetime.
-        DateTime fecha = new DateTime(2026, 10, 10, 12, 0, 2).AddMilliseconds(999);
-        string cifrado = new EncriptadorServicio().Encriptar("Registro original")!;
-        string antiguo = new EncriptadorServicio().CalcularDV(fecha.ToString("yyyyMMddHHmmss", CultureInfo.InvariantCulture) + "adminPrueba" + cifrado)!;
-        using (var c = new SqlConnection(cadena))
-        {
-            c.Open();
-            using var cmd = new SqlCommand("INSERT dbo.Bitacora(Fecha,Usuario,Actividad,InformacionAsociada,DigitoVerificador) VALUES(@Fecha,'admin','Prueba',@Info,@DV)", c);
-            cmd.Parameters.Add("@Fecha", SqlDbType.DateTime).Value = fecha;
-            cmd.Parameters.AddWithValue("@Info", cifrado); cmd.Parameters.AddWithValue("@DV", antiguo); cmd.ExecuteNonQuery();
-        }
-        string backup = integridad.InicializarBaseConfiable();
-        Assert.IsTrue(integridad.Verificar().Correcta, "La migración debe corregir el formato legado, incluidos los pendientes.");
+        var usuarios = new UsuarioDAL(cadena);
+        var roles = new RolesDAL(cadena);
+        string backupInicial = integridad.InicializarBaseConfiable();
+        Assert.IsTrue(File.Exists(backupInicial));
         Assert.ThrowsExactly<InvalidOperationException>(() => integridad.InicializarBaseConfiable());
-        idioma.ActualizarTraduccion(1, 1, "Texto correcto ñ中文", "Completa", "");
-        bitacora.Insertar(new Bitacora { Fecha = fecha, Usuario = "admin", Actividad = "Nuevo", InformacionAsociada = "Información correcta" });
-        Assert.IsTrue(integridad.Verificar().Correcta);
-        string carpetaExportada = Path.Combine(Path.GetTempPath(), "SIGAT exportación " + Guid.NewGuid().ToString("N"));
-        Directory.CreateDirectory(carpetaExportada);
-        string elegido = Path.Combine(carpetaExportada, "respaldo elegido.bak");
-        backup = integridad.CrearRespaldoConfiable(elegido);
-        Assert.AreEqual(elegido, backup);
-        Assert.IsTrue(File.Exists(elegido));
-        Assert.ThrowsExactly<InvalidOperationException>(() => integridad.CrearRespaldoConfiable(elegido));
+        var cuenta = new Usuario { NombreUsuario="dv_prueba",Nombre="Ana",Apellido="Pérez",Password=HashHelper.ObtenerHashSHA256("Inicial123"),Activo=true };
+        usuarios.Insertar(cuenta);
+        var estado = roles.Cargar();
+        estado.Usuarios.Single(u => u.IdUsuario == cuenta.IdUsuario).AsignarRol(estado.Roles.Single(r => r.Id==5));
+        roles.Guardar(estado);
+        string carpeta = Path.Combine(Path.GetTempPath(), "SIGAT_DV_"+Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(carpeta);
+        string backup = integridad.CrearRespaldoConfiable(Path.Combine(carpeta,"confiable.bak"));
+        Assert.AreEqual(Path.Combine(carpeta,"confiable.bak"), backup);
+        Assert.ThrowsExactly<InvalidOperationException>(() => integridad.CrearRespaldoConfiable(backup));
         Assert.ThrowsExactly<ArgumentException>(() => integridad.CrearRespaldoConfiable("relativo.bak"));
+        Assert.IsTrue(integridad.Verificar().Correcta);
 
-        Sql("UPDATE dbo.Traduccion SET Texto=N'Texto alterado' WHERE Id_Idioma=1 AND Id_Control=1");
-        Assert.IsFalse(integridad.Verificar().Correcta);
-        Assert.ThrowsExactly<IntegridadException>(() => idioma.ObtenerTraduccionesPorIdioma(1));
-        Assert.ThrowsExactly<IntegridadException>(() => idioma.ActualizarTraduccion(1, 1, "Aceptar alteración", "Completa", ""));
+        Sql($"UPDATE dbo.Usuarios SET Apellido=N'ALTERADO' WHERE IdUsuario={cuenta.IdUsuario}");
+        var informe = integridad.Verificar();
+        Assert.IsTrue(informe.Problemas.Any(p => p.Tabla=="Usuarios" && p.Registro==cuenta.IdUsuario.ToString()));
+        Assert.IsTrue(informe.Problemas.Any(p => p.Tabla=="Usuarios" && p.Registro=="Tabla"));
+        Assert.ThrowsExactly<IntegridadException>(() => usuarios.ObtenerTodos());
+        Assert.ThrowsExactly<IntegridadException>(() => usuarios.ObtenerPorNombreUsuario("dv_prueba"));
+        Assert.ThrowsExactly<IntegridadException>(() => roles.Cargar());
+        Assert.ThrowsExactly<IntegridadException>(() => roles.Guardar(estado));
+        Assert.ThrowsExactly<IntegridadException>(() => usuarios.Actualizar(cuenta));
         Assert.ThrowsExactly<IntegridadException>(() => integridad.CrearRespaldoConfiable());
-        // Un .bak físicamente válido puede contener datos cuyo SHA-256 está roto.
-        using var conexionCarpeta = new SqlConnection(cadena); conexionCarpeta.Open();
-        using var consultaCarpeta = new SqlCommand("SELECT CONVERT(nvarchar(2000),SERVERPROPERTY('InstanceDefaultBackupPath'))", conexionCarpeta);
-        string corrupto = Path.Combine(Convert.ToString(consultaCarpeta.ExecuteScalar())!,
-            new SqlConnectionStringBuilder(cadena).InitialCatalog + "_corrupto_" + Guid.NewGuid().ToString("N") + ".bak");
+        // Un .bak físicamente válido también debe rechazarse si contiene cuentas adulteradas.
         using (var c = new SqlConnection(cadena))
         {
             c.Open();
-            using var cmd = new SqlCommand("BACKUP DATABASE [" + c.Database + "] TO DISK=@Ruta WITH COPY_ONLY,CHECKSUM", c);
-            cmd.Parameters.AddWithValue("@Ruta", corrupto); cmd.ExecuteNonQuery();
+            using var consultar = new SqlCommand("SELECT CONVERT(nvarchar(2000),SERVERPROPERTY('InstanceDefaultBackupPath'))", c);
+            string corrupto = Path.Combine((string)consultar.ExecuteScalar()!, nombreBase + "_corrupto.bak");
+            using var guardar = new SqlCommand("BACKUP DATABASE [" + nombreBase + "] TO DISK=@Ruta WITH COPY_ONLY,CHECKSUM,INIT", c);
+            guardar.Parameters.AddWithValue("@Ruta", corrupto);
+            guardar.ExecuteNonQuery();
+            Assert.ThrowsExactly<IntegridadException>(() => integridad.Recuperar(corrupto));
+            Assert.IsFalse(integridad.Verificar().Correcta, "Un respaldo con daño lógico no debe legitimar la alteración.");
         }
-        Assert.ThrowsExactly<IntegridadException>(() => integridad.Recuperar(corrupto));
-        Assert.IsFalse(integridad.Verificar().Correcta, "Un respaldo corrupto no debe modificar ni legitimar los datos actuales.");
+        // La auditoría y las traducciones continúan operativas aun si las cuentas están bloqueadas.
+        bitacora.Insertar(new Bitacora { Fecha=DateTime.Now,Usuario="admin",Actividad="Incidente",InformacionAsociada="Cuenta alterada" });
+        Assert.AreEqual("Cuenta alterada",bitacora.Buscar(null,null,"admin","Incidente").First().InformacionAsociada);
+        idioma.ActualizarTraduccion(1,1,"Texto sin DVH","Completa");
+        Assert.IsTrue(idioma.ObtenerTraduccionesPorIdioma(1).Any(t=>t.Texto=="Texto sin DVH"));
         Assert.IsTrue(integridad.Recuperar(backup).Correcta);
-        Assert.AreEqual("Texto correcto ñ中文", idioma.ObtenerTraduccionesPorIdioma(1).Single(t => t.IdControl == 1).Texto);
+        Assert.AreEqual("Pérez",usuarios.ObtenerPorNombreUsuario("dv_prueba")!.Apellido);
+        Assert.AreEqual("Cuenta alterada",bitacora.Buscar(null,null,"admin","Incidente").First().InformacionAsociada);
 
-        Sql("UPDATE dbo.Bitacora SET DigitoVerificador='DV roto' WHERE IdBitacora=1");
-        Assert.ThrowsExactly<IntegridadException>(() => bitacora.Buscar(null, null, "", ""));
-        Assert.IsTrue(integridad.Recuperar(backup).Correcta);
-        Sql("UPDATE dbo.Bitacora SET InformacionAsociada='cifrado inválido' WHERE IdBitacora=1");
-        Assert.IsTrue(integridad.Verificar().Problemas.Any(p => p.Motivo.Contains("cifrada")));
-        Assert.ThrowsExactly<IntegridadException>(() => bitacora.Buscar(null, null, "", ""));
-        Assert.IsTrue(integridad.Recuperar(backup).Correcta);
-
-        Sql("DELETE dbo.Bitacora WHERE IdBitacora=1");
-        Assert.IsTrue(integridad.Verificar().Problemas.Any(p => p.Registro == "Tabla"));
-        Assert.IsTrue(integridad.Recuperar(backup).Correcta);
-        Sql("DELETE dbo.Traduccion WHERE Id_Idioma=1 AND Id_Control=1");
-        Assert.IsTrue(integridad.Recuperar(backup).Correcta);
-        Sql("UPDATE dbo.IntegridadTabla SET HashVertical=REPLICATE('0',64) WHERE Tabla='Traduccion'");
-        Assert.IsTrue(integridad.Recuperar(backup).Correcta);
-
-        // Un respaldo anterior no debe reemplazar silenciosamente una actualización legítima.
-        idioma.ActualizarTraduccion(1, 1, "Cambio legítimo posterior", "Completa", "");
-        Sql("UPDATE dbo.Traduccion SET Texto='Corrupción posterior' WHERE Id_Idioma=1 AND Id_Control=1");
-        Assert.ThrowsExactly<InvalidOperationException>(() => integridad.Recuperar(backup));
+        Sql($"UPDATE dbo.Usuarios SET DigitoVerificador=REPLICATE('0',64) WHERE IdUsuario={cuenta.IdUsuario}");
         Assert.IsFalse(integridad.Verificar().Correcta);
-        Assert.IsTrue(integridad.Recuperar(backup, restaurarTablasCompletas: true).Correcta);
-        Assert.AreEqual("Texto correcto ñ中文", idioma.ObtenerTraduccionesPorIdioma(1).Single(t => t.IdControl == 1).Texto);
-        Assert.IsTrue(bitacora.Buscar(null, null, "", "").Count == 2);
-        bitacora.Insertar(new Bitacora { Fecha=DateTime.Now.AddDays(-200),Usuario="admin",Actividad="Antiguo",InformacionAsociada="Archivar" });
-        Assert.AreEqual(1, integridad.ArchivarBitacora(180));
-        Assert.IsTrue(integridad.Verificar().Correcta, "El archivo legítimo debe actualizar el control del conjunto.");
-        File.Delete(elegido);
-        Directory.Delete(carpetaExportada);
+        Assert.IsTrue(integridad.Recuperar(backup).Correcta);
+        Sql($"DELETE dbo.UsuarioRol WHERE IdUsuario={cuenta.IdUsuario}");
+        Assert.IsTrue(integridad.Verificar().Problemas.Any(p=>p.Tabla=="UsuarioRol" && p.Registro=="Tabla"));
+        Assert.IsTrue(integridad.Recuperar(backup).Correcta);
+        Sql($"DELETE dbo.UsuarioRol WHERE IdUsuario={cuenta.IdUsuario}; DELETE dbo.Usuarios WHERE IdUsuario={cuenta.IdUsuario}");
+        Assert.IsTrue(integridad.Recuperar(backup).Correcta, "La cuenta se repone con IDENTITY_INSERT antes de sus asignaciones.");
+
+        cuenta.Nombre="Cambio legítimo posterior";cuenta.Password="";usuarios.Actualizar(cuenta);
+        Sql($"UPDATE dbo.Usuarios SET Apellido=N'OTRA ALTERACION' WHERE IdUsuario={cuenta.IdUsuario}");
+        Assert.ThrowsExactly<InvalidOperationException>(()=>integridad.Recuperar(backup));
+        Assert.IsTrue(integridad.Recuperar(backup,restaurarTablasCompletas:true).Correcta);
+        Assert.AreEqual("Ana",usuarios.ObtenerPorNombreUsuario("dv_prueba")!.Nombre);
+
+        Sql($"UPDATE dbo.Usuarios SET Apellido=N'Aceptado conscientemente' WHERE IdUsuario={cuenta.IdUsuario}");
+        SesionServicio.ObtenerInstancia().CerrarSesion();
+        var servicio = new IntegridadBLL(integridad,new BitacoraBLL(bitacora));
+        Guid IdBase()
+        {
+            using var c = new SqlConnection(cadena); c.Open();
+            using var cmd = new SqlCommand("SELECT TOP(1) IdBase FROM dbo.IntegridadTabla", c);
+            return (Guid)cmd.ExecuteScalar()!;
+        }
+        Guid referencia = IdBase();
+        Assert.IsTrue(servicio.RecalcularIntegridad().Correcta);
+        Assert.AreEqual(referencia, IdBase(), "El recálculo conserva la identidad de la base y sus respaldos.");
+        Assert.AreEqual("Aceptado conscientemente",usuarios.ObtenerPorNombreUsuario("dv_prueba")!.Apellido);
+        Assert.IsTrue(bitacora.Buscar(null,null,null,"RecalculoIntegridad").Any());
+        Sql("DELETE dbo.IntegridadTabla WHERE Tabla='UsuarioRol'");
+        Assert.IsFalse(integridad.Verificar().Correcta);
+        Assert.ThrowsExactly<InvalidOperationException>(() => integridad.Recuperar(backup),
+            "Sin un DVV, la recuperación parcial debe explicar la limitación sin aceptar datos.");
+        Assert.IsTrue(integridad.Recuperar(backup, true).Correcta, "El respaldo comprobado repone el DVV faltante en recuperación completa.");
+        Sql("DELETE dbo.IntegridadTabla WHERE Tabla='UsuarioRol'");
+        Assert.IsTrue(servicio.RecalcularIntegridad().Correcta,"El recálculo repone un registro DVV faltante.");
+        var noAdmin=new Usuario { IdUsuario=cuenta.IdUsuario,NombreUsuario="dv_prueba" };
+        SesionServicio.ObtenerInstancia().IniciarSesion(noAdmin);
+        try { Assert.ThrowsExactly<UnauthorizedAccessException>(()=>servicio.RecalcularIntegridad()); }
+        finally { SesionServicio.ObtenerInstancia().CerrarSesion(); }
+        string log=Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),"SIGAT","logs","integridad.log");
+        StringAssert.Contains(File.ReadAllText(log),"Recálculo administrativo");
+
+        // El login debe verificar antes de autenticar y no crear una sesión si se alteraron las asignaciones.
+        string? previa=Environment.GetEnvironmentVariable("SIGAT_BASE_PRUEBAS");
+        try
+        {
+            Environment.SetEnvironmentVariable("SIGAT_BASE_PRUEBAS",nombreBase);
+            Sql($"UPDATE dbo.UsuarioRol SET DigitoVerificador=REPLICATE('0',64) WHERE IdUsuario={cuenta.IdUsuario}");
+            Assert.ThrowsExactly<IntegridadException>(()=>new UsuarioBLL().Autenticar("dv_prueba","Inicial123",out _));
+            Assert.IsNull(SesionServicio.ObtenerInstancia().UsuarioActual);
+            Assert.IsTrue(integridad.Recuperar(backup,true).Correcta);
+        }
+        finally { Environment.SetEnvironmentVariable("SIGAT_BASE_PRUEBAS",previa); }
+        Sql("DROP TABLE dbo.IntegridadTabla");
+        Assert.IsFalse(integridad.Verificar().Configurada);
+        Assert.IsTrue(servicio.RecalcularIntegridad().Correcta, "El recálculo administrativo puede crear los controles faltantes.");
+        Assert.AreNotEqual(Guid.Empty, IdBase());
     }
 }

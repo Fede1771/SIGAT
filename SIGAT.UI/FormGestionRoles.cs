@@ -191,6 +191,41 @@ namespace SIGAT.UI
             else throw new InvalidOperationException("Seleccione una asignación directa del rol destino. Los permisos heredados se quitan del rol o familia que los contiene.");
         }
 
+        // Una familia nueva puede ser raíz o hija de otra familia; las hojas y los siete permisos base se conservan.
+        private void CrearFamilia(bool anidada)
+        {
+            PermisoCompuesto padre = null;
+            if (anidada)
+                padre = tvCatalogoGeneral.SelectedNode?.Tag as PermisoCompuesto
+                    ?? throw new InvalidOperationException("Seleccione una familia del catálogo para crear su hija.");
+            using var dialogo = new DlgNombreRol();
+            dialogo.ConfigurarFamilia();
+            if (dialogo.ShowDialog(this) != DialogResult.OK) throw new OperationCanceledException();
+            string nombre = dialogo.NombreRol.Trim();
+            if (nombre.Length == 0 || nombre.Length > 150 || estado.Permisos.Any(p => string.Equals(p.Nombre, nombre, StringComparison.OrdinalIgnoreCase)))
+                throw new InvalidOperationException("Ingrese un nombre de familia único, no vacío y de hasta 150 caracteres.");
+            var nueva = new PermisoCompuesto { Id = estado.Permisos.Max(p => p.Id) + 1, Nombre = nombre };
+            estado.Permisos.Add(nueva);
+            padre?.Agregar(nueva);
+        }
+
+        private void EliminarFamilia()
+        {
+            var familia = tvCatalogoGeneral.SelectedNode?.Tag as PermisoCompuesto
+                ?? throw new InvalidOperationException("Seleccione una familia personalizada del catálogo.");
+            if (familia.Id <= 7) throw new InvalidOperationException("Los permisos base no se pueden eliminar.");
+            if (estado.Roles.Any(r => r.Permisos.Contains(familia)) || estado.Permisos.Any(p => p.ObtenerHijos().Contains(familia)))
+                throw new InvalidOperationException("Quite primero las asignaciones de esta familia a roles y otras familias.");
+            if (MessageBox.Show(this, "¿Eliminar la familia " + familia.Nombre + "? Sus hijos seguirán en el catálogo.",
+                "Eliminar familia", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                throw new OperationCanceledException();
+            estado.Permisos.Remove(familia);
+        }
+
+        private void CrearFamilia_Click(object sender, EventArgs e) => Ejecutar(() => CrearFamilia(false));
+        private void CrearFamiliaAnidada_Click(object sender, EventArgs e) => Ejecutar(() => CrearFamilia(true));
+        private void EliminarFamilia_Click(object sender, EventArgs e) => Ejecutar(EliminarFamilia);
+
         // Las marcas del diálogo representan hijos directos. La familia es compartida: editarla afecta a los roles que la utilizan.
         private void EditarFamilia()
         {
@@ -259,14 +294,13 @@ namespace SIGAT.UI
             layoutRoles.Layout += (_, _) =>
             {
                 if (layoutRoles.Height <= 0 || panelComposicion.Width <= 0) return;
-                int filaMinima = Math.Max(tvCatalogoGeneral.Font.Height + 3, 22);
-                int altoCatalogo = ContarFilasVisibles(tvCatalogoGeneral.Nodes) * filaMinima + 76;
                 int ancho = Math.Max(1, panelComposicion.ClientSize.Width - editorComposicion.Padding.Horizontal);
                 int preferido = editorComposicion.Padding.Vertical + editorComposicion.Controls.Cast<Control>().Sum(control =>
                     control.GetPreferredSize(new Size(Math.Max(1, ancho - control.Margin.Horizontal), 0)).Height
                     + control.Margin.Vertical) + 8;
                 if (editorComposicion.Height != preferido) editorComposicion.Height = preferido;
-                int alto = Math.Min(preferido, Math.Max(160, layoutRoles.Height - altoCatalogo));
+                // Las acciones usan su alto preferido; reservamos un catálogo con scroll para jerarquías que pueden crecer.
+                int alto = Math.Min(preferido, Math.Max(160, layoutRoles.Height - 180));
                 if (Math.Abs(layoutRoles.RowStyles[0].Height - alto) > 1)
                     layoutRoles.RowStyles[0].Height = alto;
                 panelComposicion.AutoScroll = preferido > alto;

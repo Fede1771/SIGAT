@@ -18,12 +18,6 @@ namespace SIGAT.UI
 
             // Después de cargar datos actualizamos los títulos con el idioma de la sesión.
             dgv.DataBindingComplete += Dgv_DataBindingComplete;
-            dgv.CellToolTipTextNeeded += (sender, e) =>
-            {
-                if (e.RowIndex >= 0 && e.ColumnIndex >= 0 && dgv.Columns[e.ColumnIndex].Name == "DigitoVerificador")
-                    e.ToolTipText = dgv.Rows[e.RowIndex].Cells[e.ColumnIndex].Value?.ToString() ?? "";
-            };
-
             this.Load += FrmBitacora_Load;
             this.FormClosed += FrmBitacora_FormClosed;
         }
@@ -61,7 +55,7 @@ namespace SIGAT.UI
 
         private void Dgv_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
         {
-            // Las columnas están en Designer; el DVH muestra el valor almacenado, sin recalcularlo.
+            // Las columnas están en Designer; esta tabla ya no está protegida por DVH/DVV.
             TraducirColumnasVisibles();
         }
 
