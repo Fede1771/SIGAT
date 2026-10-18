@@ -1,101 +1,109 @@
 ﻿# SIGAT
 
-**Sistema de Gestión de Activos Tecnológicos** · Proyecto académico de escritorio
+**Sistema de Gestión de Activos Tecnológicos**
+Proyecto universitario de Ingeniería de Software · Universidad Abierta Interamericana
 
 ![C#](https://img.shields.io/badge/C%23-512BD4?style=flat-square&logo=dotnet&logoColor=white)
 ![.NET 10](https://img.shields.io/badge/.NET-10-512BD4?style=flat-square)
-![Windows Forms](https://img.shields.io/badge/Interfaz-Windows%20Forms-0078D4?style=flat-square)
-![SQL Server](https://img.shields.io/badge/Base%20de%20datos-SQL%20Server-CC2927?style=flat-square)
+![Windows Forms](https://img.shields.io/badge/Windows%20Forms-0078D4?style=flat-square)
+![SQL Server](https://img.shields.io/badge/SQL%20Server-CC2927?style=flat-square)
 
-SIGAT administra cuentas, accesos, idiomas y eventos del sistema mediante una aplicación en C# con Windows Forms y SQL Server. El código está dividido en capas para separar la presentación, las reglas de negocio y la persistencia.
+SIGAT es una aplicación de escritorio desarrollada como proyecto académico para aplicar análisis, diseño orientado a objetos, arquitectura en capas, patrones de diseño y persistencia en SQL Server. Este repositorio contiene el código fuente, las pruebas automatizadas y los scripts de preparación de la base de datos.
+
+## Datos académicos
+
+| Dato | Información |
+|---|---|
+| Universidad | Universidad Abierta Interamericana (UAI) |
+| Facultad | Tecnología Informática |
+| Materia | Ingeniería de Software |
+| Docente | Juan Ignacio Silva |
+| Integrantes | Federico Agustin Burgos y Valentina Nicole Planas Stredel |
+| Comisión | 3-J · turno noche · localización Centro |
+| Período | Segundo cuatrimestre de 2026 |
 
 ## Contenido
 
-- [Estado del proyecto](#estado-del-proyecto)
-- [Funcionalidades](#funcionalidades)
-- [Tecnologías](#tecnologías)
-- [Arquitectura](#arquitectura)
+- [Propósito y alcance](#propósito-y-alcance)
+- [Funcionalidades implementadas](#funcionalidades-implementadas)
+- [Arquitectura del proyecto](#arquitectura-del-proyecto)
 - [Patrones de diseño](#patrones-de-diseño)
-- [Roles iniciales](#roles-iniciales)
-- [Instalación y ejecución](#instalación-y-ejecución)
-- [Actualización de una base existente](#actualización-de-una-base-existente)
-- [Pruebas](#pruebas)
-- [Guía de lectura del código](#guía-de-lectura-del-código)
-- [Pendientes conocidos](#pendientes-conocidos)
+- [Roles y permisos](#roles-y-permisos)
+- [Requisitos e instalación](#requisitos-e-instalación)
+- [Integridad y recuperación](#integridad-y-recuperación)
+- [Pruebas automatizadas](#pruebas-automatizadas)
+- [Recorrido para la demostración](#recorrido-para-la-demostración)
+- [Documentación y trabajo pendiente](#documentación-y-trabajo-pendiente)
 
-## Estado del proyecto
+## Propósito y alcance
 
-Actualmente están implementados los módulos de usuarios, roles y permisos, idiomas, bitácora e integridad y recuperación.
+El propósito general de SIGAT es centralizar la gestión de los activos tecnológicos de una organización: identificar los equipos, conocer su ubicación y responsable, y seguir sus movimientos, estado y mantenimiento durante su ciclo de vida.
 
-Gestión de activos, Movimientos, Mantenimiento y Reportes forman parte del catálogo de permisos. Su presencia en el catálogo no implica que las pantallas y operaciones de esos módulos ya estén implementadas.
+**La versión actual implementa la base administrativa y técnica del sistema:** autenticación, gestión de cuentas, roles y permisos, múltiples idiomas, bitácora e integridad de los datos de seguridad. Los módulos operativos de inventario de activos, movimientos, mantenimiento y reportes quedan como desarrollo futuro. Sus nombres ya forman parte del catálogo de permisos, pero todavía no cuentan con pantallas ni operaciones de negocio.
 
-## Funcionalidades
+El objetivo académico es poder explicar y demostrar cómo una operación atraviesa la interfaz, las reglas de negocio y el acceso a datos, y cómo se aplican los patrones de diseño en ese recorrido.
 
-- Alta y modificación de usuarios, cambio de contraseña, baja lógica y reactivación.
-- Cuentas nuevas sin roles; los accesos se asignan desde la gestión de roles y permisos.
-- Administrador original protegido contra baja, desactivación y retiro de su rol Administrador.
-- Roles personalizados y anidados, con asignaciones persistentes en SQL.
-- Creación y eliminación de familias personalizadas; anidamiento de familias y permisos en varios niveles.
-- Validación de ciclos en las jerarquías de roles y permisos.
-- Idiomas con preferencia por cuenta guardada en SQL; se impide desactivar español, el idioma de la sesión o cualquiera elegido por un usuario registrado, aunque su cuenta esté inactiva.
-- Modos claro y oscuro con preferencia local por usuario.
-- Bitácora con detalle cifrado y consultas por fecha, usuario y actividad.
-- Control SHA-256 de las cuentas (Usuarios) y sus asignaciones de roles (UsuarioRol), con lecturas verificadas y escrituras transaccionales.
-- Creación de respaldos comprobados y recuperación desde un respaldo de la misma base.
-- Recálculo administrativo de DVH/DVV con confirmación y auditoría, aceptando explícitamente el estado actual.
+## Funcionalidades implementadas
 
-Los cambios de roles se aplican al volver a iniciar sesión. El rol Administrador conserva sus componentes originales.
+| Módulo | Alcance actual |
+|---|---|
+| Autenticación | Ingreso mediante usuario y contraseña, rechazo de credenciales incorrectas y cuentas inactivas, sesión compartida y cierre de sesión. |
+| Usuarios | Alta, modificación de datos y contraseña, baja lógica y reactivación. Las cuentas nuevas se crean sin roles. |
+| Roles y permisos | Asignación y retiro de roles a usuarios, edición de componentes de roles y familias, creación de familias compuestas y anidamiento en árboles. Se rechazan ciclos. |
+| Idiomas | Cambio de idioma durante la sesión, preferencia por cuenta, creación y activación de idiomas, edición e importación/exportación de traducciones. |
+| Bitácora | Registro de accesos, cierre de sesión, altas, modificaciones y bajas de usuarios; intento de registro de errores inesperados y auditoría del recálculo de integridad. Consultas combinadas por fecha, usuario y actividad. |
+| Integridad | DVH/DVV de Usuarios y UsuarioRol, verificación antes del acceso, respaldos comprobados, recuperación y recálculo administrativo con confirmación. |
+| Presentación | Interfaz Windows Forms, modos claro y oscuro y formularios compatibles con el diseñador de Visual Studio. |
 
-## Tecnologías
+El administrador original está protegido contra baja, desactivación y retiro de su rol Administrador. Tampoco se permite desactivar español, el idioma activo de la sesión ni un idioma elegido por algún usuario registrado, aunque su cuenta esté inactiva.
 
-- C# y .NET 10.
-- Windows Forms.
-- SQL Server Express 2019 o posterior.
-- Microsoft.Data.SqlClient.
-- MSTest.
+Las traducciones se guardan en SQL por formulario y clave de control. Cuando falta una traducción, se conserva el texto de respaldo de la interfaz.
 
-La aplicación requiere Windows. La configuración actual utiliza la instancia local `.\SQLEXPRESS`, la base `SIGAT` y autenticación de Windows.
+## Arquitectura del proyecto
 
-## Arquitectura
+La solución contiene cinco proyectos de aplicación y un proyecto de pruebas:
 
 | Proyecto | Responsabilidad |
 |---|---|
-| SIGAT.BE | Entidades, relaciones e informes utilizados por las demás capas. |
-| SIGAT.BLL | Reglas de negocio, validaciones y coordinación de operaciones. |
-| SIGAT.DAL | Consultas SQL, transacciones y persistencia. |
-| SIGAT.SERVICIOS | Sesión, administración del idioma, hashes y cifrado. |
-| SIGAT.UI | Formularios, navegación, presentación y temas visuales. |
-| SIGAT.Tests | Pruebas de lógica, interfaz e integración con SQL. |
+| [SIGAT.UI](SIGAT.UI) | Formularios, navegación, eventos, traducción de controles y temas visuales. |
+| [SIGAT.BLL](SIGAT.BLL) | Reglas de negocio, validaciones y coordinación de las operaciones. |
+| [SIGAT.DAL](SIGAT.DAL) | Consultas, transacciones y persistencia en SQL Server. |
+| [SIGAT.BE](SIGAT.BE) | Entidades, relaciones, contratos de auditoría e informes de integridad. |
+| [SIGAT.SERVICIOS](SIGAT.SERVICIOS) | Sesión, administración del idioma, hashes, cifrado y funciones compartidas. |
+| [SIGAT.Tests](SIGAT.Tests) | Pruebas de lógica, interfaz, diseñador e integración con SQL Server. |
 
-El recorrido habitual de una operación es **UI → BLL → DAL**. Las entidades transportan los datos y los servicios aportan funciones compartidas.
+El recorrido habitual es **UI → BLL → DAL**. Las capas utilizan BE para representar datos y relaciones, y SERVICIOS para las funciones transversales. Las capas inferiores no dependen de la interfaz.
 
 ```text
 SIGAT/
-├── SIGAT.slnx       Solución que se abre en Visual Studio
-├── SIGAT.UI/        Formularios y archivos del diseñador
-├── SIGAT.BLL/       Reglas de negocio
-├── SIGAT.DAL/       Acceso a SQL Server
-├── SIGAT.BE/        Entidades del dominio
-├── SIGAT.SERVICIOS/ Servicios compartidos
-├── SIGAT.Tests/     Pruebas automatizadas
-└── Querys/          Instalación, actualización y mantenimiento SQL
+├── SIGAT.slnx          Solución para Visual Studio
+├── SIGAT.UI/           Presentación
+├── SIGAT.BLL/          Lógica de negocio
+├── SIGAT.DAL/          Acceso a datos
+├── SIGAT.BE/           Entidades y contratos
+├── SIGAT.SERVICIOS/    Servicios compartidos
+├── SIGAT.Tests/        Pruebas automatizadas
+├── Querys/             Instalación y mantenimiento SQL
+└── SIGAT_Modelo.EAP    Modelo de Enterprise Architect
 ```
 
-En los formularios, `*.Designer.cs` contiene la creación y distribución de los controles; el archivo `.cs` contiene eventos, carga de datos y comportamiento. El modo de diseño evita ejecutar operaciones de sesión o consultas SQL al abrir una pantalla en el diseñador.
+En cada formulario, `*.Designer.cs` contiene la creación y distribución de los controles; el archivo `.cs` contiene el comportamiento, los eventos y la carga de datos. [EntornoDiseno.cs](SIGAT.UI/EntornoDiseno.cs) evita ejecutar la lógica de sesión y consultas de los constructores al abrir los formularios en el diseñador.
 
 ## Patrones de diseño
 
-- **Composite:** los permisos simples son hojas y los compuestos agrupan otros permisos.
-- **Observer:** los formularios suscriptos actualizan sus textos al cambiar el idioma.
-- **Singleton:** mantiene una instancia de la sesión y del administrador de idiomas por proceso.
-- **Factory Method:** las fábricas construyen los distintos eventos de bitácora.
-- **Mapper:** adapta los datos del evento a las columnas persistidas en la bitácora.
+| Patrón | Aplicación en SIGAT | Código para estudiar |
+|---|---|---|
+| **Composite** | Un permiso simple es una hoja; una familia agrupa permisos simples o compuestos. Los roles reúnen permisos y pueden incluir otros roles. | [Permiso.cs](SIGAT.BE/Permiso.cs), [Rol.cs](SIGAT.BE/Rol.cs), [FormGestionRoles.cs](SIGAT.UI/FormGestionRoles.cs). |
+| **Observer** | Al cambiar el idioma, el administrador de idiomas notifica a los formularios suscriptos para actualizar sus textos. | [IdiomaManager.cs](SIGAT.SERVICIOS/Idiomas/IdiomaManager.cs), [IIdiomaObserver.cs](SIGAT.SERVICIOS/Idiomas/IIdiomaObserver.cs), [TraductorFormularios.cs](SIGAT.UI/TraductorFormularios.cs). |
+| **Singleton** | La aplicación comparte una instancia de la sesión y una del administrador de idiomas por proceso. | [SesionServicio.cs](SIGAT.SERVICIOS/SesionServicio.cs), [IdiomaManager.cs](SIGAT.SERVICIOS/Idiomas/IdiomaManager.cs). |
+| **Factory Method** | Las fábricas concretas definen los eventos de login y gestión de usuarios; la fábrica base completa sus datos comunes. | [BitacoraFactory.cs](SIGAT.BLL/Fabricas/BitacoraFactory.cs), [FabricasConcretas.cs](SIGAT.BLL/Fabricas/FabricasConcretas.cs). |
+| **Mapper** | Adapta los datos del evento al formato persistido en la bitácora. | [BitacoraMapper.cs](SIGAT.BLL/BitacoraMapper.cs). |
 
-Los roles reúnen permisos y pueden heredar otros roles. La jerarquía de permisos usa `Permiso` como componente común, `PermisoSimple` como hoja y `PermisoCompuesto` como agrupación. Ambas jerarquías rechazan ciclos para evitar recorridos infinitos.
+## Roles y permisos
 
-## Roles iniciales
+El catálogo inicial conserva cinco roles y siete permisos base:
 
-| Rol | Componentes iniciales |
+| Rol | Permisos directos iniciales |
 |---|---|
 | Administrador | Ver bitácora, Gestión de activos, Movimientos, Mantenimiento, Reportes y Administración del sistema. |
 | Responsable de Inventario | Gestión de activos, Movimientos y Reportes. |
@@ -103,21 +111,30 @@ Los roles reúnen permisos y pueden heredar otros roles. La jerarquía de permis
 | Mesa de Ayuda | Movimientos y Consultar inventario. |
 | Auditor | Ver bitácora, Consultar inventario y Reportes. |
 
-Ver bitácora y Consultar inventario son permisos simples. Los otros cinco componentes base son permisos compuestos. El catálogo inicial conserva las familias originales sin agregar subfamilias ni permisos heredados de ejemplo. Los nuevos permisos del catálogo deben ser compuestos; los siete permisos base conservan nombre, identidad y tipo.
+Ver bitácora y Consultar inventario son permisos simples; los otros cinco son compuestos. Las familias iniciales no incorporan subfamilias de ejemplo. Es posible crear familias personalizadas y editar sus hijos respetando la validación de ciclos.
 
-La tabla describe la configuración inicial. Las asignaciones y las familias editables se guardan en SQL; no se restablecen automáticamente al cerrar sesión. El administrador original y la composición del rol Administrador están protegidos.
+Las asignaciones se conservan en SQL. La composición del rol Administrador está protegida. Los cambios se reflejan en los permisos de una cuenta al volver a iniciar sesión.
 
-## Instalación y ejecución
+## Requisitos e instalación
 
-1. Instalar el SDK de .NET 10 y SQL Server Express 2019 o posterior, con instancia `SQLEXPRESS`.
-2. Conectarse a `.\SQLEXPRESS` con una cuenta autorizada para crear la base.
-3. Abrir [01_Instalacion_Completa.sql](Querys/01_Instalacion_Completa.sql), configurar `@ClaveAdmin` y ejecutar el archivo completo. Se utiliza para una instalación nueva.
-4. Ejecutar [04_Verificacion_Integridad.sql](Querys/04_Verificacion_Integridad.sql).
-5. Abrir `SIGAT.slnx` en una versión de Visual Studio compatible con .NET 10 y establecer **SIGAT.UI** como proyecto de inicio.
-6. Al primer inicio, preparar la referencia de integridad desde la pantalla de recuperación. Esta operación requiere permisos administrativos de SQL y genera respaldos.
-7. Ingresar con `admin` y la contraseña configurada en el instalador.
+Se necesita Windows, el SDK de **.NET 10**, SQL Server **2019 o posterior** y un cliente SQL como SQL Server Management Studio. Para trabajar con el diseñador se requiere Visual Studio con soporte para .NET 10 y desarrollo de escritorio Windows Forms.
 
-También se puede compilar y ejecutar desde la carpeta principal:
+La conexión definida en [ConexionBD.cs](SIGAT.DAL/ConexionBD.cs) utiliza:
+
+| Parámetro | Valor |
+|---|---|
+| Servidor | `.\SQLEXPRESS` |
+| Base | `SIGAT` |
+| Autenticación | Windows |
+
+### Primera instalación
+
+1. Instalar SQL Server Express con instancia `SQLEXPRESS` y conectarse con una cuenta autorizada para crear bases.
+2. Abrir [01_Instalacion_Completa.sql](Querys/01_Instalacion_Completa.sql), cambiar `@ClaveAdmin` y ejecutar **todo el archivo**. El instalador se detiene si la base ya existe.
+3. Ejecutar [04_Verificacion_Integridad.sql](Querys/04_Verificacion_Integridad.sql) para revisar la estructura y configuración.
+4. Abrir [SIGAT.slnx](SIGAT.slnx) y establecer **SIGAT.UI** como proyecto de inicio, o ejecutar los comandos siguientes desde la carpeta del repositorio.
+5. En la primera apertura, pulsar **Preparar control inicial** en Integridad y recuperación. Esta operación requiere permisos administrativos de SQL y genera respaldos.
+6. Cuando se indique integridad correcta, continuar e ingresar con `admin` y la contraseña elegida en `@ClaveAdmin`.
 
 ```powershell
 dotnet restore SIGAT.slnx
@@ -125,63 +142,82 @@ dotnet build SIGAT.slnx
 dotnet run --project SIGAT.UI/SIGAT.UI.csproj
 ```
 
-## Actualización de una base existente
+### Base existente
 
-Cerrar la aplicación, crear un respaldo con `Querys/05_Backup.sql` y ejecutar `Querys/02_Actualizar_Base_Existente.sql`. Al pasar del control anterior (Bitacora/Traduccion) al nuevo (Usuarios/UsuarioRol), abrir SIGAT, **preparar la primera referencia** y crear un **respaldo comprobado nuevo**. Los respaldos anteriores al cambio de esquema no sirven para la recuperación selectiva nueva.
+Cerrar SIGAT, crear un respaldo con [05_Backup.sql](Querys/05_Backup.sql) y ejecutar completo [02_Actualizar_Base_Existente.sql](Querys/02_Actualizar_Base_Existente.sql). Después, revisar la base con el script 04.
 
-Ver la [guía de integridad](Querys/GUIA_INTEGRIDAD.md) para los pasos de preparación, prueba y recuperación.
+Si se actualiza desde el control anterior de Bitacora/Traduccion, preparar la nueva referencia de Usuarios/UsuarioRol desde SIGAT y generar un **respaldo comprobado nuevo**. Los backups anteriores a ese cambio de esquema se conservan como respaldo histórico completo, no como fuente de recuperación selectiva del esquema nuevo.
 
-Consultar [las instrucciones de SQL](Querys/README.md) para los requisitos, verificaciones y operaciones de mantenimiento. Los scripts de `Querys/Historico` se conservan como referencia y no son pasos de instalación.
+Las instrucciones ampliadas están en [Querys/README.md](Querys/README.md). Los archivos de `Querys/Historico` son referencias de versiones anteriores y no constituyen pasos adicionales de instalación.
 
-## Pruebas
+## Integridad y recuperación
 
-Para ejecutar las pruebas que no necesitan una conexión a SQL:
+El sistema utiliza mecanismos con objetivos diferentes:
+
+| Mecanismo | Función |
+|---|---|
+| Hash SHA-256 de contraseña | Comparar la contraseña ingresada con su huella almacenada. |
+| Cifrado AES | Guardar el detalle de la bitácora de forma reversible para poder consultarlo. |
+| DVH | Comprobar los campos de cada cuenta o asignación de rol. |
+| DVV | Comprobar el conjunto ordenado de registros y su cantidad, usando la referencia de `IntegridadTabla`. |
+
+**Los DVH/DVV actuales protegen exclusivamente Usuarios y UsuarioRol.** Las escrituras autorizadas de esas tablas actualizan datos y verificadores en una misma transacción Serializable. La bitácora y las traducciones no participan de ese control.
+
+- **Crear respaldo comprobado:** genera un `.bak`, lo restaura en una base auxiliar y verifica sus datos protegidos.
+- **Elegir respaldo:** selecciona la ruta del archivo; la recuperación se inicia con el botón Recuperar.
+- **Recuperar:** utiliza un respaldo comprobado de la misma base para reponer datos. La opción de restauración completa de seguridad repone Usuarios y UsuarioRol y descarta sus cambios posteriores al respaldo.
+- **Recalcular dígitos (asumir pérdida):** acepta expresamente los registros actuales, incluidas posibles alteraciones o pérdidas. Recalcula verificadores y deja auditoría; no recupera información anterior.
+
+El archivo debe ser accesible para SQL Server en el equipo donde se ejecuta el servicio. El log externo de integridad se encuentra en `%LOCALAPPDATA%\SIGAT\logs\integridad.log`.
+
+Ver [Guía de integridad](Querys/GUIA_INTEGRIDAD.md) para preparar la referencia y demostrar detección y recuperación en una copia de ensayo.
+
+## Pruebas automatizadas
+
+Las pruebas utilizan **MSTest** y cubren Composite, sesión, idiomas, cifrado, presentación, diseñador y persistencia.
+
+Para ejecutar las pruebas que no requieren SQL:
 
 ```powershell
 dotnet test SIGAT.Tests/SIGAT.Tests.csproj --filter "TestCategory!=SQLIntegration"
 ```
 
-Las pruebas de integración requieren bases exclusivas con el prefijo `SIGAT_Roles_Pruebas_` y las variables de conexión correspondientes:
+Las pruebas `SQLIntegration` requieren bases exclusivas con prefijo `SIGAT_Roles_Pruebas_` y conexiones configuradas en las siguientes variables de entorno:
 
-- `SIGAT_ROLES_TEST_CONNECTION`: roles y usuarios.
-- `SIGAT_IDIOMA_TEST_CONNECTION`: preferencias de idioma.
-- `SIGAT_INTEGRIDAD_TEST_CONNECTION`: integridad, respaldos y recuperación.
-
-Estas pruebas pueden modificar datos y restaurar bases auxiliares. Deben ejecutarse sobre bases de ensayo preparadas para cada conjunto de pruebas.
-
-## Guía de lectura del código
-
-Estos recorridos permiten explicar una funcionalidad desde la pantalla hasta su almacenamiento:
-
-| Tema | Archivos y recorrido para estudiar |
+| Variable | Conjunto de pruebas |
 |---|---|
-| Inicio de sesión | [`Program.cs`](SIGAT.UI/Program.cs) verifica la integridad; [`FrmLogin.cs`](SIGAT.UI/FrmLogin.cs) solicita autenticación a [`UsuarioBLL.cs`](SIGAT.BLL/UsuarioBLL.cs), que consulta la cuenta, carga roles e inicia la sesión. |
-| Usuarios | [`FrmGestionUsuarios.cs`](SIGAT.UI/FrmGestionUsuarios.cs) reúne los datos; [`UsuarioBLL.cs`](SIGAT.BLL/UsuarioBLL.cs) valida y calcula el hash de la clave; [`UsuarioDAL.cs`](SIGAT.DAL/UsuarioDAL.cs) guarda o desactiva la cuenta. |
-| Roles y Composite | [`Permiso.cs`](SIGAT.BE/Permiso.cs), [`Rol.cs`](SIGAT.BE/Rol.cs) y [`Usuario.cs`](SIGAT.BE/Usuario.cs) resuelven los permisos efectivos. [`RolesBLL.cs`](SIGAT.BLL/RolesBLL.cs) valida y [`RolesDAL.cs`](SIGAT.DAL/RolesDAL.cs) persiste las relaciones en una transacción. |
-| Idiomas y Observer | [`IdiomaBLL.cs`](SIGAT.BLL/IdiomaBLL.cs) carga las traducciones; [`IdiomaManager.cs`](SIGAT.SERVICIOS/Idiomas/IdiomaManager.cs) notifica a los formularios; [`TraductorFormularios.cs`](SIGAT.UI/TraductorFormularios.cs) actualiza los textos. |
-| Bitácora | [`BitacoraFactory.cs`](SIGAT.BLL/Fabricas/BitacoraFactory.cs) construye eventos; [`BitacoraMapper.cs`](SIGAT.BLL/BitacoraMapper.cs) adapta sus datos; [`BitacoraDAL.cs`](SIGAT.DAL/BitacoraDAL.cs) cifra el detalle y guarda el evento independientemente del control de cuentas. |
-| DVH y DVV | [`VerificadorSHA256.cs`](SIGAT.SERVICIOS/VerificadorSHA256.cs) calcula las huellas; [`IntegridadDAL.cs`](SIGAT.DAL/IntegridadDAL.cs) compara filas y conjuntos con los valores guardados. [`FrmIntegridad.cs`](SIGAT.UI/FrmIntegridad.cs) presenta los problemas y las acciones de recuperación. |
-| Temas visuales | [`TemaVisual.Modos.cs`](SIGAT.UI/TemaVisual.Modos.cs) conserva los colores originales, aplica el tema y guarda la preferencia local por cuenta. |
+| `SIGAT_ROLES_TEST_CONNECTION` | Roles, permisos y gestión de usuarios. |
+| `SIGAT_IDIOMA_TEST_CONNECTION` | Preferencias de idioma y concurrencia con la desactivación. |
+| `SIGAT_INTEGRIDAD_TEST_CONNECTION` | Inicialización, alteraciones, respaldos, recuperación y recálculo. |
 
-Para la defensa, conviene explicar **qué recibe cada capa, qué valida y qué devuelve**, y demostrar el resultado: asignar un rol, cerrar sesión y comprobar los accesos al volver a ingresar. Los comentarios señalan las decisiones del código; las pruebas comprueban comportamientos esperados.
+Deben prepararse según las condiciones de cada prueba: algunas esperan cuentas de ensayo determinadas y la prueba de integridad comienza sin referencia inicializada. Estas pruebas modifican datos y generan respaldos; no se ejecutan sobre la base habitual.
 
-### Datos y verificadores
+Una vez configuradas las bases de ensayo y las variables:
 
-- **Hash de contraseña:** permite comparar la clave ingresada con su huella guardada; no permite recuperar la contraseña original.
-- **Cifrado AES:** permite recuperar el detalle de los eventos para consultarlos en la bitácora.
-- **DVH:** comprueba los campos de un registro y se almacena en su columna `DigitoVerificador`.
-- **DVV:** comprueba el conjunto ordenado de registros y se almacena por separado en `IntegridadTabla`.
+```powershell
+dotnet test SIGAT.Tests/SIGAT.Tests.csproj --filter "TestCategory=SQLIntegration"
+```
 
-El alcance actual de DVH y DVV es **Usuarios y UsuarioRol**. El DVH de Usuarios se muestra como dato de solo lectura en su grilla. La verificación precede al login y a las lecturas críticas. Cada escritura autorizada actualiza los datos y sus verificadores dentro de una misma transacción Serializable. Bitacora conserva AES, pero ni ella ni Traduccion participan de DVH/DVV.
+## Recorrido para la demostración
 
-**Recuperar** repone datos originales desde un `.bak` comprobado. **Recalcular dígitos (asumir pérdida)** acepta los registros actuales, incluso si fueron alterados o eliminados: no recupera información. Exige autorización administrativa y registra la aceptación en Bitacora y en `%LOCALAPPDATA%\SIGAT\logs\integridad.log`. No se ejecuta automáticamente al verificar, iniciar sesión o guardar datos.
+1. **Usuarios y acceso:** crear una cuenta sin roles y explicar la baja lógica y la protección del administrador original.
+2. **Composite:** asignar un rol a la cuenta, recorrer su árbol de permisos y demostrar el rechazo de un ciclo al editar familias.
+3. **Observer:** cambiar el idioma y observar la actualización de las pantallas abiertas; volver a ingresar para comprobar la preferencia de la cuenta.
+4. **Bitácora:** consultar los eventos de acceso y gestión de usuarios mediante filtros combinados.
+5. **Integridad:** en una copia de ensayo con respaldo previo, modificar externamente una cuenta, verificar la detección y recuperar el dato original.
 
-## Pendientes conocidos
+Para explicar el código, partir de [Program.cs](SIGAT.UI/Program.cs), continuar con el formulario del módulo y seguir la llamada a su BLL y DAL. En cada recorrido, identificar qué valida cada capa y dónde se confirma la transacción.
 
-- Unificar las operaciones de usuarios y su registro de bitácora para evitar guardados parciales si falla la auditoría.
-- Completar las validaciones de autorización de usuarios e idiomas en la capa de negocio.
-- Hacer atómica la creación de idiomas y controles con sus traducciones.
-- Ajustar el límite superior del filtro de fechas de bitácora al redondeo de SQL datetime.
+## Documentación y trabajo pendiente
 
-El control de integridad actual cubre Usuarios y UsuarioRol. SHA-256 se utiliza para verificadores y hashes de contraseñas; el cifrado AES del detalle de bitácora cumple una función diferente.
+La carpeta de entrega académica reúne las especificaciones de casos de uso y los diagramas de arquitectura, clases, secuencia y datos. Se presenta junto con el proyecto. El repositorio incluye el [modelo de Enterprise Architect](SIGAT_Modelo.EAP), la [guía del diseñador](GUIA_DISENADOR.txt) y las guías SQL enlazadas anteriormente.
 
+Los modelos existentes requieren una revisión de correspondencia con la versión actual: deben reflejar roles y familias, Observer y el alcance vigente de DVH/DVV. La documentación de una versión anterior no sustituye el comportamiento implementado en el código.
+
+Los principales pendientes de la entrega final son:
+
+- **T06b — Control de cambios:** conservar versiones de una entidad, identificar quién y cuándo la modificó, consultar sus valores históricos y recomponer un estado anterior. La bitácora actual registra eventos, pero no implementa ese historial de versiones.
+- **G06 — Diagramas de clases:** integrar los módulos implementados en un diagrama por capa y separar los aspectos técnicos y de negocio.
+- **G07 — Modelo de datos:** actualizar tablas, claves y relaciones conforme al esquema final, incorporando la estructura de T06b cuando se implemente.
+- **Auditoría y consistencia:** ampliar la cobertura de eventos y coordinar el guardado de operaciones con su auditoría; completar las autorizaciones en negocio y las transacciones de creación e importación de idiomas.
+- **Alcance de negocio:** desarrollar inventario de activos, asignaciones, movimientos, mantenimiento y reportes según el propósito general de SIGAT.
