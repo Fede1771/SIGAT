@@ -1,0 +1,94 @@
+erDiagram
+    AdministradorOriginal {
+        int Id PK
+        int IdUsuario FK
+    }
+    Bitacora {
+        int IdBitacora PK
+        datetime Fecha
+        varchar Usuario
+        varchar Actividad
+        nvarchar InformacionAsociada
+        nvarchar DigitoVerificador
+    }
+    Control {
+        int Id PK
+        varchar Control
+        varchar Form
+    }
+    Idioma {
+        int Id PK
+        varchar Nombre
+        varchar Codigo
+        nvarchar NombreNativo
+        bit Activo
+    }
+    IntegridadTabla {
+        nvarchar Tabla PK
+        char HashVertical
+        bigint Cantidad
+        uniqueidentifier IdBase
+        int Version
+    }
+    Permiso {
+        int Id PK
+        nvarchar Nombre
+        bit EsCompuesto
+    }
+    PermisoHijo {
+        int IdPadre PK,FK
+        int IdHijo PK,FK
+    }
+    Rol {
+        int Id PK
+        nvarchar Nombre
+    }
+    RolHijo {
+        int IdPadre PK,FK
+        int IdHijo PK,FK
+    }
+    RolPermiso {
+        int IdRol PK,FK
+        int IdPermiso PK,FK
+    }
+    SeguridadVersion {
+        int Id PK
+        bigint Version
+        int Esquema
+    }
+    Traduccion {
+        int Id_Idioma PK,FK
+        int Id_Control PK,FK
+        nvarchar Texto
+        char DigitoVerificador
+        varchar Estado
+    }
+    UsuarioIdioma {
+        int IdUsuario PK,FK
+        int IdIdioma FK
+    }
+    UsuarioRol {
+        int IdUsuario PK,FK
+        int IdRol PK,FK
+    }
+    Usuarios {
+        int IdUsuario PK
+        varchar NombreUsuario
+        varchar Password
+        varchar Nombre
+        varchar Apellido
+        bit Activo
+    }
+    Usuarios ||--o| AdministradorOriginal : "IdUsuario → IdUsuario"
+    Permiso ||--o{ PermisoHijo : "IdHijo → Id"
+    Permiso ||--o{ PermisoHijo : "IdPadre → Id"
+    Rol ||--o{ RolHijo : "IdHijo → Id"
+    Rol ||--o{ RolHijo : "IdPadre → Id"
+    Permiso ||--o{ RolPermiso : "IdPermiso → Id"
+    Rol ||--o{ RolPermiso : "IdRol → Id"
+    Rol ||--o{ UsuarioRol : "IdRol → Id"
+    Usuarios ||--o{ UsuarioRol : "IdUsuario → IdUsuario"
+    Control ||--o{ Traduccion : "Id_Control → Id"
+    Idioma ||--o{ Traduccion : "Id_Idioma → Id"
+    Idioma ||--o{ UsuarioIdioma : "IdIdioma → Id"
+    Usuarios ||--o| UsuarioIdioma : "IdUsuario → IdUsuario"

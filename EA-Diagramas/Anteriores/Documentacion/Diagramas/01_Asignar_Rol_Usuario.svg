@@ -1,0 +1,256 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2460" height="4806" viewBox="0 0 2460 4806">
+<rect width="100%" height="100%" fill="white"/>
+<line x1="150.0" y1="235" x2="150.0" y2="4774" stroke="#aeb6bf" stroke-dasharray="6 5"/>
+<line x1="420.0" y1="235" x2="420.0" y2="4774" stroke="#aeb6bf" stroke-dasharray="6 5"/>
+<line x1="690.0" y1="235" x2="690.0" y2="4774" stroke="#aeb6bf" stroke-dasharray="6 5"/>
+<line x1="960.0" y1="235" x2="960.0" y2="4774" stroke="#aeb6bf" stroke-dasharray="6 5"/>
+<line x1="1230.0" y1="235" x2="1230.0" y2="4774" stroke="#aeb6bf" stroke-dasharray="6 5"/>
+<line x1="1500.0" y1="235" x2="1500.0" y2="4774" stroke="#aeb6bf" stroke-dasharray="6 5"/>
+<line x1="1770.0" y1="235" x2="1770.0" y2="4774" stroke="#aeb6bf" stroke-dasharray="6 5"/>
+<line x1="2040.0" y1="235" x2="2040.0" y2="4774" stroke="#aeb6bf" stroke-dasharray="6 5"/>
+<line x1="2310.0" y1="235" x2="2310.0" y2="4774" stroke="#aeb6bf" stroke-dasharray="6 5"/>
+<text x="1230.0" y="47" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="34" font-weight="bold">Asignar rol a usuario — SIGAT</text>
+<text x="1230.0" y="97" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">Diagrama de secuencia · correspondencia con el código actual</text>
+<circle cx="150.0" cy="135" r="10" fill="#dae8fc" stroke="#8ab2e2"/>
+<line x1="150.0" y1="145" x2="150.0" y2="173" stroke="#8ab2e2" stroke-width="2"/>
+<line x1="134.0" y1="154" x2="166.0" y2="154" stroke="#8ab2e2" stroke-width="2"/>
+<line x1="150.0" y1="173" x2="136.0" y2="190" stroke="#8ab2e2" stroke-width="2"/>
+<line x1="150.0" y1="173" x2="164.0" y2="190" stroke="#8ab2e2" stroke-width="2"/>
+<text x="150.0" y="218" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">Administrador</text>
+<rect x="318.0" y="125" width="204" height="82" fill="#dae8fc" stroke="#8ab2e2" stroke-width="2"/>
+<text x="420.0" y="158" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">form:</text>
+<text x="420.0" y="188" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">FormGestionRoles</text>
+<rect x="588.0" y="125" width="204" height="82" fill="#dae8fc" stroke="#8ab2e2" stroke-width="2"/>
+<text x="690.0" y="158" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">destino:</text>
+<text x="690.0" y="188" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">Usuario</text>
+<rect x="858.0" y="125" width="204" height="82" fill="#dae8fc" stroke="#8ab2e2" stroke-width="2"/>
+<text x="960.0" y="158" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">rolesBLL:</text>
+<text x="960.0" y="188" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">RolesBLL</text>
+<rect x="1128.0" y="125" width="204" height="82" fill="#dae8fc" stroke="#8ab2e2" stroke-width="2"/>
+<text x="1230.0" y="158" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">rolesDAL:</text>
+<text x="1230.0" y="188" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">RolesDAL</text>
+<rect x="1398.0" y="125" width="204" height="82" fill="#dae8fc" stroke="#8ab2e2" stroke-width="2"/>
+<text x="1500.0" y="158" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">sesion:</text>
+<text x="1500.0" y="188" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">SesionServicio</text>
+<rect x="1668.0" y="125" width="204" height="82" fill="#dae8fc" stroke="#8ab2e2" stroke-width="2"/>
+<text x="1770.0" y="158" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">MatrizRoles</text>
+<text x="1770.0" y="188" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">«static»</text>
+<rect x="1938.0" y="125" width="204" height="82" fill="#dae8fc" stroke="#8ab2e2" stroke-width="2"/>
+<text x="2040.0" y="158" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">rol:</text>
+<text x="2040.0" y="188" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">Rol</text>
+<rect x="2208.0" y="125" width="204" height="82" fill="#dae8fc" stroke="#8ab2e2" stroke-width="2"/>
+<text x="2310.0" y="158" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">permiso:</text>
+<text x="2310.0" y="188" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">Permiso</text>
+<rect x="150" y="245" width="2230" height="90" fill="#fff9e8" stroke="#e6ae19" stroke-width="2"/>
+<text x="1265.0" y="280" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">Precondición: sesión iniciada y EstadoRoles cargado.</text>
+<text x="1265.0" y="310" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">Las selecciones son eventos de UI, no métodos SeleccionarUsuario / SeleccionarRol.</text>
+<text x="420" y="376" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22">1. Seleccionar usuario (ComboBox)</text>
+<line x1="150.0" y1="397" x2="420.0" y2="397" stroke="#757f8a" stroke-width="2"/>
+<polygon points="420.0,397 408.0,391 408.0,403" fill="#757f8a"/>
+<text x="590.0" y="446" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22">2. RefrescarUsuario()</text>
+<line x1="420.0" y1="467" x2="485.0" y2="467" stroke="#757f8a" stroke-width="2"/>
+<line x1="485.0" y1="467" x2="485.0" y2="487" stroke="#757f8a" stroke-width="2"/>
+<line x1="485.0" y1="487" x2="420.0" y2="487" stroke="#757f8a" stroke-width="2"/>
+<polygon points="420.0,487 432.0,481 432.0,493" fill="#757f8a"/>
+<text x="420" y="536" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22">3. Seleccionar rol (TreeView.AfterSelect)</text>
+<line x1="150.0" y1="557" x2="420.0" y2="557" stroke="#757f8a" stroke-width="2"/>
+<polygon points="420.0,557 408.0,551 408.0,563" fill="#757f8a"/>
+<rect x="150" y="583" width="2230" height="60" fill="#fff9e8" stroke="#e6ae19" stroke-width="2"/>
+<text x="1265.0" y="618" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">AfterSelect guarda e.Node.Tag en origenUsuario.</text>
+<text x="420" y="684" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22">4. Pulsar Asignar rol (Button.Click)</text>
+<line x1="150.0" y1="705" x2="420.0" y2="705" stroke="#757f8a" stroke-width="2"/>
+<polygon points="420.0,705 408.0,699 408.0,711" fill="#757f8a"/>
+<text x="590.0" y="754" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22">5. Ejecutar(AsignarAUsuario)</text>
+<line x1="420.0" y1="775" x2="485.0" y2="775" stroke="#757f8a" stroke-width="2"/>
+<line x1="485.0" y1="775" x2="485.0" y2="795" stroke="#757f8a" stroke-width="2"/>
+<line x1="485.0" y1="795" x2="420.0" y2="795" stroke="#757f8a" stroke-width="2"/>
+<polygon points="420.0,795 432.0,789 432.0,801" fill="#757f8a"/>
+<text x="590.0" y="844" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22">6. AsignarAUsuario()</text>
+<line x1="420.0" y1="865" x2="485.0" y2="865" stroke="#757f8a" stroke-width="2"/>
+<line x1="485.0" y1="865" x2="485.0" y2="885" stroke="#757f8a" stroke-width="2"/>
+<line x1="485.0" y1="885" x2="420.0" y2="885" stroke="#757f8a" stroke-width="2"/>
+<polygon points="420.0,885 432.0,879 432.0,891" fill="#757f8a"/>
+<rect x="38" y="911" width="80" height="32" fill="#fff4cf" stroke="#e6ae19" stroke-width="2"/>
+<text x="78" y="935" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22" font-weight="bold">alt</text>
+<text x="1231.5" y="937" text-anchor="middle" fill="#805b00" font-family="Segoe UI, sans-serif" font-size="20">[origenUsuario no es Rol o no hay usuario seleccionado]</text>
+<rect x="150" y="966" width="2230" height="60" fill="#fff9e8" stroke="#e6ae19" stroke-width="2"/>
+<text x="1265.0" y="1001" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">AsignarAUsuario o UsuarioSeleccionado lanza InvalidOperationException.</text>
+<rect x="150" y="1044" width="2230" height="60" fill="white" stroke="#e6ae19" stroke-width="2"/>
+<text x="180" y="1071" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22" font-weight="bold">ref</text>
+<text x="1265.0" y="1079" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">E — Manejo de error y recarga</text>
+<line x1="38" y1="1122" x2="2425" y2="1122" stroke="#e6ae19" stroke-width="2" stroke-dasharray="5 5"/>
+<text x="1231.5" y="1153" text-anchor="middle" fill="#805b00" font-family="Segoe UI, sans-serif" font-size="20">[selección válida]</text>
+<text x="590.0" y="1210" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22">7. UsuarioSeleccionado()</text>
+<line x1="420.0" y1="1231" x2="485.0" y2="1231" stroke="#757f8a" stroke-width="2"/>
+<line x1="485.0" y1="1231" x2="485.0" y2="1251" stroke="#757f8a" stroke-width="2"/>
+<line x1="485.0" y1="1251" x2="420.0" y2="1251" stroke="#757f8a" stroke-width="2"/>
+<polygon points="420.0,1251 432.0,1245 432.0,1257" fill="#757f8a"/>
+<text x="555.0" y="1300" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22">8. AsignarRol(rol)</text>
+<line x1="420.0" y1="1321" x2="690.0" y2="1321" stroke="#757f8a" stroke-width="2"/>
+<polygon points="690.0,1321 678.0,1315 678.0,1327" fill="#757f8a"/>
+<text x="555.0" y="1370" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22">9. retorno void</text>
+<line x1="690.0" y1="1391" x2="420.0" y2="1391" stroke="#757f8a" stroke-width="2" stroke-dasharray="5 5"/>
+<polygon points="420.0,1391 432.0,1385 432.0,1397" fill="#757f8a"/>
+<rect x="150" y="1417" width="2230" height="60" fill="#fff9e8" stroke="#e6ae19" stroke-width="2"/>
+<text x="1265.0" y="1452" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">Asignación en memoria. Si ya existe la misma instancia de rol, no se duplica.</text>
+<text x="690.0" y="1518" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22">10. Guardar(estado)</text>
+<line x1="420.0" y1="1539" x2="960.0" y2="1539" stroke="#757f8a" stroke-width="2"/>
+<polygon points="960.0,1539 948.0,1533 948.0,1545" fill="#757f8a"/>
+<text x="1095.0" y="1588" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22">11. Cargar()</text>
+<line x1="960.0" y1="1609" x2="1230.0" y2="1609" stroke="#757f8a" stroke-width="2"/>
+<polygon points="1230.0,1609 1218.0,1603 1218.0,1615" fill="#757f8a"/>
+<rect x="56" y="1635" width="80" height="32" fill="#fff4cf" stroke="#e6ae19" stroke-width="2"/>
+<text x="96" y="1659" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22" font-weight="bold">break</text>
+<text x="1231.5" y="1661" text-anchor="middle" fill="#805b00" font-family="Segoe UI, sans-serif" font-size="20">[Cargar() lanza una excepción]</text>
+<text x="1095.0" y="1713" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22">12. excepción</text>
+<line x1="1230.0" y1="1734" x2="960.0" y2="1734" stroke="#757f8a" stroke-width="2" stroke-dasharray="5 5"/>
+<polygon points="960.0,1734 972.0,1728 972.0,1740" fill="#757f8a"/>
+<text x="690.0" y="1783" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22">13. excepción</text>
+<line x1="960.0" y1="1804" x2="420.0" y2="1804" stroke="#757f8a" stroke-width="2" stroke-dasharray="5 5"/>
+<polygon points="420.0,1804 432.0,1798 432.0,1810" fill="#757f8a"/>
+<rect x="150" y="1830" width="2230" height="60" fill="white" stroke="#e6ae19" stroke-width="2"/>
+<text x="180" y="1857" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22" font-weight="bold">ref</text>
+<text x="1265.0" y="1865" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">E — Manejo de error y recarga</text>
+<line x1="56" y1="1635" x2="56" y2="1908" stroke="#e6ae19" stroke-width="2"/>
+<line x1="2407" y1="1635" x2="2407" y2="1908" stroke="#e6ae19" stroke-width="2"/>
+<line x1="56" y1="1908" x2="2407" y2="1908" stroke="#e6ae19" stroke-width="2"/>
+<line x1="136" y1="1635" x2="2407" y2="1635" stroke="#e6ae19" stroke-width="2"/>
+<text x="1095.0" y="1954" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22">14. estadoActual:EstadoRoles</text>
+<line x1="1230.0" y1="1975" x2="960.0" y2="1975" stroke="#757f8a" stroke-width="2" stroke-dasharray="5 5"/>
+<polygon points="960.0,1975 972.0,1969 972.0,1981" fill="#757f8a"/>
+<text x="1130.0" y="2024" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22">15. ExigirGestion(estadoActual)</text>
+<line x1="960.0" y1="2045" x2="1025.0" y2="2045" stroke="#757f8a" stroke-width="2"/>
+<line x1="1025.0" y1="2045" x2="1025.0" y2="2065" stroke="#757f8a" stroke-width="2"/>
+<line x1="1025.0" y1="2065" x2="960.0" y2="2065" stroke="#757f8a" stroke-width="2"/>
+<polygon points="960.0,2065 972.0,2059 972.0,2071" fill="#757f8a"/>
+<rect x="150" y="2091" width="2230" height="60" fill="white" stroke="#e6ae19" stroke-width="2"/>
+<text x="180" y="2118" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22" font-weight="bold">ref</text>
+<text x="1265.0" y="2126" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">A — Comprobación de autorización</text>
+<rect x="56" y="2169" width="80" height="32" fill="#fff4cf" stroke="#e6ae19" stroke-width="2"/>
+<text x="96" y="2193" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22" font-weight="bold">break</text>
+<text x="1231.5" y="2195" text-anchor="middle" fill="#805b00" font-family="Segoe UI, sans-serif" font-size="20">[no existe gestor activo con permiso]</text>
+<text x="690.0" y="2247" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22">16. InvalidOperationException</text>
+<line x1="960.0" y1="2268" x2="420.0" y2="2268" stroke="#757f8a" stroke-width="2" stroke-dasharray="5 5"/>
+<polygon points="420.0,2268 432.0,2262 432.0,2274" fill="#757f8a"/>
+<rect x="150" y="2294" width="2230" height="60" fill="white" stroke="#e6ae19" stroke-width="2"/>
+<text x="180" y="2321" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22" font-weight="bold">ref</text>
+<text x="1265.0" y="2329" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">E — Manejo de error y recarga</text>
+<line x1="56" y1="2169" x2="56" y2="2372" stroke="#e6ae19" stroke-width="2"/>
+<line x1="2407" y1="2169" x2="2407" y2="2372" stroke="#e6ae19" stroke-width="2"/>
+<line x1="56" y1="2372" x2="2407" y2="2372" stroke="#e6ae19" stroke-width="2"/>
+<line x1="136" y1="2169" x2="2407" y2="2169" stroke="#e6ae19" stroke-width="2"/>
+<text x="1130.0" y="2418" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22">17. Validar(estado) «static»</text>
+<line x1="960.0" y1="2439" x2="1025.0" y2="2439" stroke="#757f8a" stroke-width="2"/>
+<line x1="1025.0" y1="2439" x2="1025.0" y2="2459" stroke="#757f8a" stroke-width="2"/>
+<line x1="1025.0" y1="2459" x2="960.0" y2="2459" stroke="#757f8a" stroke-width="2"/>
+<polygon points="960.0,2459 972.0,2453 972.0,2465" fill="#757f8a"/>
+<text x="1365.0" y="2508" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22">18. ValidarCatalogo(estado)</text>
+<line x1="960.0" y1="2529" x2="1770.0" y2="2529" stroke="#757f8a" stroke-width="2"/>
+<polygon points="1770.0,2529 1758.0,2523 1758.0,2535" fill="#757f8a"/>
+<rect x="56" y="2555" width="80" height="32" fill="#fff4cf" stroke="#e6ae19" stroke-width="2"/>
+<text x="96" y="2579" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22" font-weight="bold">break</text>
+<text x="1231.5" y="2581" text-anchor="middle" fill="#805b00" font-family="Segoe UI, sans-serif" font-size="20">[ValidarCatalogo lanza una excepción]</text>
+<text x="1365.0" y="2633" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22">19. InvalidOperationException</text>
+<line x1="1770.0" y1="2654" x2="960.0" y2="2654" stroke="#757f8a" stroke-width="2" stroke-dasharray="5 5"/>
+<polygon points="960.0,2654 972.0,2648 972.0,2660" fill="#757f8a"/>
+<text x="690.0" y="2703" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22">20. InvalidOperationException</text>
+<line x1="960.0" y1="2724" x2="420.0" y2="2724" stroke="#757f8a" stroke-width="2" stroke-dasharray="5 5"/>
+<polygon points="420.0,2724 432.0,2718 432.0,2730" fill="#757f8a"/>
+<rect x="150" y="2750" width="2230" height="60" fill="white" stroke="#e6ae19" stroke-width="2"/>
+<text x="180" y="2777" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22" font-weight="bold">ref</text>
+<text x="1265.0" y="2785" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">E — Manejo de error y recarga</text>
+<line x1="56" y1="2555" x2="56" y2="2828" stroke="#e6ae19" stroke-width="2"/>
+<line x1="2407" y1="2555" x2="2407" y2="2828" stroke="#e6ae19" stroke-width="2"/>
+<line x1="56" y1="2828" x2="2407" y2="2828" stroke="#e6ae19" stroke-width="2"/>
+<line x1="136" y1="2555" x2="2407" y2="2555" stroke="#e6ae19" stroke-width="2"/>
+<text x="1365.0" y="2874" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22">21. retorno void</text>
+<line x1="1770.0" y1="2895" x2="960.0" y2="2895" stroke="#757f8a" stroke-width="2" stroke-dasharray="5 5"/>
+<polygon points="960.0,2895 972.0,2889 972.0,2901" fill="#757f8a"/>
+<rect x="150" y="2921" width="2230" height="120" fill="#fff9e8" stroke="#e6ae19" stroke-width="2"/>
+<text x="1265.0" y="2956" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">Validar también comprueba: administrador original activo y con rol 1,</text>
+<text x="1265.0" y="2986" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">administrador disponible y roles de usuarios pertenecientes al catálogo.</text>
+<text x="1265.0" y="3016" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">Estas consultas usan las entidades del estado; no cambian sus asignaciones.</text>
+<rect x="56" y="3059" width="80" height="32" fill="#fff4cf" stroke="#e6ae19" stroke-width="2"/>
+<text x="96" y="3083" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22" font-weight="bold">break</text>
+<text x="1231.5" y="3085" text-anchor="middle" fill="#805b00" font-family="Segoe UI, sans-serif" font-size="20">[falla otra regla de Validar]</text>
+<text x="690.0" y="3137" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22">22. InvalidOperationException</text>
+<line x1="960.0" y1="3158" x2="420.0" y2="3158" stroke="#757f8a" stroke-width="2" stroke-dasharray="5 5"/>
+<polygon points="420.0,3158 432.0,3152 432.0,3164" fill="#757f8a"/>
+<rect x="150" y="3184" width="2230" height="60" fill="white" stroke="#e6ae19" stroke-width="2"/>
+<text x="180" y="3211" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22" font-weight="bold">ref</text>
+<text x="1265.0" y="3219" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">E — Manejo de error y recarga</text>
+<line x1="56" y1="3059" x2="56" y2="3262" stroke="#e6ae19" stroke-width="2"/>
+<line x1="2407" y1="3059" x2="2407" y2="3262" stroke="#e6ae19" stroke-width="2"/>
+<line x1="56" y1="3262" x2="2407" y2="3262" stroke="#e6ae19" stroke-width="2"/>
+<line x1="136" y1="3059" x2="2407" y2="3059" stroke="#e6ae19" stroke-width="2"/>
+<text x="1095.0" y="3308" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22">23. Guardar(estado)</text>
+<line x1="960.0" y1="3329" x2="1230.0" y2="3329" stroke="#757f8a" stroke-width="2"/>
+<polygon points="1230.0,3329 1218.0,3323 1218.0,3335" fill="#757f8a"/>
+<rect x="150" y="3355" width="2230" height="120" fill="#fff9e8" stroke="#e6ae19" stroke-width="2"/>
+<text x="1265.0" y="3390" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">DAL: transacción Serializable, control de versión, protección de la cuenta original,</text>
+<text x="1265.0" y="3420" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">reemplazo de relaciones y Commit. Tras confirmar, estado.Version aumenta.</text>
+<text x="1265.0" y="3450" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">Un fallo revierte la transacción; no se confirma un guardado parcial.</text>
+<rect x="56" y="3493" width="80" height="32" fill="#fff4cf" stroke="#e6ae19" stroke-width="2"/>
+<text x="96" y="3517" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22" font-weight="bold">break</text>
+<text x="1231.5" y="3519" text-anchor="middle" fill="#805b00" font-family="Segoe UI, sans-serif" font-size="20">[conflicto de versión, protección o error SQL]</text>
+<text x="1095.0" y="3571" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22">24. excepción</text>
+<line x1="1230.0" y1="3592" x2="960.0" y2="3592" stroke="#757f8a" stroke-width="2" stroke-dasharray="5 5"/>
+<polygon points="960.0,3592 972.0,3586 972.0,3598" fill="#757f8a"/>
+<text x="690.0" y="3641" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22">25. excepción</text>
+<line x1="960.0" y1="3662" x2="420.0" y2="3662" stroke="#757f8a" stroke-width="2" stroke-dasharray="5 5"/>
+<polygon points="420.0,3662 432.0,3656 432.0,3668" fill="#757f8a"/>
+<rect x="150" y="3688" width="2230" height="60" fill="white" stroke="#e6ae19" stroke-width="2"/>
+<text x="180" y="3715" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22" font-weight="bold">ref</text>
+<text x="1265.0" y="3723" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">E — Manejo de error y recarga</text>
+<line x1="56" y1="3493" x2="56" y2="3766" stroke="#e6ae19" stroke-width="2"/>
+<line x1="2407" y1="3493" x2="2407" y2="3766" stroke="#e6ae19" stroke-width="2"/>
+<line x1="56" y1="3766" x2="2407" y2="3766" stroke="#e6ae19" stroke-width="2"/>
+<line x1="136" y1="3493" x2="2407" y2="3493" stroke="#e6ae19" stroke-width="2"/>
+<text x="1095.0" y="3812" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22">26. retorno void</text>
+<line x1="1230.0" y1="3833" x2="960.0" y2="3833" stroke="#757f8a" stroke-width="2" stroke-dasharray="5 5"/>
+<polygon points="960.0,3833 972.0,3827 972.0,3839" fill="#757f8a"/>
+<text x="690.0" y="3882" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22">27. retorno void</text>
+<line x1="960.0" y1="3903" x2="420.0" y2="3903" stroke="#757f8a" stroke-width="2" stroke-dasharray="5 5"/>
+<polygon points="420.0,3903 432.0,3897 432.0,3909" fill="#757f8a"/>
+<text x="590.0" y="3952" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22">28. RefrescarArboles()</text>
+<line x1="420.0" y1="3973" x2="485.0" y2="3973" stroke="#757f8a" stroke-width="2"/>
+<line x1="485.0" y1="3973" x2="485.0" y2="3993" stroke="#757f8a" stroke-width="2"/>
+<line x1="485.0" y1="3993" x2="420.0" y2="3993" stroke="#757f8a" stroke-width="2"/>
+<polygon points="420.0,3993 432.0,3987 432.0,3999" fill="#757f8a"/>
+<rect x="150" y="4019" width="2230" height="90" fill="#fff9e8" stroke="#e6ae19" stroke-width="2"/>
+<text x="1265.0" y="4054" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">Limpia y reconstruye los árboles del catálogo, actualiza el combo de destino,</text>
+<text x="1265.0" y="4084" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">recorre estado.Roles y estado.Permisos, y llama a RefrescarUsuario().</text>
+<text x="590.0" y="4150" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22">29. RefrescarUsuario()</text>
+<line x1="420.0" y1="4171" x2="485.0" y2="4171" stroke="#757f8a" stroke-width="2"/>
+<line x1="485.0" y1="4171" x2="485.0" y2="4191" stroke="#757f8a" stroke-width="2"/>
+<line x1="485.0" y1="4191" x2="420.0" y2="4191" stroke="#757f8a" stroke-width="2"/>
+<polygon points="420.0,4191 432.0,4185 432.0,4197" fill="#757f8a"/>
+<text x="555.0" y="4240" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22">30. Roles {get}</text>
+<line x1="420.0" y1="4261" x2="690.0" y2="4261" stroke="#757f8a" stroke-width="2"/>
+<polygon points="690.0,4261 678.0,4255 678.0,4267" fill="#757f8a"/>
+<text x="555.0" y="4310" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22">31. List&lt;Rol&gt;</text>
+<line x1="690.0" y1="4331" x2="420.0" y2="4331" stroke="#757f8a" stroke-width="2" stroke-dasharray="5 5"/>
+<polygon points="420.0,4331 432.0,4325 432.0,4337" fill="#757f8a"/>
+<rect x="56" y="4357" width="80" height="32" fill="#fff4cf" stroke="#e6ae19" stroke-width="2"/>
+<text x="96" y="4381" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22" font-weight="bold">loop</text>
+<text x="1231.5" y="4383" text-anchor="middle" fill="#805b00" font-family="Segoe UI, sans-serif" font-size="20">[por cada rol asignado al usuario]</text>
+<text x="590.0" y="4435" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22">32. CargarRol(tvUsuarioPermisos.Nodes, rol)</text>
+<line x1="420.0" y1="4456" x2="485.0" y2="4456" stroke="#757f8a" stroke-width="2"/>
+<line x1="485.0" y1="4456" x2="485.0" y2="4476" stroke="#757f8a" stroke-width="2"/>
+<line x1="485.0" y1="4476" x2="420.0" y2="4476" stroke="#757f8a" stroke-width="2"/>
+<polygon points="420.0,4476 432.0,4470 432.0,4482" fill="#757f8a"/>
+<rect x="150" y="4502" width="2230" height="60" fill="white" stroke="#e6ae19" stroke-width="2"/>
+<text x="180" y="4529" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22" font-weight="bold">ref</text>
+<text x="1265.0" y="4537" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">R — Recorrido de roles y permisos</text>
+<line x1="56" y1="4357" x2="56" y2="4580" stroke="#e6ae19" stroke-width="2"/>
+<line x1="2407" y1="4357" x2="2407" y2="4580" stroke="#e6ae19" stroke-width="2"/>
+<line x1="56" y1="4580" x2="2407" y2="4580" stroke="#e6ae19" stroke-width="2"/>
+<line x1="136" y1="4357" x2="2407" y2="4357" stroke="#e6ae19" stroke-width="2"/>
+<rect x="150" y="4603" width="2230" height="90" fill="#fff9e8" stroke="#e6ae19" stroke-width="2"/>
+<text x="1265.0" y="4638" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">lblEstado.Text = Cambios guardados. Se aplican al volver a iniciar sesión.</text>
+<text x="1265.0" y="4668" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">La UI muestra el resultado; no se devuelve un string desde Guardar().</text>
+<line x1="38" y1="911" x2="38" y2="4711" stroke="#e6ae19" stroke-width="2"/>
+<line x1="2425" y1="911" x2="2425" y2="4711" stroke="#e6ae19" stroke-width="2"/>
+<line x1="38" y1="4711" x2="2425" y2="4711" stroke="#e6ae19" stroke-width="2"/>
+<line x1="118" y1="911" x2="2425" y2="911" stroke="#e6ae19" stroke-width="2"/>
+</svg>

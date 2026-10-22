@@ -1,0 +1,48 @@
+@startuml
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam defaultFontSize 18
+skinparam sequence {
+  ParticipantBackgroundColor #DAE8FC
+  ParticipantBorderColor #8AB2E2
+  LifeLineBorderColor #888888
+  ArrowColor #666666
+  GroupBorderColor #E6AE19
+  GroupHeaderBackgroundColor #FFF4CF
+  GroupBackgroundColor white
+}
+hide footbox
+autonumber
+title E — Manejo de error y recarga
+actor Administrador as A
+participant "form:FormGestionRoles" as F
+participant "rolesBLL:RolesBLL" as B
+participant "rolesDAL:RolesDAL" as D
+participant "MatrizRoles\n«static»" as M
+note over A,M: Este fragmento se ejecuta en catch(Exception) de Ejecutar().\nLa excepción puede venir de selección, autorización, validación o persistencia.
+note over F,D: Actualiza lblEstado y muestra MessageBox.Show con el detalle del error.
+F --> A: No se guardó el cambio + detalle
+F -> F: CargarDatos(this, EventArgs.Empty)
+F -> B: CargarParaGestion()
+alt [la recarga completa todas sus validaciones]
+B -> D: Cargar()
+D --> B: datos:EstadoRoles
+B -> M: ValidarCatalogo(datos)
+M --> B: retorno void
+B -> B: ExigirGestion(datos)
+ref over B,M: A — Comprobación de autorización
+B --> F: datos:EstadoRoles
+F -> F: InicializarDatos(datos)
+note over F,D: Reemplaza estado, roles y usuarios desde SQL; conserva el usuario seleccionado\nsi continúa disponible. Reconecta los combos y llama a RefrescarArboles().
+F -> F: RefrescarArboles()
+ref over F,M: R — Recorrido de roles y permisos
+else [la recarga lanza una excepción]
+note over B,D: La excepción puede surgir en Cargar, ValidarCatalogo o ExigirGestion.\nEste operando resume la propagación hasta CargarDatos.
+B --> F: excepción
+F --> A: MessageBox: no se pudieron cargar los usuarios
+F -> F: Close()
+end
+note over F,M: Ejecutar también captura OperationCanceledException sin mostrar error.\nEn AsignarAUsuario no se abre un diálogo que produzca esa cancelación.
+@enduml
+

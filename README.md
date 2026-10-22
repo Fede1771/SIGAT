@@ -1,4 +1,4 @@
-﻿# SIGAT
+# SIGAT
 
 **Sistema de Gestión de Activos Tecnológicos**
 Proyecto universitario de Ingeniería de Software · Universidad Abierta Interamericana
@@ -84,7 +84,8 @@ SIGAT/
 ├── SIGAT.SERVICIOS/    Servicios compartidos
 ├── SIGAT.Tests/        Pruebas automatizadas
 ├── Querys/             Instalación y mantenimiento SQL
-└── SIGAT_Modelo.EAP    Modelo de Enterprise Architect
+├── EA-Diagramas/       Modelo actual y diagramas
+└── Documentacion/      Capturas, traducciones y notas de integridad
 ```
 
 En cada formulario, `*.Designer.cs` contiene la creación y distribución de los controles; el archivo `.cs` contiene el comportamiento, los eventos y la carga de datos. [EntornoDiseno.cs](SIGAT.UI/EntornoDiseno.cs) evita ejecutar la lógica de sesión y consultas de los constructores al abrir los formularios en el diseñador.
@@ -210,7 +211,7 @@ Para explicar el código, partir de [Program.cs](SIGAT.UI/Program.cs), continuar
 
 ## Documentación y trabajo pendiente
 
-La carpeta de entrega académica reúne las especificaciones de casos de uso y los diagramas de arquitectura, clases, secuencia y datos. Se presenta junto con el proyecto. El repositorio incluye el [modelo de Enterprise Architect](SIGAT_Modelo.EAP), la [guía del diseñador](GUIA_DISENADOR.txt) y las guías SQL enlazadas anteriormente.
+La carpeta de entrega académica reúne las especificaciones de casos de uso y los diagramas de arquitectura, clases, secuencia y datos. Se presenta junto con el proyecto. El repositorio incluye el [modelo actualizado de Enterprise Architect](EA-Diagramas/Actual/SIGAT_Modelo_Actualizado.EAP), su [índice de diagramas](EA-Diagramas/Actual/index.html), la [guía del diseñador](GUIA_DISENADOR.txt) y las guías SQL enlazadas anteriormente.
 
 Los modelos existentes requieren una revisión de correspondencia con la versión actual: deben reflejar roles y familias, Observer y el alcance vigente de DVH/DVV. La documentación de una versión anterior no sustituye el comportamiento implementado en el código.
 

@@ -1,0 +1,16 @@
+sequenceDiagram
+    autonumber
+    participant bll as BitacoraBLL
+    participant dal as BitacoraDAL
+    participant iv as IntegridadDAL
+    participant aes as EncriptadorServicio
+    participant sha as VerificadorSHA256
+    bll->>dal: Insertar(registro)
+    dal->>iv: Cambiar("Bitacora", comando)
+    Note over bll,sha: Transacción Serializable y bloqueo exclusivo  validar DVH y DVV antes
+    dal->>aes: Encriptar(InformacionAsociada)
+    aes-->>dal: AES CBC con PKCS7, representado en Base64
+    dal->>dal: INSERT y obtener IdBitacora
+    iv->>sha: Bitacora(id, fecha SQL, usuario, actividad, cifrado)
+    iv->>iv: GuardarHash y ActualizarVertical
+    iv->>iv: Examinar  Commit solo si es correcta

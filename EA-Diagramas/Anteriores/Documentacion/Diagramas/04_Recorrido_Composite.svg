@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2460" height="1829" viewBox="0 0 2460 1829">
+<rect width="100%" height="100%" fill="white"/>
+<line x1="150.0" y1="235" x2="150.0" y2="1797" stroke="#aeb6bf" stroke-dasharray="6 5"/>
+<line x1="1230.0" y1="235" x2="1230.0" y2="1797" stroke="#aeb6bf" stroke-dasharray="6 5"/>
+<line x1="2310.0" y1="235" x2="2310.0" y2="1797" stroke="#aeb6bf" stroke-dasharray="6 5"/>
+<text x="1230.0" y="47" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="34" font-weight="bold">R — Recorrido de roles y permisos</text>
+<text x="1230.0" y="97" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">Diagrama de secuencia · correspondencia con el código actual</text>
+<rect x="48.0" y="125" width="204" height="82" fill="#dae8fc" stroke="#8ab2e2" stroke-width="2"/>
+<text x="150.0" y="158" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">form:</text>
+<text x="150.0" y="188" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">FormGestionRoles</text>
+<rect x="1128.0" y="125" width="204" height="82" fill="#dae8fc" stroke="#8ab2e2" stroke-width="2"/>
+<text x="1230.0" y="158" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">rol:</text>
+<text x="1230.0" y="188" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">Rol</text>
+<rect x="2208.0" y="125" width="204" height="82" fill="#dae8fc" stroke="#8ab2e2" stroke-width="2"/>
+<text x="2310.0" y="158" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">permiso:</text>
+<text x="2310.0" y="188" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">Permiso</text>
+<rect x="150" y="245" width="2230" height="90" fill="#fff9e8" stroke="#e6ae19" stroke-width="2"/>
+<text x="1265.0" y="280" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">Entrada: CargarRol(nodos:TreeNodeCollection, rol:Rol).</text>
+<text x="1265.0" y="310" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">Este mismo recorrido se usa en catálogo y permisos asignados al usuario.</text>
+<rect x="150" y="353" width="2230" height="60" fill="#fff9e8" stroke="#e6ae19" stroke-width="2"/>
+<text x="1265.0" y="388" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">CargarRol crea TreeNode(rol.Nombre) y lo agrega a nodos.</text>
+<text x="690.0" y="454" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22">1. Permisos {get}</text>
+<line x1="150.0" y1="475" x2="1230.0" y2="475" stroke="#757f8a" stroke-width="2"/>
+<polygon points="1230.0,475 1218.0,469 1218.0,481" fill="#757f8a"/>
+<text x="690.0" y="524" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22">2. List&lt;Permiso&gt;</text>
+<line x1="1230.0" y1="545" x2="150.0" y2="545" stroke="#757f8a" stroke-width="2" stroke-dasharray="5 5"/>
+<polygon points="150.0,545 162.0,539 162.0,551" fill="#757f8a"/>
+<rect x="38" y="571" width="80" height="32" fill="#fff4cf" stroke="#e6ae19" stroke-width="2"/>
+<text x="78" y="595" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22" font-weight="bold">loop</text>
+<text x="1231.5" y="597" text-anchor="middle" fill="#805b00" font-family="Segoe UI, sans-serif" font-size="20">[por cada permiso directo del rol]</text>
+<text x="420" y="649" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22">3. CargarNodosRecursivo(nodo, permiso)</text>
+<line x1="150.0" y1="670" x2="215.0" y2="670" stroke="#757f8a" stroke-width="2"/>
+<line x1="215.0" y1="670" x2="215.0" y2="690" stroke="#757f8a" stroke-width="2"/>
+<line x1="215.0" y1="690" x2="150.0" y2="690" stroke="#757f8a" stroke-width="2"/>
+<polygon points="150.0,690 162.0,684 162.0,696" fill="#757f8a"/>
+<rect x="150" y="716" width="2230" height="60" fill="#fff9e8" stroke="#e6ae19" stroke-width="2"/>
+<text x="1265.0" y="751" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">CargarNodosRecursivo crea el nodo del permiso y lo agrega al nodo padre.</text>
+<text x="1230.0" y="817" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22">4. ObtenerHijos()</text>
+<line x1="150.0" y1="838" x2="2310.0" y2="838" stroke="#757f8a" stroke-width="2"/>
+<polygon points="2310.0,838 2298.0,832 2298.0,844" fill="#757f8a"/>
+<text x="1230.0" y="887" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22">5. List&lt;Permiso&gt;</text>
+<line x1="2310.0" y1="908" x2="150.0" y2="908" stroke="#757f8a" stroke-width="2" stroke-dasharray="5 5"/>
+<polygon points="150.0,908 162.0,902 162.0,914" fill="#757f8a"/>
+<rect x="56" y="934" width="80" height="32" fill="#fff4cf" stroke="#e6ae19" stroke-width="2"/>
+<text x="96" y="958" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22" font-weight="bold">loop</text>
+<text x="1231.5" y="960" text-anchor="middle" fill="#805b00" font-family="Segoe UI, sans-serif" font-size="20">[por cada hijo devuelto]</text>
+<text x="420" y="1012" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22">6. CargarNodosRecursivo(nodoPermiso, hijo)</text>
+<line x1="150.0" y1="1033" x2="215.0" y2="1033" stroke="#757f8a" stroke-width="2"/>
+<line x1="215.0" y1="1033" x2="215.0" y2="1053" stroke="#757f8a" stroke-width="2"/>
+<line x1="215.0" y1="1053" x2="150.0" y2="1053" stroke="#757f8a" stroke-width="2"/>
+<polygon points="150.0,1053 162.0,1047 162.0,1059" fill="#757f8a"/>
+<rect x="150" y="1079" width="2230" height="90" fill="white" stroke="#e6ae19" stroke-width="2"/>
+<text x="180" y="1106" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22" font-weight="bold">ref</text>
+<text x="1265.0" y="1114" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">Repetir creación del nodo y recorrido de ObtenerHijos()</text>
+<text x="1265.0" y="1144" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">para cada nivel de la jerarquía de permisos.</text>
+<line x1="56" y1="934" x2="56" y2="1187" stroke="#e6ae19" stroke-width="2"/>
+<line x1="2407" y1="934" x2="2407" y2="1187" stroke="#e6ae19" stroke-width="2"/>
+<line x1="56" y1="1187" x2="2407" y2="1187" stroke="#e6ae19" stroke-width="2"/>
+<line x1="136" y1="934" x2="2407" y2="934" stroke="#e6ae19" stroke-width="2"/>
+<line x1="38" y1="571" x2="38" y2="1210" stroke="#e6ae19" stroke-width="2"/>
+<line x1="2425" y1="571" x2="2425" y2="1210" stroke="#e6ae19" stroke-width="2"/>
+<line x1="38" y1="1210" x2="2425" y2="1210" stroke="#e6ae19" stroke-width="2"/>
+<line x1="118" y1="571" x2="2425" y2="571" stroke="#e6ae19" stroke-width="2"/>
+<text x="690.0" y="1256" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22">7. Roles {get}</text>
+<line x1="150.0" y1="1277" x2="1230.0" y2="1277" stroke="#757f8a" stroke-width="2"/>
+<polygon points="1230.0,1277 1218.0,1271 1218.0,1283" fill="#757f8a"/>
+<text x="690.0" y="1326" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22">8. List&lt;Rol&gt;</text>
+<line x1="1230.0" y1="1347" x2="150.0" y2="1347" stroke="#757f8a" stroke-width="2" stroke-dasharray="5 5"/>
+<polygon points="150.0,1347 162.0,1341 162.0,1353" fill="#757f8a"/>
+<rect x="38" y="1373" width="80" height="32" fill="#fff4cf" stroke="#e6ae19" stroke-width="2"/>
+<text x="78" y="1397" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22" font-weight="bold">loop</text>
+<text x="1231.5" y="1399" text-anchor="middle" fill="#805b00" font-family="Segoe UI, sans-serif" font-size="20">[por cada rol anidado]</text>
+<text x="420" y="1451" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22">9. CargarRol(nodo.Nodes, hijo)</text>
+<line x1="150.0" y1="1472" x2="215.0" y2="1472" stroke="#757f8a" stroke-width="2"/>
+<line x1="215.0" y1="1472" x2="215.0" y2="1492" stroke="#757f8a" stroke-width="2"/>
+<line x1="215.0" y1="1492" x2="150.0" y2="1492" stroke="#757f8a" stroke-width="2"/>
+<polygon points="150.0,1492 162.0,1486 162.0,1498" fill="#757f8a"/>
+<rect x="150" y="1518" width="2230" height="60" fill="white" stroke="#e6ae19" stroke-width="2"/>
+<text x="180" y="1545" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22" font-weight="bold">ref</text>
+<text x="1265.0" y="1553" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">Repetir CargarRol para el rol hijo.</text>
+<line x1="38" y1="1373" x2="38" y2="1596" stroke="#e6ae19" stroke-width="2"/>
+<line x1="2425" y1="1373" x2="2425" y2="1596" stroke="#e6ae19" stroke-width="2"/>
+<line x1="38" y1="1596" x2="2425" y2="1596" stroke="#e6ae19" stroke-width="2"/>
+<line x1="118" y1="1373" x2="2425" y2="1373" stroke="#e6ae19" stroke-width="2"/>
+<rect x="150" y="1619" width="2230" height="120" fill="#fff9e8" stroke="#e6ae19" stroke-width="2"/>
+<text x="1265.0" y="1654" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">PermisoSimple devuelve una lista vacía; PermisoCompuesto devuelve sus hijos.</text>
+<text x="1265.0" y="1684" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">El código no usa un if de tipo para decidir si recorre hijos.</text>
+<text x="1265.0" y="1714" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">La consulta a Permiso se resuelve por polimorfismo.</text>
+</svg>

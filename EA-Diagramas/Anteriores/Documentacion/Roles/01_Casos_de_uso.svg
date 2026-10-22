@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1550" height="1080">
+<rect width="100%" height="100%" fill="white"/>
+<text x="471.0" y="62" font-family="Segoe UI" font-size="30" font-weight="700" fill="#20262e">Casos de uso — gestión de roles y permisos</text>
+<rect x="390" y="110" width="1110" height="870" fill="white" stroke="#666666" stroke-width="2"/>
+<text x="908.015625" y="156" font-family="Segoe UI" font-size="26" font-weight="700" fill="#20262e">SIGAT</text>
+<circle cx="155" cy="450" r="20" fill="white" stroke="#666666" stroke-width="3"/>
+<line x1="155" y1="470" x2="155" y2="550" stroke="#666666" stroke-width="2"/>
+<line x1="115" y1="505" x2="195" y2="505" stroke="#666666" stroke-width="2"/>
+<line x1="155" y1="550" x2="120" y2="590" stroke="#666666" stroke-width="2"/>
+<line x1="155" y1="550" x2="190" y2="590" stroke="#666666" stroke-width="2"/>
+<text x="72.5" y="631" font-family="Segoe UI" font-size="21" font-weight="400" fill="#20262e">Gestor autorizado</text>
+<text x="30.5" y="661" font-family="Segoe UI" font-size="21" font-weight="400" fill="#20262e">Administración del sistema</text>
+<ellipse cx="1005" cy="280" rx="355" ry="45" fill="#fff4cf" stroke="#e6ae19" stroke-width="2"/>
+<text x="927.5" y="270" font-family="Segoe UI" font-size="23" font-weight="700" fill="#20262e">CU01 Crear rol</text>
+<text x="848.0" y="301" font-family="Segoe UI" font-size="19" font-weight="400" fill="#20262e">Lógica existente; acceso UI pendiente</text>
+<line x1="195" y1="510" x2="650" y2="280" stroke="#666666" stroke-width="2"/>
+<ellipse cx="1005" cy="425" rx="355" ry="45" fill="#dae8fc" stroke="#8ab2e2" stroke-width="2"/>
+<text x="897.5" y="415" font-family="Segoe UI" font-size="23" font-weight="700" fill="#20262e">CU02 Configurar rol</text>
+<line x1="195" y1="510" x2="650" y2="425" stroke="#666666" stroke-width="2"/>
+<ellipse cx="1005" cy="570" rx="355" ry="45" fill="#dae8fc" stroke="#8ab2e2" stroke-width="2"/>
+<text x="834.0" y="560" font-family="Segoe UI" font-size="23" font-weight="700" fill="#20262e">CU03 Editar familia de permisos</text>
+<line x1="195" y1="510" x2="650" y2="570" stroke="#666666" stroke-width="2"/>
+<ellipse cx="1005" cy="715" rx="355" ry="45" fill="#dae8fc" stroke="#8ab2e2" stroke-width="2"/>
+<text x="819.0" y="705" font-family="Segoe UI" font-size="23" font-weight="700" fill="#20262e">CU04 Asignar / quitar rol a usuario</text>
+<line x1="195" y1="510" x2="650" y2="715" stroke="#666666" stroke-width="2"/>
+<ellipse cx="1005" cy="860" rx="355" ry="45" fill="#fff4cf" stroke="#e6ae19" stroke-width="2"/>
+<text x="911.0" y="850" font-family="Segoe UI" font-size="23" font-weight="700" fill="#20262e">CU05 Eliminar rol</text>
+<text x="848.0" y="881" font-family="Segoe UI" font-size="19" font-weight="400" fill="#20262e">Lógica existente; acceso UI pendiente</text>
+<line x1="195" y1="510" x2="650" y2="860" stroke="#666666" stroke-width="2"/>
+<text x="487.0" y="1022" font-family="Segoe UI" font-size="22" font-weight="400" fill="#20262e">Azul: disponible. Amarillo: pendiente de entrada en interfaz.</text>
+<text x="452.0" y="1053" font-family="Segoe UI" font-size="22" font-weight="400" fill="#20262e">Crear y configurar son casos separados; no hay include obligatorio.</text>
+</svg>

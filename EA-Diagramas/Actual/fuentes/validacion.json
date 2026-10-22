@@ -1,0 +1,31 @@
+{
+  "fecha": "2026-10-21",
+  "archivos_CSharp": 57,
+  "tipos": 63,
+  "tipos_por_capa": {
+    "SIGAT.BE": 17,
+    "SIGAT.BLL": 12,
+    "SIGAT.DAL": 9,
+    "SIGAT.SERVICIOS": 7,
+    "SIGAT.UI": 18
+  },
+  "diagramas": 44,
+  "tablas_instalador": 15,
+  "tablas_creadas_al_archivar": 1,
+  "verificaciones": {
+    "fuentes_sin_cambios": true,
+    "instalador_sin_cambios": true,
+    "44_diagramas_nativos": true,
+    "44_imagenes_exportadas": true,
+    "63_tipos_del_codigo_representados": true,
+    "conectores_sin_extremos_huerfanos": true,
+    "sin_Perfil_obsoleto": true,
+    "15_tablas_instalador_y_un_historico": true,
+    "columnas_en_eap_coinciden_con_esquema": true,
+    "DVH_en_Usuarios_y_UsuarioRol": true,
+    "sin_IdPerfil": true,
+    "columnas_contrastadas_con_SQL_vigente": true
+  },
+  "todos_correctos": true,
+  "alcance": "Validación documental y estructural; no ejecuta la aplicación ni cambia SQL Server."
+}

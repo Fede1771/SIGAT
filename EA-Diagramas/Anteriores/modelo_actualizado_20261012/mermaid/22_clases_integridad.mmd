@@ -1,0 +1,56 @@
+classDiagram
+    direction TB
+    class FrmIntegridad {
+        -Operar(accion: Func~string~, mostrarRuta: bool): Task
+    }
+    class IntegridadBLL {
+        +Verificar(): InformeIntegridad
+        +PuedeAdministrar(): bool
+        +InicializarBaseConfiable(): string
+        +CrearRespaldoConfiable(destino: string): string
+        +ArchivarBitacora(dias: int): int
+        +Recuperar(ruta: string, tablasCompletas: bool): InformeIntegridad
+        +ExigirIntegridad(): void
+    }
+    class IntegridadDAL {
+        -Examinar(c: SqlConnection, t: SqlTransaction): Estado$
+        +Verificar(): InformeIntegridad
+        +LeerVerificado(leer: Func~SqlConnection, SqlTransaction, T~): T
+        +Cambiar(tabla: string, cambiar: Func~SqlConnection, SqlTransaction, T~): T
+        +InicializarBaseConfiable(): string
+        +CrearRespaldoConfiable(destino: string): string
+        +Recuperar(ruta: string, restaurarTablasCompletas: bool): InformeIntegridad
+    }
+    class InformeIntegridad {
+        +Configurada: bool
+        +Problemas: List~ProblemaIntegridad~
+        +Correcta: bool
+    }
+    class ProblemaIntegridad {
+        +Tabla: string
+        +Registro: string
+        +Motivo: string
+    }
+    class IntegridadException {
+        +Informe: InformeIntegridad
+    }
+    class VerificadorSHA256 {
+        <<static>>
+        +Canonico(valores: Object[]): string$
+        +Hexadecimal(texto: string): string$
+        +Base64(texto: string): string$
+        +Traduccion(idioma: int, control: int, texto: string, estado: string): string$
+        +Bitacora(id: int, fecha: DateTime, usuario: string, actividad: string, cifrado: string): string$
+    }
+    class EncriptadorServicio {
+        +Encriptar(textoPlano: string): string
+        +Desencriptar(textoEncriptado: string): string
+        +CalcularDV(cadenaConcatenada: string): string
+    }
+    IntegridadBLL "1" --> "1" IntegridadDAL : dal
+    FrmIntegridad "1" --> "1" IntegridadBLL : servicio
+    FrmIntegridad "1" --> "1" InformeIntegridad : informe
+    InformeIntegridad "1" --> "0..*" ProblemaIntegridad : Problemas
+    IntegridadException "1" --> "1" InformeIntegridad : Informe
+    IntegridadDAL ..> VerificadorSHA256 : DVH y DVV
+    IntegridadDAL ..> EncriptadorServicio : validar cifrado

@@ -1,0 +1,19 @@
+sequenceDiagram
+    autonumber
+    actor actor as Administrador
+    participant ui as FrmIntegridad
+    participant bll as IntegridadBLL
+    participant dal as IntegridadDAL
+    participant aux as Base auxiliar
+    actor->>ui: Crear respaldo  elegir archivo .bak
+    ui->>bll: CrearRespaldoConfiable(destino)
+    bll->>dal: CrearRespaldoConfiable(destino)
+    Note over actor,aux: Exigir permisos  verificar estado actual  no sobrescribir archivos existentes
+    dal->>dal: PrepararCarpetaCompartida  BACKUP COPY_ONLY CHECKSUM
+    dal->>aux: RESTORE VERIFYONLY y restauración con MOVE
+    dal->>aux: Examinar DVH y DVV del respaldo
+    aux-->>dal: Integridad correcta
+    dal->>dal: Eliminar base auxiliar  ExportarRespaldo
+    Note over actor,aux: Copiar con permisos del usuario  comparar SHA-256 del archivo  finalizar .bak
+    dal-->>ui: Ruta del respaldo comprobado
+    Note over actor,aux: Si falla la exportación, conservar copia local e informar su ruta

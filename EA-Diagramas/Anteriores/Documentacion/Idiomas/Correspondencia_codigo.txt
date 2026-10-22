@@ -1,0 +1,46 @@
+CAMBIO DE IDIOMA — CORRESPONDENCIA CON EL CÓDIGO
+Revisión: 13/10/2026. Documentación; no se modificó el programa.
+
+El diagrama conserva las columnas y los fragmentos de la referencia del usuario.
+Sistema se concreta como FrmPrincipal. formulario:IIdiomaObserver representa
+un formulario suscripto que implementa la interfaz; no una instancia de interfaz.
+Los cuadros ref resumen operaciones reales; no son métodos adicionales.
+
+FrmPrincipal.OpcionDeIdioma_Click -> IdiomaBLL.CambiarIdioma.
+IdiomaBLL.CambiarIdioma -> CargarIdioma(idIdioma, guardarPreferencia: true).
+IdiomaDAL.ObtenerIdiomaPorId -> validar existencia y Activo.
+ObtenerTraduccionesPorIdioma -> ConsultarTraducciones -> LeerVerificado.
+IdiomaManager.ClaveDe es estático y no utiliza la instancia Singleton.
+SesionServicio.ObtenerInstancia().UsuarioActual identifica la cuenta actual.
+IdiomaDAL.GuardarIdiomaPreferido persiste en dbo.UsuarioIdioma, por IdUsuario.
+No es localStorage ni una configuración global: es una preferencia de cuenta SQL.
+IdiomaManager.CargarIdioma actualiza memoria y llama NotificarObservadores.
+Cada observador.ActualizarIdioma llama al traductor del formulario correspondiente.
+TraductorFormularios traduce título, menús, controles y columnas de DataGridView.
+Los formularios alojados se omiten en TraducirControles: tienen observador propio.
+Recorrer hijos depende de HasChildren, independientemente de Tag.
+RegistrarClaveNueva comprueba ExisteControl; solo crea datos si la clave es nueva.
+Si Español no existe, lanza excepción antes de CrearPendientesParaTodosLosIdiomas.
+Traducir devuelve textoOriginal cuando falta una clave en el diccionario.
+El detalle de FrmPrincipal agrega selector, usuario/roles y marco visual.
+
+ALCANCE Y ERRORES
+Este caso es cambiar el idioma activo; no incluye crear/desactivar idiomas,
+editar traducciones ni restablecer la preferencia al iniciar sesión.
+OpcionDeIdioma_Click no captura excepciones. El diagrama no inventa un mensaje
+de error de ese evento. FrmGestionIdiomas, otra entrada, sí usa try/catch.
+Fallar al consultar traducciones o guardar preferencia impide cargar el Manager.
+Después de guardar, Manager cambia su estado antes de notificar; si falla un
+observador, puede quedar una actualización parcial de formularios y la
+preferencia SQL ya permanece guardada. El código no revierte esa operación.
+El loop Observer no garantiza finalizar si se lanza una excepción.
+Las familias de errores se resumen cuando no alteran el orden de las llamadas.
+
+ARCHIVOS REVISADOS
+SIGAT.UI/FrmPrincipal.cs
+SIGAT.UI/TraductorFormularios.cs
+SIGAT.UI/FrmGestionIdiomas.cs
+SIGAT.BLL/IdiomaBLL.cs
+SIGAT.DAL/IdiomaDAL.cs
+SIGAT.SERVICIOS/Idiomas/IdiomaManager.cs
+SIGAT.SERVICIOS/Idiomas/IIdiomaObserver.cs

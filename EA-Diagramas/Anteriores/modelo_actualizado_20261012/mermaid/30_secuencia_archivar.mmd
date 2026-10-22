@@ -1,0 +1,15 @@
+sequenceDiagram
+    autonumber
+    actor actor as Administrador
+    participant ui as FrmIntegridad
+    participant bll as IntegridadBLL
+    participant dal as IntegridadDAL
+    actor->>ui: Archivar bitácora antigua y confirmar
+    ui->>bll: ArchivarBitacora(180)
+    bll->>dal: ArchivarBitacora(180)
+    dal->>dal: ExigirAdministrador  Cambiar("Bitacora", comando)
+    Note over actor,dal: Verificación inicial y bloqueo exclusivo dentro de una transacción
+    dal->>dal: DELETE OUTPUT INTO Bitacora_Historico para fecha anterior al límite
+    dal->>dal: ActualizarVertical  Examinar  Commit
+    dal-->>ui: Cantidad de eventos archivados
+    Note over actor,dal: Bitacora_Historico se crea cuando se usa  no tiene DVV propio

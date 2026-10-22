@@ -1,0 +1,125 @@
+@startuml
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam sequence {
+ParticipantBackgroundColor #DAE8FC
+ParticipantBorderColor #8AB2E2
+LifeLineBorderColor #8AB2E2
+ActivationBackgroundColor white
+ActivationBorderColor #8AB2E2
+ArrowColor #333333
+GroupBorderColor #E6AE19
+GroupHeaderBackgroundColor #FFF4CF
+}
+hide footbox
+autonumber
+title DIAGRAMA DE SECUENCIA — CAMBIAR IDIOMA DE LA INTERFAZ
+actor Usuario as A
+participant ":FrmPrincipal" as F
+participant ":IdiomaBLL" as B
+participant ":IdiomaDAL" as D
+participant ":SesionServicio" as S
+participant ":IdiomaManager" as M
+participant "formulario:IIdiomaObserver" as O
+participant "TraductorFormularios" as T
+A -> F: Seleccionar idioma (idIdioma)
+activate F
+F -> B: CambiarIdioma(idIdioma)
+activate B
+B -> B: CargarIdioma(idIdioma, guardarPreferencia: true)
+B -> D: ObtenerIdiomaPorId(idIdioma)
+activate D
+D --> B: Idioma o null
+deactivate D
+alt [idioma inexistente o inactivo]
+B --> F: InvalidOperationException
+ref over A,F: La excepción interrumpe la operación; no se guarda ni se notifica. OpcionDeIdioma_Click no tiene catch.
+else [idioma válido y activo]
+B -> D: ObtenerTraduccionesPorIdioma(idIdioma)
+activate D
+ref over B,D: ConsultarTraducciones utiliza IntegridadDAL.LeerVerificado; una inconsistencia interrumpe la carga.
+D --> B: List<Traduccion>
+deactivate D
+loop [por cada traducción]
+B -> M: ClaveDe(FormNombre, ControlNombre) «static»
+activate M
+M --> B: clave:string
+deactivate M
+B -> B: diccionario[clave] = traduccion.Texto
+end
+B -> S: ObtenerInstancia() «static»
+activate S
+S --> B: instancia
+B -> S: UsuarioActual {get}
+S --> B: usuario o null
+deactivate S
+alt [usuario es null]
+B --> F: InvalidOperationException
+ref over A,F: No se guarda la preferencia ni se carga el idioma en IdiomaManager.
+else [hay usuario de sesión]
+B -> D: GuardarIdiomaPreferido(usuario.IdUsuario, idIdioma)
+activate D
+ref over B,D: SQL Serializable: exige cuenta e idioma activos; actualiza/inserta UsuarioIdioma y confirma Commit.
+alt [error al guardar]
+D --> B: Excepción
+B --> F: Excepción
+ref over A,F: La operación termina; IdiomaManager todavía no recibió el nuevo idioma.
+else [preferencia guardada]
+D --> B: void
+deactivate D
+B -> M: ObtenerInstancia() «static»
+activate M
+M --> B: instancia
+B -> M: CargarIdioma(idiomaElegido, diccionario)
+M -> M: IdiomaActual = idioma; _traducciones = diccionario
+M -> M: NotificarObservadores()
+loop [por cada formulario suscripto]
+M -> O: ActualizarIdioma()
+activate O
+O -> T: TraducirFormulario(this) «static»
+activate T
+opt [formulario.Tag != null]
+ref over B,T: RegistrarClave(nombreForm, Tag, Text) -> IdiomaBLL.RegistrarClaveNueva; luego Traducir y asignar formulario.Text.
+end
+opt [formulario.MainMenuStrip != null]
+ref over B,T: TraducirMenu(nombreForm, Items): registrar/traducir ítems con Tag string; recorrer submenús recursivamente.
+end
+T -> T: TraducirControles(nombreForm, formulario.Controls)
+loop [por cada control; omitir los que sean Form]
+opt [control.Tag != null]
+T -> T: RegistrarClave(nombreForm, Tag, control.Text)
+T -> B: RegistrarClaveNueva(nombreForm, nombreControl, textoBase)
+ref over B,D: ExisteControl: si existe, return. Si no: ObtenerOCrearControl, ObtenerIdIdiomaPorCodigo("es") y CrearPendientesParaTodosLosIdiomas.
+B --> T: void, si correcto
+T -> T: Traducir(nombreForm, clave, textoOriginal)
+T -> M: ObtenerInstancia().Traducir(nombreForm, clave, textoOriginal)
+M --> T: texto traducido o textoOriginal como respaldo
+T -> T: control.Text = resultado
+end
+opt [control es DataGridView]
+ref over B,T: Por cada columna con Tag: RegistrarClave y Traducir; asignar columna.HeaderText.
+end
+opt [control.HasChildren, tenga Tag o no]
+T -> T: TraducirControles(nombreForm, control.Controls)
+end
+end
+T --> O: void
+deactivate T
+opt [observador es FrmPrincipal]
+ref over F,O: ActualizarIdioma también actualiza marcas del selector, título con usuario/roles y ActualizarMarcoVisual().
+end
+O --> M: void
+deactivate O
+end
+M --> B: void, después de notificar
+deactivate M
+B --> F: void
+F --> A: Interfaz actualizada; preferencia guardada por usuario
+end
+end
+end
+deactivate B
+deactivate F
+note over A,T: Las notificaciones son síncronas. Una excepción en un observador interrumpe el recorrido; no hay rollback de la preferencia ya guardada.
+@enduml

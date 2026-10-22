@@ -1,0 +1,43 @@
+@startuml
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam defaultFontSize 18
+skinparam sequence {
+  ParticipantBackgroundColor #DAE8FC
+  ParticipantBorderColor #8AB2E2
+  LifeLineBorderColor #888888
+  ArrowColor #666666
+  GroupBorderColor #E6AE19
+  GroupHeaderBackgroundColor #FFF4CF
+  GroupBackgroundColor white
+}
+hide footbox
+autonumber
+title R — Recorrido de roles y permisos
+participant "form:FormGestionRoles" as F
+participant "rol:Rol" as R
+participant "permiso:Permiso" as P
+note over F,P: Entrada: CargarRol(nodos:TreeNodeCollection, rol:Rol).\nEste mismo recorrido se usa en catálogo y permisos asignados al usuario.
+note over F,R: CargarRol crea TreeNode(rol.Nombre) y lo agrega a nodos.
+F -> R: Permisos {get}
+R --> F: List<Permiso>
+loop [por cada permiso directo del rol]
+F -> F: CargarNodosRecursivo(nodo, permiso)
+note over F,P: CargarNodosRecursivo crea el nodo del permiso y lo agrega al nodo padre.
+F -> P: ObtenerHijos()
+P --> F: List<Permiso>
+loop [por cada hijo devuelto]
+F -> F: CargarNodosRecursivo(nodoPermiso, hijo)
+ref over F,P: Repetir creación del nodo y recorrido de ObtenerHijos()\npara cada nivel de la jerarquía de permisos.
+end
+end
+F -> R: Roles {get}
+R --> F: List<Rol>
+loop [por cada rol anidado]
+F -> F: CargarRol(nodo.Nodes, hijo)
+ref over F,P: Repetir CargarRol para el rol hijo.
+end
+note over F,P: PermisoSimple devuelve una lista vacía; PermisoCompuesto devuelve sus hijos.\nEl código no usa un if de tipo para decidir si recorre hijos.\nLa consulta a Permiso se resuelve por polimorfismo.
+@enduml
+

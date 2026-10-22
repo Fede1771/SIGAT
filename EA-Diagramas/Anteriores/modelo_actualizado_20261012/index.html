@@ -1,0 +1,1109 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Diagramas actuales de SIGAT</title><style>body{font:16px Segoe UI,Arial,sans-serif;max-width:1200px;margin:40px auto;padding:0 24px;color:#20242c;background:#f7f8fa}h1,h2{color:#111}header,article{background:white;padding:24px;border:1px solid #ddd;border-radius:8px;margin:20px 0}nav{display:flex;gap:16px;flex-wrap:wrap}a{color:#175894}article img{max-width:100%;max-height:720px;display:block;margin:16px auto}details{background:#eee;padding:12px}pre{white-space:pre-wrap;font-size:13px}small{display:block;color:#555}button{font:inherit}</style></head><body><header><h1>Diagramas actuales de SIGAT</h1><p>Modelo, casos de uso y secuencias contrastados con el código y el esquema SQL del 12 de octubre de 2026.</p><nav><a href="SIGAT_Modelo_Actualizado.EAP">Modelo Enterprise Architect</a><a href="TEXTOS_PARA_LA_CARPETA.md">Textos para incorporar</a><a href="README.md">Guía de incorporación</a></nav><p>Elegí SVG para ampliar sin perder calidad o PNG para insertar en Word. Los diagramas de clases muestran los miembros relevantes de cada módulo.</p></header>
+<article id="01_arquitectura"><h2>01 T01 Arquitectura y dependencias reales</h2><nav><a href="diagramas/01_arquitectura.svg" target="_blank">Abrir SVG</a><a href="diagramas/01_arquitectura.png" download>Guardar PNG</a><a href="mermaid/01_arquitectura.mmd" download>Fuente Mermaid</a></nav><a href="diagramas/01_arquitectura.svg" target="_blank"><img loading="lazy" src="diagramas/01_arquitectura.png" alt="T01 Arquitectura y dependencias reales"></a><details><summary>Ver código Mermaid</summary><pre>flowchart TB
+    SIGAT_UI[&quot;SIGAT.UI&quot;]
+    SIGAT_BLL[&quot;SIGAT.BLL&quot;]
+    SIGAT_DAL[&quot;SIGAT.DAL&quot;]
+    SIGAT_BE[&quot;SIGAT.BE&quot;]
+    SIGAT_SERVICIOS[&quot;SIGAT.SERVICIOS&quot;]
+    SIGAT_UI -.-&gt; SIGAT_BLL
+    SIGAT_UI -.-&gt; SIGAT_BE
+    SIGAT_UI -.-&gt; SIGAT_SERVICIOS
+    SIGAT_BLL -.-&gt; SIGAT_DAL
+    SIGAT_BLL -.-&gt; SIGAT_BE
+    SIGAT_BLL -.-&gt; SIGAT_SERVICIOS
+    SIGAT_DAL -.-&gt; SIGAT_BE
+    SIGAT_DAL -.-&gt; SIGAT_SERVICIOS
+    SIGAT_SERVICIOS -.-&gt; SIGAT_BE
+</pre></details></article>
+<article id="02_der"><h2>02 T01 DER físico de SIGAT</h2><nav><a href="diagramas/02_der.svg" target="_blank">Abrir SVG</a><a href="diagramas/02_der.png" download>Guardar PNG</a><a href="mermaid/02_der.mmd" download>Fuente Mermaid</a></nav><a href="diagramas/02_der.svg" target="_blank"><img loading="lazy" src="diagramas/02_der.png" alt="T01 DER físico de SIGAT"></a><details><summary>Ver código Mermaid</summary><pre>erDiagram
+    AdministradorOriginal {
+        int Id PK
+        int IdUsuario FK
+    }
+    Bitacora {
+        int IdBitacora PK
+        datetime Fecha
+        varchar Usuario
+        varchar Actividad
+        nvarchar InformacionAsociada
+        nvarchar DigitoVerificador
+    }
+    Control {
+        int Id PK
+        varchar Control
+        varchar Form
+    }
+    Idioma {
+        int Id PK
+        varchar Nombre
+        varchar Codigo
+        nvarchar NombreNativo
+        bit Activo
+    }
+    IntegridadTabla {
+        nvarchar Tabla PK
+        char HashVertical
+        bigint Cantidad
+        uniqueidentifier IdBase
+        int Version
+    }
+    Permiso {
+        int Id PK
+        nvarchar Nombre
+        bit EsCompuesto
+    }
+    PermisoHijo {
+        int IdPadre PK,FK
+        int IdHijo PK,FK
+    }
+    Rol {
+        int Id PK
+        nvarchar Nombre
+    }
+    RolHijo {
+        int IdPadre PK,FK
+        int IdHijo PK,FK
+    }
+    RolPermiso {
+        int IdRol PK,FK
+        int IdPermiso PK,FK
+    }
+    SeguridadVersion {
+        int Id PK
+        bigint Version
+        int Esquema
+    }
+    Traduccion {
+        int Id_Idioma PK,FK
+        int Id_Control PK,FK
+        nvarchar Texto
+        char DigitoVerificador
+        varchar Estado
+    }
+    UsuarioIdioma {
+        int IdUsuario PK,FK
+        int IdIdioma FK
+    }
+    UsuarioRol {
+        int IdUsuario PK,FK
+        int IdRol PK,FK
+    }
+    Usuarios {
+        int IdUsuario PK
+        varchar NombreUsuario
+        varchar Password
+        varchar Nombre
+        varchar Apellido
+        bit Activo
+    }
+    Usuarios ||--o| AdministradorOriginal : &quot;IdUsuario → IdUsuario&quot;
+    Permiso ||--o{ PermisoHijo : &quot;IdHijo → Id&quot;
+    Permiso ||--o{ PermisoHijo : &quot;IdPadre → Id&quot;
+    Rol ||--o{ RolHijo : &quot;IdHijo → Id&quot;
+    Rol ||--o{ RolHijo : &quot;IdPadre → Id&quot;
+    Permiso ||--o{ RolPermiso : &quot;IdPermiso → Id&quot;
+    Rol ||--o{ RolPermiso : &quot;IdRol → Id&quot;
+    Rol ||--o{ UsuarioRol : &quot;IdRol → Id&quot;
+    Usuarios ||--o{ UsuarioRol : &quot;IdUsuario → IdUsuario&quot;
+    Control ||--o{ Traduccion : &quot;Id_Control → Id&quot;
+    Idioma ||--o{ Traduccion : &quot;Id_Idioma → Id&quot;
+    Idioma ||--o{ UsuarioIdioma : &quot;IdIdioma → Id&quot;
+    Usuarios ||--o| UsuarioIdioma : &quot;IdUsuario → IdUsuario&quot;
+</pre></details></article>
+<article id="03_clases_global"><h2>03 T01 Clases principales y relaciones</h2><nav><a href="diagramas/03_clases_global.svg" target="_blank">Abrir SVG</a><a href="diagramas/03_clases_global.png" download>Guardar PNG</a><a href="mermaid/03_clases_global.mmd" download>Fuente Mermaid</a></nav><a href="diagramas/03_clases_global.svg" target="_blank"><img loading="lazy" src="diagramas/03_clases_global.png" alt="T01 Clases principales y relaciones"></a><details><summary>Ver código Mermaid</summary><pre>classDiagram
+    direction TB
+    class Usuario {
+    }
+    class Rol {
+    }
+    class Permiso {
+        &lt;&lt;abstract&gt;&gt;
+    }
+    class PermisoSimple {
+    }
+    class PermisoCompuesto {
+    }
+    class Idioma {
+    }
+    class Traduccion {
+    }
+    class ControlIdioma {
+    }
+    class Bitacora {
+    }
+    class IBitacoraEvento {
+        &lt;&lt;interface&gt;&gt;
+    }
+    class InformeIntegridad {
+    }
+    class UsuarioBLL {
+    }
+    class RolesBLL {
+    }
+    class IdiomaBLL {
+    }
+    class BitacoraBLL {
+    }
+    class IntegridadBLL {
+    }
+    class UsuarioDAL {
+    }
+    class RolesDAL {
+    }
+    class IdiomaDAL {
+    }
+    class BitacoraDAL {
+    }
+    class IntegridadDAL {
+    }
+    class SesionServicio {
+        &lt;&lt;singleton&gt;&gt;
+    }
+    class IdiomaManager {
+        &lt;&lt;singleton&gt;&gt;
+    }
+    class IIdiomaObserver {
+        &lt;&lt;interface&gt;&gt;
+    }
+    class IIdiomaSubject {
+        &lt;&lt;interface&gt;&gt;
+    }
+    class VerificadorSHA256 {
+        &lt;&lt;static&gt;&gt;
+    }
+    class HashHelper {
+        &lt;&lt;static&gt;&gt;
+    }
+    class EncriptadorServicio {
+    }
+    class FrmPrincipal {
+    }
+    class FrmLogin {
+    }
+    class FrmGestionUsuarios {
+    }
+    class FormGestionRoles {
+    }
+    class FrmGestionIdiomas {
+    }
+    class FrmBitacora {
+    }
+    class FrmIntegridad {
+    }
+    class TraductorFormularios {
+        &lt;&lt;static&gt;&gt;
+    }
+    Bitacora ..|&gt; IBitacoraEvento
+    PermisoCompuesto --|&gt; Permiso
+    PermisoCompuesto &quot;1&quot; --&gt; &quot;0..*&quot; Permiso : hijos
+    PermisoSimple --|&gt; Permiso
+    Rol &quot;1&quot; --&gt; &quot;0..*&quot; Permiso : permisos
+    Usuario &quot;1&quot; --&gt; &quot;0..*&quot; Rol : roles
+    BitacoraBLL &quot;1&quot; --&gt; &quot;1&quot; BitacoraDAL : _dal
+    IdiomaBLL &quot;1&quot; --&gt; &quot;1&quot; IdiomaDAL : _dal
+    IntegridadBLL &quot;1&quot; --&gt; &quot;1&quot; IntegridadDAL : dal
+    RolesBLL &quot;1&quot; --&gt; &quot;1&quot; RolesDAL : dal
+    UsuarioBLL &quot;1&quot; --&gt; &quot;1&quot; UsuarioDAL : _dal
+    UsuarioBLL &quot;1&quot; --&gt; &quot;1&quot; BitacoraBLL : _bitacora
+    BitacoraDAL &quot;1&quot; --&gt; &quot;1&quot; IntegridadDAL : integridad
+    BitacoraDAL &quot;1&quot; --&gt; &quot;1&quot; EncriptadorServicio : encriptador
+    IdiomaDAL &quot;1&quot; --&gt; &quot;1&quot; IntegridadDAL : integridad
+    IdiomaManager ..|&gt; IIdiomaSubject
+    IdiomaManager &quot;1&quot; --&gt; &quot;0..*&quot; IIdiomaObserver : observadores
+    FormGestionRoles ..|&gt; IIdiomaObserver
+    FormGestionRoles &quot;1&quot; --&gt; &quot;0..*&quot; Rol : roles
+    FormGestionRoles &quot;1&quot; --&gt; &quot;0..*&quot; Usuario : usuarios
+    FormGestionRoles &quot;1&quot; --&gt; &quot;1&quot; RolesBLL : rolesBLL
+    FrmBitacora ..|&gt; IIdiomaObserver
+    FrmBitacora &quot;1&quot; --&gt; &quot;1&quot; BitacoraBLL : _bll
+    FrmGestionIdiomas ..|&gt; IIdiomaObserver
+    FrmGestionIdiomas &quot;1&quot; --&gt; &quot;1&quot; IdiomaBLL : _idiomaBLL
+    FrmGestionIdiomas &quot;1&quot; --&gt; &quot;0..*&quot; Traduccion : _traduccionesActuales
+    FrmGestionUsuarios ..|&gt; IIdiomaObserver
+    FrmGestionUsuarios &quot;1&quot; --&gt; &quot;1&quot; UsuarioBLL : _usuarioBLL
+    FrmIntegridad &quot;1&quot; --&gt; &quot;1&quot; IntegridadBLL : servicio
+    FrmIntegridad &quot;1&quot; --&gt; &quot;1&quot; InformeIntegridad : informe
+    FrmLogin &quot;1&quot; --&gt; &quot;1&quot; UsuarioBLL : _usuarioBLL
+    FrmPrincipal ..|&gt; IIdiomaObserver
+    FrmPrincipal &quot;1&quot; --&gt; &quot;1&quot; BitacoraBLL : _bitacora
+    FrmPrincipal &quot;1&quot; --&gt; &quot;1&quot; IdiomaBLL : _idiomaBLL
+    TraductorFormularios &quot;1&quot; --&gt; &quot;1&quot; IdiomaBLL : _idiomaBLL
+    SesionServicio &quot;1&quot; --&gt; &quot;0..1&quot; Usuario : UsuarioActual
+    IdiomaManager &quot;1&quot; --&gt; &quot;0..1&quot; Idioma : IdiomaActual
+    UsuarioBLL ..&gt; IntegridadBLL : ExigirIntegridad
+    UsuarioBLL ..&gt; RolesBLL : CargarRolesUsuario
+    UsuarioBLL ..&gt; SesionServicio : IniciarSesion
+    UsuarioBLL ..&gt; HashHelper : hash de contraseña
+    IdiomaBLL ..&gt; IdiomaManager : CargarIdioma
+    IdiomaBLL ..&gt; SesionServicio : preferencia por usuario
+    FrmPrincipal ..&gt; SesionServicio : sesión actual
+    IntegridadDAL ..&gt; VerificadorSHA256 : DVH y DVV
+    IntegridadDAL ..&gt; EncriptadorServicio : validar cifrado
+    IntegridadBLL ..&gt; SesionServicio : autorizar recuperación
+    TraductorFormularios ..&gt; IdiomaManager : Traducir
+    FrmPrincipal ..&gt; FrmIntegridad : recuperación modal
+    Rol &quot;1&quot; --&gt; &quot;0..*&quot; Rol : roles heredados
+</pre></details></article>
+<article id="04_cu_login_logout"><h2>04 T02 Acceso y cierre de sesión</h2><nav><a href="diagramas/04_cu_login_logout.svg" target="_blank">Abrir SVG</a><a href="diagramas/04_cu_login_logout.png" download>Guardar PNG</a><a href="mermaid/04_cu_login_logout.mmd" download>Fuente Mermaid</a></nav><a href="diagramas/04_cu_login_logout.svg" target="_blank"><img loading="lazy" src="diagramas/04_cu_login_logout.png" alt="T02 Acceso y cierre de sesión"></a><details><summary>Ver código Mermaid</summary><pre>flowchart TB
+    actor[&quot;Usuario&quot;]
+    uc0([&quot;CU01 Iniciar sesión&quot;])
+    uc1([&quot;CU02 Cerrar sesión&quot;])
+    actor --- uc0
+    actor --- uc1
+</pre></details></article>
+<article id="05_clases_login"><h2>05 T02 Clases de autenticación</h2><nav><a href="diagramas/05_clases_login.svg" target="_blank">Abrir SVG</a><a href="diagramas/05_clases_login.png" download>Guardar PNG</a><a href="mermaid/05_clases_login.mmd" download>Fuente Mermaid</a></nav><a href="diagramas/05_clases_login.svg" target="_blank"><img loading="lazy" src="diagramas/05_clases_login.png" alt="T02 Clases de autenticación"></a><details><summary>Ver código Mermaid</summary><pre>classDiagram
+    direction TB
+    class FrmLogin {
+        -BtnLogin_Click(sender: Object, e: EventArgs): void
+    }
+    class UsuarioBLL {
+        +Autenticar(nombreUsuario: string, passwordPlana: string, out usuarioValidado: Usuario): ResultadoLogin
+        +ObtenerTodos(): List~Usuario~
+        +CrearUsuario(nuevoUsuario: Usuario, passwordPlana: string): void
+        +ActualizarUsuario(usuarioEditado: Usuario, passwordPlana: string): void
+        +BajaLogicaUsuario(idUsuario: int, nombreUsuario: string): void
+        +CrearAdministradorInicial(usuario: Usuario, passwordPlana: string): void
+        +ValidarDatos(usuario: Usuario): void$
+    }
+    class UsuarioDAL {
+        +ObtenerPorNombreUsuario(nombreUsuario: string): Usuario
+        +ObtenerTodos(): List~Usuario~
+        +Insertar(usuario: Usuario, administradorInicial: bool): void
+        +Actualizar(usuario: Usuario): void
+        +Eliminar(idUsuario: int): void
+        +EsAdministradorOriginal(idUsuario: int): bool
+    }
+    class Usuario {
+        +EsAdministradorOriginal: bool
+        +Id: int
+        +Roles: List~Rol~
+        +IdUsuario: int
+        +NombreUsuario: string
+        +Password: string
+        +Nombre: string
+        +Apellido: string
+        +Activo: bool
+        +AsignarRol(r: Rol): void
+        +QuitarRol(r: Rol): void
+        +TienePermiso(nombre: string): bool
+    }
+    class HashHelper {
+        &lt;&lt;static&gt;&gt;
+        +ObtenerHashSHA256(texto: string): string$
+    }
+    class SesionServicio {
+        &lt;&lt;singleton&gt;&gt;
+        +UsuarioActual: Usuario
+        +EstaAutenticado: bool
+        +ObtenerInstancia(): SesionServicio$
+        +IniciarSesion(usuarioLogueado: Usuario): void
+        +CerrarSesion(): void
+    }
+    class RolesBLL {
+        +CargarParaGestion(): EstadoRoles
+        +CargarRolesUsuario(usuario: Usuario): void
+        +Guardar(estado: EstadoRoles): void
+        +Validar(estado: EstadoRoles): void$
+    }
+    class BitacoraBLL {
+        +Registrar(evento: IBitacoraEvento): void
+        +Registrar(usuario: string, actividad: string, informacion: string): void
+        +Buscar(desde: Nullable~DateTime~, hasta: Nullable~DateTime~, usuario: string, actividad: string): List~Bitacora~
+    }
+    class IntegridadBLL {
+        +Verificar(): InformeIntegridad
+        +PuedeAdministrar(): bool
+        +InicializarBaseConfiable(): string
+        +CrearRespaldoConfiable(destino: string): string
+        +ArchivarBitacora(dias: int): int
+        +Recuperar(ruta: string, tablasCompletas: bool): InformeIntegridad
+        +ExigirIntegridad(): void
+    }
+    UsuarioBLL &quot;1&quot; --&gt; &quot;1&quot; UsuarioDAL : _dal
+    UsuarioBLL &quot;1&quot; --&gt; &quot;1&quot; BitacoraBLL : _bitacora
+    FrmLogin &quot;1&quot; --&gt; &quot;1&quot; UsuarioBLL : _usuarioBLL
+    SesionServicio &quot;1&quot; --&gt; &quot;0..1&quot; Usuario : UsuarioActual
+    UsuarioBLL ..&gt; IntegridadBLL : ExigirIntegridad
+    UsuarioBLL ..&gt; RolesBLL : CargarRolesUsuario
+    UsuarioBLL ..&gt; SesionServicio : IniciarSesion
+    UsuarioBLL ..&gt; HashHelper : hash de contraseña
+    IntegridadBLL ..&gt; SesionServicio : autorizar recuperación
+</pre></details></article>
+<article id="06_secuencia_login"><h2>06 T02 Inicio de sesión</h2><nav><a href="diagramas/06_secuencia_login.svg" target="_blank">Abrir SVG</a><a href="diagramas/06_secuencia_login.png" download>Guardar PNG</a><a href="mermaid/06_secuencia_login.mmd" download>Fuente Mermaid</a></nav><a href="diagramas/06_secuencia_login.svg" target="_blank"><img loading="lazy" src="diagramas/06_secuencia_login.png" alt="T02 Inicio de sesión"></a><details><summary>Ver código Mermaid</summary><pre>sequenceDiagram
+    autonumber
+    actor actor as Usuario
+    participant ui as FrmLogin
+    participant bll as UsuarioBLL
+    participant iv as IntegridadBLL
+    participant dal as UsuarioDAL
+    participant hash as HashHelper
+    participant roles as RolesBLL
+    participant ses as SesionServicio
+    participant bit as BitacoraBLL
+    actor-&gt;&gt;ui: Ingresar usuario y contraseña
+    ui-&gt;&gt;bll: Autenticar(nombreUsuario, passwordPlana, out usuario)
+    bll-&gt;&gt;iv: ExigirIntegridad()
+    iv--&gt;&gt;bll: Continuar solo si es correcta
+    bll-&gt;&gt;dal: ObtenerPorNombreUsuario(nombreUsuario)
+    dal--&gt;&gt;bll: Usuario o null
+    bll-&gt;&gt;hash: ObtenerHashSHA256(passwordPlana)
+    hash--&gt;&gt;bll: Hash hexadecimal
+    Note over actor,bit: alt usuario inexistente, hash distinto o cuenta inactiva
+    bll-&gt;&gt;bit: Registrar(evento de LoginFallidoFactory)
+    bll--&gt;&gt;ui: CredencialesInvalidas o UsuarioInactivo
+    Note over actor,bit: else credenciales válidas y cuenta activa
+    bll-&gt;&gt;roles: CargarRolesUsuario(usuario)
+    bll-&gt;&gt;ses: IniciarSesion(usuario)
+    bll-&gt;&gt;bit: Registrar(evento de LoginExitosoFactory)
+    bll--&gt;&gt;ui: ResultadoLogin.Exito
+    ui-&gt;&gt;ui: Hide()  FrmPrincipal.ShowDialog()
+    Note over actor,bit: FrmPrincipal.Load restaura el idioma preferido de la cuenta
+</pre></details></article>
+<article id="07_clases_logout"><h2>07 T02 Clases del cierre de sesión</h2><nav><a href="diagramas/07_clases_logout.svg" target="_blank">Abrir SVG</a><a href="diagramas/07_clases_logout.png" download>Guardar PNG</a><a href="mermaid/07_clases_logout.mmd" download>Fuente Mermaid</a></nav><a href="diagramas/07_clases_logout.svg" target="_blank"><img loading="lazy" src="diagramas/07_clases_logout.png" alt="T02 Clases del cierre de sesión"></a><details><summary>Ver código Mermaid</summary><pre>classDiagram
+    direction TB
+    class FrmPrincipal {
+        -ItemLogout_Click(sender: Object, e: EventArgs): void
+    }
+    class SesionServicio {
+        &lt;&lt;singleton&gt;&gt;
+        +UsuarioActual: Usuario
+        +EstaAutenticado: bool
+        +ObtenerInstancia(): SesionServicio$
+        +IniciarSesion(usuarioLogueado: Usuario): void
+        +CerrarSesion(): void
+    }
+    class IdiomaManager {
+        &lt;&lt;singleton&gt;&gt;
+        +IdiomaActual: Idioma
+        +ReiniciarSesion(): void
+    }
+    class BitacoraBLL {
+        +Registrar(evento: IBitacoraEvento): void
+        +Registrar(usuario: string, actividad: string, informacion: string): void
+        +Buscar(desde: Nullable~DateTime~, hasta: Nullable~DateTime~, usuario: string, actividad: string): List~Bitacora~
+    }
+    class BitacoraDAL {
+        +Insertar(registro: Bitacora): void
+        +Buscar(desde: Nullable~DateTime~, hasta: Nullable~DateTime~, usuario: string, actividad: string): List~Bitacora~
+        +VerificarIntegridadBaseDatos(): bool
+    }
+    class IntegridadDAL {
+        +Verificar(): InformeIntegridad
+        +LeerVerificado(leer: Func~SqlConnection, SqlTransaction, T~): T
+        +Cambiar(tabla: string, cambiar: Func~SqlConnection, SqlTransaction, T~): T
+        +PuedeAdministrar(): bool
+        +ArchivarBitacora(dias: int): int
+        +InicializarBaseConfiable(): string
+        +CrearRespaldoConfiable(destino: string): string
+    }
+    class FrmLogin {
+    }
+    BitacoraBLL &quot;1&quot; --&gt; &quot;1&quot; BitacoraDAL : _dal
+    BitacoraDAL &quot;1&quot; --&gt; &quot;1&quot; IntegridadDAL : integridad
+    FrmPrincipal &quot;1&quot; --&gt; &quot;1&quot; BitacoraBLL : _bitacora
+    FrmPrincipal ..&gt; SesionServicio : sesión actual
+</pre></details></article>
+<article id="08_secuencia_logout"><h2>08 T02 Cerrar sesión</h2><nav><a href="diagramas/08_secuencia_logout.svg" target="_blank">Abrir SVG</a><a href="diagramas/08_secuencia_logout.png" download>Guardar PNG</a><a href="mermaid/08_secuencia_logout.mmd" download>Fuente Mermaid</a></nav><a href="diagramas/08_secuencia_logout.svg" target="_blank"><img loading="lazy" src="diagramas/08_secuencia_logout.png" alt="T02 Cerrar sesión"></a><details><summary>Ver código Mermaid</summary><pre>sequenceDiagram
+    autonumber
+    actor actor as Usuario
+    participant ui as FrmPrincipal
+    participant bit as BitacoraBLL
+    participant ses as SesionServicio
+    participant idi as IdiomaManager
+    participant login as FrmLogin
+    actor-&gt;&gt;ui: Cerrar sesión
+    ui-&gt;&gt;bit: Registrar(usuario, &quot;Logout&quot;, información)
+    Note over actor,login: El registro se cifra y guarda mediante la escritura protegida de BitacoraDAL
+    ui-&gt;&gt;ui: CerrarFormularioActual()
+    ui-&gt;&gt;ses: CerrarSesion()
+    ses-&gt;&gt;idi: ReiniciarSesion()
+    ses-&gt;&gt;ses: UsuarioActual = null
+    ui-&gt;&gt;login: Hide()  new FrmLogin().ShowDialog()
+    ui-&gt;&gt;ui: Close() al terminar el diálogo
+</pre></details></article>
+<article id="09_clases_encriptado"><h2>09 T03 Hash de contraseñas y cifrado AES</h2><nav><a href="diagramas/09_clases_encriptado.svg" target="_blank">Abrir SVG</a><a href="diagramas/09_clases_encriptado.png" download>Guardar PNG</a><a href="mermaid/09_clases_encriptado.mmd" download>Fuente Mermaid</a></nav><a href="diagramas/09_clases_encriptado.svg" target="_blank"><img loading="lazy" src="diagramas/09_clases_encriptado.png" alt="T03 Hash de contraseñas y cifrado AES"></a><details><summary>Ver código Mermaid</summary><pre>classDiagram
+    direction TB
+    class HashHelper {
+        &lt;&lt;static&gt;&gt;
+        +ObtenerHashSHA256(texto: string): string$
+    }
+    class EncriptadorServicio {
+        +Encriptar(textoPlano: string): string
+        +Desencriptar(textoEncriptado: string): string
+        +CalcularDV(cadenaConcatenada: string): string
+    }
+    class UsuarioBLL {
+        +Autenticar(nombreUsuario: string, passwordPlana: string, out usuarioValidado: Usuario): ResultadoLogin
+        +CrearUsuario(nuevoUsuario: Usuario, passwordPlana: string): void
+    }
+    class BitacoraDAL {
+        +Insertar(registro: Bitacora): void
+        +Buscar(desde: Nullable~DateTime~, hasta: Nullable~DateTime~, usuario: string, actividad: string): List~Bitacora~
+    }
+    class VerificadorSHA256 {
+        &lt;&lt;static&gt;&gt;
+        +Canonico(valores: Object[]): string$
+        +Hexadecimal(texto: string): string$
+        +Base64(texto: string): string$
+        +Traduccion(idioma: int, control: int, texto: string, estado: string): string$
+        +Bitacora(id: int, fecha: DateTime, usuario: string, actividad: string, cifrado: string): string$
+    }
+    BitacoraDAL &quot;1&quot; --&gt; &quot;1&quot; EncriptadorServicio : encriptador
+    UsuarioBLL ..&gt; HashHelper : hash de contraseña
+</pre></details></article>
+<article id="10_secuencia_encriptado"><h2>10 T03 Cifrado al registrar bitácora</h2><nav><a href="diagramas/10_secuencia_encriptado.svg" target="_blank">Abrir SVG</a><a href="diagramas/10_secuencia_encriptado.png" download>Guardar PNG</a><a href="mermaid/10_secuencia_encriptado.mmd" download>Fuente Mermaid</a></nav><a href="diagramas/10_secuencia_encriptado.svg" target="_blank"><img loading="lazy" src="diagramas/10_secuencia_encriptado.png" alt="T03 Cifrado al registrar bitácora"></a><details><summary>Ver código Mermaid</summary><pre>sequenceDiagram
+    autonumber
+    participant bll as BitacoraBLL
+    participant dal as BitacoraDAL
+    participant iv as IntegridadDAL
+    participant aes as EncriptadorServicio
+    participant sha as VerificadorSHA256
+    bll-&gt;&gt;dal: Insertar(registro)
+    dal-&gt;&gt;iv: Cambiar(&quot;Bitacora&quot;, comando)
+    Note over bll,sha: Transacción Serializable y bloqueo exclusivo  validar DVH y DVV antes
+    dal-&gt;&gt;aes: Encriptar(InformacionAsociada)
+    aes--&gt;&gt;dal: AES CBC con PKCS7, representado en Base64
+    dal-&gt;&gt;dal: INSERT y obtener IdBitacora
+    iv-&gt;&gt;sha: Bitacora(id, fecha SQL, usuario, actividad, cifrado)
+    iv-&gt;&gt;iv: GuardarHash y ActualizarVertical
+    iv-&gt;&gt;iv: Examinar  Commit solo si es correcta
+</pre></details></article>
+<article id="11_cu_roles"><h2>11 T04 Gestión de perfiles y permisos</h2><nav><a href="diagramas/11_cu_roles.svg" target="_blank">Abrir SVG</a><a href="diagramas/11_cu_roles.png" download>Guardar PNG</a><a href="mermaid/11_cu_roles.mmd" download>Fuente Mermaid</a></nav><a href="diagramas/11_cu_roles.svg" target="_blank"><img loading="lazy" src="diagramas/11_cu_roles.png" alt="T04 Gestión de perfiles y permisos"></a><details><summary>Ver código Mermaid</summary><pre>flowchart TB
+    actor[&quot;Administrador&quot;]
+    uc0([&quot;CU04 Asignar o quitar rol a un usuario&quot;])
+    uc1([&quot;Asignar o quitar componentes de un rol&quot;])
+    uc2([&quot;Editar una familia de permisos&quot;])
+    actor --- uc0
+    actor --- uc1
+    actor --- uc2
+</pre></details></article>
+<article id="12_clases_roles"><h2>12 T04 Roles y permisos mediante Composite</h2><nav><a href="diagramas/12_clases_roles.svg" target="_blank">Abrir SVG</a><a href="diagramas/12_clases_roles.png" download>Guardar PNG</a><a href="mermaid/12_clases_roles.mmd" download>Fuente Mermaid</a></nav><a href="diagramas/12_clases_roles.svg" target="_blank"><img loading="lazy" src="diagramas/12_clases_roles.png" alt="T04 Roles y permisos mediante Composite"></a><details><summary>Ver código Mermaid</summary><pre>classDiagram
+    direction TB
+    class FormGestionRoles {
+        -AsignarAUsuario(): void
+        -QuitarAUsuario(): void
+        -AsignarARol(): void
+        -QuitarDeRol(): void
+        -EditarFamilia(): void
+        -Ejecutar(accion: Action): void
+    }
+    class RolesBLL {
+        +CargarParaGestion(): EstadoRoles
+        +CargarRolesUsuario(usuario: Usuario): void
+        +Guardar(estado: EstadoRoles): void
+        +Validar(estado: EstadoRoles): void$
+    }
+    class RolesDAL {
+        +Cargar(): EstadoRoles
+        +Guardar(estado: EstadoRoles): void
+    }
+    class EstadoRoles {
+        +Version: long
+        +IdAdministradorOriginal: int
+        +Roles: List~Rol~
+        +Permisos: List~Permiso~
+        +Usuarios: List~Usuario~
+    }
+    class Usuario {
+        +EsAdministradorOriginal: bool
+        +Id: int
+        +Roles: List~Rol~
+        +IdUsuario: int
+        +NombreUsuario: string
+        +Password: string
+        +Nombre: string
+        +Apellido: string
+        +Activo: bool
+        +AsignarRol(r: Rol): void
+        +QuitarRol(r: Rol): void
+        +TienePermiso(nombre: string): bool
+    }
+    class Rol {
+        +Id: int
+        +Nombre: string
+        +Roles: List~Rol~
+        +Permisos: List~Permiso~
+        +ContieneRol(buscado: Rol): bool
+        +AgregarRol(rol: Rol): void
+        +QuitarRol(rol: Rol): void
+        +AgregarPermiso(permiso: Permiso): void
+        +QuitarPermiso(permiso: Permiso): void
+        +TienePermiso(nombre: string): bool
+    }
+    class Permiso {
+        &lt;&lt;abstract&gt;&gt;
+        +Id: int
+        +Nombre: string
+        +ContienePermiso(nombre: string): bool*
+        +Agregar(permiso: Permiso): void*
+        +Quitar(permiso: Permiso): void*
+        +ObtenerHijos(): List~Permiso~*
+    }
+    class PermisoSimple {
+        +ContienePermiso(nombre: string): bool
+        +Agregar(permiso: Permiso): void
+        +Quitar(permiso: Permiso): void
+        +ObtenerHijos(): List~Permiso~
+    }
+    class PermisoCompuesto {
+        +Agregar(permiso: Permiso): void
+        +Quitar(permiso: Permiso): void
+        +ObtenerHijos(): List~Permiso~
+        +ContienePermiso(nombre: string): bool
+    }
+    class MatrizRoles {
+        &lt;&lt;static&gt;&gt;
+        +CrearCatalogo(): EstadoRoles$
+        +ValidarCatalogo(estado: EstadoRoles): void$
+    }
+    PermisoCompuesto --|&gt; Permiso
+    PermisoCompuesto &quot;1&quot; --&gt; &quot;0..*&quot; Permiso : hijos
+    PermisoSimple --|&gt; Permiso
+    Rol &quot;1&quot; --&gt; &quot;0..*&quot; Permiso : permisos
+    Usuario &quot;1&quot; --&gt; &quot;0..*&quot; Rol : roles
+    RolesBLL &quot;1&quot; --&gt; &quot;1&quot; RolesDAL : dal
+    FormGestionRoles &quot;1&quot; --&gt; &quot;0..*&quot; Rol : roles
+    FormGestionRoles &quot;1&quot; --&gt; &quot;0..*&quot; Usuario : usuarios
+    FormGestionRoles &quot;1&quot; --&gt; &quot;1&quot; EstadoRoles : estado
+    FormGestionRoles &quot;1&quot; --&gt; &quot;1&quot; RolesBLL : rolesBLL
+    EstadoRoles &quot;1&quot; --&gt; &quot;0..*&quot; Usuario : Usuarios
+    EstadoRoles &quot;1&quot; --&gt; &quot;0..*&quot; Rol : Roles
+    EstadoRoles &quot;1&quot; --&gt; &quot;0..*&quot; Permiso : Permisos
+    Rol &quot;1&quot; --&gt; &quot;0..*&quot; Rol : roles heredados
+</pre></details></article>
+<article id="13_secuencia_roles"><h2>13 T04 Asignar rol a usuario</h2><nav><a href="diagramas/13_secuencia_roles.svg" target="_blank">Abrir SVG</a><a href="diagramas/13_secuencia_roles.png" download>Guardar PNG</a><a href="mermaid/13_secuencia_roles.mmd" download>Fuente Mermaid</a></nav><a href="diagramas/13_secuencia_roles.svg" target="_blank"><img loading="lazy" src="diagramas/13_secuencia_roles.png" alt="T04 Asignar rol a usuario"></a><details><summary>Ver código Mermaid</summary><pre>sequenceDiagram
+    autonumber
+    actor actor as Administrador
+    participant ui as FormGestionRoles
+    participant usu as Usuario seleccionado
+    participant bll as RolesBLL
+    participant dal as RolesDAL
+    participant mat as MatrizRoles
+    actor-&gt;&gt;ui: Seleccionar usuario y rol  Asignar rol
+    ui-&gt;&gt;ui: Ejecutar(AsignarAUsuario)
+    ui-&gt;&gt;usu: AsignarRol(rol)
+    Note over actor,mat: AsignarRol ignora la misma referencia si ya está asignada
+    ui-&gt;&gt;bll: Guardar(estado)
+    bll-&gt;&gt;dal: Cargar() para validar autorización actual
+    bll-&gt;&gt;bll: ExigirGestion y Validar(estado)
+    bll-&gt;&gt;mat: ValidarCatalogo(estado)
+    Note over actor,mat: No ciclos  administrador original protegido  debe quedar un administrador activo
+    bll-&gt;&gt;dal: Guardar(estado)
+    Note over actor,mat: Transacción y comparación de SeguridadVersion  si cambió, se cancela
+    ui-&gt;&gt;ui: RefrescarArboles()
+    Note over actor,mat: Los permisos de sesiones ya abiertas se actualizan al volver a iniciar sesión
+</pre></details></article>
+<article id="14_cu_idiomas"><h2>14 T05 Gestión de múltiples idiomas</h2><nav><a href="diagramas/14_cu_idiomas.svg" target="_blank">Abrir SVG</a><a href="diagramas/14_cu_idiomas.png" download>Guardar PNG</a><a href="mermaid/14_cu_idiomas.mmd" download>Fuente Mermaid</a></nav><a href="diagramas/14_cu_idiomas.svg" target="_blank"><img loading="lazy" src="diagramas/14_cu_idiomas.png" alt="T05 Gestión de múltiples idiomas"></a><details><summary>Ver código Mermaid</summary><pre>flowchart TB
+    actor[&quot;Usuario / Administrador&quot;]
+    uc0([&quot;CU05 Cambiar idioma y conservar preferencia&quot;])
+    uc1([&quot;Administrar idiomas y traducciones (Administrador)&quot;])
+    actor --- uc0
+    actor --- uc1
+</pre></details></article>
+<article id="15_clases_idiomas"><h2>15 T05 Observer y traducciones almacenadas en SQL</h2><nav><a href="diagramas/15_clases_idiomas.svg" target="_blank">Abrir SVG</a><a href="diagramas/15_clases_idiomas.png" download>Guardar PNG</a><a href="mermaid/15_clases_idiomas.mmd" download>Fuente Mermaid</a></nav><a href="diagramas/15_clases_idiomas.svg" target="_blank"><img loading="lazy" src="diagramas/15_clases_idiomas.png" alt="T05 Observer y traducciones almacenadas en SQL"></a><details><summary>Ver código Mermaid</summary><pre>classDiagram
+    direction TB
+    class IdiomaManager {
+        &lt;&lt;singleton&gt;&gt;
+        +IdiomaActual: Idioma
+        +ReiniciarSesion(): void
+        +ObtenerInstancia(): IdiomaManager$
+        +Suscribir(observador: IIdiomaObserver): void
+        +Desuscribir(observador: IIdiomaObserver): void
+        +NotificarObservadores(): void
+        +CargarIdioma(idioma: Idioma, traducciones: Dictionary~string, string~): void
+        +Traducir(nombreForm: string, nombreControl: string, textoOriginal: string): string
+    }
+    class IIdiomaSubject {
+        &lt;&lt;interface&gt;&gt;
+        +Suscribir(observador: IIdiomaObserver): void*
+        +Desuscribir(observador: IIdiomaObserver): void*
+        +NotificarObservadores(): void*
+    }
+    class IIdiomaObserver {
+        &lt;&lt;interface&gt;&gt;
+        +ActualizarIdioma(): void*
+    }
+    class IdiomaBLL {
+        +ObtenerIdiomas(): List~Idioma~
+        +ObtenerTodosLosIdiomas(): List~Idioma~
+        +CambiarIdioma(idIdioma: int): void
+        +RestablecerIdiomaUsuario(): void
+        +CrearIdioma(nombre: string, codigo: string, nombreNativo: string, activo: bool): int
+        +CambiarEstadoIdioma(idIdioma: int, activo: bool): void
+        +ObtenerTraduccionesParaGestion(idIdioma: int): List~Traduccion~
+    }
+    class IdiomaDAL {
+        +ObtenerIdiomaPreferido(idUsuario: int): Nullable~int~
+        +GuardarIdiomaPreferido(idUsuario: int, idIdioma: int): void
+        +ObtenerIdiomaPorId(idIdioma: int): Idioma
+        +ObtenerTraduccionesPorIdioma(idIdioma: int): List~Traduccion~
+        +ActualizarTraduccion(idIdioma: int, idControl: int, texto: string, estado: string, digitoVerificador: string): void
+    }
+    class Idioma {
+        +Id: int
+        +Nombre: string
+        +Codigo: string
+        +NombreNativo: string
+        +Activo: bool
+        +ToString(): string
+    }
+    class Traduccion {
+        +IdIdioma: int
+        +IdControl: int
+        +Texto: string
+        +DigitoVerificador: string
+        +ControlNombre: string
+        +FormNombre: string
+        +Estado: string
+        +TextoBase: string
+    }
+    class ControlIdioma {
+        +Id: int
+        +Control: string
+        +Form: string
+    }
+    class TraductorFormularios {
+        &lt;&lt;static&gt;&gt;
+        +TraducirFormulario(formulario: Form): void$
+    }
+    class FrmPrincipal {
+        +ActualizarIdioma(): void
+    }
+    class FrmGestionIdiomas {
+        +ActualizarIdioma(): void
+    }
+    IdiomaBLL &quot;1&quot; --&gt; &quot;1&quot; IdiomaDAL : _dal
+    IdiomaManager ..|&gt; IIdiomaSubject
+    IdiomaManager &quot;1&quot; --&gt; &quot;0..*&quot; IIdiomaObserver : observadores
+    FrmGestionIdiomas ..|&gt; IIdiomaObserver
+    FrmGestionIdiomas &quot;1&quot; --&gt; &quot;1&quot; IdiomaBLL : _idiomaBLL
+    FrmGestionIdiomas &quot;1&quot; --&gt; &quot;0..*&quot; Traduccion : _traduccionesActuales
+    FrmPrincipal ..|&gt; IIdiomaObserver
+    FrmPrincipal &quot;1&quot; --&gt; &quot;1&quot; IdiomaBLL : _idiomaBLL
+    TraductorFormularios &quot;1&quot; --&gt; &quot;1&quot; IdiomaBLL : _idiomaBLL
+    IdiomaManager &quot;1&quot; --&gt; &quot;0..1&quot; Idioma : IdiomaActual
+    IdiomaBLL ..&gt; IdiomaManager : CargarIdioma
+    TraductorFormularios ..&gt; IdiomaManager : Traducir
+</pre></details></article>
+<article id="16_secuencia_idiomas"><h2>16 T05 Cambio de idioma dinámico</h2><nav><a href="diagramas/16_secuencia_idiomas.svg" target="_blank">Abrir SVG</a><a href="diagramas/16_secuencia_idiomas.png" download>Guardar PNG</a><a href="mermaid/16_secuencia_idiomas.mmd" download>Fuente Mermaid</a></nav><a href="diagramas/16_secuencia_idiomas.svg" target="_blank"><img loading="lazy" src="diagramas/16_secuencia_idiomas.png" alt="T05 Cambio de idioma dinámico"></a><details><summary>Ver código Mermaid</summary><pre>sequenceDiagram
+    autonumber
+    actor actor as Usuario
+    participant ui as FrmPrincipal
+    participant bll as IdiomaBLL
+    participant dal as IdiomaDAL
+    participant man as IdiomaManager
+    participant obs as Formulario suscrito
+    participant trad as TraductorFormularios
+    actor-&gt;&gt;ui: Seleccionar un idioma activo
+    ui-&gt;&gt;bll: CambiarIdioma(idIdioma)
+    bll-&gt;&gt;dal: ObtenerIdiomaPorId(idIdioma)
+    Note over actor,trad: Si no existe o está inactivo, se rechaza el cambio
+    bll-&gt;&gt;dal: ObtenerTraduccionesPorIdioma(idIdioma)
+    Note over actor,trad: Lectura verificada  solo completas con texto. Diccionario Form.Control → Texto
+    bll-&gt;&gt;dal: GuardarIdiomaPreferido(idUsuario, idIdioma)
+    bll-&gt;&gt;man: CargarIdioma(idioma, diccionario)
+    man-&gt;&gt;man: NotificarObservadores()
+    Note over actor,trad: loop por cada IIdiomaObserver suscrito
+    man-&gt;&gt;obs: ActualizarIdioma()
+    obs-&gt;&gt;trad: TraducirFormulario(this)
+    Note over actor,trad: Recorrer Tags de título, controles, menús y columnas  registrar claves nuevas
+    trad-&gt;&gt;man: Traducir(form, clave, textoOriginal)
+    man--&gt;&gt;trad: Traducción o texto recibido como respaldo
+    Note over actor,trad: No existe FrmBase ni GestorIdioma en el código actual
+</pre></details></article>
+<article id="17_secuencia_guardar_traduccion"><h2>17 T05 Guardar traducción y actualizar verificadores</h2><nav><a href="diagramas/17_secuencia_guardar_traduccion.svg" target="_blank">Abrir SVG</a><a href="diagramas/17_secuencia_guardar_traduccion.png" download>Guardar PNG</a><a href="mermaid/17_secuencia_guardar_traduccion.mmd" download>Fuente Mermaid</a></nav><a href="diagramas/17_secuencia_guardar_traduccion.svg" target="_blank"><img loading="lazy" src="diagramas/17_secuencia_guardar_traduccion.png" alt="T05 Guardar traducción y actualizar verificadores"></a><details><summary>Ver código Mermaid</summary><pre>sequenceDiagram
+    autonumber
+    actor actor as Administrador
+    participant ui as FrmGestionIdiomas
+    participant bll as IdiomaBLL
+    participant dal as IdiomaDAL
+    participant iv as IntegridadDAL
+    participant sha as VerificadorSHA256
+    actor-&gt;&gt;ui: Editar texto y Guardar traducción
+    ui-&gt;&gt;bll: GuardarTraduccionPorControl(idIdioma, idControl, texto)
+    bll-&gt;&gt;sha: Traduccion(ids, texto, estado)
+    bll-&gt;&gt;dal: ActualizarTraduccion(ids, texto, estado, DV)
+    dal-&gt;&gt;iv: Cambiar(&quot;Traduccion&quot;, comando)
+    Note over actor,sha: Verificar antes  escritura y actualización DVV en la misma transacción
+    dal-&gt;&gt;sha: Traduccion(ids, texto normalizado, estado)
+    dal-&gt;&gt;dal: UPDATE Texto, Estado y DigitoVerificador
+    iv-&gt;&gt;iv: ActualizarVertical  Examinar  Commit
+    ui-&gt;&gt;ui: CargarTraducciones()
+    Note over actor,sha: Guardar texto no notifica automáticamente  Aplicar vuelve a cargar el idioma
+</pre></details></article>
+<article id="18_cu_bitacora"><h2>18 T06 Consulta de bitácora</h2><nav><a href="diagramas/18_cu_bitacora.svg" target="_blank">Abrir SVG</a><a href="diagramas/18_cu_bitacora.png" download>Guardar PNG</a><a href="mermaid/18_cu_bitacora.mmd" download>Fuente Mermaid</a></nav><a href="diagramas/18_cu_bitacora.svg" target="_blank"><img loading="lazy" src="diagramas/18_cu_bitacora.png" alt="T06 Consulta de bitácora"></a><details><summary>Ver código Mermaid</summary><pre>flowchart TB
+    actor[&quot;Usuario con permiso Ver bitácora&quot;]
+    uc0([&quot;CU03 Consultar bitácora con filtros combinados&quot;])
+    actor --- uc0
+</pre></details></article>
+<article id="19_clases_bitacora"><h2>19 T06 Registro y consulta de auditoría</h2><nav><a href="diagramas/19_clases_bitacora.svg" target="_blank">Abrir SVG</a><a href="diagramas/19_clases_bitacora.png" download>Guardar PNG</a><a href="mermaid/19_clases_bitacora.mmd" download>Fuente Mermaid</a></nav><a href="diagramas/19_clases_bitacora.svg" target="_blank"><img loading="lazy" src="diagramas/19_clases_bitacora.png" alt="T06 Registro y consulta de auditoría"></a><details><summary>Ver código Mermaid</summary><pre>classDiagram
+    direction TB
+    class FrmBitacora {
+        -Buscar(): void
+        +ActualizarIdioma(): void
+    }
+    class BitacoraBLL {
+        +Registrar(evento: IBitacoraEvento): void
+        +Registrar(usuario: string, actividad: string, informacion: string): void
+        +Buscar(desde: Nullable~DateTime~, hasta: Nullable~DateTime~, usuario: string, actividad: string): List~Bitacora~
+    }
+    class BitacoraDAL {
+        +Insertar(registro: Bitacora): void
+        +Buscar(desde: Nullable~DateTime~, hasta: Nullable~DateTime~, usuario: string, actividad: string): List~Bitacora~
+        +VerificarIntegridadBaseDatos(): bool
+    }
+    class Bitacora {
+        +IdBitacora: int
+        +Fecha: DateTime
+        +Usuario: string
+        +Actividad: string
+        +InformacionAsociada: string
+        +DigitoVerificador: string
+        +Id: int
+        +IdUsuario: Nullable~int~
+        +IdentificadorUsuario: string
+        +Modulo: BitacoraModulo
+        +Accion: BitacoraAccion
+        +Nivel: BitacoraNivel
+        +Descripcion: string
+        +Equipo: string
+    }
+    class IBitacoraEvento {
+        &lt;&lt;interface&gt;&gt;
+        +Id: int
+        +IdUsuario: Nullable~int~
+        +IdentificadorUsuario: string
+        +Modulo: BitacoraModulo
+        +Accion: BitacoraAccion
+        +Nivel: BitacoraNivel
+        +Descripcion: string
+        +Equipo: string
+        +Fecha: DateTime
+    }
+    class BitacoraFactory {
+        &lt;&lt;abstract&gt;&gt;
+        +Crear(identificadorUsuario: string, descripcion: string): IBitacoraEvento
+        #CrearEvento(): IBitacoraEvento*
+    }
+    class LoginExitosoFactory {
+        #CrearEvento(): IBitacoraEvento
+    }
+    class LoginFallidoFactory {
+        #CrearEvento(): IBitacoraEvento
+    }
+    class GestionUsuariosFactory {
+        #CrearEvento(): IBitacoraEvento
+    }
+    class BitacoraMapper {
+        &lt;&lt;static&gt;&gt;
+        +PrepararParaBaseDeDatos(evento: Bitacora): void$
+    }
+    class EncriptadorServicio {
+        +Encriptar(textoPlano: string): string
+        +Desencriptar(textoEncriptado: string): string
+        +CalcularDV(cadenaConcatenada: string): string
+    }
+    class IntegridadDAL {
+        +Verificar(): InformeIntegridad
+        +LeerVerificado(leer: Func~SqlConnection, SqlTransaction, T~): T
+        +Cambiar(tabla: string, cambiar: Func~SqlConnection, SqlTransaction, T~): T
+        +PuedeAdministrar(): bool
+        +ArchivarBitacora(dias: int): int
+        +InicializarBaseConfiable(): string
+        +CrearRespaldoConfiable(destino: string): string
+    }
+    Bitacora ..|&gt; IBitacoraEvento
+    BitacoraBLL &quot;1&quot; --&gt; &quot;1&quot; BitacoraDAL : _dal
+    GestionUsuariosFactory --|&gt; BitacoraFactory
+    LoginExitosoFactory --|&gt; BitacoraFactory
+    LoginFallidoFactory --|&gt; BitacoraFactory
+    BitacoraDAL &quot;1&quot; --&gt; &quot;1&quot; IntegridadDAL : integridad
+    BitacoraDAL &quot;1&quot; --&gt; &quot;1&quot; EncriptadorServicio : encriptador
+    FrmBitacora &quot;1&quot; --&gt; &quot;1&quot; BitacoraBLL : _bll
+    BitacoraBLL ..&gt; BitacoraMapper : adaptar evento
+    IntegridadDAL ..&gt; EncriptadorServicio : validar cifrado
+</pre></details></article>
+<article id="20_secuencia_bitacora"><h2>20 T06 Consultar bitácora</h2><nav><a href="diagramas/20_secuencia_bitacora.svg" target="_blank">Abrir SVG</a><a href="diagramas/20_secuencia_bitacora.png" download>Guardar PNG</a><a href="mermaid/20_secuencia_bitacora.mmd" download>Fuente Mermaid</a></nav><a href="diagramas/20_secuencia_bitacora.svg" target="_blank"><img loading="lazy" src="diagramas/20_secuencia_bitacora.png" alt="T06 Consultar bitácora"></a><details><summary>Ver código Mermaid</summary><pre>sequenceDiagram
+    autonumber
+    actor actor as Usuario autorizado
+    participant ui as FrmBitacora
+    participant bll as BitacoraBLL
+    participant dal as BitacoraDAL
+    participant iv as IntegridadDAL
+    participant aes as EncriptadorServicio
+    actor-&gt;&gt;ui: Elegir fechas, usuario y actividad  Buscar
+    ui-&gt;&gt;bll: Buscar(desde?, hasta?, usuario, actividad)
+    bll-&gt;&gt;dal: Buscar(desde, hasta, usuario, actividad)
+    dal-&gt;&gt;iv: LeerVerificado(consulta)
+    Note over actor,aes: Transacción Serializable y bloqueo compartido  verificar antes de leer
+    dal-&gt;&gt;dal: SELECT filtrado por AND  LIKE  Fecha DESC
+    Note over actor,aes: loop por cada registro obtenido
+    dal-&gt;&gt;aes: Desencriptar(InformacionAsociada)
+    dal--&gt;&gt;bll: List&lt;Bitacora&gt;
+    bll--&gt;&gt;ui: Lista verificada y descifrada
+    ui-&gt;&gt;ui: dgv.DataSource = lista
+    Note over actor,aes: Si no hay coincidencias, la grilla queda vacía  ante corrupción se bloquea la lectura
+</pre></details></article>
+<article id="21_cu_integridad"><h2>21 T07 Control y recuperación de integridad</h2><nav><a href="diagramas/21_cu_integridad.svg" target="_blank">Abrir SVG</a><a href="diagramas/21_cu_integridad.png" download>Guardar PNG</a><a href="mermaid/21_cu_integridad.mmd" download>Fuente Mermaid</a></nav><a href="diagramas/21_cu_integridad.svg" target="_blank"><img loading="lazy" src="diagramas/21_cu_integridad.png" alt="T07 Control y recuperación de integridad"></a><details><summary>Ver código Mermaid</summary><pre>flowchart TB
+    actor[&quot;Administrador de SIGAT y SQL&quot;]
+    uc0([&quot;Verificar integridad&quot;])
+    uc1([&quot;Crear respaldo comprobado&quot;])
+    uc2([&quot;Recuperar registros o tablas afectadas&quot;])
+    uc3([&quot;Preparar referencia inicial solo una vez&quot;])
+    uc4([&quot;Archivar bitácora anterior a 180 días&quot;])
+    actor --- uc0
+    actor --- uc1
+    actor --- uc2
+    actor --- uc3
+    actor --- uc4
+</pre></details></article>
+<article id="22_clases_integridad"><h2>22 T07 SHA256 DVH DVV y recuperación</h2><nav><a href="diagramas/22_clases_integridad.svg" target="_blank">Abrir SVG</a><a href="diagramas/22_clases_integridad.png" download>Guardar PNG</a><a href="mermaid/22_clases_integridad.mmd" download>Fuente Mermaid</a></nav><a href="diagramas/22_clases_integridad.svg" target="_blank"><img loading="lazy" src="diagramas/22_clases_integridad.png" alt="T07 SHA256 DVH DVV y recuperación"></a><details><summary>Ver código Mermaid</summary><pre>classDiagram
+    direction TB
+    class FrmIntegridad {
+        -Operar(accion: Func~string~, mostrarRuta: bool): Task
+    }
+    class IntegridadBLL {
+        +Verificar(): InformeIntegridad
+        +PuedeAdministrar(): bool
+        +InicializarBaseConfiable(): string
+        +CrearRespaldoConfiable(destino: string): string
+        +ArchivarBitacora(dias: int): int
+        +Recuperar(ruta: string, tablasCompletas: bool): InformeIntegridad
+        +ExigirIntegridad(): void
+    }
+    class IntegridadDAL {
+        -Examinar(c: SqlConnection, t: SqlTransaction): Estado$
+        +Verificar(): InformeIntegridad
+        +LeerVerificado(leer: Func~SqlConnection, SqlTransaction, T~): T
+        +Cambiar(tabla: string, cambiar: Func~SqlConnection, SqlTransaction, T~): T
+        +InicializarBaseConfiable(): string
+        +CrearRespaldoConfiable(destino: string): string
+        +Recuperar(ruta: string, restaurarTablasCompletas: bool): InformeIntegridad
+    }
+    class InformeIntegridad {
+        +Configurada: bool
+        +Problemas: List~ProblemaIntegridad~
+        +Correcta: bool
+    }
+    class ProblemaIntegridad {
+        +Tabla: string
+        +Registro: string
+        +Motivo: string
+    }
+    class IntegridadException {
+        +Informe: InformeIntegridad
+    }
+    class VerificadorSHA256 {
+        &lt;&lt;static&gt;&gt;
+        +Canonico(valores: Object[]): string$
+        +Hexadecimal(texto: string): string$
+        +Base64(texto: string): string$
+        +Traduccion(idioma: int, control: int, texto: string, estado: string): string$
+        +Bitacora(id: int, fecha: DateTime, usuario: string, actividad: string, cifrado: string): string$
+    }
+    class EncriptadorServicio {
+        +Encriptar(textoPlano: string): string
+        +Desencriptar(textoEncriptado: string): string
+        +CalcularDV(cadenaConcatenada: string): string
+    }
+    IntegridadBLL &quot;1&quot; --&gt; &quot;1&quot; IntegridadDAL : dal
+    FrmIntegridad &quot;1&quot; --&gt; &quot;1&quot; IntegridadBLL : servicio
+    FrmIntegridad &quot;1&quot; --&gt; &quot;1&quot; InformeIntegridad : informe
+    InformeIntegridad &quot;1&quot; --&gt; &quot;0..*&quot; ProblemaIntegridad : Problemas
+    IntegridadException &quot;1&quot; --&gt; &quot;1&quot; InformeIntegridad : Informe
+    IntegridadDAL ..&gt; VerificadorSHA256 : DVH y DVV
+    IntegridadDAL ..&gt; EncriptadorServicio : validar cifrado
+</pre></details></article>
+<article id="23_secuencia_verificacion"><h2>23 T07 Verificar y bloquear datos alterados</h2><nav><a href="diagramas/23_secuencia_verificacion.svg" target="_blank">Abrir SVG</a><a href="diagramas/23_secuencia_verificacion.png" download>Guardar PNG</a><a href="mermaid/23_secuencia_verificacion.mmd" download>Fuente Mermaid</a></nav><a href="diagramas/23_secuencia_verificacion.svg" target="_blank"><img loading="lazy" src="diagramas/23_secuencia_verificacion.png" alt="T07 Verificar y bloquear datos alterados"></a><details><summary>Ver código Mermaid</summary><pre>sequenceDiagram
+    autonumber
+    participant ui as Program / FrmIntegridad
+    participant bll as IntegridadBLL
+    participant dal as IntegridadDAL
+    participant sha as VerificadorSHA256
+    participant aes as EncriptadorServicio
+    ui-&gt;&gt;bll: Verificar()
+    bll-&gt;&gt;dal: Verificar()
+    dal-&gt;&gt;dal: Transacción Serializable  bloqueo compartido  Examinar
+    Note over ui,aes: loop Bitacora y Traduccion, ordenadas por sus claves
+    dal-&gt;&gt;sha: Recalcular SHA-256 de cada fila (DVH)
+    dal-&gt;&gt;dal: Comparar DVH calculado con guardado
+    dal-&gt;&gt;aes: Desencriptar para comprobar el cifrado de Bitacora
+    dal-&gt;&gt;sha: Hexadecimal(Canonico(tabla,cantidad) + claves y hashes)
+    dal-&gt;&gt;dal: Comparar DVV, cantidad, Version e IdBase
+    dal--&gt;&gt;bll: InformeIntegridad con Problemas
+    bll--&gt;&gt;ui: InformeIntegridad
+    Note over ui,aes: Correcta = Configurada y sin problemas. Si falla el inicio, abrir recuperación y bloquear login
+</pre></details></article>
+<article id="24_secuencia_respaldo"><h2>24 T07 Crear y exportar respaldo comprobado</h2><nav><a href="diagramas/24_secuencia_respaldo.svg" target="_blank">Abrir SVG</a><a href="diagramas/24_secuencia_respaldo.png" download>Guardar PNG</a><a href="mermaid/24_secuencia_respaldo.mmd" download>Fuente Mermaid</a></nav><a href="diagramas/24_secuencia_respaldo.svg" target="_blank"><img loading="lazy" src="diagramas/24_secuencia_respaldo.png" alt="T07 Crear y exportar respaldo comprobado"></a><details><summary>Ver código Mermaid</summary><pre>sequenceDiagram
+    autonumber
+    actor actor as Administrador
+    participant ui as FrmIntegridad
+    participant bll as IntegridadBLL
+    participant dal as IntegridadDAL
+    participant aux as Base auxiliar
+    actor-&gt;&gt;ui: Crear respaldo  elegir archivo .bak
+    ui-&gt;&gt;bll: CrearRespaldoConfiable(destino)
+    bll-&gt;&gt;dal: CrearRespaldoConfiable(destino)
+    Note over actor,aux: Exigir permisos  verificar estado actual  no sobrescribir archivos existentes
+    dal-&gt;&gt;dal: PrepararCarpetaCompartida  BACKUP COPY_ONLY CHECKSUM
+    dal-&gt;&gt;aux: RESTORE VERIFYONLY y restauración con MOVE
+    dal-&gt;&gt;aux: Examinar DVH y DVV del respaldo
+    aux--&gt;&gt;dal: Integridad correcta
+    dal-&gt;&gt;dal: Eliminar base auxiliar  ExportarRespaldo
+    Note over actor,aux: Copiar con permisos del usuario  comparar SHA-256 del archivo  finalizar .bak
+    dal--&gt;&gt;ui: Ruta del respaldo comprobado
+    Note over actor,aux: Si falla la exportación, conservar copia local e informar su ruta
+</pre></details></article>
+<article id="25_secuencia_recuperacion"><h2>25 T07 Recuperar datos desde un respaldo</h2><nav><a href="diagramas/25_secuencia_recuperacion.svg" target="_blank">Abrir SVG</a><a href="diagramas/25_secuencia_recuperacion.png" download>Guardar PNG</a><a href="mermaid/25_secuencia_recuperacion.mmd" download>Fuente Mermaid</a></nav><a href="diagramas/25_secuencia_recuperacion.svg" target="_blank"><img loading="lazy" src="diagramas/25_secuencia_recuperacion.png" alt="T07 Recuperar datos desde un respaldo"></a><details><summary>Ver código Mermaid</summary><pre>sequenceDiagram
+    autonumber
+    actor actor as Administrador
+    participant ui as FrmIntegridad
+    participant bll as IntegridadBLL
+    participant dal as IntegridadDAL
+    participant aux as Base auxiliar
+    actor-&gt;&gt;ui: Seleccionar .bak y confirmar recuperación
+    ui-&gt;&gt;bll: Recuperar(ruta, tablasCompletas)
+    bll-&gt;&gt;dal: Recuperar(ruta, restaurarTablasCompletas)
+    dal-&gt;&gt;aux: Preparar copia accesible  restaurar y verificar respaldo
+    Note over actor,aux: Debe tener DVH y DVV válidos y el mismo IdBase
+    dal-&gt;&gt;dal: Transacción Serializable y bloqueo exclusivo
+    Note over actor,aux: alt recuperación por registros
+    dal-&gt;&gt;dal: Restaurar filas afectadas o eliminadas desde el respaldo
+    Note over actor,aux: Si no se conserva la referencia actual, rollback: respaldo insuficiente
+    Note over actor,aux: else restauración completa explícitamente confirmada
+    dal-&gt;&gt;dal: Reemplazar tablas protegidas afectadas y sus controles
+    Note over actor,aux: Se descartan los cambios de esas tablas posteriores al respaldo
+    dal-&gt;&gt;dal: Examinar  Commit solo si todo es correcto
+    dal--&gt;&gt;ui: InformeIntegridad correcto
+    Note over actor,aux: Eliminar auxiliares  registrar recuperación fuera de la Bitacora protegida
+</pre></details></article>
+<article id="26_clases_usuarios"><h2>26 Gestión de cuentas y baja lógica</h2><nav><a href="diagramas/26_clases_usuarios.svg" target="_blank">Abrir SVG</a><a href="diagramas/26_clases_usuarios.png" download>Guardar PNG</a><a href="mermaid/26_clases_usuarios.mmd" download>Fuente Mermaid</a></nav><a href="diagramas/26_clases_usuarios.svg" target="_blank"><img loading="lazy" src="diagramas/26_clases_usuarios.png" alt="Gestión de cuentas y baja lógica"></a><details><summary>Ver código Mermaid</summary><pre>classDiagram
+    direction TB
+    class FrmGestionUsuarios {
+        -BtnGuardar_Click(sender: Object, e: EventArgs): void
+        -BtnEliminar_Click(sender: Object, e: EventArgs): void
+    }
+    class UsuarioBLL {
+        +CrearUsuario(nuevoUsuario: Usuario, passwordPlana: string): void
+        +ActualizarUsuario(usuarioEditado: Usuario, passwordPlana: string): void
+        +BajaLogicaUsuario(idUsuario: int, nombreUsuario: string): void
+        +ValidarDatos(usuario: Usuario): void$
+    }
+    class UsuarioDAL {
+        +ObtenerPorNombreUsuario(nombreUsuario: string): Usuario
+        +ObtenerTodos(): List~Usuario~
+        +Insertar(usuario: Usuario, administradorInicial: bool): void
+        +Actualizar(usuario: Usuario): void
+        +Eliminar(idUsuario: int): void
+        +EsAdministradorOriginal(idUsuario: int): bool
+    }
+    class Usuario {
+        +EsAdministradorOriginal: bool
+        +Id: int
+        +Roles: List~Rol~
+        +IdUsuario: int
+        +NombreUsuario: string
+        +Password: string
+        +Nombre: string
+        +Apellido: string
+        +Activo: bool
+        +AsignarRol(r: Rol): void
+        +QuitarRol(r: Rol): void
+        +TienePermiso(nombre: string): bool
+    }
+    class RolesBLL {
+        +CargarParaGestion(): EstadoRoles
+        +CargarRolesUsuario(usuario: Usuario): void
+        +Guardar(estado: EstadoRoles): void
+        +Validar(estado: EstadoRoles): void$
+    }
+    class BitacoraBLL {
+        +Registrar(evento: IBitacoraEvento): void
+        +Registrar(usuario: string, actividad: string, informacion: string): void
+        +Buscar(desde: Nullable~DateTime~, hasta: Nullable~DateTime~, usuario: string, actividad: string): List~Bitacora~
+    }
+    class GestionUsuariosFactory {
+        #CrearEvento(): IBitacoraEvento
+    }
+    class HashHelper {
+        &lt;&lt;static&gt;&gt;
+        +ObtenerHashSHA256(texto: string): string$
+    }
+    UsuarioBLL &quot;1&quot; --&gt; &quot;1&quot; UsuarioDAL : _dal
+    UsuarioBLL &quot;1&quot; --&gt; &quot;1&quot; BitacoraBLL : _bitacora
+    FrmGestionUsuarios &quot;1&quot; --&gt; &quot;1&quot; UsuarioBLL : _usuarioBLL
+    UsuarioBLL ..&gt; RolesBLL : CargarRolesUsuario
+    UsuarioBLL ..&gt; HashHelper : hash de contraseña
+</pre></details></article>
+<article id="27_secuencia_alta_usuario"><h2>27 Crear una cuenta y registrar su alta</h2><nav><a href="diagramas/27_secuencia_alta_usuario.svg" target="_blank">Abrir SVG</a><a href="diagramas/27_secuencia_alta_usuario.png" download>Guardar PNG</a><a href="mermaid/27_secuencia_alta_usuario.mmd" download>Fuente Mermaid</a></nav><a href="diagramas/27_secuencia_alta_usuario.svg" target="_blank"><img loading="lazy" src="diagramas/27_secuencia_alta_usuario.png" alt="Crear una cuenta y registrar su alta"></a><details><summary>Ver código Mermaid</summary><pre>sequenceDiagram
+    autonumber
+    actor actor as Administrador
+    participant ui as FrmGestionUsuarios
+    participant bll as UsuarioBLL
+    participant dal as UsuarioDAL
+    participant hash as HashHelper
+    participant bit as BitacoraBLL
+    actor-&gt;&gt;ui: Completar usuario, nombre, apellido y contraseña
+    ui-&gt;&gt;bll: CrearUsuario(usuario, passwordPlana)
+    bll-&gt;&gt;bll: ValidarDatos(usuario)
+    bll-&gt;&gt;dal: ObtenerPorNombreUsuario(nombre)
+    Note over actor,bit: Nombre único y campos obligatorios  si no, cancelar
+    bll-&gt;&gt;hash: ObtenerHashSHA256(passwordPlana)
+    bll-&gt;&gt;dal: Insertar(usuario)
+    bll-&gt;&gt;bit: Registrar(evento de GestionUsuariosFactory(AltaUsuario))
+    ui-&gt;&gt;ui: Limpiar()  CargarGrilla()
+    Note over actor,bit: La escritura de Usuarios y su auditoría son operaciones separadas en el código
+</pre></details></article>
+<article id="28_secuencia_preferencia"><h2>28 Restaurar el idioma propio al iniciar sesión</h2><nav><a href="diagramas/28_secuencia_preferencia.svg" target="_blank">Abrir SVG</a><a href="diagramas/28_secuencia_preferencia.png" download>Guardar PNG</a><a href="mermaid/28_secuencia_preferencia.mmd" download>Fuente Mermaid</a></nav><a href="diagramas/28_secuencia_preferencia.svg" target="_blank"><img loading="lazy" src="diagramas/28_secuencia_preferencia.png" alt="Restaurar el idioma propio al iniciar sesión"></a><details><summary>Ver código Mermaid</summary><pre>sequenceDiagram
+    autonumber
+    participant ui as FrmPrincipal
+    participant bll as IdiomaBLL
+    participant ses as SesionServicio
+    participant dal as IdiomaDAL
+    participant man as IdiomaManager
+    ui-&gt;&gt;man: Suscribir(this)
+    ui-&gt;&gt;bll: RestablecerIdiomaUsuario()
+    bll-&gt;&gt;ses: Leer UsuarioActual.IdUsuario
+    bll-&gt;&gt;dal: ObtenerIdiomas() y ObtenerIdiomaPreferido(idUsuario)
+    Note over ui,man: Elegir preferido activo  si no, español activo o primer idioma activo
+    bll-&gt;&gt;bll: CargarIdioma(id, guardarPreferencia: false)
+    bll-&gt;&gt;dal: ObtenerIdiomaPorId y ObtenerTraduccionesPorIdioma
+    bll-&gt;&gt;man: CargarIdioma(idioma, diccionario)
+    man-&gt;&gt;man: NotificarObservadores()
+    Note over ui,man: El idioma alternativo no reemplaza la preferencia guardada si esta está inactiva
+</pre></details></article>
+<article id="29_secuencia_inicializacion"><h2>29 Preparación inicial de integridad</h2><nav><a href="diagramas/29_secuencia_inicializacion.svg" target="_blank">Abrir SVG</a><a href="diagramas/29_secuencia_inicializacion.png" download>Guardar PNG</a><a href="mermaid/29_secuencia_inicializacion.mmd" download>Fuente Mermaid</a></nav><a href="diagramas/29_secuencia_inicializacion.svg" target="_blank"><img loading="lazy" src="diagramas/29_secuencia_inicializacion.png" alt="Preparación inicial de integridad"></a><details><summary>Ver código Mermaid</summary><pre>sequenceDiagram
+    autonumber
+    actor actor as Administrador SQL
+    participant ui as FrmIntegridad
+    participant bll as IntegridadBLL
+    participant dal as IntegridadDAL
+    actor-&gt;&gt;ui: Confirmar referencia inicial confiable
+    ui-&gt;&gt;bll: InicializarBaseConfiable()
+    bll-&gt;&gt;dal: InicializarBaseConfiable()
+    Note over actor,dal: Exigir permisos y rechazar si ya hay controles inicializados
+    dal-&gt;&gt;dal: CrearArchivoBackup(&quot;antes_integridad&quot;)
+    dal-&gt;&gt;dal: Transacción  ValidarLegado por fila
+    Note over actor,dal: Discrepancias no reconocidas cancelan  solo compatibilidad de redondeo documentada
+    dal-&gt;&gt;dal: GuardarHash  crear DVV con IdBase nuevo
+    dal-&gt;&gt;dal: Examinar  Commit
+    dal-&gt;&gt;dal: CrearRespaldoConfiable()
+    dal--&gt;&gt;ui: Ruta del respaldo final comprobado
+</pre></details></article>
+<article id="30_secuencia_archivar"><h2>30 Archivar bitácora manteniendo el DVV</h2><nav><a href="diagramas/30_secuencia_archivar.svg" target="_blank">Abrir SVG</a><a href="diagramas/30_secuencia_archivar.png" download>Guardar PNG</a><a href="mermaid/30_secuencia_archivar.mmd" download>Fuente Mermaid</a></nav><a href="diagramas/30_secuencia_archivar.svg" target="_blank"><img loading="lazy" src="diagramas/30_secuencia_archivar.png" alt="Archivar bitácora manteniendo el DVV"></a><details><summary>Ver código Mermaid</summary><pre>sequenceDiagram
+    autonumber
+    actor actor as Administrador
+    participant ui as FrmIntegridad
+    participant bll as IntegridadBLL
+    participant dal as IntegridadDAL
+    actor-&gt;&gt;ui: Archivar bitácora antigua y confirmar
+    ui-&gt;&gt;bll: ArchivarBitacora(180)
+    bll-&gt;&gt;dal: ArchivarBitacora(180)
+    dal-&gt;&gt;dal: ExigirAdministrador  Cambiar(&quot;Bitacora&quot;, comando)
+    Note over actor,dal: Verificación inicial y bloqueo exclusivo dentro de una transacción
+    dal-&gt;&gt;dal: DELETE OUTPUT INTO Bitacora_Historico para fecha anterior al límite
+    dal-&gt;&gt;dal: ActualizarVertical  Examinar  Commit
+    dal--&gt;&gt;ui: Cantidad de eventos archivados
+    Note over actor,dal: Bitacora_Historico se crea cuando se usa  no tiene DVV propio
+</pre></details></article>
+</body></html>

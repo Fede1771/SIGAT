@@ -1,0 +1,25 @@
+sequenceDiagram
+    autonumber
+    actor actor as Usuario
+    participant ui as FrmPrincipal
+    participant bll as IdiomaBLL
+    participant dal as IdiomaDAL
+    participant man as IdiomaManager
+    participant obs as Formulario suscrito
+    participant trad as TraductorFormularios
+    actor->>ui: Seleccionar un idioma activo
+    ui->>bll: CambiarIdioma(idIdioma)
+    bll->>dal: ObtenerIdiomaPorId(idIdioma)
+    Note over actor,trad: Si no existe o está inactivo, se rechaza el cambio
+    bll->>dal: ObtenerTraduccionesPorIdioma(idIdioma)
+    Note over actor,trad: Lectura verificada  solo completas con texto. Diccionario Form.Control → Texto
+    bll->>dal: GuardarIdiomaPreferido(idUsuario, idIdioma)
+    bll->>man: CargarIdioma(idioma, diccionario)
+    man->>man: NotificarObservadores()
+    Note over actor,trad: loop por cada IIdiomaObserver suscrito
+    man->>obs: ActualizarIdioma()
+    obs->>trad: TraducirFormulario(this)
+    Note over actor,trad: Recorrer Tags de título, controles, menús y columnas  registrar claves nuevas
+    trad->>man: Traducir(form, clave, textoOriginal)
+    man-->>trad: Traducción o texto recibido como respaldo
+    Note over actor,trad: No existe FrmBase ni GestorIdioma en el código actual

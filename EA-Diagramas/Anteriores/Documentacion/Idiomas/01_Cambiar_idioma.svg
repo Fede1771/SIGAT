@@ -1,0 +1,295 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="3300" height="3516" viewBox="0 0 3300 3516">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<line x1="200.0" y1="200" x2="200.0" y2="3496" stroke="#a5bbd8" stroke-dasharray="6 6"/>
+<line x1="614.2857142857142" y1="200" x2="614.2857142857142" y2="3496" stroke="#a5bbd8" stroke-dasharray="6 6"/>
+<line x1="1028.5714285714284" y1="200" x2="1028.5714285714284" y2="3496" stroke="#a5bbd8" stroke-dasharray="6 6"/>
+<line x1="1442.857142857143" y1="200" x2="1442.857142857143" y2="3496" stroke="#a5bbd8" stroke-dasharray="6 6"/>
+<line x1="1857.142857142857" y1="200" x2="1857.142857142857" y2="3496" stroke="#a5bbd8" stroke-dasharray="6 6"/>
+<line x1="2271.4285714285716" y1="200" x2="2271.4285714285716" y2="3496" stroke="#a5bbd8" stroke-dasharray="6 6"/>
+<line x1="2685.714285714286" y1="200" x2="2685.714285714286" y2="3496" stroke="#a5bbd8" stroke-dasharray="6 6"/>
+<line x1="3100.0" y1="200" x2="3100.0" y2="3496" stroke="#a5bbd8" stroke-dasharray="6 6"/>
+<rect x="1435.857142857143" y="389" width="14" height="48" fill="white" stroke="#8ab2e2" stroke-width="2"/>
+<rect x="1435.857142857143" y="656" width="14" height="98" fill="white" stroke="#8ab2e2" stroke-width="2"/>
+<rect x="2264.4285714285716" y="837" width="14" height="48" fill="white" stroke="#8ab2e2" stroke-width="2"/>
+<rect x="1850.142857142857" y="995" width="14" height="136" fill="white" stroke="#8ab2e2" stroke-width="2"/>
+<rect x="1435.857142857143" y="1350" width="14" height="321" fill="white" stroke="#8ab2e2" stroke-width="2"/>
+<rect x="3093.0" y="2046" width="14" height="1044" fill="white" stroke="#8ab2e2" stroke-width="2"/>
+<rect x="2678.714285714286" y="2002" width="14" height="1237" fill="white" stroke="#8ab2e2" stroke-width="2"/>
+<rect x="2264.4285714285716" y="1711" width="14" height="1584" fill="white" stroke="#8ab2e2" stroke-width="2"/>
+<rect x="1021.5714285714284" y="287" width="14" height="3132" fill="white" stroke="#8ab2e2" stroke-width="2"/>
+<rect x="607.2857142857142" y="243" width="14" height="3176" fill="white" stroke="#8ab2e2" stroke-width="2"/>
+<text x="1650.0" y="52" text-anchor="middle" font-family="Segoe UI" font-size="32" font-weight="700">DIAGRAMA DE SECUENCIA — CAMBIAR IDIOMA DE LA INTERFAZ</text>
+<circle cx="200.0" cy="87" r="12" fill="none" stroke="#666666"/>
+<line x1="200.0" y1="99" x2="200.0" y2="131" stroke="#333333" stroke-width="2"/>
+<line x1="180.0" y1="111" x2="220.0" y2="111" stroke="#333333" stroke-width="2"/>
+<line x1="200.0" y1="131" x2="182.0" y2="153" stroke="#333333" stroke-width="2"/>
+<line x1="200.0" y1="131" x2="218.0" y2="153" stroke="#333333" stroke-width="2"/>
+<text x="200.0" y="182" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">Usuario</text>
+<rect x="434.2857142857142" y="91" width="360" height="53" fill="#dae8fc" stroke="#8ab2e2" stroke-width="2"/>
+<text x="614.2857142857142" y="128" text-anchor="middle" font-family="Segoe UI" font-size="24" font-weight="700">:FrmPrincipal</text>
+<rect x="848.5714285714284" y="91" width="360" height="53" fill="#dae8fc" stroke="#8ab2e2" stroke-width="2"/>
+<text x="1028.5714285714284" y="128" text-anchor="middle" font-family="Segoe UI" font-size="24" font-weight="700">:IdiomaBLL</text>
+<rect x="1262.857142857143" y="91" width="360" height="53" fill="#dae8fc" stroke="#8ab2e2" stroke-width="2"/>
+<text x="1442.857142857143" y="128" text-anchor="middle" font-family="Segoe UI" font-size="24" font-weight="700">:IdiomaDAL</text>
+<rect x="1677.142857142857" y="91" width="360" height="53" fill="#dae8fc" stroke="#8ab2e2" stroke-width="2"/>
+<text x="1857.142857142857" y="128" text-anchor="middle" font-family="Segoe UI" font-size="24" font-weight="700">:SesionServicio</text>
+<rect x="2091.4285714285716" y="91" width="360" height="53" fill="#dae8fc" stroke="#8ab2e2" stroke-width="2"/>
+<text x="2271.4285714285716" y="128" text-anchor="middle" font-family="Segoe UI" font-size="24" font-weight="700">:IdiomaManager</text>
+<rect x="2505.714285714286" y="91" width="360" height="53" fill="#dae8fc" stroke="#8ab2e2" stroke-width="2"/>
+<text x="2685.714285714286" y="128" text-anchor="middle" font-family="Segoe UI" font-size="24" font-weight="700">formulario:IIdiomaObserver</text>
+<rect x="2920.0" y="91" width="360" height="53" fill="#dae8fc" stroke="#8ab2e2" stroke-width="2"/>
+<text x="3100.0" y="128" text-anchor="middle" font-family="Segoe UI" font-size="24" font-weight="700">TraductorFormularios</text>
+<text x="407.1428571428571" y="238" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">1. Seleccionar idioma (idIdioma)</text>
+<line x1="200.0" y1="246" x2="614.2857142857142" y2="246" stroke="#333333" stroke-width="2"/>
+<polygon points="614.2857142857142,246 604.2857142857142,241 604.2857142857142,251" fill="#333333"/>
+<text x="821.4285714285713" y="282" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">2. CambiarIdioma(idIdioma)</text>
+<line x1="614.2857142857142" y1="290" x2="1028.5714285714284" y2="290" stroke="#333333" stroke-width="2"/>
+<polygon points="1028.5714285714284,290 1018.5714285714284,285 1018.5714285714284,295" fill="#333333"/>
+<text x="1228.5714285714284" y="326" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">3. CargarIdioma(idIdioma, guardarPreferencia: true)</text>
+<line x1="1028.5714285714284" y1="334" x2="1068.5714285714284" y2="334" stroke="#333333" stroke-width="2"/>
+<line x1="1068.5714285714284" y1="334" x2="1068.5714285714284" y2="348" stroke="#333333" stroke-width="2"/>
+<line x1="1068.5714285714284" y1="348" x2="1028.5714285714284" y2="348" stroke="#333333" stroke-width="2"/>
+<polygon points="1028.5714285714284,348 1038.5714285714284,343 1038.5714285714284,353" fill="#333333"/>
+<text x="1235.7142857142858" y="384" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">4. ObtenerIdiomaPorId(idIdioma)</text>
+<line x1="1028.5714285714284" y1="392" x2="1442.857142857143" y2="392" stroke="#333333" stroke-width="2"/>
+<polygon points="1442.857142857143,392 1432.857142857143,387 1432.857142857143,397" fill="#333333"/>
+<text x="1235.7142857142858" y="428" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">5. Idioma o null</text>
+<line x1="1442.857142857143" y1="436" x2="1028.5714285714284" y2="436" stroke="#333333" stroke-width="2" stroke-dasharray="6 6"/>
+<polygon points="1028.5714285714284,436 1038.5714285714284,431 1038.5714285714284,441" fill="#333333"/>
+<rect x="32" y="449" width="60" height="32" fill="#fff0d4" stroke="#e6ae19" stroke-width="2"/>
+<text x="62" y="474" text-anchor="middle" font-family="Segoe UI" font-size="24" font-weight="700">alt</text>
+<text x="1650.0" y="473" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">[idioma inexistente o inactivo]</text>
+<text x="821.4285714285713" y="515" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">6. InvalidOperationException</text>
+<line x1="1028.5714285714284" y1="523" x2="614.2857142857142" y2="523" stroke="#333333" stroke-width="2" stroke-dasharray="6 6"/>
+<polygon points="614.2857142857142,523 624.2857142857142,518 624.2857142857142,528" fill="#333333"/>
+<rect x="55" y="536" width="3190" height="40" fill="#fffaf0" stroke="#e6ae19" stroke-width="2"/>
+<text x="1650.0" y="564" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">ref — La excepción interrumpe la operación; no se guarda ni se notifica. OpcionDeIdioma_Click no tiene catch.</text>
+<line x1="32" y1="586" x2="3268" y2="586" stroke="#e6ae19" stroke-width="2" stroke-dasharray="6 6"/>
+<text x="1650.0" y="615" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">[idioma válido y activo]</text>
+<text x="1235.7142857142858" y="651" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">7. ObtenerTraduccionesPorIdioma(idIdioma)</text>
+<line x1="1028.5714285714284" y1="659" x2="1442.857142857143" y2="659" stroke="#333333" stroke-width="2"/>
+<polygon points="1442.857142857143,659 1432.857142857143,654 1432.857142857143,664" fill="#333333"/>
+<rect x="55" y="672" width="3190" height="40" fill="#fffaf0" stroke="#e6ae19" stroke-width="2"/>
+<text x="1650.0" y="700" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">ref — ConsultarTraducciones utiliza IntegridadDAL.LeerVerificado; una inconsistencia interrumpe la carga.</text>
+<text x="1235.7142857142858" y="745" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">8. List&lt;Traduccion&gt;</text>
+<line x1="1442.857142857143" y1="753" x2="1028.5714285714284" y2="753" stroke="#333333" stroke-width="2" stroke-dasharray="6 6"/>
+<polygon points="1028.5714285714284,753 1038.5714285714284,748 1038.5714285714284,758" fill="#333333"/>
+<rect x="43" y="766" width="60" height="32" fill="#fff0d4" stroke="#e6ae19" stroke-width="2"/>
+<text x="73" y="791" text-anchor="middle" font-family="Segoe UI" font-size="24" font-weight="700">loop</text>
+<text x="1650.0" y="790" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">[por cada traducción]</text>
+<text x="1650.0" y="832" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">9. ClaveDe(FormNombre, ControlNombre) «static»</text>
+<line x1="1028.5714285714284" y1="840" x2="2271.4285714285716" y2="840" stroke="#333333" stroke-width="2"/>
+<polygon points="2271.4285714285716,840 2261.4285714285716,835 2261.4285714285716,845" fill="#333333"/>
+<text x="1650.0" y="876" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">10. clave:string</text>
+<line x1="2271.4285714285716" y1="884" x2="1028.5714285714284" y2="884" stroke="#333333" stroke-width="2" stroke-dasharray="6 6"/>
+<polygon points="1028.5714285714284,884 1038.5714285714284,879 1038.5714285714284,889" fill="#333333"/>
+<text x="1228.5714285714284" y="920" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">11. diccionario[clave] = traduccion.Texto</text>
+<line x1="1028.5714285714284" y1="928" x2="1068.5714285714284" y2="928" stroke="#333333" stroke-width="2"/>
+<line x1="1068.5714285714284" y1="928" x2="1068.5714285714284" y2="942" stroke="#333333" stroke-width="2"/>
+<line x1="1068.5714285714284" y1="942" x2="1028.5714285714284" y2="942" stroke="#333333" stroke-width="2"/>
+<polygon points="1028.5714285714284,942 1038.5714285714284,937 1038.5714285714284,947" fill="#333333"/>
+<line x1="43" y1="766" x2="43" y2="955" stroke="#e6ae19" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="3257" y1="766" x2="3257" y2="955" stroke="#e6ae19" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="43" y1="955" x2="3257" y2="955" stroke="#e6ae19" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="103" y1="766" x2="3257" y2="766" stroke="#e6ae19" stroke-width="2" stroke-dasharray="6 6"/>
+<text x="1442.8571428571427" y="990" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">12. ObtenerInstancia() «static»</text>
+<line x1="1028.5714285714284" y1="998" x2="1857.142857142857" y2="998" stroke="#333333" stroke-width="2"/>
+<polygon points="1857.142857142857,998 1847.142857142857,993 1847.142857142857,1003" fill="#333333"/>
+<text x="1442.8571428571427" y="1034" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">13. instancia</text>
+<line x1="1857.142857142857" y1="1042" x2="1028.5714285714284" y2="1042" stroke="#333333" stroke-width="2" stroke-dasharray="6 6"/>
+<polygon points="1028.5714285714284,1042 1038.5714285714284,1037 1038.5714285714284,1047" fill="#333333"/>
+<text x="1442.8571428571427" y="1078" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">14. UsuarioActual {get}</text>
+<line x1="1028.5714285714284" y1="1086" x2="1857.142857142857" y2="1086" stroke="#333333" stroke-width="2"/>
+<polygon points="1857.142857142857,1086 1847.142857142857,1081 1847.142857142857,1091" fill="#333333"/>
+<text x="1442.8571428571427" y="1122" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">15. usuario o null</text>
+<line x1="1857.142857142857" y1="1130" x2="1028.5714285714284" y2="1130" stroke="#333333" stroke-width="2" stroke-dasharray="6 6"/>
+<polygon points="1028.5714285714284,1130 1038.5714285714284,1125 1038.5714285714284,1135" fill="#333333"/>
+<rect x="43" y="1143" width="60" height="32" fill="#fff0d4" stroke="#e6ae19" stroke-width="2"/>
+<text x="73" y="1168" text-anchor="middle" font-family="Segoe UI" font-size="24" font-weight="700">alt</text>
+<text x="1650.0" y="1167" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">[usuario es null]</text>
+<text x="821.4285714285713" y="1209" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">16. InvalidOperationException</text>
+<line x1="1028.5714285714284" y1="1217" x2="614.2857142857142" y2="1217" stroke="#333333" stroke-width="2" stroke-dasharray="6 6"/>
+<polygon points="614.2857142857142,1217 624.2857142857142,1212 624.2857142857142,1222" fill="#333333"/>
+<rect x="55" y="1230" width="3190" height="40" fill="#fffaf0" stroke="#e6ae19" stroke-width="2"/>
+<text x="1650.0" y="1258" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">ref — No se guarda la preferencia ni se carga el idioma en IdiomaManager.</text>
+<line x1="43" y1="1280" x2="3257" y2="1280" stroke="#e6ae19" stroke-width="2" stroke-dasharray="6 6"/>
+<text x="1650.0" y="1309" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">[hay usuario de sesión]</text>
+<text x="1235.7142857142858" y="1345" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">17. GuardarIdiomaPreferido(usuario.IdUsuario, idIdioma)</text>
+<line x1="1028.5714285714284" y1="1353" x2="1442.857142857143" y2="1353" stroke="#333333" stroke-width="2"/>
+<polygon points="1442.857142857143,1353 1432.857142857143,1348 1432.857142857143,1358" fill="#333333"/>
+<rect x="55" y="1366" width="3190" height="40" fill="#fffaf0" stroke="#e6ae19" stroke-width="2"/>
+<text x="1650.0" y="1394" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">ref — SQL Serializable: exige cuenta e idioma activos; actualiza/inserta UsuarioIdioma y confirma Commit.</text>
+<rect x="54" y="1416" width="60" height="32" fill="#fff0d4" stroke="#e6ae19" stroke-width="2"/>
+<text x="84" y="1441" text-anchor="middle" font-family="Segoe UI" font-size="24" font-weight="700">alt</text>
+<text x="1650.0" y="1440" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">[error al guardar]</text>
+<text x="1235.7142857142858" y="1482" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">18. Excepción</text>
+<line x1="1442.857142857143" y1="1490" x2="1028.5714285714284" y2="1490" stroke="#333333" stroke-width="2" stroke-dasharray="6 6"/>
+<polygon points="1028.5714285714284,1490 1038.5714285714284,1485 1038.5714285714284,1495" fill="#333333"/>
+<text x="821.4285714285713" y="1526" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">19. Excepción</text>
+<line x1="1028.5714285714284" y1="1534" x2="614.2857142857142" y2="1534" stroke="#333333" stroke-width="2" stroke-dasharray="6 6"/>
+<polygon points="614.2857142857142,1534 624.2857142857142,1529 624.2857142857142,1539" fill="#333333"/>
+<rect x="55" y="1547" width="3190" height="40" fill="#fffaf0" stroke="#e6ae19" stroke-width="2"/>
+<text x="1650.0" y="1575" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">ref — La operación termina; IdiomaManager todavía no recibió el nuevo idioma.</text>
+<line x1="54" y1="1597" x2="3246" y2="1597" stroke="#e6ae19" stroke-width="2" stroke-dasharray="6 6"/>
+<text x="1650.0" y="1626" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">[preferencia guardada]</text>
+<text x="1235.7142857142858" y="1662" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">20. void</text>
+<line x1="1442.857142857143" y1="1670" x2="1028.5714285714284" y2="1670" stroke="#333333" stroke-width="2" stroke-dasharray="6 6"/>
+<polygon points="1028.5714285714284,1670 1038.5714285714284,1665 1038.5714285714284,1675" fill="#333333"/>
+<text x="1650.0" y="1706" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">21. ObtenerInstancia() «static»</text>
+<line x1="1028.5714285714284" y1="1714" x2="2271.4285714285716" y2="1714" stroke="#333333" stroke-width="2"/>
+<polygon points="2271.4285714285716,1714 2261.4285714285716,1709 2261.4285714285716,1719" fill="#333333"/>
+<text x="1650.0" y="1750" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">22. instancia</text>
+<line x1="2271.4285714285716" y1="1758" x2="1028.5714285714284" y2="1758" stroke="#333333" stroke-width="2" stroke-dasharray="6 6"/>
+<polygon points="1028.5714285714284,1758 1038.5714285714284,1753 1038.5714285714284,1763" fill="#333333"/>
+<text x="1650.0" y="1794" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">23. CargarIdioma(idiomaElegido, diccionario)</text>
+<line x1="1028.5714285714284" y1="1802" x2="2271.4285714285716" y2="1802" stroke="#333333" stroke-width="2"/>
+<polygon points="2271.4285714285716,1802 2261.4285714285716,1797 2261.4285714285716,1807" fill="#333333"/>
+<text x="2471.4285714285716" y="1838" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">24. IdiomaActual = idioma; _traducciones = diccionario</text>
+<line x1="2271.4285714285716" y1="1846" x2="2311.4285714285716" y2="1846" stroke="#333333" stroke-width="2"/>
+<line x1="2311.4285714285716" y1="1846" x2="2311.4285714285716" y2="1860" stroke="#333333" stroke-width="2"/>
+<line x1="2311.4285714285716" y1="1860" x2="2271.4285714285716" y2="1860" stroke="#333333" stroke-width="2"/>
+<polygon points="2271.4285714285716,1860 2281.4285714285716,1855 2281.4285714285716,1865" fill="#333333"/>
+<text x="2471.4285714285716" y="1896" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">25. NotificarObservadores()</text>
+<line x1="2271.4285714285716" y1="1904" x2="2311.4285714285716" y2="1904" stroke="#333333" stroke-width="2"/>
+<line x1="2311.4285714285716" y1="1904" x2="2311.4285714285716" y2="1918" stroke="#333333" stroke-width="2"/>
+<line x1="2311.4285714285716" y1="1918" x2="2271.4285714285716" y2="1918" stroke="#333333" stroke-width="2"/>
+<polygon points="2271.4285714285716,1918 2281.4285714285716,1913 2281.4285714285716,1923" fill="#333333"/>
+<rect x="65" y="1931" width="60" height="32" fill="#fff0d4" stroke="#e6ae19" stroke-width="2"/>
+<text x="95" y="1956" text-anchor="middle" font-family="Segoe UI" font-size="24" font-weight="700">loop</text>
+<text x="1650.0" y="1955" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">[por cada formulario suscripto]</text>
+<text x="2478.5714285714284" y="1997" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">26. ActualizarIdioma()</text>
+<line x1="2271.4285714285716" y1="2005" x2="2685.714285714286" y2="2005" stroke="#333333" stroke-width="2"/>
+<polygon points="2685.714285714286,2005 2675.714285714286,2000 2675.714285714286,2010" fill="#333333"/>
+<text x="2892.857142857143" y="2041" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">27. TraducirFormulario(this) «static»</text>
+<line x1="2685.714285714286" y1="2049" x2="3100.0" y2="2049" stroke="#333333" stroke-width="2"/>
+<polygon points="3100.0,2049 3090.0,2044 3090.0,2054" fill="#333333"/>
+<rect x="76" y="2062" width="60" height="32" fill="#fff0d4" stroke="#e6ae19" stroke-width="2"/>
+<text x="106" y="2087" text-anchor="middle" font-family="Segoe UI" font-size="24" font-weight="700">opt</text>
+<text x="1650.0" y="2086" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">[formulario.Tag != null]</text>
+<rect x="55" y="2105" width="3190" height="40" fill="#fffaf0" stroke="#e6ae19" stroke-width="2"/>
+<text x="1650.0" y="2133" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">ref — RegistrarClave(nombreForm, Tag, Text) -&gt; IdiomaBLL.RegistrarClaveNueva; luego Traducir y asignar formulario.Text.</text>
+<line x1="76" y1="2062" x2="76" y2="2155" stroke="#e6ae19" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="3224" y1="2062" x2="3224" y2="2155" stroke="#e6ae19" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="76" y1="2155" x2="3224" y2="2155" stroke="#e6ae19" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="136" y1="2062" x2="3224" y2="2062" stroke="#e6ae19" stroke-width="2" stroke-dasharray="6 6"/>
+<rect x="76" y="2167" width="60" height="32" fill="#fff0d4" stroke="#e6ae19" stroke-width="2"/>
+<text x="106" y="2192" text-anchor="middle" font-family="Segoe UI" font-size="24" font-weight="700">opt</text>
+<text x="1650.0" y="2191" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">[formulario.MainMenuStrip != null]</text>
+<rect x="55" y="2210" width="3190" height="40" fill="#fffaf0" stroke="#e6ae19" stroke-width="2"/>
+<text x="1650.0" y="2238" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">ref — TraducirMenu(nombreForm, Items): registrar/traducir ítems con Tag string; recorrer submenús recursivamente.</text>
+<line x1="76" y1="2167" x2="76" y2="2260" stroke="#e6ae19" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="3224" y1="2167" x2="3224" y2="2260" stroke="#e6ae19" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="76" y1="2260" x2="3224" y2="2260" stroke="#e6ae19" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="136" y1="2167" x2="3224" y2="2167" stroke="#e6ae19" stroke-width="2" stroke-dasharray="6 6"/>
+<text x="2860" y="2295" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">28. TraducirControles(nombreForm, formulario.Controls)</text>
+<line x1="3100.0" y1="2303" x2="3140.0" y2="2303" stroke="#333333" stroke-width="2"/>
+<line x1="3140.0" y1="2303" x2="3140.0" y2="2317" stroke="#333333" stroke-width="2"/>
+<line x1="3140.0" y1="2317" x2="3100.0" y2="2317" stroke="#333333" stroke-width="2"/>
+<polygon points="3100.0,2317 3110.0,2312 3110.0,2322" fill="#333333"/>
+<rect x="76" y="2330" width="60" height="32" fill="#fff0d4" stroke="#e6ae19" stroke-width="2"/>
+<text x="106" y="2355" text-anchor="middle" font-family="Segoe UI" font-size="24" font-weight="700">loop</text>
+<text x="1650.0" y="2354" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">[por cada control; omitir los que sean Form]</text>
+<rect x="87" y="2373" width="60" height="32" fill="#fff0d4" stroke="#e6ae19" stroke-width="2"/>
+<text x="117" y="2398" text-anchor="middle" font-family="Segoe UI" font-size="24" font-weight="700">opt</text>
+<text x="1650.0" y="2397" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">[control.Tag != null]</text>
+<text x="2860" y="2439" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">29. RegistrarClave(nombreForm, Tag, control.Text)</text>
+<line x1="3100.0" y1="2447" x2="3140.0" y2="2447" stroke="#333333" stroke-width="2"/>
+<line x1="3140.0" y1="2447" x2="3140.0" y2="2461" stroke="#333333" stroke-width="2"/>
+<line x1="3140.0" y1="2461" x2="3100.0" y2="2461" stroke="#333333" stroke-width="2"/>
+<polygon points="3100.0,2461 3110.0,2456 3110.0,2466" fill="#333333"/>
+<text x="2064.285714285714" y="2497" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">30. RegistrarClaveNueva(nombreForm, nombreControl, textoBase)</text>
+<line x1="3100.0" y1="2505" x2="1028.5714285714284" y2="2505" stroke="#333333" stroke-width="2"/>
+<polygon points="1028.5714285714284,2505 1038.5714285714284,2500 1038.5714285714284,2510" fill="#333333"/>
+<rect x="55" y="2518" width="3190" height="40" fill="#fffaf0" stroke="#e6ae19" stroke-width="2"/>
+<text x="1650.0" y="2546" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">ref — ExisteControl: si existe, return. Si no: ObtenerOCrearControl, ObtenerIdIdiomaPorCodigo(&quot;es&quot;) y CrearPendientesParaTodosLosIdiomas.</text>
+<text x="2064.285714285714" y="2591" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">31. void, si correcto</text>
+<line x1="1028.5714285714284" y1="2599" x2="3100.0" y2="2599" stroke="#333333" stroke-width="2" stroke-dasharray="6 6"/>
+<polygon points="3100.0,2599 3090.0,2594 3090.0,2604" fill="#333333"/>
+<text x="2860" y="2635" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">32. Traducir(nombreForm, clave, textoOriginal)</text>
+<line x1="3100.0" y1="2643" x2="3140.0" y2="2643" stroke="#333333" stroke-width="2"/>
+<line x1="3140.0" y1="2643" x2="3140.0" y2="2657" stroke="#333333" stroke-width="2"/>
+<line x1="3140.0" y1="2657" x2="3100.0" y2="2657" stroke="#333333" stroke-width="2"/>
+<polygon points="3100.0,2657 3110.0,2652 3110.0,2662" fill="#333333"/>
+<text x="2685.714285714286" y="2693" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">33. ObtenerInstancia().Traducir(nombreForm, clave, textoOriginal)</text>
+<line x1="3100.0" y1="2701" x2="2271.4285714285716" y2="2701" stroke="#333333" stroke-width="2"/>
+<polygon points="2271.4285714285716,2701 2281.4285714285716,2696 2281.4285714285716,2706" fill="#333333"/>
+<text x="2685.714285714286" y="2737" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">34. texto traducido o textoOriginal como respaldo</text>
+<line x1="2271.4285714285716" y1="2745" x2="3100.0" y2="2745" stroke="#333333" stroke-width="2" stroke-dasharray="6 6"/>
+<polygon points="3100.0,2745 3090.0,2740 3090.0,2750" fill="#333333"/>
+<text x="2860" y="2781" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">35. control.Text = resultado</text>
+<line x1="3100.0" y1="2789" x2="3140.0" y2="2789" stroke="#333333" stroke-width="2"/>
+<line x1="3140.0" y1="2789" x2="3140.0" y2="2803" stroke="#333333" stroke-width="2"/>
+<line x1="3140.0" y1="2803" x2="3100.0" y2="2803" stroke="#333333" stroke-width="2"/>
+<polygon points="3100.0,2803 3110.0,2798 3110.0,2808" fill="#333333"/>
+<line x1="87" y1="2373" x2="87" y2="2816" stroke="#e6ae19" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="3213" y1="2373" x2="3213" y2="2816" stroke="#e6ae19" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="87" y1="2816" x2="3213" y2="2816" stroke="#e6ae19" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="147" y1="2373" x2="3213" y2="2373" stroke="#e6ae19" stroke-width="2" stroke-dasharray="6 6"/>
+<rect x="87" y="2828" width="60" height="32" fill="#fff0d4" stroke="#e6ae19" stroke-width="2"/>
+<text x="117" y="2853" text-anchor="middle" font-family="Segoe UI" font-size="24" font-weight="700">opt</text>
+<text x="1650.0" y="2852" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">[control es DataGridView]</text>
+<rect x="55" y="2871" width="3190" height="40" fill="#fffaf0" stroke="#e6ae19" stroke-width="2"/>
+<text x="1650.0" y="2899" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">ref — Por cada columna con Tag: RegistrarClave y Traducir; asignar columna.HeaderText.</text>
+<line x1="87" y1="2828" x2="87" y2="2921" stroke="#e6ae19" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="3213" y1="2828" x2="3213" y2="2921" stroke="#e6ae19" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="87" y1="2921" x2="3213" y2="2921" stroke="#e6ae19" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="147" y1="2828" x2="3213" y2="2828" stroke="#e6ae19" stroke-width="2" stroke-dasharray="6 6"/>
+<rect x="87" y="2933" width="60" height="32" fill="#fff0d4" stroke="#e6ae19" stroke-width="2"/>
+<text x="117" y="2958" text-anchor="middle" font-family="Segoe UI" font-size="24" font-weight="700">opt</text>
+<text x="1650.0" y="2957" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">[control.HasChildren, tenga Tag o no]</text>
+<text x="2860" y="2999" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">36. TraducirControles(nombreForm, control.Controls)</text>
+<line x1="3100.0" y1="3007" x2="3140.0" y2="3007" stroke="#333333" stroke-width="2"/>
+<line x1="3140.0" y1="3007" x2="3140.0" y2="3021" stroke="#333333" stroke-width="2"/>
+<line x1="3140.0" y1="3021" x2="3100.0" y2="3021" stroke="#333333" stroke-width="2"/>
+<polygon points="3100.0,3021 3110.0,3016 3110.0,3026" fill="#333333"/>
+<line x1="87" y1="2933" x2="87" y2="3034" stroke="#e6ae19" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="3213" y1="2933" x2="3213" y2="3034" stroke="#e6ae19" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="87" y1="3034" x2="3213" y2="3034" stroke="#e6ae19" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="147" y1="2933" x2="3213" y2="2933" stroke="#e6ae19" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="76" y1="2330" x2="76" y2="3046" stroke="#e6ae19" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="3224" y1="2330" x2="3224" y2="3046" stroke="#e6ae19" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="76" y1="3046" x2="3224" y2="3046" stroke="#e6ae19" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="136" y1="2330" x2="3224" y2="2330" stroke="#e6ae19" stroke-width="2" stroke-dasharray="6 6"/>
+<text x="2892.857142857143" y="3081" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">37. void</text>
+<line x1="3100.0" y1="3089" x2="2685.714285714286" y2="3089" stroke="#333333" stroke-width="2" stroke-dasharray="6 6"/>
+<polygon points="2685.714285714286,3089 2695.714285714286,3084 2695.714285714286,3094" fill="#333333"/>
+<rect x="76" y="3102" width="60" height="32" fill="#fff0d4" stroke="#e6ae19" stroke-width="2"/>
+<text x="106" y="3127" text-anchor="middle" font-family="Segoe UI" font-size="24" font-weight="700">opt</text>
+<text x="1650.0" y="3126" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">[observador es FrmPrincipal]</text>
+<rect x="55" y="3145" width="3190" height="40" fill="#fffaf0" stroke="#e6ae19" stroke-width="2"/>
+<text x="1650.0" y="3173" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">ref — ActualizarIdioma también actualiza marcas del selector, título con usuario/roles y ActualizarMarcoVisual().</text>
+<line x1="76" y1="3102" x2="76" y2="3195" stroke="#e6ae19" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="3224" y1="3102" x2="3224" y2="3195" stroke="#e6ae19" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="76" y1="3195" x2="3224" y2="3195" stroke="#e6ae19" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="136" y1="3102" x2="3224" y2="3102" stroke="#e6ae19" stroke-width="2" stroke-dasharray="6 6"/>
+<text x="2478.5714285714284" y="3230" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">38. void</text>
+<line x1="2685.714285714286" y1="3238" x2="2271.4285714285716" y2="3238" stroke="#333333" stroke-width="2" stroke-dasharray="6 6"/>
+<polygon points="2271.4285714285716,3238 2281.4285714285716,3233 2281.4285714285716,3243" fill="#333333"/>
+<line x1="65" y1="1931" x2="65" y2="3251" stroke="#e6ae19" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="3235" y1="1931" x2="3235" y2="3251" stroke="#e6ae19" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="65" y1="3251" x2="3235" y2="3251" stroke="#e6ae19" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="125" y1="1931" x2="3235" y2="1931" stroke="#e6ae19" stroke-width="2" stroke-dasharray="6 6"/>
+<text x="1650.0" y="3286" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">39. void, después de notificar</text>
+<line x1="2271.4285714285716" y1="3294" x2="1028.5714285714284" y2="3294" stroke="#333333" stroke-width="2" stroke-dasharray="6 6"/>
+<polygon points="1028.5714285714284,3294 1038.5714285714284,3289 1038.5714285714284,3299" fill="#333333"/>
+<text x="821.4285714285713" y="3330" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">40. void</text>
+<line x1="1028.5714285714284" y1="3338" x2="614.2857142857142" y2="3338" stroke="#333333" stroke-width="2" stroke-dasharray="6 6"/>
+<polygon points="614.2857142857142,3338 624.2857142857142,3333 624.2857142857142,3343" fill="#333333"/>
+<text x="407.1428571428571" y="3374" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">41. Interfaz actualizada; preferencia guardada por usuario</text>
+<line x1="614.2857142857142" y1="3382" x2="200.0" y2="3382" stroke="#333333" stroke-width="2" stroke-dasharray="6 6"/>
+<polygon points="200.0,3382 210.0,3377 210.0,3387" fill="#333333"/>
+<line x1="54" y1="1416" x2="54" y2="3395" stroke="#e6ae19" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="3246" y1="1416" x2="3246" y2="3395" stroke="#e6ae19" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="54" y1="3395" x2="3246" y2="3395" stroke="#e6ae19" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="114" y1="1416" x2="3246" y2="1416" stroke="#e6ae19" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="43" y1="1143" x2="43" y2="3407" stroke="#e6ae19" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="3257" y1="1143" x2="3257" y2="3407" stroke="#e6ae19" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="43" y1="3407" x2="3257" y2="3407" stroke="#e6ae19" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="103" y1="1143" x2="3257" y2="1143" stroke="#e6ae19" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="32" y1="449" x2="32" y2="3419" stroke="#e6ae19" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="3268" y1="449" x2="3268" y2="3419" stroke="#e6ae19" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="32" y1="3419" x2="3268" y2="3419" stroke="#e6ae19" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="92" y1="449" x2="3268" y2="449" stroke="#e6ae19" stroke-width="2" stroke-dasharray="6 6"/>
+<rect x="55" y="3431" width="3190" height="40" fill="#fffaf0" stroke="#e6ae19" stroke-width="2"/>
+<text x="1650.0" y="3459" text-anchor="middle" font-family="Segoe UI" font-size="23" font-weight="400">Las notificaciones son síncronas. Una excepción en un observador interrumpe el recorrido; no hay rollback de la preferencia ya guardada.</text>
+</svg>

@@ -1,0 +1,12 @@
+digraph G {
+graph [rankdir=TB, bgcolor="white", pad="0.25", nodesep="0.55", ranksep="0.7", splines=polyline, dpi=72];
+node [fontname="Arial", fontsize=12, color="#404040"];
+edge [fontname="Arial", fontsize=9, color="#555555", arrowsize=0.8];
+"HashHelper" [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="8"><TR><TD BGCOLOR="#edf2f7"><B>HashHelper</B><BR/>«static»</TD></TR><TR><TD ALIGN="LEFT"><U>+ObtenerHashSHA256(texto: string): string</U><BR ALIGN="LEFT"/></TD></TR></TABLE>>];
+"EncriptadorServicio" [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="8"><TR><TD BGCOLOR="#edf2f7"><B>EncriptadorServicio</B></TD></TR><TR><TD ALIGN="LEFT">+Encriptar(textoPlano: string): string<BR ALIGN="LEFT"/>+Desencriptar(textoEncriptado: string): string<BR ALIGN="LEFT"/>+CalcularDV(cadenaConcatenada: string): string<BR ALIGN="LEFT"/></TD></TR></TABLE>>];
+"UsuarioBLL" [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="8"><TR><TD BGCOLOR="#edf2f7"><B>UsuarioBLL</B></TD></TR><TR><TD ALIGN="LEFT">+Autenticar(nombreUsuario: string, passwordPlana: string, out usuarioValidado: Usuario): ResultadoLogin<BR ALIGN="LEFT"/>+CrearUsuario(nuevoUsuario: Usuario, passwordPlana: string): void<BR ALIGN="LEFT"/></TD></TR></TABLE>>];
+"BitacoraDAL" [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="8"><TR><TD BGCOLOR="#edf2f7"><B>BitacoraDAL</B></TD></TR><TR><TD ALIGN="LEFT">+Insertar(registro: Bitacora): void<BR ALIGN="LEFT"/>+Buscar(desde: Nullable&lt;DateTime&gt;, hasta: Nullable&lt;DateTime&gt;, usuario: string, actividad: string): List&lt;Bitacora&gt;<BR ALIGN="LEFT"/></TD></TR></TABLE>>];
+"VerificadorSHA256" [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="8"><TR><TD BGCOLOR="#edf2f7"><B>VerificadorSHA256</B><BR/>«static»</TD></TR><TR><TD ALIGN="LEFT"><U>+Canonico(valores: Object[]): string</U><BR ALIGN="LEFT"/><U>+Hexadecimal(texto: string): string</U><BR ALIGN="LEFT"/><U>+Base64(texto: string): string</U><BR ALIGN="LEFT"/><U>+Traduccion(idioma: int, control: int, texto: string, estado: string): string</U><BR ALIGN="LEFT"/><U>+Bitacora(id: int, fecha: DateTime, usuario: string, actividad: string, cifrado: string): string</U><BR ALIGN="LEFT"/></TD></TR></TABLE>>];
+"BitacoraDAL" -> "EncriptadorServicio" [arrowhead=vee,label="encriptador",taillabel="1",headlabel="1"];
+"UsuarioBLL" -> "HashHelper" [arrowhead=vee,style=dashed,label="hash de contraseña"];
+}

@@ -1,0 +1,19 @@
+sequenceDiagram
+    autonumber
+    participant ui as Program / FrmIntegridad
+    participant bll as IntegridadBLL
+    participant dal as IntegridadDAL
+    participant sha as VerificadorSHA256
+    participant aes as EncriptadorServicio
+    ui->>bll: Verificar()
+    bll->>dal: Verificar()
+    dal->>dal: Transacción Serializable  bloqueo compartido  Examinar
+    Note over ui,aes: loop Bitacora y Traduccion, ordenadas por sus claves
+    dal->>sha: Recalcular SHA-256 de cada fila (DVH)
+    dal->>dal: Comparar DVH calculado con guardado
+    dal->>aes: Desencriptar para comprobar el cifrado de Bitacora
+    dal->>sha: Hexadecimal(Canonico(tabla,cantidad) + claves y hashes)
+    dal->>dal: Comparar DVV, cantidad, Version e IdBase
+    dal-->>bll: InformeIntegridad con Problemas
+    bll-->>ui: InformeIntegridad
+    Note over ui,aes: Correcta = Configurada y sin problemas. Si falla el inicio, abrir recuperación y bloquear login

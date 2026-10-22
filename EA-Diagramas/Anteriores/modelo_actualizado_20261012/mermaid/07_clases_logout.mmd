@@ -1,0 +1,43 @@
+classDiagram
+    direction TB
+    class FrmPrincipal {
+        -ItemLogout_Click(sender: Object, e: EventArgs): void
+    }
+    class SesionServicio {
+        <<singleton>>
+        +UsuarioActual: Usuario
+        +EstaAutenticado: bool
+        +ObtenerInstancia(): SesionServicio$
+        +IniciarSesion(usuarioLogueado: Usuario): void
+        +CerrarSesion(): void
+    }
+    class IdiomaManager {
+        <<singleton>>
+        +IdiomaActual: Idioma
+        +ReiniciarSesion(): void
+    }
+    class BitacoraBLL {
+        +Registrar(evento: IBitacoraEvento): void
+        +Registrar(usuario: string, actividad: string, informacion: string): void
+        +Buscar(desde: Nullable~DateTime~, hasta: Nullable~DateTime~, usuario: string, actividad: string): List~Bitacora~
+    }
+    class BitacoraDAL {
+        +Insertar(registro: Bitacora): void
+        +Buscar(desde: Nullable~DateTime~, hasta: Nullable~DateTime~, usuario: string, actividad: string): List~Bitacora~
+        +VerificarIntegridadBaseDatos(): bool
+    }
+    class IntegridadDAL {
+        +Verificar(): InformeIntegridad
+        +LeerVerificado(leer: Func~SqlConnection, SqlTransaction, T~): T
+        +Cambiar(tabla: string, cambiar: Func~SqlConnection, SqlTransaction, T~): T
+        +PuedeAdministrar(): bool
+        +ArchivarBitacora(dias: int): int
+        +InicializarBaseConfiable(): string
+        +CrearRespaldoConfiable(destino: string): string
+    }
+    class FrmLogin {
+    }
+    BitacoraBLL "1" --> "1" BitacoraDAL : _dal
+    BitacoraDAL "1" --> "1" IntegridadDAL : integridad
+    FrmPrincipal "1" --> "1" BitacoraBLL : _bitacora
+    FrmPrincipal ..> SesionServicio : sesión actual

@@ -1,0 +1,26 @@
+CASO MODELADO: Asignar rol a usuario.
+Precondición: catálogo cargado y sesión iniciada.
+
+CORRESPONDENCIA CON EL CÓDIGO
+AsignarAUsuario -> UsuarioSeleccionado -> Usuario.AsignarRol.
+Ejecutar -> RolesBLL.Guardar.
+RolesBLL.Guardar: Cargar -> ExigirGestion -> Validar -> RolesDAL.Guardar.
+ExigirGestion consulta el ID de la sesión y comprueba el usuario activo del estado actual.
+Validar usa MatrizRoles.ValidarCatalogo y comprueba administradores y asignaciones.
+RolesDAL.Guardar utiliza transacción, versión de seguridad y protección del administrador original.
+La ruta correcta refresca los árboles; un error llama a CargarDatos.
+CargarDatos: CargarParaGestion -> InicializarDatos -> RefrescarArboles.
+CargarParaGestion: Cargar -> ValidarCatalogo -> ExigirGestion.
+Si la recarga falla, el formulario informa el error y se cierra.
+CargarRol recorre Permisos y luego Roles.
+CargarNodosRecursivo consulta ObtenerHijos tanto en hojas como en familias.
+
+ALCANCE
+E, A y R tienen sus detalles adjuntos.
+Las acciones internas repetitivas se resumen en notas y referencias.
+Las propiedades se identifican con {get}; los métodos void no devuelven textos.
+La referencia dentro de A resume TienePermiso y ContienePermiso.
+La correspondencia se revisó contra las clases del código actual.
+No se recibió el diagrama de clases externo del usuario.
+No se modificó el código de la aplicación.
+

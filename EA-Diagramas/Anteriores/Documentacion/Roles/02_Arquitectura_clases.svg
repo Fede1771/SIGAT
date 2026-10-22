@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1280">
+<rect width="100%" height="100%" fill="white"/>
+<text x="476.5" y="62" font-family="Segoe UI" font-size="30" font-weight="700" fill="#20262e">Arquitectura de roles y permisos — clases y relaciones reales</text>
+<rect x="30" y="110" width="470" height="170" fill="white" stroke="#8ab2e2" stroke-width="2"/>
+<rect x="30" y="110" width="470" height="43" fill="#dae8fc" stroke="#8ab2e2" stroke-width="2"/>
+<text x="171.5" y="138" font-family="Segoe UI" font-size="22" font-weight="700" fill="#20262e">FormGestionRoles</text>
+<text x="44" y="184" font-family="Segoe UI" font-size="19" font-weight="400" fill="#20262e">Ejecutar(Action)</text>
+<text x="44" y="212" font-family="Segoe UI" font-size="19" font-weight="400" fill="#20262e">CrearRol(bool) [sin entrada UI]</text>
+<text x="44" y="240" font-family="Segoe UI" font-size="19" font-weight="400" fill="#20262e">AsignarARol() / EditarFamilia()</text>
+<rect x="650" y="110" width="450" height="170" fill="white" stroke="#8ab2e2" stroke-width="2"/>
+<rect x="650" y="110" width="450" height="43" fill="#dae8fc" stroke="#8ab2e2" stroke-width="2"/>
+<text x="829.5" y="138" font-family="Segoe UI" font-size="22" font-weight="700" fill="#20262e">RolesBLL</text>
+<text x="664" y="184" font-family="Segoe UI" font-size="19" font-weight="400" fill="#20262e">CargarParaGestion() / Guardar(estado)</text>
+<text x="664" y="212" font-family="Segoe UI" font-size="19" font-weight="400" fill="#20262e">ExigirGestion(estado) [privado]</text>
+<text x="664" y="240" font-family="Segoe UI" font-size="19" font-weight="400" fill="#20262e">Validar(estado) [static]</text>
+<rect x="1270" y="110" width="490" height="170" fill="white" stroke="#8ab2e2" stroke-width="2"/>
+<rect x="1270" y="110" width="490" height="43" fill="#dae8fc" stroke="#8ab2e2" stroke-width="2"/>
+<text x="1466.5" y="138" font-family="Segoe UI" font-size="22" font-weight="700" fill="#20262e">RolesDAL</text>
+<text x="1284" y="184" font-family="Segoe UI" font-size="19" font-weight="400" fill="#20262e">Cargar(): EstadoRoles</text>
+<text x="1284" y="212" font-family="Segoe UI" font-size="19" font-weight="400" fill="#20262e">Guardar(estado): void</text>
+<text x="1284" y="240" font-family="Segoe UI" font-size="19" font-weight="400" fill="#20262e">SQL: transacciones y Version</text>
+<line x1="500" y1="195" x2="650" y2="195" stroke="#666666" stroke-width="2"/>
+<text x="563.0" y="185.0" font-family="Segoe UI" font-size="16" font-weight="400" fill="#20262e">usa</text>
+<line x1="1100" y1="195" x2="1270" y2="195" stroke="#666666" stroke-width="2"/>
+<text x="1173.0" y="185.0" font-family="Segoe UI" font-size="16" font-weight="400" fill="#20262e">usa</text>
+<rect x="30" y="375" width="470" height="170" fill="white" stroke="#8ab2e2" stroke-width="2"/>
+<rect x="30" y="375" width="470" height="43" fill="#dae8fc" stroke="#8ab2e2" stroke-width="2"/>
+<text x="202.5" y="403" font-family="Segoe UI" font-size="22" font-weight="700" fill="#20262e">EstadoRoles</text>
+<text x="44" y="449" font-family="Segoe UI" font-size="19" font-weight="400" fill="#20262e">Version / IdAdministradorOriginal</text>
+<text x="44" y="477" font-family="Segoe UI" font-size="19" font-weight="400" fill="#20262e">Roles: List&lt;Rol&gt;</text>
+<text x="44" y="505" font-family="Segoe UI" font-size="19" font-weight="400" fill="#20262e">Permisos / Usuarios: listas</text>
+<rect x="650" y="375" width="450" height="170" fill="white" stroke="#8ab2e2" stroke-width="2"/>
+<rect x="650" y="375" width="450" height="43" fill="#dae8fc" stroke="#8ab2e2" stroke-width="2"/>
+<text x="801.4921875" y="403" font-family="Segoe UI" font-size="22" font-weight="700" fill="#20262e">SesionServicio</text>
+<text x="664" y="449" font-family="Segoe UI" font-size="19" font-weight="400" fill="#20262e">ObtenerInstancia() [static]</text>
+<text x="664" y="477" font-family="Segoe UI" font-size="19" font-weight="400" fill="#20262e">UsuarioActual: Usuario</text>
+<text x="664" y="505" font-family="Segoe UI" font-size="19" font-weight="400" fill="#20262e">Identidad del gestor</text>
+<rect x="1270" y="375" width="490" height="170" fill="white" stroke="#8ab2e2" stroke-width="2"/>
+<rect x="1270" y="375" width="490" height="43" fill="#dae8fc" stroke="#8ab2e2" stroke-width="2"/>
+<text x="1414.0" y="403" font-family="Segoe UI" font-size="22" font-weight="700" fill="#20262e">MatrizRoles [static]</text>
+<text x="1284" y="449" font-family="Segoe UI" font-size="19" font-weight="400" fill="#20262e">CrearCatalogo(): EstadoRoles</text>
+<text x="1284" y="477" font-family="Segoe UI" font-size="19" font-weight="400" fill="#20262e">ValidarCatalogo(estado)</text>
+<text x="1284" y="505" font-family="Segoe UI" font-size="19" font-weight="400" fill="#20262e">Reglas y Administrador protegido</text>
+<line x1="260" y1="280" x2="260" y2="375" stroke="#666666" stroke-width="2"/>
+<text x="227.5" y="317.5" font-family="Segoe UI" font-size="16" font-weight="400" fill="#20262e">mantiene</text>
+<line x1="830" y1="280" x2="830" y2="375" stroke="#666666" stroke-width="2"/>
+<text x="801.0" y="317.5" font-family="Segoe UI" font-size="16" font-weight="400" fill="#20262e">consulta</text>
+<line x1="1100" y1="245" x2="1270" y2="395" stroke="#666666" stroke-width="2"/>
+<text x="1150.0" y="310.0" font-family="Segoe UI" font-size="16" font-weight="400" fill="#20262e">valida con</text>
+<rect x="30" y="685" width="470" height="170" fill="white" stroke="#8ab2e2" stroke-width="2"/>
+<rect x="30" y="685" width="470" height="43" fill="#dae8fc" stroke="#8ab2e2" stroke-width="2"/>
+<text x="225.5" y="713" font-family="Segoe UI" font-size="22" font-weight="700" fill="#20262e">Usuario</text>
+<text x="44" y="759" font-family="Segoe UI" font-size="19" font-weight="400" fill="#20262e">Roles: List&lt;Rol&gt;</text>
+<text x="44" y="787" font-family="Segoe UI" font-size="19" font-weight="400" fill="#20262e">AsignarRol() / QuitarRol()</text>
+<text x="44" y="815" font-family="Segoe UI" font-size="19" font-weight="400" fill="#20262e">TienePermiso(nombre)</text>
+<rect x="650" y="685" width="450" height="170" fill="white" stroke="#8ab2e2" stroke-width="2"/>
+<rect x="650" y="685" width="450" height="43" fill="#dae8fc" stroke="#8ab2e2" stroke-width="2"/>
+<text x="858.5" y="713" font-family="Segoe UI" font-size="22" font-weight="700" fill="#20262e">Rol</text>
+<text x="664" y="759" font-family="Segoe UI" font-size="19" font-weight="400" fill="#20262e">Roles: List&lt;Rol&gt;; Permisos: List&lt;Permiso&gt;</text>
+<text x="664" y="787" font-family="Segoe UI" font-size="19" font-weight="400" fill="#20262e">AgregarRol() / AgregarPermiso()</text>
+<text x="664" y="815" font-family="Segoe UI" font-size="19" font-weight="400" fill="#20262e">TienePermiso() / ContieneRol()</text>
+<rect x="1270" y="685" width="490" height="170" fill="white" stroke="#8ab2e2" stroke-width="2"/>
+<rect x="1270" y="685" width="490" height="43" fill="#dae8fc" stroke="#8ab2e2" stroke-width="2"/>
+<text x="1419.0078125" y="713" font-family="Segoe UI" font-size="22" font-weight="700" fill="#20262e">Permiso [abstract]</text>
+<text x="1284" y="759" font-family="Segoe UI" font-size="19" font-weight="400" fill="#20262e">ContienePermiso(nombre): bool</text>
+<text x="1284" y="787" font-family="Segoe UI" font-size="19" font-weight="400" fill="#20262e">Agregar() / Quitar()</text>
+<text x="1284" y="815" font-family="Segoe UI" font-size="19" font-weight="400" fill="#20262e">ObtenerHijos(): List&lt;Permiso&gt;</text>
+<line x1="500" y1="770" x2="650" y2="770" stroke="#666666" stroke-width="2"/>
+<text x="545.0" y="760.0" font-family="Segoe UI" font-size="16" font-weight="400" fill="#20262e">0..* roles</text>
+<line x1="1100" y1="770" x2="1270" y2="770" stroke="#666666" stroke-width="2"/>
+<text x="1140.0" y="760.0" font-family="Segoe UI" font-size="16" font-weight="400" fill="#20262e">0..* permisos</text>
+<line x1="260" y1="545" x2="260" y2="685" stroke="#666666" stroke-width="2"/>
+<text x="217.5" y="605.0" font-family="Segoe UI" font-size="16" font-weight="400" fill="#20262e">0..* usuarios</text>
+<line x1="750" y1="685" x2="750" y2="615" stroke="#666666" stroke-width="2"/>
+<line x1="750" y1="615" x2="1010" y2="615" stroke="#666666" stroke-width="2"/>
+<text x="830.0" y="605.0" font-family="Segoe UI" font-size="16" font-weight="400" fill="#20262e">Rol -&gt; Rol: 0..*</text>
+<line x1="1010" y1="615" x2="1010" y2="685" stroke="#666666" stroke-width="2"/>
+<rect x="1070" y="1020" width="330" height="165" fill="white" stroke="#8ab2e2" stroke-width="2"/>
+<rect x="1070" y="1020" width="330" height="43" fill="#dae8fc" stroke="#8ab2e2" stroke-width="2"/>
+<text x="1158.0078125" y="1048" font-family="Segoe UI" font-size="22" font-weight="700" fill="#20262e">PermisoSimple</text>
+<text x="1084" y="1094" font-family="Segoe UI" font-size="19" font-weight="400" fill="#20262e">Hoja: sin hijos</text>
+<text x="1084" y="1122" font-family="Segoe UI" font-size="19" font-weight="400" fill="#20262e">ObtenerHijos(): lista vacía</text>
+<text x="1084" y="1150" font-family="Segoe UI" font-size="19" font-weight="400" fill="#20262e">Agregar/Quitar: excepción</text>
+<rect x="1440" y="1020" width="330" height="165" fill="white" stroke="#8ab2e2" stroke-width="2"/>
+<rect x="1440" y="1020" width="330" height="43" fill="#dae8fc" stroke="#8ab2e2" stroke-width="2"/>
+<text x="1504.0078125" y="1048" font-family="Segoe UI" font-size="22" font-weight="700" fill="#20262e">PermisoCompuesto</text>
+<text x="1454" y="1094" font-family="Segoe UI" font-size="19" font-weight="400" fill="#20262e">hijos: List&lt;Permiso&gt;</text>
+<text x="1454" y="1122" font-family="Segoe UI" font-size="19" font-weight="400" fill="#20262e">Agregar(): controla ciclos</text>
+<text x="1454" y="1150" font-family="Segoe UI" font-size="19" font-weight="400" fill="#20262e">Consulta recursiva</text>
+<line x1="1235" y1="1020" x2="1235" y2="950" stroke="#666666" stroke-width="2"/>
+<line x1="1235" y1="950" x2="1440" y2="950" stroke="#666666" stroke-width="2"/>
+<line x1="1605" y1="1020" x2="1605" y2="950" stroke="#666666" stroke-width="2"/>
+<line x1="1605" y1="950" x2="1440" y2="950" stroke="#666666" stroke-width="2"/>
+<line x1="1440" y1="950" x2="1440" y2="855" stroke="#666666" stroke-width="2"/>
+<polygon points="1440,855 1430,875 1450,875" fill="white" stroke="#666666"/>
+<text x="30" y="1043" font-family="Segoe UI" font-size="23" font-weight="400" fill="#20262e">Composite: Permiso es el componente común;</text>
+<text x="30" y="1075" font-family="Segoe UI" font-size="23" font-weight="400" fill="#20262e">PermisoSimple es la hoja y PermisoCompuesto la familia.</text>
+<text x="30" y="1107" font-family="Segoe UI" font-size="23" font-weight="400" fill="#20262e">Rol contiene permisos; NO hereda de Permiso.</text>
+<text x="30" y="1139" font-family="Segoe UI" font-size="23" font-weight="400" fill="#20262e">Familia -&gt; Permiso: hijos compartidos, 0..*.</text>
+<text x="30" y="1171" font-family="Segoe UI" font-size="23" font-weight="400" fill="#20262e">Se muestran miembros relevantes, no la clase completa.</text>
+</svg>

@@ -1,0 +1,129 @@
+GESTIÓN DE ROLES — CASOS DE USO Y ARQUITECTURA
+Proyecto SIGAT. Revisión del código: 13/10/2026.
+
+1. ALCANCE Y ESTADO REAL
+La arquitectura permite roles con permisos y roles anidados; utiliza Composite
+para los permisos. Rol no hereda de Permiso: son clases diferentes.
+La pantalla permite asignar/quitar roles a usuarios, asignar/quitar componentes
+a roles y editar familias de permisos. Guarda cada acción mediante RolesBLL.
+CrearRol(bool) y EliminarRol() existen, pero no tienen botones ni llamadas en
+la interfaz actual. La creación se especifica como entrada pendiente; su
+secuencia muestra el enlace necesario, no una función accesible hoy.
+No se modificó el código de la aplicación para elaborar estos documentos.
+
+2. CASOS DE USO
+Actor: gestor autenticado, activo y autorizado para Administración del sistema.
+No tiene que llamarse admin: la autorización se comprueba por permiso efectivo.
+CU01 Crear rol: pendiente de entrada en interfaz; lógica existente.
+CU02 Configurar rol: disponible; agregar o quitar permisos/roles anidados.
+CU03 Editar familia de permisos: disponible; modificar sus hijos directos.
+CU04 Asignar o quitar rol a usuario: disponible; persistencia y próxima sesión.
+CU05 Eliminar rol: pendiente de entrada en interfaz; lógica existente.
+Consultar catálogo y asignaciones forma parte de la apertura de la pantalla.
+Crear un rol no obliga a configurarlo inmediatamente: puede quedar vacío.
+Por eso CU01 y CU02 no se unen con un include obligatorio en el diagrama.
+
+3. ESPECIFICACIÓN CU01 — CREAR ROL
+Objetivo: incorporar un rol con nombre único al catálogo persistido.
+Disparador previsto: Crear rol -> Ejecutar(() => CrearRol(false)).
+Precondiciones: catálogo cargado mediante CargarParaGestion(); autorización
+vigente; catálogo válido; administrador original activo y con su rol protegido.
+Entrada: nombre, obligatorio tras Trim(), hasta 150 caracteres, único sin
+distinguir mayúsculas/minúsculas. La pantalla restringe la longitud y BLL valida.
+Flujo principal:
+1) El gestor solicita crear un rol. Este acceso debe habilitarse en la pantalla.
+2) CrearRol(false) presenta el diálogo de nombre.
+3) El gestor confirma; se comprueba nombre no vacío y no repetido.
+4) Se instancia Rol con Id = máximo Id del catálogo + 1 y el nombre ingresado.
+5) Se agrega el objeto a estado.Roles. No se asignan permisos automáticamente.
+6) Ejecutar llama a RolesBLL.Guardar(estado).
+7) BLL carga el estado persistido y verifica la autorización actual del gestor.
+8) BLL valida el estado propuesto con MatrizRoles y las reglas de usuarios.
+9) DAL guarda en una transacción Serializable, controla Version y las
+   protecciones, actualiza roles y reconstruye las relaciones.
+10) Tras Commit incrementa estado.Version; la interfaz refresca los árboles.
+Postcondición: nuevo rol persistido, sin permisos ni usuarios asignados.
+Alternativas:
+A1 Cancelación: OperationCanceledException; Ejecutar no guarda ni muestra error.
+A2 Nombre inválido/repetido: mensaje y recarga del estado desde SQL.
+A3 Sin autorización, catálogo inválido o conflicto de versión: no se confirma
+   la transacción; la interfaz informa y recarga para descartar el estado local.
+A4 Crear anidado: CrearRol(true) exige un destino distinto del rol Id 1; crea
+   el rol y llama padre.AgregarRol(nuevo) antes de guardar. También pendiente
+   de entrada en interfaz. La relación se persiste en RolHijo.
+
+4. ESPECIFICACIÓN CU02 — CONFIGURAR ROL
+Objetivo: modificar la composición de un rol existente sin ciclos.
+Disparador: botones Asignar componente o Quitar componente.
+Precondiciones: las de CU01; destino seleccionado y distinto de Administrador.
+Flujo de asignación:
+1) Elegir permiso del catálogo o rol del árbol y seleccionar Rol destino.
+2) Ejecutar invoca AsignarARol(), que obtiene Destino().
+3) Si el origen es Permiso, destino.AgregarPermiso(origen).
+   Si es Rol, destino.AgregarRol(origen), que comprueba ciclos.
+4) RolesBLL.Guardar valida y RolesDAL.Guardar persiste la acción completa.
+5) RefrescarArboles vuelve a representar roles, familias y asignaciones.
+Postcondición: composición persistida; nuevos accesos al volver a iniciar sesión.
+Quitar: QuitarDeRol usa QuitarPermiso o QuitarRol solo para relaciones directas.
+Los componentes heredados se quitan del rol/familia que contiene la relación.
+Duplicados por misma referencia: no se agregan dos veces; el flujo puede guardar
+y mostrar éxito aunque la composición no haya cambiado.
+Cada clic guarda por separado: crear y configurar no es una única transacción.
+
+5. ESPECIFICACIÓN CU03 — EDITAR FAMILIA
+Seleccionar PermisoCompuesto en el catálogo y pulsar Editar familia de permisos.
+EditarFamilia muestra permisos del catálogo excepto la propia familia; marca
+los hijos directos actuales. Al confirmar quita esos hijos y agrega los marcados.
+PermisoCompuesto.Agregar rechaza ciclos; BLL/DAL validan y guardan como en CU02.
+Si ocurre un error, Ejecutar recarga el estado persistido.
+Las familias se comparten: el cambio afecta a todos los roles que las utilizan.
+Los permisos simples no admiten hijos. No se crean ni renombran permisos desde
+esta pantalla: MatrizRoles exige los siete permisos con identidad y tipo fijos.
+
+6. REGLAS Y LÍMITES IMPORTANTES
+Administrador (Id 1): no puede ser destino de edición; mantiene nombre,
+seis permisos originales y cero roles anidados según MatrizRoles.ValidarCatalogo.
+Administrador original: debe permanecer activo con asignación directa al rol 1.
+Debe quedar al menos un usuario activo con Administración del sistema.
+Roles pueden agregar otros roles; familias solo agregan objetos Permiso.
+Una familia concede su propio nombre aun si no tiene hijos; no es solo una
+carpeta visual. ContienePermiso consulta su nombre y después los descendientes.
+No se inventan permisos de ABM de activos: el catálogo actual no los contiene.
+EliminarRol requiere quitar asignaciones a usuarios y a otros roles antes;
+el administrador está protegido por Destino(). Actualmente no es accesible.
+
+7. CORRESPONDENCIA ENTRE CLASES, MENSAJES Y BASE DE DATOS
+UI/FormGestionRoles: CrearRol, AsignarARol, QuitarDeRol, EditarFamilia, Ejecutar,
+RefrescarArboles, CargarRol y CargarNodosRecursivo.
+BLL/RolesBLL: CargarParaGestion, Guardar, ExigirGestion (privado), Validar.
+BLL/MatrizRoles: CrearCatalogo y ValidarCatalogo; reglas del catálogo.
+DAL/RolesDAL: Cargar y Guardar; transacciones y control de concurrencia.
+SERVICIOS/SesionServicio: ObtenerInstancia y UsuarioActual; identidad de sesión.
+BE/EstadoRoles: estado del catálogo, usuarios, administrador original y Version.
+BE/Usuario: AsignarRol, QuitarRol y TienePermiso; tabla UsuarioRol.
+BE/Rol: AgregarPermiso/QuitarPermiso, AgregarRol/QuitarRol, TienePermiso;
+tablas Rol, RolPermiso y RolHijo.
+BE/Permiso: contrato común; tabla Permiso.
+BE/PermisoSimple: hoja, ObtenerHijos vacío; no admite Agregar/Quitar.
+BE/PermisoCompuesto: colección hijos, Agregar/Quitar y consulta recursiva;
+tabla PermisoHijo.
+SeguridadVersion: versión persistida usada para impedir sobrescrituras.
+AdministradorOriginal: identificación protegida comprobada al guardar.
+Los diagramas muestran miembros relevantes, no todas las propiedades del sistema.
+
+8. DEMOSTRACIÓN ORAL CON LA PANTALLA ACTUAL
+Usar una base de pruebas y un rol distinto de Administrador.
+1) Explicar UI -> BLL -> DAL y que EstadoRoles transporta el grafo compartido.
+2) Asignar Consultar inventario a un rol y mostrar el árbol actualizado.
+3) Asignar una familia al mismo rol: se usa AgregarPermiso para ambos tipos.
+4) Editar esa familia para incorporar una hoja; mostrar sus hijos en el árbol.
+5) Explicar ObtenerHijos: hoja vacía, familia con descendientes (Composite).
+6) Intentar una relación circular entre familias/roles y mostrar el rechazo.
+7) Asignar el rol a un usuario; volver a ingresar y comprobar sus accesos reales
+   a módulos existentes. Tener un permiso no crea un módulo todavía no implementado.
+8) Mostrar persistencia en RolPermiso, RolHijo, PermisoHijo y UsuarioRol.
+Para demostrar CREACIÓN desde la interfaz primero debe conectarse CrearRol(false)
+mediante un comando que pase por Ejecutar. La documentación no afirma que ese
+comando ya exista. No hace falta forzar clases ajenas al caso en su secuencia:
+las subclases de Permiso participan cuando se configura/recorre el Composite,
+no al instanciar un rol vacío.

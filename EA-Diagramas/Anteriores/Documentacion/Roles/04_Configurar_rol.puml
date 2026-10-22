@@ -1,0 +1,83 @@
+@startuml
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam sequence {
+ParticipantBackgroundColor #DAE8FC
+ParticipantBorderColor #8AB2E2
+ArrowColor #666666
+GroupBorderColor #E6AE19
+GroupHeaderBackgroundColor #FFF4CF
+}
+hide footbox
+autonumber
+title CU02 — Configurar rol: flujo accesible en la pantalla actual
+actor Administrador as A
+participant "form:FormGestionRoles" as F
+participant "destino:Rol" as R
+participant "familia:PermisoCompuesto" as C
+participant "hoja:PermisoSimple" as H
+participant "rolesBLL:RolesBLL" as B
+participant "rolesDAL:RolesDAL" as D
+A -> F: Elegir origen, rol destino y Asignar componente
+F -> F: Ejecutar(AsignarARol)
+F -> F: AsignarARol(); Destino()
+break [destino no seleccionado o Id == 1]
+ref over A,F: Excepción; mensaje y recarga. No se guarda.
+end
+alt [origen es Permiso: hoja o familia]
+F -> R: AgregarPermiso(permiso)
+note over R,H: Guarda la referencia mediante el contrato Permiso.\nNo invoca Agregar sobre la hoja ni sobre la familia.
+else [origen es Rol]
+F -> R: AgregarRol(rol)
+ref over R,R: rol.ContieneRol(destino) rechaza ciclos; evita duplicados.
+else [sin origen válido]
+break [termina AsignarARol con excepción]
+ref over A,F: Excepción; mensaje y recarga. No se guarda.
+end
+end
+F -> B: Guardar(estado)
+ref over B,D: Cargar -> ExigirGestion -> Validar -> Guardar.\nVer CU01: mismo camino de persistencia y control de errores.
+B --> F: void, si guardado correcto
+F -> F: RefrescarArboles()
+loop [por cada rol del catálogo]
+F -> F: CargarRol(nodos, rol)
+F -> R: Permisos {get}
+R --> F: List<Permiso>
+loop [por cada permiso del rol]
+F -> F: CargarNodosRecursivo(nodoPadre, permiso)
+alt [objeto PermisoCompuesto]
+F -> C: ObtenerHijos()
+C --> F: List<Permiso>
+loop [por cada hijo]
+F -> F: CargarNodosRecursivo(nodo, hijo)
+end
+else [objeto PermisoSimple]
+F -> H: ObtenerHijos()
+H --> F: lista vacía; termina esta rama
+end
+end
+F -> R: Roles {get}
+R --> F: List<Rol>
+ref over F,R: Por cada rol hijo: CargarRol(nodo.Nodes, hijo).\nTambién reconstruye catálogo y árbol del usuario.
+end
+F --> A: Composición actualizada y guardada
+note over A,D: Editar familia es una acción separada.\nModificar una familia compartida afecta a todos sus roles.
+A -> F: Seleccionar familia y Editar familia de permisos
+F -> F: Ejecutar(EditarFamilia)
+F -> C: ObtenerHijos()
+C --> F: hijos directos actuales
+F -> F: Mostrar lista y confirmar selección
+loop [por cada hijo anterior]
+F -> C: Quitar(hijo)
+end
+loop [por cada permiso marcado]
+F -> C: Agregar(permiso)
+ref over C,H: ContieneReferencia verifica ciclos recorriendo ObtenerHijos.\nLa hoja devuelve lista vacía; una familia devuelve descendientes.
+end
+F -> B: Guardar(estado)
+ref over B,D: Mismas validaciones y transacción; ante error recarga SQL.
+B --> F: void, si guardado correcto
+F -> F: RefrescarArboles()
+F --> A: Familia actualizada y guardada
+@enduml

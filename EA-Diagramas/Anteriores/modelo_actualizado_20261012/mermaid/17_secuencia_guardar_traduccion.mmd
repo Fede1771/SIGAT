@@ -1,0 +1,19 @@
+sequenceDiagram
+    autonumber
+    actor actor as Administrador
+    participant ui as FrmGestionIdiomas
+    participant bll as IdiomaBLL
+    participant dal as IdiomaDAL
+    participant iv as IntegridadDAL
+    participant sha as VerificadorSHA256
+    actor->>ui: Editar texto y Guardar traducción
+    ui->>bll: GuardarTraduccionPorControl(idIdioma, idControl, texto)
+    bll->>sha: Traduccion(ids, texto, estado)
+    bll->>dal: ActualizarTraduccion(ids, texto, estado, DV)
+    dal->>iv: Cambiar("Traduccion", comando)
+    Note over actor,sha: Verificar antes  escritura y actualización DVV en la misma transacción
+    dal->>sha: Traduccion(ids, texto normalizado, estado)
+    dal->>dal: UPDATE Texto, Estado y DigitoVerificador
+    iv->>iv: ActualizarVertical  Examinar  Commit
+    ui->>ui: CargarTraducciones()
+    Note over actor,sha: Guardar texto no notifica automáticamente  Aplicar vuelve a cargar el idioma

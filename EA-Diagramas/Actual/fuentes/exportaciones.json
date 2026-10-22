@@ -1,0 +1,398 @@
+﻿[
+    {
+        "id":  "01_arquitectura",
+        "objects":  6,
+        "guid":  "{BE720306-5C38-41eb-AAF7-9F84710A0DC7}",
+        "links":  9,
+        "kind":  "components",
+        "diagramId":  1,
+        "title":  "T01 Arquitectura y dependencias de los proyectos"
+    },
+    {
+        "id":  "02_clases_be",
+        "objects":  18,
+        "guid":  "{4DA3C704-F883-4502-A49B-347B2FBFDBD1}",
+        "links":  18,
+        "kind":  "class",
+        "diagramId":  2,
+        "title":  "G06 Clases de SIGAT.BE"
+    },
+    {
+        "id":  "03_clases_bll",
+        "objects":  13,
+        "guid":  "{CF73EAD2-3B1D-4361-93AF-9B30B165946B}",
+        "links":  15,
+        "kind":  "class",
+        "diagramId":  3,
+        "title":  "G06 Clases de SIGAT.BLL"
+    },
+    {
+        "id":  "04_clases_dal",
+        "objects":  10,
+        "guid":  "{590DAD3A-4B66-4550-B62B-069ABE65984E}",
+        "links":  11,
+        "kind":  "class",
+        "diagramId":  4,
+        "title":  "G06 Clases de SIGAT.DAL"
+    },
+    {
+        "id":  "05_clases_servicios",
+        "objects":  8,
+        "guid":  "{FCADA86D-7F88-4638-A011-D8A69FFC6C2B}",
+        "links":  4,
+        "kind":  "class",
+        "diagramId":  5,
+        "title":  "G06 Clases de SIGAT.SERVICIOS"
+    },
+    {
+        "id":  "06_clases_ui",
+        "objects":  19,
+        "guid":  "{D9BEB9E4-F074-4c62-A91F-9CD12A050701}",
+        "links":  43,
+        "kind":  "class",
+        "diagramId":  6,
+        "title":  "G06 Clases de SIGAT.UI"
+    },
+    {
+        "id":  "07_der_integrado",
+        "objects":  16,
+        "guid":  "{DFE3E716-41A3-4b32-986F-377264300F2E}",
+        "links":  13,
+        "kind":  "er",
+        "diagramId":  7,
+        "title":  "G07 Modelo de datos integrado"
+    },
+    {
+        "id":  "08_der_seguridad",
+        "objects":  10,
+        "guid":  "{33B5C467-8CBF-43da-97E9-2CE71A2480A5}",
+        "links":  9,
+        "kind":  "er",
+        "diagramId":  8,
+        "title":  "G07 Cuentas roles y permisos"
+    },
+    {
+        "id":  "09_der_idiomas",
+        "objects":  6,
+        "guid":  "{2431DC18-4A2D-4ae5-9E17-09E40DB1E9AE}",
+        "links":  4,
+        "kind":  "er",
+        "diagramId":  9,
+        "title":  "G07 Idiomas traducciones y preferencias"
+    },
+    {
+        "id":  "10_der_soporte",
+        "objects":  5,
+        "guid":  "{CE9A71DB-08A0-4efd-85B4-6895F3AFA6A1}",
+        "links":  1,
+        "kind":  "er",
+        "diagramId":  10,
+        "title":  "G07 Auditoria e integridad como soporte tecnico"
+    },
+    {
+        "id":  "11_clases_login",
+        "objects":  17,
+        "guid":  "{F82508DC-A84F-43b9-AC32-414A4DB159DB}",
+        "links":  36,
+        "kind":  "class",
+        "diagramId":  11,
+        "title":  "T02 Clases del inicio de sesion"
+    },
+    {
+        "id":  "12_clases_logout",
+        "objects":  9,
+        "guid":  "{E8496F06-C775-4acf-8F17-E06AC001DC30}",
+        "links":  11,
+        "kind":  "class",
+        "diagramId":  12,
+        "title":  "T02 Clases del cierre de sesion"
+    },
+    {
+        "id":  "13_clases_cifrado",
+        "objects":  6,
+        "guid":  "{3CC44E0B-6032-429a-8724-2BDBA09715A1}",
+        "links":  2,
+        "kind":  "class",
+        "diagramId":  13,
+        "title":  "T03 Hash y cifrado reversible"
+    },
+    {
+        "id":  "14_clases_roles",
+        "objects":  13,
+        "guid":  "{9962132D-B11A-4f35-95C7-189C7ED6BA89}",
+        "links":  36,
+        "kind":  "class",
+        "diagramId":  14,
+        "title":  "T04 Roles familias y Composite"
+    },
+    {
+        "id":  "15_clases_idiomas",
+        "objects":  12,
+        "guid":  "{91EBE7D4-7E42-4edd-8B7D-99FEE67F1742}",
+        "links":  24,
+        "kind":  "class",
+        "diagramId":  15,
+        "title":  "T05 Multiples idiomas y Observer"
+    },
+    {
+        "id":  "16_clases_bitacora",
+        "objects":  12,
+        "guid":  "{AA2D2598-4C13-48aa-9B9F-A845629CDEF8}",
+        "links":  19,
+        "kind":  "class",
+        "diagramId":  16,
+        "title":  "T06a Registro y consulta de bitacora"
+    },
+    {
+        "id":  "17_clases_integridad",
+        "objects":  11,
+        "guid":  "{BEBCF1EF-AD23-4dee-8EFE-AB977C58502F}",
+        "links":  13,
+        "kind":  "class",
+        "diagramId":  17,
+        "title":  "T08 Digitos verificadores y recuperacion"
+    },
+    {
+        "id":  "18_clases_usuarios",
+        "objects":  10,
+        "guid":  "{3BAF218C-046C-4367-BD51-A6477D34263B}",
+        "links":  11,
+        "kind":  "class",
+        "diagramId":  18,
+        "title":  "Gestion de cuentas y baja logica"
+    },
+    {
+        "id":  "19_cu_acceso",
+        "objects":  4,
+        "guid":  "{4EEE420C-5998-46df-8F26-3A8DCB625AAA}",
+        "links":  2,
+        "kind":  "usecase",
+        "diagramId":  19,
+        "title":  "T02 Acceso y cierre de sesion"
+    },
+    {
+        "id":  "20_cu_roles",
+        "objects":  7,
+        "guid":  "{03238CC3-88D9-4411-B358-05651EAD3014}",
+        "links":  5,
+        "kind":  "usecase",
+        "diagramId":  20,
+        "title":  "T04 Gestion de perfiles y familias"
+    },
+    {
+        "id":  "21_cu_idiomas",
+        "objects":  7,
+        "guid":  "{E6A7F925-394C-466f-A977-C548F9ADD975}",
+        "links":  5,
+        "kind":  "usecase",
+        "diagramId":  21,
+        "title":  "T05 Gestion de multiples idiomas"
+    },
+    {
+        "id":  "22_cu_bitacora",
+        "objects":  3,
+        "guid":  "{33627D70-4F45-4084-82B0-34FD3628A57E}",
+        "links":  1,
+        "kind":  "usecase",
+        "diagramId":  22,
+        "title":  "T06a Consulta de bitacora"
+    },
+    {
+        "id":  "23_cu_integridad",
+        "objects":  8,
+        "guid":  "{0564ABFF-97A5-448f-9029-461E3EA17B0A}",
+        "links":  6,
+        "kind":  "usecase",
+        "diagramId":  23,
+        "title":  "T08 Integridad respaldo y recuperacion"
+    },
+    {
+        "id":  "24_sec_apertura",
+        "objects":  7,
+        "guid":  "{EBFCA258-362C-44f6-8284-C68B0B7D9E63}",
+        "links":  7,
+        "kind":  "sequence",
+        "diagramId":  24,
+        "title":  "T02 Abrir aplicacion y comprobar integridad"
+    },
+    {
+        "id":  "25_sec_login",
+        "objects":  12,
+        "guid":  "{BCB958C1-2828-4fa8-BBA0-DD6C618B21C6}",
+        "links":  11,
+        "kind":  "sequence",
+        "diagramId":  25,
+        "title":  "T02 Autenticar una cuenta activa"
+    },
+    {
+        "id":  "26_sec_logout",
+        "objects":  9,
+        "guid":  "{5636A00C-53AD-436a-9CB3-399094D2AD5F}",
+        "links":  8,
+        "kind":  "sequence",
+        "diagramId":  26,
+        "title":  "T02 Cerrar sesion mediante el boton"
+    },
+    {
+        "id":  "27_sec_roles",
+        "objects":  7,
+        "guid":  "{B934E003-6F3E-41eb-827C-AB236E85B867}",
+        "links":  10,
+        "kind":  "sequence",
+        "diagramId":  27,
+        "title":  "T04 Asignar rol y persistir los verificadores"
+    },
+    {
+        "id":  "28_sec_familia",
+        "objects":  8,
+        "guid":  "{DEA267C0-49A3-460e-8C01-80CC09F6DA1B}",
+        "links":  8,
+        "kind":  "sequence",
+        "diagramId":  28,
+        "title":  "T04 Crear una familia anidada"
+    },
+    {
+        "id":  "29_sec_idioma",
+        "objects":  10,
+        "guid":  "{A5E4FBC8-4A7F-4e23-BF21-2035AC2B7055}",
+        "links":  11,
+        "kind":  "sequence",
+        "diagramId":  29,
+        "title":  "T05 Cambiar idioma y notificar observadores"
+    },
+    {
+        "id":  "30_sec_crear_idioma",
+        "objects":  6,
+        "guid":  "{FABF272A-92F8-4a9f-B8E6-F81988757C3C}",
+        "links":  9,
+        "kind":  "sequence",
+        "diagramId":  30,
+        "title":  "T05 Crear idioma y pendientes"
+    },
+    {
+        "id":  "31_sec_desactivar_idioma",
+        "objects":  9,
+        "guid":  "{1CF5F3A1-0C94-4cd7-8CE8-A2EACDED3DFD}",
+        "links":  7,
+        "kind":  "sequence",
+        "diagramId":  31,
+        "title":  "T05 Desactivar idioma sin preferencias"
+    },
+    {
+        "id":  "32_sec_traduccion",
+        "objects":  6,
+        "guid":  "{7311E25A-FF40-4f38-802A-C3DF4FE6B862}",
+        "links":  7,
+        "kind":  "sequence",
+        "diagramId":  32,
+        "title":  "T05 Guardar traduccion sin DVH DVV"
+    },
+    {
+        "id":  "33_sec_preferencia",
+        "objects":  7,
+        "guid":  "{9EAB9F09-8978-4a09-9128-492551D1F351}",
+        "links":  6,
+        "kind":  "sequence",
+        "diagramId":  33,
+        "title":  "T05 Restaurar preferencia al iniciar sesion"
+    },
+    {
+        "id":  "34_sec_bitacora",
+        "objects":  8,
+        "guid":  "{E8C6948F-7628-4b85-9340-100470AB04A6}",
+        "links":  8,
+        "kind":  "sequence",
+        "diagramId":  34,
+        "title":  "T06a Consultar bitacora con filtros"
+    },
+    {
+        "id":  "35_sec_auditar",
+        "objects":  9,
+        "guid":  "{ABC215D3-C8E3-4975-AA7B-1E9313238A81}",
+        "links":  8,
+        "kind":  "sequence",
+        "diagramId":  35,
+        "title":  "T03 T06a Crear evento y cifrar detalle"
+    },
+    {
+        "id":  "36_sec_alta",
+        "objects":  9,
+        "guid":  "{A4DAE387-0CCE-44ba-8A98-5A9A98307B49}",
+        "links":  9,
+        "kind":  "sequence",
+        "diagramId":  36,
+        "title":  "Crear cuenta sin roles y registrar alta"
+    },
+    {
+        "id":  "37_sec_verificar",
+        "objects":  7,
+        "guid":  "{D16C0766-E496-4e8e-9E01-65AB9BD0EAE6}",
+        "links":  10,
+        "kind":  "sequence",
+        "diagramId":  37,
+        "title":  "T08 Verificar y bloquear datos alterados"
+    },
+    {
+        "id":  "38_sec_backup",
+        "objects":  5,
+        "guid":  "{28C4A7F8-621E-4804-AEA1-BC73ADEEE38F}",
+        "links":  10,
+        "kind":  "sequence",
+        "diagramId":  38,
+        "title":  "T08 Crear respaldo comprobado"
+    },
+    {
+        "id":  "39_sec_recuperar",
+        "objects":  7,
+        "guid":  "{A61842BF-6B3D-45ae-92F4-389BE5808904}",
+        "links":  9,
+        "kind":  "sequence",
+        "diagramId":  39,
+        "title":  "T08 Recuperar cuentas y asignaciones"
+    },
+    {
+        "id":  "40_sec_inicializar",
+        "objects":  5,
+        "guid":  "{E4D65A26-8CCA-44a5-B266-44F3D7045323}",
+        "links":  10,
+        "kind":  "sequence",
+        "diagramId":  40,
+        "title":  "T08 Preparar primera referencia"
+    },
+    {
+        "id":  "41_sec_recalcular",
+        "objects":  7,
+        "guid":  "{EE00896A-A6E4-4ae5-A2AE-24975E5F3B45}",
+        "links":  11,
+        "kind":  "sequence",
+        "diagramId":  41,
+        "title":  "T08 Aceptar estado actual y recalcular"
+    },
+    {
+        "id":  "42_sec_archivar",
+        "objects":  6,
+        "guid":  "{0BAE52C2-63CE-43ef-B8BF-4F95122CAA97}",
+        "links":  8,
+        "kind":  "sequence",
+        "diagramId":  42,
+        "title":  "Archivar bitacora sin recalcular DVV"
+    },
+    {
+        "id":  "43_estado_t06b",
+        "objects":  1,
+        "guid":  "{A5650838-BBB0-465e-8A2E-0F1B83FE6B94}",
+        "links":  0,
+        "kind":  "notes",
+        "diagramId":  43,
+        "title":  "T06b Alcance pendiente de control de cambios"
+    },
+    {
+        "id":  "44_historico_runtime",
+        "objects":  2,
+        "guid":  "{A679EB7E-60D6-4fa1-91D7-542869CAEDD0}",
+        "links":  0,
+        "kind":  "runtime",
+        "diagramId":  44,
+        "title":  "G07 Historico de bitacora creado al archivar"
+    }
+]

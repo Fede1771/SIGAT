@@ -1,0 +1,6169 @@
+[
+  {
+    "name": "BitacoraAccion",
+    "full": "SIGAT.BE.Auditoria.BitacoraAccion",
+    "ns": "SIGAT.BE.Auditoria",
+    "kind": "Enumeration",
+    "abstr": false,
+    "baseType": "System.Enum",
+    "interfaces": [],
+    "properties": [],
+    "fields": [
+      {
+        "name": "LoginExitoso",
+        "type": "BitacoraAccion",
+        "scope": "Public",
+        "stat": true
+      },
+      {
+        "name": "LoginFallido",
+        "type": "BitacoraAccion",
+        "scope": "Public",
+        "stat": true
+      },
+      {
+        "name": "AltaUsuario",
+        "type": "BitacoraAccion",
+        "scope": "Public",
+        "stat": true
+      },
+      {
+        "name": "ModificacionUsuario",
+        "type": "BitacoraAccion",
+        "scope": "Public",
+        "stat": true
+      },
+      {
+        "name": "BajaUsuario",
+        "type": "BitacoraAccion",
+        "scope": "Public",
+        "stat": true
+      },
+      {
+        "name": "Logout",
+        "type": "BitacoraAccion",
+        "scope": "Public",
+        "stat": true
+      },
+      {
+        "name": "ErrorCritico",
+        "type": "BitacoraAccion",
+        "scope": "Public",
+        "stat": true
+      }
+    ],
+    "methods": []
+  },
+  {
+    "name": "BitacoraModulo",
+    "full": "SIGAT.BE.Auditoria.BitacoraModulo",
+    "ns": "SIGAT.BE.Auditoria",
+    "kind": "Enumeration",
+    "abstr": false,
+    "baseType": "System.Enum",
+    "interfaces": [],
+    "properties": [],
+    "fields": [
+      {
+        "name": "Seguridad",
+        "type": "BitacoraModulo",
+        "scope": "Public",
+        "stat": true
+      },
+      {
+        "name": "Usuarios",
+        "type": "BitacoraModulo",
+        "scope": "Public",
+        "stat": true
+      },
+      {
+        "name": "Sistema",
+        "type": "BitacoraModulo",
+        "scope": "Public",
+        "stat": true
+      }
+    ],
+    "methods": []
+  },
+  {
+    "name": "BitacoraNivel",
+    "full": "SIGAT.BE.Auditoria.BitacoraNivel",
+    "ns": "SIGAT.BE.Auditoria",
+    "kind": "Enumeration",
+    "abstr": false,
+    "baseType": "System.Enum",
+    "interfaces": [],
+    "properties": [],
+    "fields": [
+      {
+        "name": "Informacion",
+        "type": "BitacoraNivel",
+        "scope": "Public",
+        "stat": true
+      },
+      {
+        "name": "Advertencia",
+        "type": "BitacoraNivel",
+        "scope": "Public",
+        "stat": true
+      },
+      {
+        "name": "Critico",
+        "type": "BitacoraNivel",
+        "scope": "Public",
+        "stat": true
+      }
+    ],
+    "methods": []
+  },
+  {
+    "name": "IBitacoraEvento",
+    "full": "SIGAT.BE.Auditoria.IBitacoraEvento",
+    "ns": "SIGAT.BE.Auditoria",
+    "kind": "Interface",
+    "abstr": true,
+    "baseType": null,
+    "interfaces": [],
+    "properties": [
+      {
+        "name": "Id",
+        "type": "int",
+        "scope": "Public",
+        "stat": false
+      },
+      {
+        "name": "IdUsuario",
+        "type": "Nullable<int>",
+        "scope": "Public",
+        "stat": false
+      },
+      {
+        "name": "IdentificadorUsuario",
+        "type": "string",
+        "scope": "Public",
+        "stat": false
+      },
+      {
+        "name": "Modulo",
+        "type": "BitacoraModulo",
+        "scope": "Public",
+        "stat": false
+      },
+      {
+        "name": "Accion",
+        "type": "BitacoraAccion",
+        "scope": "Public",
+        "stat": false
+      },
+      {
+        "name": "Nivel",
+        "type": "BitacoraNivel",
+        "scope": "Public",
+        "stat": false
+      },
+      {
+        "name": "Descripcion",
+        "type": "string",
+        "scope": "Public",
+        "stat": false
+      },
+      {
+        "name": "Equipo",
+        "type": "string",
+        "scope": "Public",
+        "stat": false
+      },
+      {
+        "name": "Fecha",
+        "type": "DateTime",
+        "scope": "Public",
+        "stat": false
+      }
+    ],
+    "fields": [],
+    "methods": []
+  },
+  {
+    "name": "Bitacora",
+    "full": "SIGAT.BE.Bitacora",
+    "ns": "SIGAT.BE",
+    "kind": "Class",
+    "abstr": false,
+    "baseType": "System.Object",
+    "interfaces": [
+      "SIGAT.BE.Auditoria.IBitacoraEvento"
+    ],
+    "properties": [
+      {
+        "name": "IdBitacora",
+        "type": "int",
+        "scope": "Public",
+        "stat": false
+      },
+      {
+        "name": "Fecha",
+        "type": "DateTime",
+        "scope": "Public",
+        "stat": false
+      },
+      {
+        "name": "Usuario",
+        "type": "string",
+        "scope": "Public",
+        "stat": false
+      },
+      {
+        "name": "Actividad",
+        "type": "string",
+        "scope": "Public",
+        "stat": false
+      },
+      {
+        "name": "InformacionAsociada",
+        "type": "string",
+        "scope": "Public",
+        "stat": false
+      },
+      {
+        "name": "DigitoVerificador",
+        "type": "string",
+        "scope": "Public",
+        "stat": false
+      },
+      {
+        "name": "Id",
+        "type": "int",
+        "scope": "Public",
+        "stat": false
+      },
+      {
+        "name": "IdUsuario",
+        "type": "Nullable<int>",
+        "scope": "Public",
+        "stat": false
+      },
+      {
+        "name": "IdentificadorUsuario",
+        "type": "string",
+        "scope": "Public",
+        "stat": false
+      },
+      {
+        "name": "Modulo",
+        "type": "BitacoraModulo",
+        "scope": "Public",
+        "stat": false
+      },
+      {
+        "name": "Accion",
+        "type": "BitacoraAccion",
+        "scope": "Public",
+        "stat": false
+      },
+      {
+        "name": "Nivel",
+        "type": "BitacoraNivel",
+        "scope": "Public",
+        "stat": false
+      },
+      {
+        "name": "Descripcion",
+        "type": "string",
+        "scope": "Public",
+        "stat": false
+      },
+      {
+        "name": "Equipo",
+        "type": "string",
+        "scope": "Public",
+        "stat": false
+      }
+    ],
+    "fields": [],
+    "methods": []
+  },
+  {
+    "name": "EstadoRoles",
+    "full": "SIGAT.BE.EstadoRoles",
+    "ns": "SIGAT.BE",
+    "kind": "Class",
+    "abstr": false,
+    "baseType": "System.Object",
+    "interfaces": [],
+    "properties": [
+      {
+        "name": "Version",
+        "type": "long",
+        "scope": "Public",
+        "stat": false
+      },
+      {
+        "name": "IdAdministradorOriginal",
+        "type": "int",
+        "scope": "Public",
+        "stat": false
+      },
+      {
+        "name": "Roles",
+        "type": "List<Rol>",
+        "scope": "Public",
+        "stat": false
+      },
+      {
+        "name": "Permisos",
+        "type": "List<Permiso>",
+        "scope": "Public",
+        "stat": false
+      },
+      {
+        "name": "Usuarios",
+        "type": "List<Usuario>",
+        "scope": "Public",
+        "stat": false
+      }
+    ],
+    "fields": [],
+    "methods": []
+  },
+  {
+    "name": "ControlIdioma",
+    "full": "SIGAT.BE.Idiomas.ControlIdioma",
+    "ns": "SIGAT.BE.Idiomas",
+    "kind": "Class",
+    "abstr": false,
+    "baseType": "System.Object",
+    "interfaces": [],
+    "properties": [
+      {
+        "name": "Id",
+        "type": "int",
+        "scope": "Public",
+        "stat": false
+      },
+      {
+        "name": "Control",
+        "type": "string",
+        "scope": "Public",
+        "stat": false
+      },
+      {
+        "name": "Form",
+        "type": "string",
+        "scope": "Public",
+        "stat": false
+      }
+    ],
+    "fields": [],
+    "methods": []
+  },
+  {
+    "name": "Idioma",
+    "full": "SIGAT.BE.Idiomas.Idioma",
+    "ns": "SIGAT.BE.Idiomas",
+    "kind": "Class",
+    "abstr": false,
+    "baseType": "System.Object",
+    "interfaces": [],
+    "properties": [
+      {
+        "name": "Id",
+        "type": "int",
+        "scope": "Public",
+        "stat": false
+      },
+      {
+        "name": "Nombre",
+        "type": "string",
+        "scope": "Public",
+        "stat": false
+      },
+      {
+        "name": "Codigo",
+        "type": "string",
+        "scope": "Public",
+        "stat": false
+      },
+      {
+        "name": "NombreNativo",
+        "type": "string",
+        "scope": "Public",
+        "stat": false
+      },
+      {
+        "name": "Activo",
+        "type": "bool",
+        "scope": "Public",
+        "stat": false
+      }
+    ],
+    "fields": [],
+    "methods": [
+      {
+        "name": "ToString",
+        "type": "string",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      }
+    ]
+  },
+  {
+    "name": "Traduccion",
+    "full": "SIGAT.BE.Idiomas.Traduccion",
+    "ns": "SIGAT.BE.Idiomas",
+    "kind": "Class",
+    "abstr": false,
+    "baseType": "System.Object",
+    "interfaces": [],
+    "properties": [
+      {
+        "name": "IdIdioma",
+        "type": "int",
+        "scope": "Public",
+        "stat": false
+      },
+      {
+        "name": "IdControl",
+        "type": "int",
+        "scope": "Public",
+        "stat": false
+      },
+      {
+        "name": "Texto",
+        "type": "string",
+        "scope": "Public",
+        "stat": false
+      },
+      {
+        "name": "DigitoVerificador",
+        "type": "string",
+        "scope": "Public",
+        "stat": false
+      },
+      {
+        "name": "ControlNombre",
+        "type": "string",
+        "scope": "Public",
+        "stat": false
+      },
+      {
+        "name": "FormNombre",
+        "type": "string",
+        "scope": "Public",
+        "stat": false
+      },
+      {
+        "name": "Estado",
+        "type": "string",
+        "scope": "Public",
+        "stat": false
+      },
+      {
+        "name": "TextoBase",
+        "type": "string",
+        "scope": "Public",
+        "stat": false
+      }
+    ],
+    "fields": [],
+    "methods": []
+  },
+  {
+    "name": "InformeIntegridad",
+    "full": "SIGAT.BE.Integridad.InformeIntegridad",
+    "ns": "SIGAT.BE.Integridad",
+    "kind": "Class",
+    "abstr": false,
+    "baseType": "System.Object",
+    "interfaces": [],
+    "properties": [
+      {
+        "name": "Configurada",
+        "type": "bool",
+        "scope": "Public",
+        "stat": false
+      },
+      {
+        "name": "Problemas",
+        "type": "List<ProblemaIntegridad>",
+        "scope": "Public",
+        "stat": false
+      },
+      {
+        "name": "Correcta",
+        "type": "bool",
+        "scope": "Public",
+        "stat": false
+      }
+    ],
+    "fields": [],
+    "methods": []
+  },
+  {
+    "name": "IntegridadException",
+    "full": "SIGAT.BE.Integridad.IntegridadException",
+    "ns": "SIGAT.BE.Integridad",
+    "kind": "Class",
+    "abstr": false,
+    "baseType": "System.InvalidOperationException",
+    "interfaces": [],
+    "properties": [
+      {
+        "name": "Informe",
+        "type": "InformeIntegridad",
+        "scope": "Public",
+        "stat": false
+      }
+    ],
+    "fields": [],
+    "methods": []
+  },
+  {
+    "name": "ProblemaIntegridad",
+    "full": "SIGAT.BE.Integridad.ProblemaIntegridad",
+    "ns": "SIGAT.BE.Integridad",
+    "kind": "Class",
+    "abstr": false,
+    "baseType": "System.Object",
+    "interfaces": [],
+    "properties": [
+      {
+        "name": "EqualityContract",
+        "type": "Type",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "Tabla",
+        "type": "string",
+        "scope": "Public",
+        "stat": false
+      },
+      {
+        "name": "Registro",
+        "type": "string",
+        "scope": "Public",
+        "stat": false
+      },
+      {
+        "name": "Motivo",
+        "type": "string",
+        "scope": "Public",
+        "stat": false
+      }
+    ],
+    "fields": [],
+    "methods": [
+      {
+        "name": "ToString",
+        "type": "string",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "PrintMembers",
+        "type": "bool",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "builder",
+            "type": "StringBuilder",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "GetHashCode",
+        "type": "int",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "Equals",
+        "type": "bool",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "obj",
+            "type": "Object",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "Equals",
+        "type": "bool",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "other",
+            "type": "ProblemaIntegridad",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "Deconstruct",
+        "type": "void",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "Tabla",
+            "type": "string",
+            "direction": "out"
+          },
+          {
+            "name": "Registro",
+            "type": "string",
+            "direction": "out"
+          },
+          {
+            "name": "Motivo",
+            "type": "string",
+            "direction": "out"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Permiso",
+    "full": "SIGAT.BE.Permiso",
+    "ns": "SIGAT.BE",
+    "kind": "Class",
+    "abstr": true,
+    "baseType": "System.Object",
+    "interfaces": [],
+    "properties": [
+      {
+        "name": "Id",
+        "type": "int",
+        "scope": "Public",
+        "stat": false
+      },
+      {
+        "name": "Nombre",
+        "type": "string",
+        "scope": "Public",
+        "stat": false
+      }
+    ],
+    "fields": [],
+    "methods": [
+      {
+        "name": "ContienePermiso",
+        "type": "bool",
+        "scope": "Public",
+        "stat": false,
+        "abstr": true,
+        "parameters": [
+          {
+            "name": "nombre",
+            "type": "string",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "Agregar",
+        "type": "void",
+        "scope": "Public",
+        "stat": false,
+        "abstr": true,
+        "parameters": [
+          {
+            "name": "permiso",
+            "type": "Permiso",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "Quitar",
+        "type": "void",
+        "scope": "Public",
+        "stat": false,
+        "abstr": true,
+        "parameters": [
+          {
+            "name": "permiso",
+            "type": "Permiso",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "ObtenerHijos",
+        "type": "List<Permiso>",
+        "scope": "Public",
+        "stat": false,
+        "abstr": true,
+        "parameters": []
+      }
+    ]
+  },
+  {
+    "name": "PermisoCompuesto",
+    "full": "SIGAT.BE.PermisoCompuesto",
+    "ns": "SIGAT.BE",
+    "kind": "Class",
+    "abstr": false,
+    "baseType": "SIGAT.BE.Permiso",
+    "interfaces": [],
+    "properties": [],
+    "fields": [
+      {
+        "name": "hijos",
+        "type": "List<Permiso>",
+        "scope": "Private",
+        "stat": false
+      }
+    ],
+    "methods": [
+      {
+        "name": "Agregar",
+        "type": "void",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "permiso",
+            "type": "Permiso",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "ContieneReferencia",
+        "type": "bool",
+        "scope": "Private",
+        "stat": true,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "origen",
+            "type": "Permiso",
+            "direction": "in"
+          },
+          {
+            "name": "buscado",
+            "type": "Permiso",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "Quitar",
+        "type": "void",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "permiso",
+            "type": "Permiso",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "ObtenerHijos",
+        "type": "List<Permiso>",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "ContienePermiso",
+        "type": "bool",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "nombre",
+            "type": "string",
+            "direction": "in"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "PermisoSimple",
+    "full": "SIGAT.BE.PermisoSimple",
+    "ns": "SIGAT.BE",
+    "kind": "Class",
+    "abstr": false,
+    "baseType": "SIGAT.BE.Permiso",
+    "interfaces": [],
+    "properties": [],
+    "fields": [],
+    "methods": [
+      {
+        "name": "ContienePermiso",
+        "type": "bool",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "nombre",
+            "type": "string",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "Agregar",
+        "type": "void",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "permiso",
+            "type": "Permiso",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "Quitar",
+        "type": "void",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "permiso",
+            "type": "Permiso",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "ObtenerHijos",
+        "type": "List<Permiso>",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      }
+    ]
+  },
+  {
+    "name": "Rol",
+    "full": "SIGAT.BE.Rol",
+    "ns": "SIGAT.BE",
+    "kind": "Class",
+    "abstr": false,
+    "baseType": "System.Object",
+    "interfaces": [],
+    "properties": [
+      {
+        "name": "Id",
+        "type": "int",
+        "scope": "Public",
+        "stat": false
+      },
+      {
+        "name": "Nombre",
+        "type": "string",
+        "scope": "Public",
+        "stat": false
+      },
+      {
+        "name": "Roles",
+        "type": "List<Rol>",
+        "scope": "Public",
+        "stat": false
+      },
+      {
+        "name": "Permisos",
+        "type": "List<Permiso>",
+        "scope": "Public",
+        "stat": false
+      }
+    ],
+    "fields": [
+      {
+        "name": "roles",
+        "type": "List<Rol>",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "permisos",
+        "type": "List<Permiso>",
+        "scope": "Private",
+        "stat": false
+      }
+    ],
+    "methods": [
+      {
+        "name": "ContieneRol",
+        "type": "bool",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "buscado",
+            "type": "Rol",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "AgregarRol",
+        "type": "void",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "rol",
+            "type": "Rol",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "QuitarRol",
+        "type": "void",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "rol",
+            "type": "Rol",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "AgregarPermiso",
+        "type": "void",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "permiso",
+            "type": "Permiso",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "QuitarPermiso",
+        "type": "void",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "permiso",
+            "type": "Permiso",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "TienePermiso",
+        "type": "bool",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "nombre",
+            "type": "string",
+            "direction": "in"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Usuario",
+    "full": "SIGAT.BE.Usuario",
+    "ns": "SIGAT.BE",
+    "kind": "Class",
+    "abstr": false,
+    "baseType": "System.Object",
+    "interfaces": [],
+    "properties": [
+      {
+        "name": "EsAdministradorOriginal",
+        "type": "bool",
+        "scope": "Public",
+        "stat": false
+      },
+      {
+        "name": "Id",
+        "type": "int",
+        "scope": "Public",
+        "stat": false
+      },
+      {
+        "name": "Roles",
+        "type": "List<Rol>",
+        "scope": "Public",
+        "stat": false
+      },
+      {
+        "name": "IdUsuario",
+        "type": "int",
+        "scope": "Public",
+        "stat": false
+      },
+      {
+        "name": "NombreUsuario",
+        "type": "string",
+        "scope": "Public",
+        "stat": false
+      },
+      {
+        "name": "Password",
+        "type": "string",
+        "scope": "Public",
+        "stat": false
+      },
+      {
+        "name": "Nombre",
+        "type": "string",
+        "scope": "Public",
+        "stat": false
+      },
+      {
+        "name": "Apellido",
+        "type": "string",
+        "scope": "Public",
+        "stat": false
+      },
+      {
+        "name": "Activo",
+        "type": "bool",
+        "scope": "Public",
+        "stat": false
+      }
+    ],
+    "fields": [
+      {
+        "name": "roles",
+        "type": "List<Rol>",
+        "scope": "Private",
+        "stat": false
+      }
+    ],
+    "methods": [
+      {
+        "name": "AsignarRol",
+        "type": "void",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "r",
+            "type": "Rol",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "QuitarRol",
+        "type": "void",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "r",
+            "type": "Rol",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "TienePermiso",
+        "type": "bool",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "nombre",
+            "type": "string",
+            "direction": "in"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "BitacoraBLL",
+    "full": "SIGAT.BLL.BitacoraBLL",
+    "ns": "SIGAT.BLL",
+    "kind": "Class",
+    "abstr": false,
+    "baseType": "System.Object",
+    "interfaces": [],
+    "properties": [],
+    "fields": [
+      {
+        "name": "_dal",
+        "type": "BitacoraDAL",
+        "scope": "Private",
+        "stat": false
+      }
+    ],
+    "methods": [
+      {
+        "name": "Registrar",
+        "type": "void",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "evento",
+            "type": "IBitacoraEvento",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "Registrar",
+        "type": "void",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "usuario",
+            "type": "string",
+            "direction": "in"
+          },
+          {
+            "name": "actividad",
+            "type": "string",
+            "direction": "in"
+          },
+          {
+            "name": "informacion",
+            "type": "string",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "Buscar",
+        "type": "List<Bitacora>",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "desde",
+            "type": "Nullable<DateTime>",
+            "direction": "in"
+          },
+          {
+            "name": "hasta",
+            "type": "Nullable<DateTime>",
+            "direction": "in"
+          },
+          {
+            "name": "usuario",
+            "type": "string",
+            "direction": "in"
+          },
+          {
+            "name": "actividad",
+            "type": "string",
+            "direction": "in"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "BitacoraMapper",
+    "full": "SIGAT.BLL.BitacoraMapper",
+    "ns": "SIGAT.BLL",
+    "kind": "Class",
+    "abstr": false,
+    "baseType": "System.Object",
+    "interfaces": [],
+    "properties": [],
+    "fields": [],
+    "methods": [
+      {
+        "name": "PrepararParaBaseDeDatos",
+        "type": "void",
+        "scope": "Public",
+        "stat": true,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "evento",
+            "type": "Bitacora",
+            "direction": "in"
+          }
+        ]
+      }
+    ],
+    "staticType": true
+  },
+  {
+    "name": "BitacoraFactory",
+    "full": "SIGAT.BLL.Fabricas.BitacoraFactory",
+    "ns": "SIGAT.BLL.Fabricas",
+    "kind": "Class",
+    "abstr": true,
+    "baseType": "System.Object",
+    "interfaces": [],
+    "properties": [],
+    "fields": [],
+    "methods": [
+      {
+        "name": "Crear",
+        "type": "IBitacoraEvento",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "identificadorUsuario",
+            "type": "string",
+            "direction": "in"
+          },
+          {
+            "name": "descripcion",
+            "type": "string",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "CrearEvento",
+        "type": "IBitacoraEvento",
+        "scope": "Protected",
+        "stat": false,
+        "abstr": true,
+        "parameters": []
+      }
+    ]
+  },
+  {
+    "name": "GestionUsuariosFactory",
+    "full": "SIGAT.BLL.Fabricas.GestionUsuariosFactory",
+    "ns": "SIGAT.BLL.Fabricas",
+    "kind": "Class",
+    "abstr": false,
+    "baseType": "SIGAT.BLL.Fabricas.BitacoraFactory",
+    "interfaces": [],
+    "properties": [],
+    "fields": [
+      {
+        "name": "_accionEspecifica",
+        "type": "BitacoraAccion",
+        "scope": "Private",
+        "stat": false
+      }
+    ],
+    "methods": [
+      {
+        "name": "CrearEvento",
+        "type": "IBitacoraEvento",
+        "scope": "Protected",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      }
+    ]
+  },
+  {
+    "name": "LoginExitosoFactory",
+    "full": "SIGAT.BLL.Fabricas.LoginExitosoFactory",
+    "ns": "SIGAT.BLL.Fabricas",
+    "kind": "Class",
+    "abstr": false,
+    "baseType": "SIGAT.BLL.Fabricas.BitacoraFactory",
+    "interfaces": [],
+    "properties": [],
+    "fields": [],
+    "methods": [
+      {
+        "name": "CrearEvento",
+        "type": "IBitacoraEvento",
+        "scope": "Protected",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      }
+    ]
+  },
+  {
+    "name": "LoginFallidoFactory",
+    "full": "SIGAT.BLL.Fabricas.LoginFallidoFactory",
+    "ns": "SIGAT.BLL.Fabricas",
+    "kind": "Class",
+    "abstr": false,
+    "baseType": "SIGAT.BLL.Fabricas.BitacoraFactory",
+    "interfaces": [],
+    "properties": [],
+    "fields": [],
+    "methods": [
+      {
+        "name": "CrearEvento",
+        "type": "IBitacoraEvento",
+        "scope": "Protected",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      }
+    ]
+  },
+  {
+    "name": "IdiomaBLL",
+    "full": "SIGAT.BLL.IdiomaBLL",
+    "ns": "SIGAT.BLL",
+    "kind": "Class",
+    "abstr": false,
+    "baseType": "System.Object",
+    "interfaces": [],
+    "properties": [],
+    "fields": [
+      {
+        "name": "_dal",
+        "type": "IdiomaDAL",
+        "scope": "Private",
+        "stat": false
+      }
+    ],
+    "methods": [
+      {
+        "name": "ObtenerIdiomas",
+        "type": "List<Idioma>",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "ObtenerTodosLosIdiomas",
+        "type": "List<Idioma>",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "CambiarIdioma",
+        "type": "void",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "idIdioma",
+            "type": "int",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "RestablecerIdiomaUsuario",
+        "type": "void",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "CargarIdioma",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "idIdioma",
+            "type": "int",
+            "direction": "in"
+          },
+          {
+            "name": "guardarPreferencia",
+            "type": "bool",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "CrearIdioma",
+        "type": "int",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "nombre",
+            "type": "string",
+            "direction": "in"
+          },
+          {
+            "name": "codigo",
+            "type": "string",
+            "direction": "in"
+          },
+          {
+            "name": "nombreNativo",
+            "type": "string",
+            "direction": "in"
+          },
+          {
+            "name": "activo",
+            "type": "bool",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "CambiarEstadoIdioma",
+        "type": "void",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "idIdioma",
+            "type": "int",
+            "direction": "in"
+          },
+          {
+            "name": "activo",
+            "type": "bool",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "ObtenerTraduccionesParaGestion",
+        "type": "List<Traduccion>",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "idIdioma",
+            "type": "int",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "GuardarTraduccionPorControl",
+        "type": "void",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "idIdioma",
+            "type": "int",
+            "direction": "in"
+          },
+          {
+            "name": "idControl",
+            "type": "int",
+            "direction": "in"
+          },
+          {
+            "name": "texto",
+            "type": "string",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "RegistrarClaveNueva",
+        "type": "void",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "nombreForm",
+            "type": "string",
+            "direction": "in"
+          },
+          {
+            "name": "nombreControl",
+            "type": "string",
+            "direction": "in"
+          },
+          {
+            "name": "textoBase",
+            "type": "string",
+            "direction": "in"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "IntegridadBLL",
+    "full": "SIGAT.BLL.IntegridadBLL",
+    "ns": "SIGAT.BLL",
+    "kind": "Class",
+    "abstr": false,
+    "baseType": "System.Object",
+    "interfaces": [],
+    "properties": [],
+    "fields": [
+      {
+        "name": "dal",
+        "type": "IntegridadDAL",
+        "scope": "Private",
+        "stat": false
+      }
+    ],
+    "methods": [
+      {
+        "name": "Verificar",
+        "type": "InformeIntegridad",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "PuedeAdministrar",
+        "type": "bool",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "EsAdministradorAplicacion",
+        "type": "bool",
+        "scope": "Private",
+        "stat": true,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "ExigirAdministradorAplicacion",
+        "type": "void",
+        "scope": "Private",
+        "stat": true,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "InicializarBaseConfiable",
+        "type": "string",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "CrearRespaldoConfiable",
+        "type": "string",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "destino",
+            "type": "string",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "ArchivarBitacora",
+        "type": "int",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "dias",
+            "type": "int",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "Recuperar",
+        "type": "InformeIntegridad",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "ruta",
+            "type": "string",
+            "direction": "in"
+          },
+          {
+            "name": "tablasCompletas",
+            "type": "bool",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "ExigirIntegridad",
+        "type": "void",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "RegistrarIncidente",
+        "type": "void",
+        "scope": "Public",
+        "stat": true,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "informe",
+            "type": "InformeIntegridad",
+            "direction": "in"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "MatrizRoles",
+    "full": "SIGAT.BLL.MatrizRoles",
+    "ns": "SIGAT.BLL",
+    "kind": "Class",
+    "abstr": false,
+    "baseType": "System.Object",
+    "interfaces": [],
+    "properties": [],
+    "fields": [
+      {
+        "name": "Administracion",
+        "type": "string",
+        "scope": "Public",
+        "stat": true
+      },
+      {
+        "name": "Bitacora",
+        "type": "string",
+        "scope": "Public",
+        "stat": true
+      }
+    ],
+    "methods": [
+      {
+        "name": "CrearCatalogo",
+        "type": "EstadoRoles",
+        "scope": "Public",
+        "stat": true,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "AgregarRol",
+        "type": "void",
+        "scope": "Private",
+        "stat": true,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "estado",
+            "type": "EstadoRoles",
+            "direction": "in"
+          },
+          {
+            "name": "id",
+            "type": "int",
+            "direction": "in"
+          },
+          {
+            "name": "nombre",
+            "type": "string",
+            "direction": "in"
+          },
+          {
+            "name": "permisos",
+            "type": "Int32[]",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "ValidarCatalogo",
+        "type": "void",
+        "scope": "Public",
+        "stat": true,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "estado",
+            "type": "EstadoRoles",
+            "direction": "in"
+          }
+        ]
+      }
+    ],
+    "staticType": true
+  },
+  {
+    "name": "ResultadoLogin",
+    "full": "SIGAT.BLL.ResultadoLogin",
+    "ns": "SIGAT.BLL",
+    "kind": "Enumeration",
+    "abstr": false,
+    "baseType": "System.Enum",
+    "interfaces": [],
+    "properties": [],
+    "fields": [
+      {
+        "name": "Exito",
+        "type": "ResultadoLogin",
+        "scope": "Public",
+        "stat": true
+      },
+      {
+        "name": "CredencialesInvalidas",
+        "type": "ResultadoLogin",
+        "scope": "Public",
+        "stat": true
+      },
+      {
+        "name": "UsuarioInactivo",
+        "type": "ResultadoLogin",
+        "scope": "Public",
+        "stat": true
+      }
+    ],
+    "methods": []
+  },
+  {
+    "name": "RolesBLL",
+    "full": "SIGAT.BLL.RolesBLL",
+    "ns": "SIGAT.BLL",
+    "kind": "Class",
+    "abstr": false,
+    "baseType": "System.Object",
+    "interfaces": [],
+    "properties": [],
+    "fields": [
+      {
+        "name": "dal",
+        "type": "RolesDAL",
+        "scope": "Private",
+        "stat": false
+      }
+    ],
+    "methods": [
+      {
+        "name": "CargarParaGestion",
+        "type": "EstadoRoles",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "CargarRolesUsuario",
+        "type": "void",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "usuario",
+            "type": "Usuario",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "Guardar",
+        "type": "void",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "estado",
+            "type": "EstadoRoles",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "ExigirGestion",
+        "type": "void",
+        "scope": "Private",
+        "stat": true,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "estado",
+            "type": "EstadoRoles",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "Validar",
+        "type": "void",
+        "scope": "Public",
+        "stat": true,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "estado",
+            "type": "EstadoRoles",
+            "direction": "in"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "UsuarioBLL",
+    "full": "SIGAT.BLL.UsuarioBLL",
+    "ns": "SIGAT.BLL",
+    "kind": "Class",
+    "abstr": false,
+    "baseType": "System.Object",
+    "interfaces": [],
+    "properties": [],
+    "fields": [
+      {
+        "name": "_dal",
+        "type": "UsuarioDAL",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "_bitacora",
+        "type": "BitacoraBLL",
+        "scope": "Private",
+        "stat": false
+      }
+    ],
+    "methods": [
+      {
+        "name": "ObtenerNombreUsuarioActual",
+        "type": "string",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "Autenticar",
+        "type": "ResultadoLogin",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "nombreUsuario",
+            "type": "string",
+            "direction": "in"
+          },
+          {
+            "name": "passwordPlana",
+            "type": "string",
+            "direction": "in"
+          },
+          {
+            "name": "usuarioValidado",
+            "type": "Usuario",
+            "direction": "out"
+          }
+        ]
+      },
+      {
+        "name": "ObtenerTodos",
+        "type": "List<Usuario>",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "CrearUsuario",
+        "type": "void",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "nuevoUsuario",
+            "type": "Usuario",
+            "direction": "in"
+          },
+          {
+            "name": "passwordPlana",
+            "type": "string",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "ActualizarUsuario",
+        "type": "void",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "usuarioEditado",
+            "type": "Usuario",
+            "direction": "in"
+          },
+          {
+            "name": "passwordPlana",
+            "type": "string",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "BajaLogicaUsuario",
+        "type": "void",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "idUsuario",
+            "type": "int",
+            "direction": "in"
+          },
+          {
+            "name": "nombreUsuario",
+            "type": "string",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "CrearAdministradorInicial",
+        "type": "void",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "usuario",
+            "type": "Usuario",
+            "direction": "in"
+          },
+          {
+            "name": "passwordPlana",
+            "type": "string",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "ValidarDatos",
+        "type": "void",
+        "scope": "Public",
+        "stat": true,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "usuario",
+            "type": "Usuario",
+            "direction": "in"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "BitacoraDAL",
+    "full": "SIGAT.DAL.BitacoraDAL",
+    "ns": "SIGAT.DAL",
+    "kind": "Class",
+    "abstr": false,
+    "baseType": "System.Object",
+    "interfaces": [],
+    "properties": [],
+    "fields": [
+      {
+        "name": "integridad",
+        "type": "IntegridadDAL",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "encriptador",
+        "type": "EncriptadorServicio",
+        "scope": "Private",
+        "stat": false
+      }
+    ],
+    "methods": [
+      {
+        "name": "Insertar",
+        "type": "void",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "registro",
+            "type": "Bitacora",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "Buscar",
+        "type": "List<Bitacora>",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "desde",
+            "type": "Nullable<DateTime>",
+            "direction": "in"
+          },
+          {
+            "name": "hasta",
+            "type": "Nullable<DateTime>",
+            "direction": "in"
+          },
+          {
+            "name": "usuario",
+            "type": "string",
+            "direction": "in"
+          },
+          {
+            "name": "actividad",
+            "type": "string",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "VerificarIntegridadBaseDatos",
+        "type": "bool",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      }
+    ]
+  },
+  {
+    "name": "ConexionBD",
+    "full": "SIGAT.DAL.ConexionBD",
+    "ns": "SIGAT.DAL",
+    "kind": "Class",
+    "abstr": false,
+    "baseType": "System.Object",
+    "interfaces": [],
+    "properties": [],
+    "fields": [
+      {
+        "name": "CadenaConexion",
+        "type": "string",
+        "scope": "Private",
+        "stat": true
+      }
+    ],
+    "methods": [
+      {
+        "name": "ObtenerConexion",
+        "type": "SqlConnection",
+        "scope": "Public",
+        "stat": true,
+        "abstr": false,
+        "parameters": []
+      }
+    ],
+    "staticType": true
+  },
+  {
+    "name": "IdiomaDAL",
+    "full": "SIGAT.DAL.IdiomaDAL",
+    "ns": "SIGAT.DAL",
+    "kind": "Class",
+    "abstr": false,
+    "baseType": "System.Object",
+    "interfaces": [],
+    "properties": [],
+    "fields": [
+      {
+        "name": "cadena",
+        "type": "string",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "integridad",
+        "type": "IntegridadDAL",
+        "scope": "Private",
+        "stat": false
+      }
+    ],
+    "methods": [
+      {
+        "name": "Conectar",
+        "type": "SqlConnection",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "ObtenerIdiomaPreferido",
+        "type": "Nullable<int>",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "idUsuario",
+            "type": "int",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "GuardarIdiomaPreferido",
+        "type": "void",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "idUsuario",
+            "type": "int",
+            "direction": "in"
+          },
+          {
+            "name": "idIdioma",
+            "type": "int",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "ObtenerIdiomas",
+        "type": "List<Idioma>",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "ObtenerTodosLosIdiomas",
+        "type": "List<Idioma>",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "ObtenerIdiomasPorEstado",
+        "type": "List<Idioma>",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "activo",
+            "type": "bool",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "CrearIdioma",
+        "type": "Idioma",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "lector",
+            "type": "SqlDataReader",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "ObtenerIdiomaPorId",
+        "type": "Idioma",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "idIdioma",
+            "type": "int",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "ObtenerIdIdiomaPorCodigo",
+        "type": "int",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "codigo",
+            "type": "string",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "ExisteIdiomaPorNombre",
+        "type": "bool",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "nombre",
+            "type": "string",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "ExisteIdiomaPorCodigo",
+        "type": "bool",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "codigo",
+            "type": "string",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "ExisteIdioma",
+        "type": "bool",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "columna",
+            "type": "string",
+            "direction": "in"
+          },
+          {
+            "name": "valor",
+            "type": "string",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "InsertarIdioma",
+        "type": "int",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "idioma",
+            "type": "Idioma",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "CambiarEstadoIdioma",
+        "type": "void",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "idIdioma",
+            "type": "int",
+            "direction": "in"
+          },
+          {
+            "name": "activo",
+            "type": "bool",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "ObtenerTraduccionesPorIdioma",
+        "type": "List<Traduccion>",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "idIdioma",
+            "type": "int",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "ObtenerTraduccionesParaGestion",
+        "type": "List<Traduccion>",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "idIdioma",
+            "type": "int",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "ConsultarTraducciones",
+        "type": "List<Traduccion>",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "idIdioma",
+            "type": "int",
+            "direction": "in"
+          },
+          {
+            "name": "gestion",
+            "type": "bool",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "ObtenerOCrearControl",
+        "type": "int",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "nombreControl",
+            "type": "string",
+            "direction": "in"
+          },
+          {
+            "name": "nombreForm",
+            "type": "string",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "ExisteControl",
+        "type": "bool",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "nombreControl",
+            "type": "string",
+            "direction": "in"
+          },
+          {
+            "name": "nombreForm",
+            "type": "string",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "CrearTraduccionesPendientes",
+        "type": "void",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "idIdioma",
+            "type": "int",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "CrearPendientesParaTodosLosIdiomas",
+        "type": "void",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "idControl",
+            "type": "int",
+            "direction": "in"
+          },
+          {
+            "name": "idIdiomaBase",
+            "type": "int",
+            "direction": "in"
+          },
+          {
+            "name": "textoBase",
+            "type": "string",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "ActualizarTraduccion",
+        "type": "void",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "idIdioma",
+            "type": "int",
+            "direction": "in"
+          },
+          {
+            "name": "idControl",
+            "type": "int",
+            "direction": "in"
+          },
+          {
+            "name": "texto",
+            "type": "string",
+            "direction": "in"
+          },
+          {
+            "name": "estado",
+            "type": "string",
+            "direction": "in"
+          },
+          {
+            "name": "digitoVerificador",
+            "type": "string",
+            "direction": "in"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "IntegridadDAL",
+    "full": "SIGAT.DAL.IntegridadDAL",
+    "ns": "SIGAT.DAL",
+    "kind": "Class",
+    "abstr": false,
+    "baseType": "System.Object",
+    "interfaces": [],
+    "properties": [],
+    "fields": [
+      {
+        "name": "cadena",
+        "type": "string",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "LogLock",
+        "type": "Object",
+        "scope": "Private",
+        "stat": true
+      },
+      {
+        "name": "Tablas",
+        "type": "String[]",
+        "scope": "Private",
+        "stat": true
+      },
+      {
+        "name": "Columnas",
+        "type": "Dictionary<string, String[]>",
+        "scope": "Private",
+        "stat": true
+      }
+    ],
+    "methods": [
+      {
+        "name": "Conectar",
+        "type": "SqlConnection",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "Id",
+        "type": "string",
+        "scope": "Private",
+        "stat": true,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "nombre",
+            "type": "string",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "Literal",
+        "type": "string",
+        "scope": "Private",
+        "stat": true,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "valor",
+            "type": "string",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "Comando",
+        "type": "SqlCommand",
+        "scope": "Private",
+        "stat": true,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "c",
+            "type": "SqlConnection",
+            "direction": "in"
+          },
+          {
+            "name": "t",
+            "type": "SqlTransaction",
+            "direction": "in"
+          },
+          {
+            "name": "sql",
+            "type": "string",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "Ejecutar",
+        "type": "void",
+        "scope": "Private",
+        "stat": true,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "c",
+            "type": "SqlConnection",
+            "direction": "in"
+          },
+          {
+            "name": "t",
+            "type": "SqlTransaction",
+            "direction": "in"
+          },
+          {
+            "name": "sql",
+            "type": "string",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "Bloquear",
+        "type": "void",
+        "scope": "Private",
+        "stat": true,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "c",
+            "type": "SqlConnection",
+            "direction": "in"
+          },
+          {
+            "name": "t",
+            "type": "SqlTransaction",
+            "direction": "in"
+          },
+          {
+            "name": "escritura",
+            "type": "bool",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "TieneEstructura",
+        "type": "bool",
+        "scope": "Private",
+        "stat": true,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "c",
+            "type": "SqlConnection",
+            "direction": "in"
+          },
+          {
+            "name": "t",
+            "type": "SqlTransaction",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "LeerFilas",
+        "type": "List<Fila>",
+        "scope": "Private",
+        "stat": true,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "c",
+            "type": "SqlConnection",
+            "direction": "in"
+          },
+          {
+            "name": "t",
+            "type": "SqlTransaction",
+            "direction": "in"
+          },
+          {
+            "name": "tabla",
+            "type": "string",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "Vertical",
+        "type": "string",
+        "scope": "Private",
+        "stat": true,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "tabla",
+            "type": "string",
+            "direction": "in"
+          },
+          {
+            "name": "filas",
+            "type": "List<Fila>",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "Examinar",
+        "type": "Estado",
+        "scope": "Private",
+        "stat": true,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "c",
+            "type": "SqlConnection",
+            "direction": "in"
+          },
+          {
+            "name": "t",
+            "type": "SqlTransaction",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "Verificar",
+        "type": "InformeIntegridad",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "LeerVerificado",
+        "type": "T",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "leer",
+            "type": "Func<SqlConnection, SqlTransaction, T>",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "Cambiar",
+        "type": "T",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "tabla",
+            "type": "string",
+            "direction": "in"
+          },
+          {
+            "name": "cambiar",
+            "type": "Func<SqlConnection, SqlTransaction, T>",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "Exigir",
+        "type": "void",
+        "scope": "Private",
+        "stat": true,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "informe",
+            "type": "InformeIntegridad",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "Condicion",
+        "type": "string",
+        "scope": "Private",
+        "stat": true,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "tabla",
+            "type": "string",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "GuardarHash",
+        "type": "void",
+        "scope": "Private",
+        "stat": true,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "c",
+            "type": "SqlConnection",
+            "direction": "in"
+          },
+          {
+            "name": "t",
+            "type": "SqlTransaction",
+            "direction": "in"
+          },
+          {
+            "name": "fila",
+            "type": "Fila",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "ActualizarVertical",
+        "type": "void",
+        "scope": "Private",
+        "stat": true,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "c",
+            "type": "SqlConnection",
+            "direction": "in"
+          },
+          {
+            "name": "t",
+            "type": "SqlTransaction",
+            "direction": "in"
+          },
+          {
+            "name": "tabla",
+            "type": "string",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "PuedeAdministrar",
+        "type": "bool",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "ArchivarBitacora",
+        "type": "int",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "dias",
+            "type": "int",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "EsAdministrador",
+        "type": "bool",
+        "scope": "Private",
+        "stat": true,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "c",
+            "type": "SqlConnection",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "ExigirAdministrador",
+        "type": "void",
+        "scope": "Private",
+        "stat": true,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "c",
+            "type": "SqlConnection",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "InicializarBaseConfiable",
+        "type": "string",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "ValidarLegado",
+        "type": "void",
+        "scope": "Private",
+        "stat": true,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "fila",
+            "type": "Fila",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "CrearRespaldoConfiable",
+        "type": "string",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "destino",
+            "type": "string",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "ExportarRespaldo",
+        "type": "void",
+        "scope": "Private",
+        "stat": true,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "origen",
+            "type": "string",
+            "direction": "in"
+          },
+          {
+            "name": "destino",
+            "type": "string",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "CrearArchivoBackup",
+        "type": "string",
+        "scope": "Private",
+        "stat": true,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "c",
+            "type": "SqlConnection",
+            "direction": "in"
+          },
+          {
+            "name": "sufijo",
+            "type": "string",
+            "direction": "in"
+          },
+          {
+            "name": "carpetaCompartida",
+            "type": "string",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "ConBaseAuxiliar",
+        "type": "T",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "ruta",
+            "type": "string",
+            "direction": "in"
+          },
+          {
+            "name": "accion",
+            "type": "Func<Estado, T>",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "PrepararCarpetaCompartida",
+        "type": "string",
+        "scope": "Private",
+        "stat": true,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "conexion",
+            "type": "SqlConnection",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "ConBaseAuxiliarServidor",
+        "type": "T",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "ruta",
+            "type": "string",
+            "direction": "in"
+          },
+          {
+            "name": "accion",
+            "type": "Func<Estado, T>",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "Recuperar",
+        "type": "InformeIntegridad",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "ruta",
+            "type": "string",
+            "direction": "in"
+          },
+          {
+            "name": "restaurarTablasCompletas",
+            "type": "bool",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "RestaurarFila",
+        "type": "void",
+        "scope": "Private",
+        "stat": true,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "c",
+            "type": "SqlConnection",
+            "direction": "in"
+          },
+          {
+            "name": "t",
+            "type": "SqlTransaction",
+            "direction": "in"
+          },
+          {
+            "name": "fila",
+            "type": "Fila",
+            "direction": "in"
+          },
+          {
+            "name": "insertar",
+            "type": "bool",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "Registrar",
+        "type": "void",
+        "scope": "Public",
+        "stat": true,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "mensaje",
+            "type": "string",
+            "direction": "in"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "RolesDAL",
+    "full": "SIGAT.DAL.RolesDAL",
+    "ns": "SIGAT.DAL",
+    "kind": "Class",
+    "abstr": false,
+    "baseType": "System.Object",
+    "interfaces": [],
+    "properties": [],
+    "fields": [
+      {
+        "name": "cadena",
+        "type": "string",
+        "scope": "Private",
+        "stat": false
+      }
+    ],
+    "methods": [
+      {
+        "name": "Conectar",
+        "type": "SqlConnection",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "ConfigurarConexion",
+        "type": "void",
+        "scope": "Private",
+        "stat": true,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "conexion",
+            "type": "SqlConnection",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "Cargar",
+        "type": "EstadoRoles",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "Guardar",
+        "type": "void",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "estado",
+            "type": "EstadoRoles",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "Ejecutar",
+        "type": "void",
+        "scope": "Private",
+        "stat": true,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "conexion",
+            "type": "SqlConnection",
+            "direction": "in"
+          },
+          {
+            "name": "transaccion",
+            "type": "SqlTransaction",
+            "direction": "in"
+          },
+          {
+            "name": "sql",
+            "type": "string",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "InsertarPar",
+        "type": "void",
+        "scope": "Private",
+        "stat": true,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "conexion",
+            "type": "SqlConnection",
+            "direction": "in"
+          },
+          {
+            "name": "transaccion",
+            "type": "SqlTransaction",
+            "direction": "in"
+          },
+          {
+            "name": "sql",
+            "type": "string",
+            "direction": "in"
+          },
+          {
+            "name": "uno",
+            "type": "int",
+            "direction": "in"
+          },
+          {
+            "name": "dos",
+            "type": "int",
+            "direction": "in"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "UsuarioDAL",
+    "full": "SIGAT.DAL.UsuarioDAL",
+    "ns": "SIGAT.DAL",
+    "kind": "Class",
+    "abstr": false,
+    "baseType": "System.Object",
+    "interfaces": [],
+    "properties": [],
+    "fields": [
+      {
+        "name": "cadena",
+        "type": "string",
+        "scope": "Private",
+        "stat": false
+      }
+    ],
+    "methods": [
+      {
+        "name": "Conectar",
+        "type": "SqlConnection",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "ObtenerPorNombreUsuario",
+        "type": "Usuario",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "nombreUsuario",
+            "type": "string",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "ObtenerTodos",
+        "type": "List<Usuario>",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "Insertar",
+        "type": "void",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "usuario",
+            "type": "Usuario",
+            "direction": "in"
+          },
+          {
+            "name": "administradorInicial",
+            "type": "bool",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "Actualizar",
+        "type": "void",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "usuario",
+            "type": "Usuario",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "Eliminar",
+        "type": "void",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "idUsuario",
+            "type": "int",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "EsAdministradorOriginal",
+        "type": "bool",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "idUsuario",
+            "type": "int",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "BloquearSeguridad",
+        "type": "void",
+        "scope": "Private",
+        "stat": true,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "conexion",
+            "type": "SqlConnection",
+            "direction": "in"
+          },
+          {
+            "name": "transaccion",
+            "type": "SqlTransaction",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "ExigirAdministradorActivo",
+        "type": "void",
+        "scope": "Private",
+        "stat": true,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "conexion",
+            "type": "SqlConnection",
+            "direction": "in"
+          },
+          {
+            "name": "transaccion",
+            "type": "SqlTransaction",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "Parametros",
+        "type": "void",
+        "scope": "Private",
+        "stat": true,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "comando",
+            "type": "SqlCommand",
+            "direction": "in"
+          },
+          {
+            "name": "usuario",
+            "type": "Usuario",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "MapearUsuario",
+        "type": "Usuario",
+        "scope": "Private",
+        "stat": true,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "lector",
+            "type": "SqlDataReader",
+            "direction": "in"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "EncriptadorServicio",
+    "full": "SIGAT.SERVICIOS.EncriptadorServicio",
+    "ns": "SIGAT.SERVICIOS",
+    "kind": "Class",
+    "abstr": false,
+    "baseType": "System.Object",
+    "interfaces": [],
+    "properties": [],
+    "fields": [
+      {
+        "name": "_key",
+        "type": "Byte[]",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "_iv",
+        "type": "Byte[]",
+        "scope": "Private",
+        "stat": false
+      }
+    ],
+    "methods": [
+      {
+        "name": "Encriptar",
+        "type": "string",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "textoPlano",
+            "type": "string",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "Desencriptar",
+        "type": "string",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "textoEncriptado",
+            "type": "string",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "CalcularDV",
+        "type": "string",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "cadenaConcatenada",
+            "type": "string",
+            "direction": "in"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "HashHelper",
+    "full": "SIGAT.SERVICIOS.HashHelper",
+    "ns": "SIGAT.SERVICIOS",
+    "kind": "Class",
+    "abstr": false,
+    "baseType": "System.Object",
+    "interfaces": [],
+    "properties": [],
+    "fields": [],
+    "methods": [
+      {
+        "name": "ObtenerHashSHA256",
+        "type": "string",
+        "scope": "Public",
+        "stat": true,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "texto",
+            "type": "string",
+            "direction": "in"
+          }
+        ]
+      }
+    ],
+    "staticType": true
+  },
+  {
+    "name": "IdiomaManager",
+    "full": "SIGAT.SERVICIOS.Idiomas.IdiomaManager",
+    "ns": "SIGAT.SERVICIOS.Idiomas",
+    "kind": "Class",
+    "abstr": false,
+    "baseType": "System.Object",
+    "interfaces": [
+      "SIGAT.SERVICIOS.Idiomas.IIdiomaSubject"
+    ],
+    "properties": [
+      {
+        "name": "IdiomaActual",
+        "type": "Idioma",
+        "scope": "Public",
+        "stat": false
+      }
+    ],
+    "fields": [
+      {
+        "name": "_observadores",
+        "type": "List<IIdiomaObserver>",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "_traducciones",
+        "type": "Dictionary<string, string>",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "_instancia",
+        "type": "IdiomaManager",
+        "scope": "Private",
+        "stat": true
+      }
+    ],
+    "methods": [
+      {
+        "name": "ReiniciarSesion",
+        "type": "void",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "ObtenerInstancia",
+        "type": "IdiomaManager",
+        "scope": "Public",
+        "stat": true,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "Suscribir",
+        "type": "void",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "observador",
+            "type": "IIdiomaObserver",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "Desuscribir",
+        "type": "void",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "observador",
+            "type": "IIdiomaObserver",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "NotificarObservadores",
+        "type": "void",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "CargarIdioma",
+        "type": "void",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "idioma",
+            "type": "Idioma",
+            "direction": "in"
+          },
+          {
+            "name": "traducciones",
+            "type": "Dictionary<string, string>",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "Traducir",
+        "type": "string",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "nombreForm",
+            "type": "string",
+            "direction": "in"
+          },
+          {
+            "name": "nombreControl",
+            "type": "string",
+            "direction": "in"
+          },
+          {
+            "name": "textoOriginal",
+            "type": "string",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "ClaveDe",
+        "type": "string",
+        "scope": "Public",
+        "stat": true,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "nombreForm",
+            "type": "string",
+            "direction": "in"
+          },
+          {
+            "name": "nombreControl",
+            "type": "string",
+            "direction": "in"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "IIdiomaObserver",
+    "full": "SIGAT.SERVICIOS.Idiomas.IIdiomaObserver",
+    "ns": "SIGAT.SERVICIOS.Idiomas",
+    "kind": "Interface",
+    "abstr": true,
+    "baseType": null,
+    "interfaces": [],
+    "properties": [],
+    "fields": [],
+    "methods": [
+      {
+        "name": "ActualizarIdioma",
+        "type": "void",
+        "scope": "Public",
+        "stat": false,
+        "abstr": true,
+        "parameters": []
+      }
+    ]
+  },
+  {
+    "name": "IIdiomaSubject",
+    "full": "SIGAT.SERVICIOS.Idiomas.IIdiomaSubject",
+    "ns": "SIGAT.SERVICIOS.Idiomas",
+    "kind": "Interface",
+    "abstr": true,
+    "baseType": null,
+    "interfaces": [],
+    "properties": [],
+    "fields": [],
+    "methods": [
+      {
+        "name": "Suscribir",
+        "type": "void",
+        "scope": "Public",
+        "stat": false,
+        "abstr": true,
+        "parameters": [
+          {
+            "name": "observador",
+            "type": "IIdiomaObserver",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "Desuscribir",
+        "type": "void",
+        "scope": "Public",
+        "stat": false,
+        "abstr": true,
+        "parameters": [
+          {
+            "name": "observador",
+            "type": "IIdiomaObserver",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "NotificarObservadores",
+        "type": "void",
+        "scope": "Public",
+        "stat": false,
+        "abstr": true,
+        "parameters": []
+      }
+    ]
+  },
+  {
+    "name": "SesionServicio",
+    "full": "SIGAT.SERVICIOS.SesionServicio",
+    "ns": "SIGAT.SERVICIOS",
+    "kind": "Class",
+    "abstr": false,
+    "baseType": "System.Object",
+    "interfaces": [],
+    "properties": [
+      {
+        "name": "UsuarioActual",
+        "type": "Usuario",
+        "scope": "Public",
+        "stat": false
+      },
+      {
+        "name": "EstaAutenticado",
+        "type": "bool",
+        "scope": "Public",
+        "stat": false
+      }
+    ],
+    "fields": [
+      {
+        "name": "_instancia",
+        "type": "SesionServicio",
+        "scope": "Private",
+        "stat": true
+      },
+      {
+        "name": "_lock",
+        "type": "Object",
+        "scope": "Private",
+        "stat": true
+      }
+    ],
+    "methods": [
+      {
+        "name": "ObtenerInstancia",
+        "type": "SesionServicio",
+        "scope": "Public",
+        "stat": true,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "IniciarSesion",
+        "type": "void",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "usuarioLogueado",
+            "type": "Usuario",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "CerrarSesion",
+        "type": "void",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      }
+    ]
+  },
+  {
+    "name": "VerificadorSHA256",
+    "full": "SIGAT.SERVICIOS.VerificadorSHA256",
+    "ns": "SIGAT.SERVICIOS",
+    "kind": "Class",
+    "abstr": false,
+    "baseType": "System.Object",
+    "interfaces": [],
+    "properties": [],
+    "fields": [],
+    "methods": [
+      {
+        "name": "Canonico",
+        "type": "string",
+        "scope": "Public",
+        "stat": true,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "valores",
+            "type": "Object[]",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "Hexadecimal",
+        "type": "string",
+        "scope": "Public",
+        "stat": true,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "texto",
+            "type": "string",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "Base64",
+        "type": "string",
+        "scope": "Public",
+        "stat": true,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "texto",
+            "type": "string",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "Traduccion",
+        "type": "string",
+        "scope": "Public",
+        "stat": true,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "idioma",
+            "type": "int",
+            "direction": "in"
+          },
+          {
+            "name": "control",
+            "type": "int",
+            "direction": "in"
+          },
+          {
+            "name": "texto",
+            "type": "string",
+            "direction": "in"
+          },
+          {
+            "name": "estado",
+            "type": "string",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "Bitacora",
+        "type": "string",
+        "scope": "Public",
+        "stat": true,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "id",
+            "type": "int",
+            "direction": "in"
+          },
+          {
+            "name": "fecha",
+            "type": "DateTime",
+            "direction": "in"
+          },
+          {
+            "name": "usuario",
+            "type": "string",
+            "direction": "in"
+          },
+          {
+            "name": "actividad",
+            "type": "string",
+            "direction": "in"
+          },
+          {
+            "name": "cifrado",
+            "type": "string",
+            "direction": "in"
+          }
+        ]
+      }
+    ],
+    "staticType": true
+  },
+  {
+    "name": "FormGestionRoles",
+    "full": "SIGAT.UI.FormGestionRoles",
+    "ns": "SIGAT.UI",
+    "kind": "Class",
+    "abstr": false,
+    "baseType": "System.Windows.Forms.Form",
+    "interfaces": [
+      "SIGAT.SERVICIOS.Idiomas.IIdiomaObserver"
+    ],
+    "properties": [],
+    "fields": [
+      {
+        "name": "roles",
+        "type": "List<Rol>",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "usuarios",
+        "type": "List<Usuario>",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "tvRolesJerarquia",
+        "type": "TreeView",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "tvUsuarioPermisos",
+        "type": "TreeView",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "tvCatalogoGeneral",
+        "type": "TreeView",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "cbUsuarios",
+        "type": "ComboBox",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "cbRolDestino",
+        "type": "ComboBox",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "origenUsuario",
+        "type": "Object",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "estado",
+        "type": "EstadoRoles",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "rolesBLL",
+        "type": "RolesBLL",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "lblEstado",
+        "type": "Label",
+        "scope": "Private",
+        "stat": false
+      }
+    ],
+    "methods": [
+      {
+        "name": "CargarDatos",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "sender",
+            "type": "Object",
+            "direction": "in"
+          },
+          {
+            "name": "e",
+            "type": "EventArgs",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "InicializarDatos",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "datos",
+            "type": "EstadoRoles",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "CargarNodosRecursivo",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "nodoPadre",
+            "type": "TreeNode",
+            "direction": "in"
+          },
+          {
+            "name": "permiso",
+            "type": "Permiso",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "CargarRol",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "nodos",
+            "type": "TreeNodeCollection",
+            "direction": "in"
+          },
+          {
+            "name": "rol",
+            "type": "Rol",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "RefrescarArboles",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "RefrescarUsuario",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "UsuarioSeleccionado",
+        "type": "Usuario",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "AsignarAUsuario",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "QuitarAUsuario",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "ActualizarDestinos",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "Destino",
+        "type": "Rol",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "AsignarARol",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "CrearRol",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "anidado",
+            "type": "bool",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "EliminarRol",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "QuitarDeRol",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "EditarFamilia",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "Ejecutar",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "accion",
+            "type": "Action",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "CrearControles",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "Sector",
+        "type": "Panel",
+        "scope": "Private",
+        "stat": true,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "title",
+            "type": "string",
+            "direction": "in"
+          },
+          {
+            "name": "key",
+            "type": "string",
+            "direction": "in"
+          },
+          {
+            "name": "tree",
+            "type": "TreeView",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "Ayuda",
+        "type": "Label",
+        "scope": "Private",
+        "stat": true,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "text",
+            "type": "string",
+            "direction": "in"
+          },
+          {
+            "name": "key",
+            "type": "string",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "Boton",
+        "type": "Button",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "name",
+            "type": "string",
+            "direction": "in"
+          },
+          {
+            "name": "text",
+            "type": "string",
+            "direction": "in"
+          },
+          {
+            "name": "action",
+            "type": "Action",
+            "direction": "in"
+          },
+          {
+            "name": "key",
+            "type": "string",
+            "direction": "in"
+          },
+          {
+            "name": "primary",
+            "type": "bool",
+            "direction": "in"
+          },
+          {
+            "name": "danger",
+            "type": "bool",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "ActualizarIdioma",
+        "type": "void",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "ContarFilasVisibles",
+        "type": "int",
+        "scope": "Private",
+        "stat": true,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "nodos",
+            "type": "TreeNodeCollection",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "AjustarFilasArbol",
+        "type": "void",
+        "scope": "Private",
+        "stat": true,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "arbol",
+            "type": "TreeView",
+            "direction": "in"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "FrmBitacora",
+    "full": "SIGAT.UI.FrmBitacora",
+    "ns": "SIGAT.UI",
+    "kind": "Class",
+    "abstr": false,
+    "baseType": "System.Windows.Forms.Form",
+    "interfaces": [
+      "SIGAT.SERVICIOS.Idiomas.IIdiomaObserver"
+    ],
+    "properties": [],
+    "fields": [
+      {
+        "name": "_bll",
+        "type": "BitacoraBLL",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "components",
+        "type": "IContainer",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "panelFiltros",
+        "type": "Panel",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "chkFechas",
+        "type": "CheckBox",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "dtpDesde",
+        "type": "DateTimePicker",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "dtpHasta",
+        "type": "DateTimePicker",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "lblUser",
+        "type": "Label",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "lblAct",
+        "type": "Label",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "txtUser",
+        "type": "TextBox",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "txtActividad",
+        "type": "TextBox",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "btnBuscar",
+        "type": "Button",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "dgv",
+        "type": "DataGridView",
+        "scope": "Private",
+        "stat": false
+      }
+    ],
+    "methods": [
+      {
+        "name": "FrmBitacora_Load",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "sender",
+            "type": "Object",
+            "direction": "in"
+          },
+          {
+            "name": "e",
+            "type": "EventArgs",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "FrmBitacora_FormClosed",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "sender",
+            "type": "Object",
+            "direction": "in"
+          },
+          {
+            "name": "e",
+            "type": "FormClosedEventArgs",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "BtnBuscar_Click",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "sender",
+            "type": "Object",
+            "direction": "in"
+          },
+          {
+            "name": "e",
+            "type": "EventArgs",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "Buscar",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "Dgv_DataBindingComplete",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "sender",
+            "type": "Object",
+            "direction": "in"
+          },
+          {
+            "name": "e",
+            "type": "DataGridViewBindingCompleteEventArgs",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "TraducirColumnasVisibles",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "ActualizarIdioma",
+        "type": "void",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "Dispose",
+        "type": "void",
+        "scope": "Protected",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "disposing",
+            "type": "bool",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "InitializeComponent",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "CampoFiltro",
+        "type": "TableLayoutPanel",
+        "scope": "Private",
+        "stat": true,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "label",
+            "type": "Label",
+            "direction": "in"
+          },
+          {
+            "name": "input",
+            "type": "TextBox",
+            "direction": "in"
+          },
+          {
+            "name": "width",
+            "type": "int",
+            "direction": "in"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "FrmGestionIdiomas",
+    "full": "SIGAT.UI.FrmGestionIdiomas",
+    "ns": "SIGAT.UI",
+    "kind": "Class",
+    "abstr": false,
+    "baseType": "System.Windows.Forms.Form",
+    "interfaces": [
+      "SIGAT.SERVICIOS.Idiomas.IIdiomaObserver"
+    ],
+    "properties": [],
+    "fields": [
+      {
+        "name": "_idiomaBLL",
+        "type": "IdiomaBLL",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "_traduccionesActuales",
+        "type": "List<Traduccion>",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "components",
+        "type": "IContainer",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "lblIdiomaActivo",
+        "type": "Label",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "lblNuevoIdioma",
+        "type": "Label",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "lblCodigoIdioma",
+        "type": "Label",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "lblNombreNativo",
+        "type": "Label",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "cmbIdiomas",
+        "type": "ComboBox",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "txtNuevoIdioma",
+        "type": "TextBox",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "txtCodigoIdioma",
+        "type": "TextBox",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "txtNombreNativo",
+        "type": "TextBox",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "chkIdiomaActivo",
+        "type": "CheckBox",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "btnAplicarIdioma",
+        "type": "Button",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "btnCambiarEstado",
+        "type": "Button",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "btnNuevoIdioma",
+        "type": "Button",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "btnGuardarTraduccion",
+        "type": "Button",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "btnExportarTraducciones",
+        "type": "Button",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "btnImportarTraducciones",
+        "type": "Button",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "dgvTraducciones",
+        "type": "DataGridView",
+        "scope": "Private",
+        "stat": false
+      }
+    ],
+    "methods": [
+      {
+        "name": "FrmGestionIdiomas_Load",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "sender",
+            "type": "Object",
+            "direction": "in"
+          },
+          {
+            "name": "e",
+            "type": "EventArgs",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "FrmGestionIdiomas_FormClosed",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "sender",
+            "type": "Object",
+            "direction": "in"
+          },
+          {
+            "name": "e",
+            "type": "FormClosedEventArgs",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "CargarComboIdiomas",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "cmbIdiomas_SelectedIndexChanged",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "sender",
+            "type": "Object",
+            "direction": "in"
+          },
+          {
+            "name": "e",
+            "type": "EventArgs",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "btnNuevoIdioma_Click",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "sender",
+            "type": "Object",
+            "direction": "in"
+          },
+          {
+            "name": "e",
+            "type": "EventArgs",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "btnAplicarIdioma_Click",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "sender",
+            "type": "Object",
+            "direction": "in"
+          },
+          {
+            "name": "e",
+            "type": "EventArgs",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "btnCambiarEstado_Click",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "sender",
+            "type": "Object",
+            "direction": "in"
+          },
+          {
+            "name": "e",
+            "type": "EventArgs",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "CargarTraducciones",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "ConfigurarColumnasTraducciones",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "FormatearEstadoTraduccion",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "sender",
+            "type": "Object",
+            "direction": "in"
+          },
+          {
+            "name": "e",
+            "type": "DataGridViewCellFormattingEventArgs",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "btnGuardarTraduccion_Click",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "sender",
+            "type": "Object",
+            "direction": "in"
+          },
+          {
+            "name": "e",
+            "type": "EventArgs",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "btnExportarTraducciones_Click",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "sender",
+            "type": "Object",
+            "direction": "in"
+          },
+          {
+            "name": "e",
+            "type": "EventArgs",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "btnImportarTraducciones_Click",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "sender",
+            "type": "Object",
+            "direction": "in"
+          },
+          {
+            "name": "e",
+            "type": "EventArgs",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "LimpiarParaLinea",
+        "type": "string",
+        "scope": "Private",
+        "stat": true,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "texto",
+            "type": "string",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "ActualizarIdioma",
+        "type": "void",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "Dispose",
+        "type": "void",
+        "scope": "Protected",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "disposing",
+            "type": "bool",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "InitializeComponent",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "CampoIdioma",
+        "type": "TextBox",
+        "scope": "Private",
+        "stat": true,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "name",
+            "type": "string",
+            "direction": "in"
+          },
+          {
+            "name": "maxLength",
+            "type": "int",
+            "direction": "in"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "FrmGestionUsuarios",
+    "full": "SIGAT.UI.FrmGestionUsuarios",
+    "ns": "SIGAT.UI",
+    "kind": "Class",
+    "abstr": false,
+    "baseType": "System.Windows.Forms.Form",
+    "interfaces": [
+      "SIGAT.SERVICIOS.Idiomas.IIdiomaObserver"
+    ],
+    "properties": [],
+    "fields": [
+      {
+        "name": "_usuarioBLL",
+        "type": "UsuarioBLL",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "_idSeleccionado",
+        "type": "int",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "lblUsuario",
+        "type": "Label",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "lblClave",
+        "type": "Label",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "lblNombre",
+        "type": "Label",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "lblApellido",
+        "type": "Label",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "lblAyuda",
+        "type": "Label",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "txtUsername",
+        "type": "TextBox",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "txtPass",
+        "type": "TextBox",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "txtNombre",
+        "type": "TextBox",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "txtApellido",
+        "type": "TextBox",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "chkActivo",
+        "type": "CheckBox",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "btnGuardar",
+        "type": "Button",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "btnEliminar",
+        "type": "Button",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "btnLimpiar",
+        "type": "Button",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "dgvUsuarios",
+        "type": "DataGridView",
+        "scope": "Private",
+        "stat": false
+      }
+    ],
+    "methods": [
+      {
+        "name": "FrmGestionUsuarios_Load",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "sender",
+            "type": "Object",
+            "direction": "in"
+          },
+          {
+            "name": "e",
+            "type": "EventArgs",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "ConfigurarGrilla",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "AgregarColumna",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "propiedad",
+            "type": "string",
+            "direction": "in"
+          },
+          {
+            "name": "titulo",
+            "type": "string",
+            "direction": "in"
+          },
+          {
+            "name": "clave",
+            "type": "string",
+            "direction": "in"
+          },
+          {
+            "name": "ancho",
+            "type": "Single",
+            "direction": "in"
+          },
+          {
+            "name": "minimo",
+            "type": "int",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "CargarGrilla",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "SeleccionarFila",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "BtnGuardar_Click",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "sender",
+            "type": "Object",
+            "direction": "in"
+          },
+          {
+            "name": "e",
+            "type": "EventArgs",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "BtnEliminar_Click",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "sender",
+            "type": "Object",
+            "direction": "in"
+          },
+          {
+            "name": "e",
+            "type": "EventArgs",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "BtnLimpiar_Click",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "sender",
+            "type": "Object",
+            "direction": "in"
+          },
+          {
+            "name": "e",
+            "type": "EventArgs",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "Limpiar",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "ActualizarIdioma",
+        "type": "void",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "InitializeComponent",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "Etiqueta",
+        "type": "Label",
+        "scope": "Private",
+        "stat": true,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "texto",
+            "type": "string",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "Campo",
+        "type": "TextBox",
+        "scope": "Private",
+        "stat": true,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "nombre",
+            "type": "string",
+            "direction": "in"
+          },
+          {
+            "name": "longitud",
+            "type": "int",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "BotonUsuario",
+        "type": "Button",
+        "scope": "Private",
+        "stat": true,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "nombre",
+            "type": "string",
+            "direction": "in"
+          },
+          {
+            "name": "texto",
+            "type": "string",
+            "direction": "in"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "FrmIntegridad",
+    "full": "SIGAT.UI.FrmIntegridad",
+    "ns": "SIGAT.UI",
+    "kind": "Class",
+    "abstr": false,
+    "baseType": "System.Windows.Forms.Form",
+    "interfaces": [],
+    "properties": [],
+    "fields": [
+      {
+        "name": "servicio",
+        "type": "IntegridadBLL",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "grilla",
+        "type": "DataGridView",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "estado",
+        "type": "Label",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "archivo",
+        "type": "TextBox",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "inicializar",
+        "type": "Button",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "respaldo",
+        "type": "Button",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "recuperar",
+        "type": "Button",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "comprobar",
+        "type": "Button",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "continuar",
+        "type": "Button",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "archivar",
+        "type": "Button",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "completas",
+        "type": "CheckBox",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "soloRecuperacion",
+        "type": "bool",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "informe",
+        "type": "InformeIntegridad",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "administrador",
+        "type": "bool",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "ocupada",
+        "type": "bool",
+        "scope": "Private",
+        "stat": false
+      }
+    ],
+    "methods": [
+      {
+        "name": "Operar",
+        "type": "Task",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "accion",
+            "type": "Func<string>",
+            "direction": "in"
+          },
+          {
+            "name": "mostrarRuta",
+            "type": "bool",
+            "direction": "in"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "FrmLogin",
+    "full": "SIGAT.UI.FrmLogin",
+    "ns": "SIGAT.UI",
+    "kind": "Class",
+    "abstr": false,
+    "baseType": "System.Windows.Forms.Form",
+    "interfaces": [],
+    "properties": [],
+    "fields": [
+      {
+        "name": "_usuarioBLL",
+        "type": "UsuarioBLL",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "components",
+        "type": "IContainer",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "picLogo",
+        "type": "PictureBox",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "lblUsuario",
+        "type": "Label",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "lblPassword",
+        "type": "Label",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "txtUsuario",
+        "type": "TextBox",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "txtPassword",
+        "type": "TextBox",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "btnLogin",
+        "type": "Button",
+        "scope": "Private",
+        "stat": false
+      }
+    ],
+    "methods": [
+      {
+        "name": "CrearUsuarioAdminInicial",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "BtnLogin_Click",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "sender",
+            "type": "Object",
+            "direction": "in"
+          },
+          {
+            "name": "e",
+            "type": "EventArgs",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "Dispose",
+        "type": "void",
+        "scope": "Protected",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "disposing",
+            "type": "bool",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "InitializeComponent",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      }
+    ]
+  },
+  {
+    "name": "FrmPrincipal",
+    "full": "SIGAT.UI.FrmPrincipal",
+    "ns": "SIGAT.UI",
+    "kind": "Class",
+    "abstr": false,
+    "baseType": "System.Windows.Forms.Form",
+    "interfaces": [
+      "SIGAT.SERVICIOS.Idiomas.IIdiomaObserver"
+    ],
+    "properties": [],
+    "fields": [
+      {
+        "name": "_bitacora",
+        "type": "BitacoraBLL",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "_idiomaBLL",
+        "type": "IdiomaBLL",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "components",
+        "type": "IContainer",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "menu",
+        "type": "MenuStrip",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "itemSistema",
+        "type": "ToolStripMenuItem",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "itemUsuarios",
+        "type": "ToolStripMenuItem",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "itemBitacora",
+        "type": "ToolStripMenuItem",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "itemLogoutSeparator",
+        "type": "ToolStripSeparator",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "itemLogout",
+        "type": "ToolStripMenuItem",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "itemIdioma",
+        "type": "ToolStripMenuItem",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "itemGestionIdiomas",
+        "type": "ToolStripMenuItem",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "panelContenido",
+        "type": "Panel",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "formularioActual",
+        "type": "Form",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "lblCuenta",
+        "type": "Label",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "lblRoles",
+        "type": "Label",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "lblSeccion",
+        "type": "Label",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "btnIdiomaVisual",
+        "type": "Button",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "selectorIdioma",
+        "type": "ContextMenuStrip",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "itemIntegridad",
+        "type": "ToolStripMenuItem",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "navegacion",
+        "type": "Dictionary<string, BotonNavegacion>",
+        "scope": "Private",
+        "stat": false
+      },
+      {
+        "name": "accesos",
+        "type": "List<ValueTuple<string, ToolStripMenuItem, IconoVisual>>",
+        "scope": "Private",
+        "stat": false
+      }
+    ],
+    "methods": [
+      {
+        "name": "FrmPrincipal_Load",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "sender",
+            "type": "Object",
+            "direction": "in"
+          },
+          {
+            "name": "e",
+            "type": "EventArgs",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "FrmPrincipal_FormClosed",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "sender",
+            "type": "Object",
+            "direction": "in"
+          },
+          {
+            "name": "e",
+            "type": "FormClosedEventArgs",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "CargarMenuDeIdiomas",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "idiomas",
+            "type": "List<Idioma>",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "AplicarIdiomaPorDefecto",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "idiomas",
+            "type": "List<Idioma>",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "OpcionDeIdioma_Click",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "sender",
+            "type": "Object",
+            "direction": "in"
+          },
+          {
+            "name": "e",
+            "type": "EventArgs",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "ItemGestionIdiomas_Click",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "sender",
+            "type": "Object",
+            "direction": "in"
+          },
+          {
+            "name": "e",
+            "type": "EventArgs",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "ItemUsuarios_Click",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "sender",
+            "type": "Object",
+            "direction": "in"
+          },
+          {
+            "name": "e",
+            "type": "EventArgs",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "ItemBitacora_Click",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "sender",
+            "type": "Object",
+            "direction": "in"
+          },
+          {
+            "name": "e",
+            "type": "EventArgs",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "ItemLogout_Click",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "sender",
+            "type": "Object",
+            "direction": "in"
+          },
+          {
+            "name": "e",
+            "type": "EventArgs",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "ActualizarIdioma",
+        "type": "void",
+        "scope": "Public",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "PuedeAbrir",
+        "type": "bool",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "permiso",
+            "type": "string",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "AbrirFormulario",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "formHijo",
+            "type": "Form",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "Dispose",
+        "type": "void",
+        "scope": "Protected",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "disposing",
+            "type": "bool",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "InitializeComponent",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "CrearMarcoVisual",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "itemRoles",
+            "type": "ToolStripMenuItem",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "MostrarSelectorIdioma",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "AgregarNavegacion",
+        "type": "BotonNavegacion",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "panel",
+            "type": "TableLayoutPanel",
+            "direction": "in"
+          },
+          {
+            "name": "section",
+            "type": "string",
+            "direction": "in"
+          },
+          {
+            "name": "text",
+            "type": "string",
+            "direction": "in"
+          },
+          {
+            "name": "key",
+            "type": "string",
+            "direction": "in"
+          },
+          {
+            "name": "icon",
+            "type": "IconoVisual",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "MostrarInicio",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "CerrarFormularioActual",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "SeleccionarSeccion",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "section",
+            "type": "string",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "ActualizarMarcoVisual",
+        "type": "void",
+        "scope": "Private",
+        "stat": false,
+        "abstr": false,
+        "parameters": []
+      }
+    ]
+  },
+  {
+    "name": "PresentacionIdioma",
+    "full": "SIGAT.UI.PresentacionIdioma",
+    "ns": "SIGAT.UI",
+    "kind": "Class",
+    "abstr": false,
+    "baseType": "System.Object",
+    "interfaces": [],
+    "properties": [],
+    "fields": [],
+    "methods": [
+      {
+        "name": "Etiqueta",
+        "type": "string",
+        "scope": "Public",
+        "stat": true,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "idioma",
+            "type": "Idioma",
+            "direction": "in"
+          },
+          {
+            "name": "idActivo",
+            "type": "Nullable<int>",
+            "direction": "in"
+          }
+        ]
+      }
+    ],
+    "staticType": true
+  },
+  {
+    "name": "Program",
+    "full": "SIGAT.UI.Program",
+    "ns": "SIGAT.UI",
+    "kind": "Class",
+    "abstr": false,
+    "baseType": "System.Object",
+    "interfaces": [],
+    "properties": [],
+    "fields": [],
+    "methods": [
+      {
+        "name": "Main",
+        "type": "void",
+        "scope": "Private",
+        "stat": true,
+        "abstr": false,
+        "parameters": []
+      },
+      {
+        "name": "ManejarErrorDeInterfaz",
+        "type": "void",
+        "scope": "Private",
+        "stat": true,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "sender",
+            "type": "Object",
+            "direction": "in"
+          },
+          {
+            "name": "e",
+            "type": "ThreadExceptionEventArgs",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "ManejarErrorDeFondo",
+        "type": "void",
+        "scope": "Private",
+        "stat": true,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "sender",
+            "type": "Object",
+            "direction": "in"
+          },
+          {
+            "name": "e",
+            "type": "UnhandledExceptionEventArgs",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "ManejarErrorCritico",
+        "type": "void",
+        "scope": "Private",
+        "stat": true,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "excepcion",
+            "type": "Exception",
+            "direction": "in"
+          }
+        ]
+      }
+    ],
+    "staticType": true
+  },
+  {
+    "name": "TraductorFormularios",
+    "full": "SIGAT.UI.TraductorFormularios",
+    "ns": "SIGAT.UI",
+    "kind": "Class",
+    "abstr": false,
+    "baseType": "System.Object",
+    "interfaces": [],
+    "properties": [],
+    "fields": [
+      {
+        "name": "_idiomaBLL",
+        "type": "IdiomaBLL",
+        "scope": "Private",
+        "stat": true
+      }
+    ],
+    "methods": [
+      {
+        "name": "TraducirFormulario",
+        "type": "void",
+        "scope": "Public",
+        "stat": true,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "formulario",
+            "type": "Form",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "TraducirControles",
+        "type": "void",
+        "scope": "Private",
+        "stat": true,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "nombreForm",
+            "type": "string",
+            "direction": "in"
+          },
+          {
+            "name": "controles",
+            "type": "ControlCollection",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "TraducirMenu",
+        "type": "void",
+        "scope": "Private",
+        "stat": true,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "nombreForm",
+            "type": "string",
+            "direction": "in"
+          },
+          {
+            "name": "items",
+            "type": "ToolStripItemCollection",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "RegistrarClave",
+        "type": "void",
+        "scope": "Private",
+        "stat": true,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "nombreForm",
+            "type": "string",
+            "direction": "in"
+          },
+          {
+            "name": "nombreControl",
+            "type": "string",
+            "direction": "in"
+          },
+          {
+            "name": "textoBase",
+            "type": "string",
+            "direction": "in"
+          }
+        ]
+      },
+      {
+        "name": "Traducir",
+        "type": "string",
+        "scope": "Private",
+        "stat": true,
+        "abstr": false,
+        "parameters": [
+          {
+            "name": "nombreForm",
+            "type": "string",
+            "direction": "in"
+          },
+          {
+            "name": "clave",
+            "type": "string",
+            "direction": "in"
+          },
+          {
+            "name": "textoOriginal",
+            "type": "string",
+            "direction": "in"
+          }
+        ]
+      }
+    ],
+    "staticType": true
+  }
+]

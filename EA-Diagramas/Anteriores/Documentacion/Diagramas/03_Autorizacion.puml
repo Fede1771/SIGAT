@@ -1,0 +1,49 @@
+@startuml
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam defaultFontSize 18
+skinparam sequence {
+  ParticipantBackgroundColor #DAE8FC
+  ParticipantBorderColor #8AB2E2
+  LifeLineBorderColor #888888
+  ArrowColor #666666
+  GroupBorderColor #E6AE19
+  GroupHeaderBackgroundColor #FFF4CF
+  GroupBackgroundColor white
+}
+hide footbox
+autonumber
+title A — Comprobación de autorización
+participant "rolesBLL:RolesBLL" as B
+participant "sesion:SesionServicio" as S
+participant "usuarioSesion:Usuario" as US
+participant "gestor:Usuario" as G
+participant "rol:Rol" as R
+participant "permiso:Permiso" as P
+B -> S: ObtenerInstancia() «static»
+S --> B: instancia de SesionServicio
+B -> S: UsuarioActual {get}
+S --> B: usuarioSesion o null
+opt [usuarioSesion no es null]
+B -> US: IdUsuario {get}
+US --> B: id:int
+end
+loop [por cada usuario de estado.Usuarios]
+note over B,G: gestor representa el usuario leído del estado actual,\nno necesariamente la misma instancia de la sesión.
+opt [gestor.IdUsuario == id y gestor.Activo]
+B -> G: TienePermiso(MatrizRoles.Administracion)
+loop [roles del gestor hasta encontrar el permiso]
+G -> R: TienePermiso(nombre)
+ref over R,P: Roles anidados: TienePermiso(nombre) recursivo;\npermisos directos: ContienePermiso(nombre).\nDevuelve true al encontrarlo o false al terminar.
+R --> G: bool
+end
+G --> B: bool
+break [TienePermiso devuelve true: termina ExigirGestion]
+B -> B: return de ExigirGestion()
+end
+end
+end
+note over B,P: El return termina la comprobación al encontrar un gestor autorizado.\nSi el recorrido termina sin encontrarlo, ExigirGestion lanza InvalidOperationException.
+@enduml
+

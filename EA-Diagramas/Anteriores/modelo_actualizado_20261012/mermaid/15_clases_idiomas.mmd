@@ -1,0 +1,84 @@
+classDiagram
+    direction TB
+    class IdiomaManager {
+        <<singleton>>
+        +IdiomaActual: Idioma
+        +ReiniciarSesion(): void
+        +ObtenerInstancia(): IdiomaManager$
+        +Suscribir(observador: IIdiomaObserver): void
+        +Desuscribir(observador: IIdiomaObserver): void
+        +NotificarObservadores(): void
+        +CargarIdioma(idioma: Idioma, traducciones: Dictionary~string, string~): void
+        +Traducir(nombreForm: string, nombreControl: string, textoOriginal: string): string
+    }
+    class IIdiomaSubject {
+        <<interface>>
+        +Suscribir(observador: IIdiomaObserver): void*
+        +Desuscribir(observador: IIdiomaObserver): void*
+        +NotificarObservadores(): void*
+    }
+    class IIdiomaObserver {
+        <<interface>>
+        +ActualizarIdioma(): void*
+    }
+    class IdiomaBLL {
+        +ObtenerIdiomas(): List~Idioma~
+        +ObtenerTodosLosIdiomas(): List~Idioma~
+        +CambiarIdioma(idIdioma: int): void
+        +RestablecerIdiomaUsuario(): void
+        +CrearIdioma(nombre: string, codigo: string, nombreNativo: string, activo: bool): int
+        +CambiarEstadoIdioma(idIdioma: int, activo: bool): void
+        +ObtenerTraduccionesParaGestion(idIdioma: int): List~Traduccion~
+    }
+    class IdiomaDAL {
+        +ObtenerIdiomaPreferido(idUsuario: int): Nullable~int~
+        +GuardarIdiomaPreferido(idUsuario: int, idIdioma: int): void
+        +ObtenerIdiomaPorId(idIdioma: int): Idioma
+        +ObtenerTraduccionesPorIdioma(idIdioma: int): List~Traduccion~
+        +ActualizarTraduccion(idIdioma: int, idControl: int, texto: string, estado: string, digitoVerificador: string): void
+    }
+    class Idioma {
+        +Id: int
+        +Nombre: string
+        +Codigo: string
+        +NombreNativo: string
+        +Activo: bool
+        +ToString(): string
+    }
+    class Traduccion {
+        +IdIdioma: int
+        +IdControl: int
+        +Texto: string
+        +DigitoVerificador: string
+        +ControlNombre: string
+        +FormNombre: string
+        +Estado: string
+        +TextoBase: string
+    }
+    class ControlIdioma {
+        +Id: int
+        +Control: string
+        +Form: string
+    }
+    class TraductorFormularios {
+        <<static>>
+        +TraducirFormulario(formulario: Form): void$
+    }
+    class FrmPrincipal {
+        +ActualizarIdioma(): void
+    }
+    class FrmGestionIdiomas {
+        +ActualizarIdioma(): void
+    }
+    IdiomaBLL "1" --> "1" IdiomaDAL : _dal
+    IdiomaManager ..|> IIdiomaSubject
+    IdiomaManager "1" --> "0..*" IIdiomaObserver : observadores
+    FrmGestionIdiomas ..|> IIdiomaObserver
+    FrmGestionIdiomas "1" --> "1" IdiomaBLL : _idiomaBLL
+    FrmGestionIdiomas "1" --> "0..*" Traduccion : _traduccionesActuales
+    FrmPrincipal ..|> IIdiomaObserver
+    FrmPrincipal "1" --> "1" IdiomaBLL : _idiomaBLL
+    TraductorFormularios "1" --> "1" IdiomaBLL : _idiomaBLL
+    IdiomaManager "1" --> "0..1" Idioma : IdiomaActual
+    IdiomaBLL ..> IdiomaManager : CargarIdioma
+    TraductorFormularios ..> IdiomaManager : Traducir

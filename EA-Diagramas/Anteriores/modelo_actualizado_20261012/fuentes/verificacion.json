@@ -1,0 +1,13 @@
+{
+  "fecha": "2026-10-12",
+  "tipos": 52,
+  "diagramas": 30,
+  "tablas": 15,
+  "claves_foraneas": 13,
+  "errores_de_firmas": [],
+  "originales": {
+    "C:\\Users\\feder\\Documents\\Fede1771\\SIGAT\\SIGAT_Modelo.EAP": "372af454d6f8cf2040558b1c1c4c6f402eb3b5845f3737ab56348f6f8bb2555f",
+    "C:\\Users\\feder\\Downloads\\CarpetaEntrega.docx": "eaf77918e1f3f972fccc5c595b2d81e812e04665858abcedc0cc67e1dc369c55"
+  },
+  "nota": "EAP validado por lectura del repositorio; apertura visual en Enterprise Architect pendiente por no estar instalado."
+}

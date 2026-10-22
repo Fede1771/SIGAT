@@ -1,0 +1,19 @@
+digraph G {
+graph [rankdir=TB, bgcolor="white", pad="0.25", nodesep="0.55", ranksep="0.7", splines=polyline, dpi=72];
+node [fontname="Arial", fontsize=12, color="#404040"];
+edge [fontname="Arial", fontsize=9, color="#555555", arrowsize=0.8];
+"SIGAT.UI" [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="8"><TR><TD BGCOLOR="#edf2f7"><B>SIGAT.UI</B></TD></TR></TABLE>>];
+"SIGAT.BLL" [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="8"><TR><TD BGCOLOR="#edf2f7"><B>SIGAT.BLL</B></TD></TR></TABLE>>];
+"SIGAT.DAL" [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="8"><TR><TD BGCOLOR="#edf2f7"><B>SIGAT.DAL</B></TD></TR></TABLE>>];
+"SIGAT.BE" [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="8"><TR><TD BGCOLOR="#edf2f7"><B>SIGAT.BE</B></TD></TR></TABLE>>];
+"SIGAT.SERVICIOS" [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="8"><TR><TD BGCOLOR="#edf2f7"><B>SIGAT.SERVICIOS</B></TD></TR></TABLE>>];
+"SIGAT.UI" -> "SIGAT.BLL" [arrowhead=vee,style=dashed,label="referencia"];
+"SIGAT.UI" -> "SIGAT.BE" [arrowhead=vee,style=dashed,label="referencia"];
+"SIGAT.UI" -> "SIGAT.SERVICIOS" [arrowhead=vee,style=dashed,label="referencia"];
+"SIGAT.BLL" -> "SIGAT.DAL" [arrowhead=vee,style=dashed,label="referencia"];
+"SIGAT.BLL" -> "SIGAT.BE" [arrowhead=vee,style=dashed,label="referencia"];
+"SIGAT.BLL" -> "SIGAT.SERVICIOS" [arrowhead=vee,style=dashed,label="referencia"];
+"SIGAT.DAL" -> "SIGAT.BE" [arrowhead=vee,style=dashed,label="referencia"];
+"SIGAT.DAL" -> "SIGAT.SERVICIOS" [arrowhead=vee,style=dashed,label="referencia"];
+"SIGAT.SERVICIOS" -> "SIGAT.BE" [arrowhead=vee,style=dashed,label="referencia"];
+}

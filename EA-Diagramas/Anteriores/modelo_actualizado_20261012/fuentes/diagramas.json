@@ -1,0 +1,7868 @@
+[
+  {
+    "id": "01_arquitectura",
+    "title": "T01 Arquitectura y dependencias reales",
+    "kind": "components",
+    "nodes": [
+      {
+        "key": "SIGAT.UI",
+        "title": "SIGAT.UI",
+        "kind": "Component"
+      },
+      {
+        "key": "SIGAT.BLL",
+        "title": "SIGAT.BLL",
+        "kind": "Component"
+      },
+      {
+        "key": "SIGAT.DAL",
+        "title": "SIGAT.DAL",
+        "kind": "Component"
+      },
+      {
+        "key": "SIGAT.BE",
+        "title": "SIGAT.BE",
+        "kind": "Component"
+      },
+      {
+        "key": "SIGAT.SERVICIOS",
+        "title": "SIGAT.SERVICIOS",
+        "kind": "Component"
+      }
+    ],
+    "edges": [
+      {
+        "a": "SIGAT.UI",
+        "b": "SIGAT.BLL",
+        "kind": "Dependency",
+        "label": "referencia"
+      },
+      {
+        "a": "SIGAT.UI",
+        "b": "SIGAT.BE",
+        "kind": "Dependency",
+        "label": "referencia"
+      },
+      {
+        "a": "SIGAT.UI",
+        "b": "SIGAT.SERVICIOS",
+        "kind": "Dependency",
+        "label": "referencia"
+      },
+      {
+        "a": "SIGAT.BLL",
+        "b": "SIGAT.DAL",
+        "kind": "Dependency",
+        "label": "referencia"
+      },
+      {
+        "a": "SIGAT.BLL",
+        "b": "SIGAT.BE",
+        "kind": "Dependency",
+        "label": "referencia"
+      },
+      {
+        "a": "SIGAT.BLL",
+        "b": "SIGAT.SERVICIOS",
+        "kind": "Dependency",
+        "label": "referencia"
+      },
+      {
+        "a": "SIGAT.DAL",
+        "b": "SIGAT.BE",
+        "kind": "Dependency",
+        "label": "referencia"
+      },
+      {
+        "a": "SIGAT.DAL",
+        "b": "SIGAT.SERVICIOS",
+        "kind": "Dependency",
+        "label": "referencia"
+      },
+      {
+        "a": "SIGAT.SERVICIOS",
+        "b": "SIGAT.BE",
+        "kind": "Dependency",
+        "label": "referencia"
+      }
+    ]
+  },
+  {
+    "id": "02_der",
+    "title": "T01 DER físico de SIGAT",
+    "kind": "er",
+    "nodes": [
+      {
+        "key": "AdministradorOriginal",
+        "title": "AdministradorOriginal",
+        "kind": "table",
+        "fields": [
+          {
+            "name": "Id",
+            "type": "int",
+            "scope": "Public",
+            "pk": true,
+            "nullable": false
+          },
+          {
+            "name": "IdUsuario",
+            "type": "int",
+            "scope": "Public",
+            "pk": false,
+            "nullable": false
+          }
+        ]
+      },
+      {
+        "key": "Bitacora",
+        "title": "Bitacora",
+        "kind": "table",
+        "fields": [
+          {
+            "name": "IdBitacora",
+            "type": "int",
+            "scope": "Public",
+            "pk": true,
+            "nullable": false
+          },
+          {
+            "name": "Fecha",
+            "type": "datetime",
+            "scope": "Public",
+            "pk": false,
+            "nullable": false
+          },
+          {
+            "name": "Usuario",
+            "type": "varchar",
+            "scope": "Public",
+            "pk": false,
+            "nullable": false
+          },
+          {
+            "name": "Actividad",
+            "type": "varchar",
+            "scope": "Public",
+            "pk": false,
+            "nullable": false
+          },
+          {
+            "name": "InformacionAsociada",
+            "type": "nvarchar",
+            "scope": "Public",
+            "pk": false,
+            "nullable": true
+          },
+          {
+            "name": "DigitoVerificador",
+            "type": "nvarchar",
+            "scope": "Public",
+            "pk": false,
+            "nullable": true
+          }
+        ]
+      },
+      {
+        "key": "Control",
+        "title": "Control",
+        "kind": "table",
+        "fields": [
+          {
+            "name": "Id",
+            "type": "int",
+            "scope": "Public",
+            "pk": true,
+            "nullable": false
+          },
+          {
+            "name": "Control",
+            "type": "varchar",
+            "scope": "Public",
+            "pk": false,
+            "nullable": false
+          },
+          {
+            "name": "Form",
+            "type": "varchar",
+            "scope": "Public",
+            "pk": false,
+            "nullable": false
+          }
+        ]
+      },
+      {
+        "key": "Idioma",
+        "title": "Idioma",
+        "kind": "table",
+        "fields": [
+          {
+            "name": "Id",
+            "type": "int",
+            "scope": "Public",
+            "pk": true,
+            "nullable": false
+          },
+          {
+            "name": "Nombre",
+            "type": "varchar",
+            "scope": "Public",
+            "pk": false,
+            "nullable": false
+          },
+          {
+            "name": "Codigo",
+            "type": "varchar",
+            "scope": "Public",
+            "pk": false,
+            "nullable": false
+          },
+          {
+            "name": "NombreNativo",
+            "type": "nvarchar",
+            "scope": "Public",
+            "pk": false,
+            "nullable": true
+          },
+          {
+            "name": "Activo",
+            "type": "bit",
+            "scope": "Public",
+            "pk": false,
+            "nullable": false
+          }
+        ]
+      },
+      {
+        "key": "IntegridadTabla",
+        "title": "IntegridadTabla",
+        "kind": "table",
+        "fields": [
+          {
+            "name": "Tabla",
+            "type": "nvarchar",
+            "scope": "Public",
+            "pk": true,
+            "nullable": false
+          },
+          {
+            "name": "HashVertical",
+            "type": "char",
+            "scope": "Public",
+            "pk": false,
+            "nullable": false
+          },
+          {
+            "name": "Cantidad",
+            "type": "bigint",
+            "scope": "Public",
+            "pk": false,
+            "nullable": false
+          },
+          {
+            "name": "IdBase",
+            "type": "uniqueidentifier",
+            "scope": "Public",
+            "pk": false,
+            "nullable": false
+          },
+          {
+            "name": "Version",
+            "type": "int",
+            "scope": "Public",
+            "pk": false,
+            "nullable": false
+          }
+        ]
+      },
+      {
+        "key": "Permiso",
+        "title": "Permiso",
+        "kind": "table",
+        "fields": [
+          {
+            "name": "Id",
+            "type": "int",
+            "scope": "Public",
+            "pk": true,
+            "nullable": false
+          },
+          {
+            "name": "Nombre",
+            "type": "nvarchar",
+            "scope": "Public",
+            "pk": false,
+            "nullable": false
+          },
+          {
+            "name": "EsCompuesto",
+            "type": "bit",
+            "scope": "Public",
+            "pk": false,
+            "nullable": false
+          }
+        ]
+      },
+      {
+        "key": "PermisoHijo",
+        "title": "PermisoHijo",
+        "kind": "table",
+        "fields": [
+          {
+            "name": "IdPadre",
+            "type": "int",
+            "scope": "Public",
+            "pk": true,
+            "nullable": false
+          },
+          {
+            "name": "IdHijo",
+            "type": "int",
+            "scope": "Public",
+            "pk": true,
+            "nullable": false
+          }
+        ]
+      },
+      {
+        "key": "Rol",
+        "title": "Rol",
+        "kind": "table",
+        "fields": [
+          {
+            "name": "Id",
+            "type": "int",
+            "scope": "Public",
+            "pk": true,
+            "nullable": false
+          },
+          {
+            "name": "Nombre",
+            "type": "nvarchar",
+            "scope": "Public",
+            "pk": false,
+            "nullable": false
+          }
+        ]
+      },
+      {
+        "key": "RolHijo",
+        "title": "RolHijo",
+        "kind": "table",
+        "fields": [
+          {
+            "name": "IdPadre",
+            "type": "int",
+            "scope": "Public",
+            "pk": true,
+            "nullable": false
+          },
+          {
+            "name": "IdHijo",
+            "type": "int",
+            "scope": "Public",
+            "pk": true,
+            "nullable": false
+          }
+        ]
+      },
+      {
+        "key": "RolPermiso",
+        "title": "RolPermiso",
+        "kind": "table",
+        "fields": [
+          {
+            "name": "IdRol",
+            "type": "int",
+            "scope": "Public",
+            "pk": true,
+            "nullable": false
+          },
+          {
+            "name": "IdPermiso",
+            "type": "int",
+            "scope": "Public",
+            "pk": true,
+            "nullable": false
+          }
+        ]
+      },
+      {
+        "key": "SeguridadVersion",
+        "title": "SeguridadVersion",
+        "kind": "table",
+        "fields": [
+          {
+            "name": "Id",
+            "type": "int",
+            "scope": "Public",
+            "pk": true,
+            "nullable": false
+          },
+          {
+            "name": "Version",
+            "type": "bigint",
+            "scope": "Public",
+            "pk": false,
+            "nullable": false
+          },
+          {
+            "name": "Esquema",
+            "type": "int",
+            "scope": "Public",
+            "pk": false,
+            "nullable": false
+          }
+        ]
+      },
+      {
+        "key": "Traduccion",
+        "title": "Traduccion",
+        "kind": "table",
+        "fields": [
+          {
+            "name": "Id_Idioma",
+            "type": "int",
+            "scope": "Public",
+            "pk": true,
+            "nullable": false
+          },
+          {
+            "name": "Id_Control",
+            "type": "int",
+            "scope": "Public",
+            "pk": true,
+            "nullable": false
+          },
+          {
+            "name": "Texto",
+            "type": "nvarchar",
+            "scope": "Public",
+            "pk": false,
+            "nullable": true
+          },
+          {
+            "name": "DigitoVerificador",
+            "type": "char",
+            "scope": "Public",
+            "pk": false,
+            "nullable": true
+          },
+          {
+            "name": "Estado",
+            "type": "varchar",
+            "scope": "Public",
+            "pk": false,
+            "nullable": false
+          }
+        ]
+      },
+      {
+        "key": "UsuarioIdioma",
+        "title": "UsuarioIdioma",
+        "kind": "table",
+        "fields": [
+          {
+            "name": "IdUsuario",
+            "type": "int",
+            "scope": "Public",
+            "pk": true,
+            "nullable": false
+          },
+          {
+            "name": "IdIdioma",
+            "type": "int",
+            "scope": "Public",
+            "pk": false,
+            "nullable": false
+          }
+        ]
+      },
+      {
+        "key": "UsuarioRol",
+        "title": "UsuarioRol",
+        "kind": "table",
+        "fields": [
+          {
+            "name": "IdUsuario",
+            "type": "int",
+            "scope": "Public",
+            "pk": true,
+            "nullable": false
+          },
+          {
+            "name": "IdRol",
+            "type": "int",
+            "scope": "Public",
+            "pk": true,
+            "nullable": false
+          }
+        ]
+      },
+      {
+        "key": "Usuarios",
+        "title": "Usuarios",
+        "kind": "table",
+        "fields": [
+          {
+            "name": "IdUsuario",
+            "type": "int",
+            "scope": "Public",
+            "pk": true,
+            "nullable": false
+          },
+          {
+            "name": "NombreUsuario",
+            "type": "varchar",
+            "scope": "Public",
+            "pk": false,
+            "nullable": false
+          },
+          {
+            "name": "Password",
+            "type": "varchar",
+            "scope": "Public",
+            "pk": false,
+            "nullable": false
+          },
+          {
+            "name": "Nombre",
+            "type": "varchar",
+            "scope": "Public",
+            "pk": false,
+            "nullable": false
+          },
+          {
+            "name": "Apellido",
+            "type": "varchar",
+            "scope": "Public",
+            "pk": false,
+            "nullable": false
+          },
+          {
+            "name": "Activo",
+            "type": "bit",
+            "scope": "Public",
+            "pk": false,
+            "nullable": false
+          }
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "a": "AdministradorOriginal",
+        "b": "Usuarios",
+        "kind": "Association",
+        "label": "IdUsuario → IdUsuario",
+        "cardA": "0..1",
+        "cardB": "1"
+      },
+      {
+        "a": "PermisoHijo",
+        "b": "Permiso",
+        "kind": "Association",
+        "label": "IdHijo → Id",
+        "cardA": "0..*",
+        "cardB": "1"
+      },
+      {
+        "a": "PermisoHijo",
+        "b": "Permiso",
+        "kind": "Association",
+        "label": "IdPadre → Id",
+        "cardA": "0..*",
+        "cardB": "1"
+      },
+      {
+        "a": "RolHijo",
+        "b": "Rol",
+        "kind": "Association",
+        "label": "IdHijo → Id",
+        "cardA": "0..*",
+        "cardB": "1"
+      },
+      {
+        "a": "RolHijo",
+        "b": "Rol",
+        "kind": "Association",
+        "label": "IdPadre → Id",
+        "cardA": "0..*",
+        "cardB": "1"
+      },
+      {
+        "a": "RolPermiso",
+        "b": "Permiso",
+        "kind": "Association",
+        "label": "IdPermiso → Id",
+        "cardA": "0..*",
+        "cardB": "1"
+      },
+      {
+        "a": "RolPermiso",
+        "b": "Rol",
+        "kind": "Association",
+        "label": "IdRol → Id",
+        "cardA": "0..*",
+        "cardB": "1"
+      },
+      {
+        "a": "UsuarioRol",
+        "b": "Rol",
+        "kind": "Association",
+        "label": "IdRol → Id",
+        "cardA": "0..*",
+        "cardB": "1"
+      },
+      {
+        "a": "UsuarioRol",
+        "b": "Usuarios",
+        "kind": "Association",
+        "label": "IdUsuario → IdUsuario",
+        "cardA": "0..*",
+        "cardB": "1"
+      },
+      {
+        "a": "Traduccion",
+        "b": "Control",
+        "kind": "Association",
+        "label": "Id_Control → Id",
+        "cardA": "0..*",
+        "cardB": "1"
+      },
+      {
+        "a": "Traduccion",
+        "b": "Idioma",
+        "kind": "Association",
+        "label": "Id_Idioma → Id",
+        "cardA": "0..*",
+        "cardB": "1"
+      },
+      {
+        "a": "UsuarioIdioma",
+        "b": "Idioma",
+        "kind": "Association",
+        "label": "IdIdioma → Id",
+        "cardA": "0..*",
+        "cardB": "1"
+      },
+      {
+        "a": "UsuarioIdioma",
+        "b": "Usuarios",
+        "kind": "Association",
+        "label": "IdUsuario → IdUsuario",
+        "cardA": "0..1",
+        "cardB": "1"
+      }
+    ]
+  },
+  {
+    "id": "03_clases_global",
+    "title": "T01 Clases principales y relaciones",
+    "kind": "class",
+    "nodes": [
+      {
+        "key": "Usuario",
+        "title": "Usuario",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": []
+      },
+      {
+        "key": "Rol",
+        "title": "Rol",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": []
+      },
+      {
+        "key": "Permiso",
+        "title": "Permiso",
+        "kind": "Class",
+        "abstr": true,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": []
+      },
+      {
+        "key": "PermisoSimple",
+        "title": "PermisoSimple",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": []
+      },
+      {
+        "key": "PermisoCompuesto",
+        "title": "PermisoCompuesto",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": []
+      },
+      {
+        "key": "Idioma",
+        "title": "Idioma",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": []
+      },
+      {
+        "key": "Traduccion",
+        "title": "Traduccion",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": []
+      },
+      {
+        "key": "ControlIdioma",
+        "title": "ControlIdioma",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": []
+      },
+      {
+        "key": "Bitacora",
+        "title": "Bitacora",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": []
+      },
+      {
+        "key": "IBitacoraEvento",
+        "title": "IBitacoraEvento",
+        "kind": "Interface",
+        "abstr": true,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": []
+      },
+      {
+        "key": "InformeIntegridad",
+        "title": "InformeIntegridad",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": []
+      },
+      {
+        "key": "UsuarioBLL",
+        "title": "UsuarioBLL",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": []
+      },
+      {
+        "key": "RolesBLL",
+        "title": "RolesBLL",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": []
+      },
+      {
+        "key": "IdiomaBLL",
+        "title": "IdiomaBLL",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": []
+      },
+      {
+        "key": "BitacoraBLL",
+        "title": "BitacoraBLL",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": []
+      },
+      {
+        "key": "IntegridadBLL",
+        "title": "IntegridadBLL",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": []
+      },
+      {
+        "key": "UsuarioDAL",
+        "title": "UsuarioDAL",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": []
+      },
+      {
+        "key": "RolesDAL",
+        "title": "RolesDAL",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": []
+      },
+      {
+        "key": "IdiomaDAL",
+        "title": "IdiomaDAL",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": []
+      },
+      {
+        "key": "BitacoraDAL",
+        "title": "BitacoraDAL",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": []
+      },
+      {
+        "key": "IntegridadDAL",
+        "title": "IntegridadDAL",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": []
+      },
+      {
+        "key": "SesionServicio",
+        "title": "SesionServicio",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": true,
+        "fields": [],
+        "methods": []
+      },
+      {
+        "key": "IdiomaManager",
+        "title": "IdiomaManager",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": true,
+        "fields": [],
+        "methods": []
+      },
+      {
+        "key": "IIdiomaObserver",
+        "title": "IIdiomaObserver",
+        "kind": "Interface",
+        "abstr": true,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": []
+      },
+      {
+        "key": "IIdiomaSubject",
+        "title": "IIdiomaSubject",
+        "kind": "Interface",
+        "abstr": true,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": []
+      },
+      {
+        "key": "VerificadorSHA256",
+        "title": "VerificadorSHA256",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": true,
+        "singleton": false,
+        "fields": [],
+        "methods": []
+      },
+      {
+        "key": "HashHelper",
+        "title": "HashHelper",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": true,
+        "singleton": false,
+        "fields": [],
+        "methods": []
+      },
+      {
+        "key": "EncriptadorServicio",
+        "title": "EncriptadorServicio",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": []
+      },
+      {
+        "key": "FrmPrincipal",
+        "title": "FrmPrincipal",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": []
+      },
+      {
+        "key": "FrmLogin",
+        "title": "FrmLogin",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": []
+      },
+      {
+        "key": "FrmGestionUsuarios",
+        "title": "FrmGestionUsuarios",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": []
+      },
+      {
+        "key": "FormGestionRoles",
+        "title": "FormGestionRoles",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": []
+      },
+      {
+        "key": "FrmGestionIdiomas",
+        "title": "FrmGestionIdiomas",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": []
+      },
+      {
+        "key": "FrmBitacora",
+        "title": "FrmBitacora",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": []
+      },
+      {
+        "key": "FrmIntegridad",
+        "title": "FrmIntegridad",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": []
+      },
+      {
+        "key": "TraductorFormularios",
+        "title": "TraductorFormularios",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": true,
+        "singleton": false,
+        "fields": [],
+        "methods": []
+      }
+    ],
+    "edges": [
+      {
+        "a": "Bitacora",
+        "b": "IBitacoraEvento",
+        "kind": "Realisation",
+        "label": "",
+        "cardA": "",
+        "cardB": ""
+      },
+      {
+        "a": "PermisoCompuesto",
+        "b": "Permiso",
+        "kind": "Generalization",
+        "label": "",
+        "cardA": "",
+        "cardB": ""
+      },
+      {
+        "a": "PermisoCompuesto",
+        "b": "Permiso",
+        "kind": "Association",
+        "label": "hijos",
+        "cardA": "1",
+        "cardB": "0..*"
+      },
+      {
+        "a": "PermisoSimple",
+        "b": "Permiso",
+        "kind": "Generalization",
+        "label": "",
+        "cardA": "",
+        "cardB": ""
+      },
+      {
+        "a": "Rol",
+        "b": "Permiso",
+        "kind": "Association",
+        "label": "permisos",
+        "cardA": "1",
+        "cardB": "0..*"
+      },
+      {
+        "a": "Usuario",
+        "b": "Rol",
+        "kind": "Association",
+        "label": "roles",
+        "cardA": "1",
+        "cardB": "0..*"
+      },
+      {
+        "a": "BitacoraBLL",
+        "b": "BitacoraDAL",
+        "kind": "Association",
+        "label": "_dal",
+        "cardA": "1",
+        "cardB": "1"
+      },
+      {
+        "a": "IdiomaBLL",
+        "b": "IdiomaDAL",
+        "kind": "Association",
+        "label": "_dal",
+        "cardA": "1",
+        "cardB": "1"
+      },
+      {
+        "a": "IntegridadBLL",
+        "b": "IntegridadDAL",
+        "kind": "Association",
+        "label": "dal",
+        "cardA": "1",
+        "cardB": "1"
+      },
+      {
+        "a": "RolesBLL",
+        "b": "RolesDAL",
+        "kind": "Association",
+        "label": "dal",
+        "cardA": "1",
+        "cardB": "1"
+      },
+      {
+        "a": "UsuarioBLL",
+        "b": "UsuarioDAL",
+        "kind": "Association",
+        "label": "_dal",
+        "cardA": "1",
+        "cardB": "1"
+      },
+      {
+        "a": "UsuarioBLL",
+        "b": "BitacoraBLL",
+        "kind": "Association",
+        "label": "_bitacora",
+        "cardA": "1",
+        "cardB": "1"
+      },
+      {
+        "a": "BitacoraDAL",
+        "b": "IntegridadDAL",
+        "kind": "Association",
+        "label": "integridad",
+        "cardA": "1",
+        "cardB": "1"
+      },
+      {
+        "a": "BitacoraDAL",
+        "b": "EncriptadorServicio",
+        "kind": "Association",
+        "label": "encriptador",
+        "cardA": "1",
+        "cardB": "1"
+      },
+      {
+        "a": "IdiomaDAL",
+        "b": "IntegridadDAL",
+        "kind": "Association",
+        "label": "integridad",
+        "cardA": "1",
+        "cardB": "1"
+      },
+      {
+        "a": "IdiomaManager",
+        "b": "IIdiomaSubject",
+        "kind": "Realisation",
+        "label": "",
+        "cardA": "",
+        "cardB": ""
+      },
+      {
+        "a": "IdiomaManager",
+        "b": "IIdiomaObserver",
+        "kind": "Association",
+        "label": "observadores",
+        "cardA": "1",
+        "cardB": "0..*"
+      },
+      {
+        "a": "FormGestionRoles",
+        "b": "IIdiomaObserver",
+        "kind": "Realisation",
+        "label": "",
+        "cardA": "",
+        "cardB": ""
+      },
+      {
+        "a": "FormGestionRoles",
+        "b": "Rol",
+        "kind": "Association",
+        "label": "roles",
+        "cardA": "1",
+        "cardB": "0..*"
+      },
+      {
+        "a": "FormGestionRoles",
+        "b": "Usuario",
+        "kind": "Association",
+        "label": "usuarios",
+        "cardA": "1",
+        "cardB": "0..*"
+      },
+      {
+        "a": "FormGestionRoles",
+        "b": "RolesBLL",
+        "kind": "Association",
+        "label": "rolesBLL",
+        "cardA": "1",
+        "cardB": "1"
+      },
+      {
+        "a": "FrmBitacora",
+        "b": "IIdiomaObserver",
+        "kind": "Realisation",
+        "label": "",
+        "cardA": "",
+        "cardB": ""
+      },
+      {
+        "a": "FrmBitacora",
+        "b": "BitacoraBLL",
+        "kind": "Association",
+        "label": "_bll",
+        "cardA": "1",
+        "cardB": "1"
+      },
+      {
+        "a": "FrmGestionIdiomas",
+        "b": "IIdiomaObserver",
+        "kind": "Realisation",
+        "label": "",
+        "cardA": "",
+        "cardB": ""
+      },
+      {
+        "a": "FrmGestionIdiomas",
+        "b": "IdiomaBLL",
+        "kind": "Association",
+        "label": "_idiomaBLL",
+        "cardA": "1",
+        "cardB": "1"
+      },
+      {
+        "a": "FrmGestionIdiomas",
+        "b": "Traduccion",
+        "kind": "Association",
+        "label": "_traduccionesActuales",
+        "cardA": "1",
+        "cardB": "0..*"
+      },
+      {
+        "a": "FrmGestionUsuarios",
+        "b": "IIdiomaObserver",
+        "kind": "Realisation",
+        "label": "",
+        "cardA": "",
+        "cardB": ""
+      },
+      {
+        "a": "FrmGestionUsuarios",
+        "b": "UsuarioBLL",
+        "kind": "Association",
+        "label": "_usuarioBLL",
+        "cardA": "1",
+        "cardB": "1"
+      },
+      {
+        "a": "FrmIntegridad",
+        "b": "IntegridadBLL",
+        "kind": "Association",
+        "label": "servicio",
+        "cardA": "1",
+        "cardB": "1"
+      },
+      {
+        "a": "FrmIntegridad",
+        "b": "InformeIntegridad",
+        "kind": "Association",
+        "label": "informe",
+        "cardA": "1",
+        "cardB": "1"
+      },
+      {
+        "a": "FrmLogin",
+        "b": "UsuarioBLL",
+        "kind": "Association",
+        "label": "_usuarioBLL",
+        "cardA": "1",
+        "cardB": "1"
+      },
+      {
+        "a": "FrmPrincipal",
+        "b": "IIdiomaObserver",
+        "kind": "Realisation",
+        "label": "",
+        "cardA": "",
+        "cardB": ""
+      },
+      {
+        "a": "FrmPrincipal",
+        "b": "BitacoraBLL",
+        "kind": "Association",
+        "label": "_bitacora",
+        "cardA": "1",
+        "cardB": "1"
+      },
+      {
+        "a": "FrmPrincipal",
+        "b": "IdiomaBLL",
+        "kind": "Association",
+        "label": "_idiomaBLL",
+        "cardA": "1",
+        "cardB": "1"
+      },
+      {
+        "a": "TraductorFormularios",
+        "b": "IdiomaBLL",
+        "kind": "Association",
+        "label": "_idiomaBLL",
+        "cardA": "1",
+        "cardB": "1"
+      },
+      {
+        "a": "SesionServicio",
+        "b": "Usuario",
+        "kind": "Association",
+        "label": "UsuarioActual",
+        "cardA": "1",
+        "cardB": "0..1"
+      },
+      {
+        "a": "IdiomaManager",
+        "b": "Idioma",
+        "kind": "Association",
+        "label": "IdiomaActual",
+        "cardA": "1",
+        "cardB": "0..1"
+      },
+      {
+        "a": "UsuarioBLL",
+        "b": "IntegridadBLL",
+        "kind": "Dependency",
+        "label": "ExigirIntegridad",
+        "cardA": "",
+        "cardB": ""
+      },
+      {
+        "a": "UsuarioBLL",
+        "b": "RolesBLL",
+        "kind": "Dependency",
+        "label": "CargarRolesUsuario",
+        "cardA": "",
+        "cardB": ""
+      },
+      {
+        "a": "UsuarioBLL",
+        "b": "SesionServicio",
+        "kind": "Dependency",
+        "label": "IniciarSesion",
+        "cardA": "",
+        "cardB": ""
+      },
+      {
+        "a": "UsuarioBLL",
+        "b": "HashHelper",
+        "kind": "Dependency",
+        "label": "hash de contraseña",
+        "cardA": "",
+        "cardB": ""
+      },
+      {
+        "a": "IdiomaBLL",
+        "b": "IdiomaManager",
+        "kind": "Dependency",
+        "label": "CargarIdioma",
+        "cardA": "",
+        "cardB": ""
+      },
+      {
+        "a": "IdiomaBLL",
+        "b": "SesionServicio",
+        "kind": "Dependency",
+        "label": "preferencia por usuario",
+        "cardA": "",
+        "cardB": ""
+      },
+      {
+        "a": "FrmPrincipal",
+        "b": "SesionServicio",
+        "kind": "Dependency",
+        "label": "sesión actual",
+        "cardA": "",
+        "cardB": ""
+      },
+      {
+        "a": "IntegridadDAL",
+        "b": "VerificadorSHA256",
+        "kind": "Dependency",
+        "label": "DVH y DVV",
+        "cardA": "",
+        "cardB": ""
+      },
+      {
+        "a": "IntegridadDAL",
+        "b": "EncriptadorServicio",
+        "kind": "Dependency",
+        "label": "validar cifrado",
+        "cardA": "",
+        "cardB": ""
+      },
+      {
+        "a": "IntegridadBLL",
+        "b": "SesionServicio",
+        "kind": "Dependency",
+        "label": "autorizar recuperación",
+        "cardA": "",
+        "cardB": ""
+      },
+      {
+        "a": "TraductorFormularios",
+        "b": "IdiomaManager",
+        "kind": "Dependency",
+        "label": "Traducir",
+        "cardA": "",
+        "cardB": ""
+      },
+      {
+        "a": "FrmPrincipal",
+        "b": "FrmIntegridad",
+        "kind": "Dependency",
+        "label": "recuperación modal",
+        "cardA": "",
+        "cardB": ""
+      },
+      {
+        "a": "Rol",
+        "b": "Rol",
+        "kind": "Association",
+        "label": "roles heredados",
+        "cardA": "1",
+        "cardB": "0..*"
+      }
+    ]
+  },
+  {
+    "id": "04_cu_login_logout",
+    "title": "T02 Acceso y cierre de sesión",
+    "kind": "usecase",
+    "nodes": [
+      {
+        "key": "actor",
+        "title": "Usuario",
+        "kind": "Actor"
+      },
+      {
+        "key": "uc0",
+        "title": "CU01 Iniciar sesión",
+        "kind": "UseCase"
+      },
+      {
+        "key": "uc1",
+        "title": "CU02 Cerrar sesión",
+        "kind": "UseCase"
+      }
+    ],
+    "edges": [
+      {
+        "a": "actor",
+        "b": "uc0",
+        "kind": "Association",
+        "label": ""
+      },
+      {
+        "a": "actor",
+        "b": "uc1",
+        "kind": "Association",
+        "label": ""
+      }
+    ]
+  },
+  {
+    "id": "05_clases_login",
+    "title": "T02 Clases de autenticación",
+    "kind": "class",
+    "nodes": [
+      {
+        "key": "FrmLogin",
+        "title": "FrmLogin",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": [
+          {
+            "name": "BtnLogin_Click",
+            "type": "void",
+            "scope": "Private",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "sender",
+                "type": "Object",
+                "direction": "in"
+              },
+              {
+                "name": "e",
+                "type": "EventArgs",
+                "direction": "in"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "UsuarioBLL",
+        "title": "UsuarioBLL",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": [
+          {
+            "name": "Autenticar",
+            "type": "ResultadoLogin",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "nombreUsuario",
+                "type": "string",
+                "direction": "in"
+              },
+              {
+                "name": "passwordPlana",
+                "type": "string",
+                "direction": "in"
+              },
+              {
+                "name": "usuarioValidado",
+                "type": "Usuario",
+                "direction": "out"
+              }
+            ]
+          },
+          {
+            "name": "ObtenerTodos",
+            "type": "List<Usuario>",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": []
+          },
+          {
+            "name": "CrearUsuario",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "nuevoUsuario",
+                "type": "Usuario",
+                "direction": "in"
+              },
+              {
+                "name": "passwordPlana",
+                "type": "string",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "ActualizarUsuario",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "usuarioEditado",
+                "type": "Usuario",
+                "direction": "in"
+              },
+              {
+                "name": "passwordPlana",
+                "type": "string",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "BajaLogicaUsuario",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "idUsuario",
+                "type": "int",
+                "direction": "in"
+              },
+              {
+                "name": "nombreUsuario",
+                "type": "string",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "CrearAdministradorInicial",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "usuario",
+                "type": "Usuario",
+                "direction": "in"
+              },
+              {
+                "name": "passwordPlana",
+                "type": "string",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "ValidarDatos",
+            "type": "void",
+            "scope": "Public",
+            "stat": true,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "usuario",
+                "type": "Usuario",
+                "direction": "in"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "UsuarioDAL",
+        "title": "UsuarioDAL",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": [
+          {
+            "name": "ObtenerPorNombreUsuario",
+            "type": "Usuario",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "nombreUsuario",
+                "type": "string",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "ObtenerTodos",
+            "type": "List<Usuario>",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": []
+          },
+          {
+            "name": "Insertar",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "usuario",
+                "type": "Usuario",
+                "direction": "in"
+              },
+              {
+                "name": "administradorInicial",
+                "type": "bool",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "Actualizar",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "usuario",
+                "type": "Usuario",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "Eliminar",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "idUsuario",
+                "type": "int",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "EsAdministradorOriginal",
+            "type": "bool",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "idUsuario",
+                "type": "int",
+                "direction": "in"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "Usuario",
+        "title": "Usuario",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [
+          {
+            "name": "EsAdministradorOriginal",
+            "type": "bool",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "Id",
+            "type": "int",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "Roles",
+            "type": "List<Rol>",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "IdUsuario",
+            "type": "int",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "NombreUsuario",
+            "type": "string",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "Password",
+            "type": "string",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "Nombre",
+            "type": "string",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "Apellido",
+            "type": "string",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "Activo",
+            "type": "bool",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          }
+        ],
+        "methods": [
+          {
+            "name": "AsignarRol",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "r",
+                "type": "Rol",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "QuitarRol",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "r",
+                "type": "Rol",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "TienePermiso",
+            "type": "bool",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "nombre",
+                "type": "string",
+                "direction": "in"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "HashHelper",
+        "title": "HashHelper",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": true,
+        "singleton": false,
+        "fields": [],
+        "methods": [
+          {
+            "name": "ObtenerHashSHA256",
+            "type": "string",
+            "scope": "Public",
+            "stat": true,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "texto",
+                "type": "string",
+                "direction": "in"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "SesionServicio",
+        "title": "SesionServicio",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": true,
+        "fields": [
+          {
+            "name": "UsuarioActual",
+            "type": "Usuario",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "EstaAutenticado",
+            "type": "bool",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          }
+        ],
+        "methods": [
+          {
+            "name": "ObtenerInstancia",
+            "type": "SesionServicio",
+            "scope": "Public",
+            "stat": true,
+            "abstr": false,
+            "parameters": []
+          },
+          {
+            "name": "IniciarSesion",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "usuarioLogueado",
+                "type": "Usuario",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "CerrarSesion",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": []
+          }
+        ]
+      },
+      {
+        "key": "RolesBLL",
+        "title": "RolesBLL",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": [
+          {
+            "name": "CargarParaGestion",
+            "type": "EstadoRoles",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": []
+          },
+          {
+            "name": "CargarRolesUsuario",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "usuario",
+                "type": "Usuario",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "Guardar",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "estado",
+                "type": "EstadoRoles",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "Validar",
+            "type": "void",
+            "scope": "Public",
+            "stat": true,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "estado",
+                "type": "EstadoRoles",
+                "direction": "in"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "BitacoraBLL",
+        "title": "BitacoraBLL",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": [
+          {
+            "name": "Registrar",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "evento",
+                "type": "IBitacoraEvento",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "Registrar",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "usuario",
+                "type": "string",
+                "direction": "in"
+              },
+              {
+                "name": "actividad",
+                "type": "string",
+                "direction": "in"
+              },
+              {
+                "name": "informacion",
+                "type": "string",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "Buscar",
+            "type": "List<Bitacora>",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "desde",
+                "type": "Nullable<DateTime>",
+                "direction": "in"
+              },
+              {
+                "name": "hasta",
+                "type": "Nullable<DateTime>",
+                "direction": "in"
+              },
+              {
+                "name": "usuario",
+                "type": "string",
+                "direction": "in"
+              },
+              {
+                "name": "actividad",
+                "type": "string",
+                "direction": "in"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "IntegridadBLL",
+        "title": "IntegridadBLL",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": [
+          {
+            "name": "Verificar",
+            "type": "InformeIntegridad",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": []
+          },
+          {
+            "name": "PuedeAdministrar",
+            "type": "bool",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": []
+          },
+          {
+            "name": "InicializarBaseConfiable",
+            "type": "string",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": []
+          },
+          {
+            "name": "CrearRespaldoConfiable",
+            "type": "string",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "destino",
+                "type": "string",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "ArchivarBitacora",
+            "type": "int",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "dias",
+                "type": "int",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "Recuperar",
+            "type": "InformeIntegridad",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "ruta",
+                "type": "string",
+                "direction": "in"
+              },
+              {
+                "name": "tablasCompletas",
+                "type": "bool",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "ExigirIntegridad",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": []
+          }
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "a": "UsuarioBLL",
+        "b": "UsuarioDAL",
+        "kind": "Association",
+        "label": "_dal",
+        "cardA": "1",
+        "cardB": "1"
+      },
+      {
+        "a": "UsuarioBLL",
+        "b": "BitacoraBLL",
+        "kind": "Association",
+        "label": "_bitacora",
+        "cardA": "1",
+        "cardB": "1"
+      },
+      {
+        "a": "FrmLogin",
+        "b": "UsuarioBLL",
+        "kind": "Association",
+        "label": "_usuarioBLL",
+        "cardA": "1",
+        "cardB": "1"
+      },
+      {
+        "a": "SesionServicio",
+        "b": "Usuario",
+        "kind": "Association",
+        "label": "UsuarioActual",
+        "cardA": "1",
+        "cardB": "0..1"
+      },
+      {
+        "a": "UsuarioBLL",
+        "b": "IntegridadBLL",
+        "kind": "Dependency",
+        "label": "ExigirIntegridad",
+        "cardA": "",
+        "cardB": ""
+      },
+      {
+        "a": "UsuarioBLL",
+        "b": "RolesBLL",
+        "kind": "Dependency",
+        "label": "CargarRolesUsuario",
+        "cardA": "",
+        "cardB": ""
+      },
+      {
+        "a": "UsuarioBLL",
+        "b": "SesionServicio",
+        "kind": "Dependency",
+        "label": "IniciarSesion",
+        "cardA": "",
+        "cardB": ""
+      },
+      {
+        "a": "UsuarioBLL",
+        "b": "HashHelper",
+        "kind": "Dependency",
+        "label": "hash de contraseña",
+        "cardA": "",
+        "cardB": ""
+      },
+      {
+        "a": "IntegridadBLL",
+        "b": "SesionServicio",
+        "kind": "Dependency",
+        "label": "autorizar recuperación",
+        "cardA": "",
+        "cardB": ""
+      }
+    ]
+  },
+  {
+    "id": "06_secuencia_login",
+    "title": "T02 Inicio de sesión",
+    "kind": "sequence",
+    "nodes": [
+      {
+        "key": "actor",
+        "title": "Usuario",
+        "kind": "Actor",
+        "classifier": null
+      },
+      {
+        "key": "ui",
+        "title": "FrmLogin",
+        "kind": "Object",
+        "classifier": "FrmLogin"
+      },
+      {
+        "key": "bll",
+        "title": "UsuarioBLL",
+        "kind": "Object",
+        "classifier": "UsuarioBLL"
+      },
+      {
+        "key": "iv",
+        "title": "IntegridadBLL",
+        "kind": "Object",
+        "classifier": "IntegridadBLL"
+      },
+      {
+        "key": "dal",
+        "title": "UsuarioDAL",
+        "kind": "Object",
+        "classifier": "UsuarioDAL"
+      },
+      {
+        "key": "hash",
+        "title": "HashHelper",
+        "kind": "Object",
+        "classifier": "HashHelper"
+      },
+      {
+        "key": "roles",
+        "title": "RolesBLL",
+        "kind": "Object",
+        "classifier": "RolesBLL"
+      },
+      {
+        "key": "ses",
+        "title": "SesionServicio",
+        "kind": "Object",
+        "classifier": "SesionServicio"
+      },
+      {
+        "key": "bit",
+        "title": "BitacoraBLL",
+        "kind": "Object",
+        "classifier": "BitacoraBLL"
+      }
+    ],
+    "edges": [],
+    "steps": [
+      {
+        "a": "actor",
+        "b": "ui",
+        "text": "Ingresar usuario y contraseña"
+      },
+      {
+        "a": "ui",
+        "b": "bll",
+        "text": "Autenticar(nombreUsuario, passwordPlana, out usuario)"
+      },
+      {
+        "a": "bll",
+        "b": "iv",
+        "text": "ExigirIntegridad()"
+      },
+      {
+        "a": "iv",
+        "b": "bll",
+        "text": "Continuar solo si es correcta",
+        "reply": true
+      },
+      {
+        "a": "bll",
+        "b": "dal",
+        "text": "ObtenerPorNombreUsuario(nombreUsuario)"
+      },
+      {
+        "a": "dal",
+        "b": "bll",
+        "text": "Usuario o null",
+        "reply": true
+      },
+      {
+        "a": "bll",
+        "b": "hash",
+        "text": "ObtenerHashSHA256(passwordPlana)"
+      },
+      {
+        "a": "hash",
+        "b": "bll",
+        "text": "Hash hexadecimal",
+        "reply": true
+      },
+      {
+        "note": "alt usuario inexistente, hash distinto o cuenta inactiva"
+      },
+      {
+        "a": "bll",
+        "b": "bit",
+        "text": "Registrar(evento de LoginFallidoFactory)"
+      },
+      {
+        "a": "bll",
+        "b": "ui",
+        "text": "CredencialesInvalidas o UsuarioInactivo",
+        "reply": true
+      },
+      {
+        "note": "else credenciales válidas y cuenta activa"
+      },
+      {
+        "a": "bll",
+        "b": "roles",
+        "text": "CargarRolesUsuario(usuario)"
+      },
+      {
+        "a": "bll",
+        "b": "ses",
+        "text": "IniciarSesion(usuario)"
+      },
+      {
+        "a": "bll",
+        "b": "bit",
+        "text": "Registrar(evento de LoginExitosoFactory)"
+      },
+      {
+        "a": "bll",
+        "b": "ui",
+        "text": "ResultadoLogin.Exito",
+        "reply": true
+      },
+      {
+        "a": "ui",
+        "b": "ui",
+        "text": "Hide(); FrmPrincipal.ShowDialog()"
+      },
+      {
+        "note": "FrmPrincipal.Load restaura el idioma preferido de la cuenta"
+      }
+    ]
+  },
+  {
+    "id": "07_clases_logout",
+    "title": "T02 Clases del cierre de sesión",
+    "kind": "class",
+    "nodes": [
+      {
+        "key": "FrmPrincipal",
+        "title": "FrmPrincipal",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": [
+          {
+            "name": "ItemLogout_Click",
+            "type": "void",
+            "scope": "Private",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "sender",
+                "type": "Object",
+                "direction": "in"
+              },
+              {
+                "name": "e",
+                "type": "EventArgs",
+                "direction": "in"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "SesionServicio",
+        "title": "SesionServicio",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": true,
+        "fields": [
+          {
+            "name": "UsuarioActual",
+            "type": "Usuario",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "EstaAutenticado",
+            "type": "bool",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          }
+        ],
+        "methods": [
+          {
+            "name": "ObtenerInstancia",
+            "type": "SesionServicio",
+            "scope": "Public",
+            "stat": true,
+            "abstr": false,
+            "parameters": []
+          },
+          {
+            "name": "IniciarSesion",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "usuarioLogueado",
+                "type": "Usuario",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "CerrarSesion",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": []
+          }
+        ]
+      },
+      {
+        "key": "IdiomaManager",
+        "title": "IdiomaManager",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": true,
+        "fields": [
+          {
+            "name": "IdiomaActual",
+            "type": "Idioma",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          }
+        ],
+        "methods": [
+          {
+            "name": "ReiniciarSesion",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": []
+          }
+        ]
+      },
+      {
+        "key": "BitacoraBLL",
+        "title": "BitacoraBLL",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": [
+          {
+            "name": "Registrar",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "evento",
+                "type": "IBitacoraEvento",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "Registrar",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "usuario",
+                "type": "string",
+                "direction": "in"
+              },
+              {
+                "name": "actividad",
+                "type": "string",
+                "direction": "in"
+              },
+              {
+                "name": "informacion",
+                "type": "string",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "Buscar",
+            "type": "List<Bitacora>",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "desde",
+                "type": "Nullable<DateTime>",
+                "direction": "in"
+              },
+              {
+                "name": "hasta",
+                "type": "Nullable<DateTime>",
+                "direction": "in"
+              },
+              {
+                "name": "usuario",
+                "type": "string",
+                "direction": "in"
+              },
+              {
+                "name": "actividad",
+                "type": "string",
+                "direction": "in"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "BitacoraDAL",
+        "title": "BitacoraDAL",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": [
+          {
+            "name": "Insertar",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "registro",
+                "type": "Bitacora",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "Buscar",
+            "type": "List<Bitacora>",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "desde",
+                "type": "Nullable<DateTime>",
+                "direction": "in"
+              },
+              {
+                "name": "hasta",
+                "type": "Nullable<DateTime>",
+                "direction": "in"
+              },
+              {
+                "name": "usuario",
+                "type": "string",
+                "direction": "in"
+              },
+              {
+                "name": "actividad",
+                "type": "string",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "VerificarIntegridadBaseDatos",
+            "type": "bool",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": []
+          }
+        ]
+      },
+      {
+        "key": "IntegridadDAL",
+        "title": "IntegridadDAL",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": [
+          {
+            "name": "Verificar",
+            "type": "InformeIntegridad",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": []
+          },
+          {
+            "name": "LeerVerificado",
+            "type": "T",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "leer",
+                "type": "Func<SqlConnection, SqlTransaction, T>",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "Cambiar",
+            "type": "T",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "tabla",
+                "type": "string",
+                "direction": "in"
+              },
+              {
+                "name": "cambiar",
+                "type": "Func<SqlConnection, SqlTransaction, T>",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "PuedeAdministrar",
+            "type": "bool",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": []
+          },
+          {
+            "name": "ArchivarBitacora",
+            "type": "int",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "dias",
+                "type": "int",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "InicializarBaseConfiable",
+            "type": "string",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": []
+          },
+          {
+            "name": "CrearRespaldoConfiable",
+            "type": "string",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "destino",
+                "type": "string",
+                "direction": "in"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "FrmLogin",
+        "title": "FrmLogin",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": []
+      }
+    ],
+    "edges": [
+      {
+        "a": "BitacoraBLL",
+        "b": "BitacoraDAL",
+        "kind": "Association",
+        "label": "_dal",
+        "cardA": "1",
+        "cardB": "1"
+      },
+      {
+        "a": "BitacoraDAL",
+        "b": "IntegridadDAL",
+        "kind": "Association",
+        "label": "integridad",
+        "cardA": "1",
+        "cardB": "1"
+      },
+      {
+        "a": "FrmPrincipal",
+        "b": "BitacoraBLL",
+        "kind": "Association",
+        "label": "_bitacora",
+        "cardA": "1",
+        "cardB": "1"
+      },
+      {
+        "a": "FrmPrincipal",
+        "b": "SesionServicio",
+        "kind": "Dependency",
+        "label": "sesión actual",
+        "cardA": "",
+        "cardB": ""
+      }
+    ]
+  },
+  {
+    "id": "08_secuencia_logout",
+    "title": "T02 Cerrar sesión",
+    "kind": "sequence",
+    "nodes": [
+      {
+        "key": "actor",
+        "title": "Usuario",
+        "kind": "Actor",
+        "classifier": null
+      },
+      {
+        "key": "ui",
+        "title": "FrmPrincipal",
+        "kind": "Object",
+        "classifier": "FrmPrincipal"
+      },
+      {
+        "key": "bit",
+        "title": "BitacoraBLL",
+        "kind": "Object",
+        "classifier": "BitacoraBLL"
+      },
+      {
+        "key": "ses",
+        "title": "SesionServicio",
+        "kind": "Object",
+        "classifier": "SesionServicio"
+      },
+      {
+        "key": "idi",
+        "title": "IdiomaManager",
+        "kind": "Object",
+        "classifier": "IdiomaManager"
+      },
+      {
+        "key": "login",
+        "title": "FrmLogin",
+        "kind": "Object",
+        "classifier": "FrmLogin"
+      }
+    ],
+    "edges": [],
+    "steps": [
+      {
+        "a": "actor",
+        "b": "ui",
+        "text": "Cerrar sesión"
+      },
+      {
+        "a": "ui",
+        "b": "bit",
+        "text": "Registrar(usuario, \"Logout\", información)"
+      },
+      {
+        "note": "El registro se cifra y guarda mediante la escritura protegida de BitacoraDAL"
+      },
+      {
+        "a": "ui",
+        "b": "ui",
+        "text": "CerrarFormularioActual()"
+      },
+      {
+        "a": "ui",
+        "b": "ses",
+        "text": "CerrarSesion()"
+      },
+      {
+        "a": "ses",
+        "b": "idi",
+        "text": "ReiniciarSesion()"
+      },
+      {
+        "a": "ses",
+        "b": "ses",
+        "text": "UsuarioActual = null"
+      },
+      {
+        "a": "ui",
+        "b": "login",
+        "text": "Hide(); new FrmLogin().ShowDialog()"
+      },
+      {
+        "a": "ui",
+        "b": "ui",
+        "text": "Close() al terminar el diálogo"
+      }
+    ]
+  },
+  {
+    "id": "09_clases_encriptado",
+    "title": "T03 Hash de contraseñas y cifrado AES",
+    "kind": "class",
+    "nodes": [
+      {
+        "key": "HashHelper",
+        "title": "HashHelper",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": true,
+        "singleton": false,
+        "fields": [],
+        "methods": [
+          {
+            "name": "ObtenerHashSHA256",
+            "type": "string",
+            "scope": "Public",
+            "stat": true,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "texto",
+                "type": "string",
+                "direction": "in"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "EncriptadorServicio",
+        "title": "EncriptadorServicio",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": [
+          {
+            "name": "Encriptar",
+            "type": "string",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "textoPlano",
+                "type": "string",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "Desencriptar",
+            "type": "string",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "textoEncriptado",
+                "type": "string",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "CalcularDV",
+            "type": "string",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "cadenaConcatenada",
+                "type": "string",
+                "direction": "in"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "UsuarioBLL",
+        "title": "UsuarioBLL",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": [
+          {
+            "name": "Autenticar",
+            "type": "ResultadoLogin",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "nombreUsuario",
+                "type": "string",
+                "direction": "in"
+              },
+              {
+                "name": "passwordPlana",
+                "type": "string",
+                "direction": "in"
+              },
+              {
+                "name": "usuarioValidado",
+                "type": "Usuario",
+                "direction": "out"
+              }
+            ]
+          },
+          {
+            "name": "CrearUsuario",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "nuevoUsuario",
+                "type": "Usuario",
+                "direction": "in"
+              },
+              {
+                "name": "passwordPlana",
+                "type": "string",
+                "direction": "in"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "BitacoraDAL",
+        "title": "BitacoraDAL",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": [
+          {
+            "name": "Insertar",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "registro",
+                "type": "Bitacora",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "Buscar",
+            "type": "List<Bitacora>",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "desde",
+                "type": "Nullable<DateTime>",
+                "direction": "in"
+              },
+              {
+                "name": "hasta",
+                "type": "Nullable<DateTime>",
+                "direction": "in"
+              },
+              {
+                "name": "usuario",
+                "type": "string",
+                "direction": "in"
+              },
+              {
+                "name": "actividad",
+                "type": "string",
+                "direction": "in"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "VerificadorSHA256",
+        "title": "VerificadorSHA256",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": true,
+        "singleton": false,
+        "fields": [],
+        "methods": [
+          {
+            "name": "Canonico",
+            "type": "string",
+            "scope": "Public",
+            "stat": true,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "valores",
+                "type": "Object[]",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "Hexadecimal",
+            "type": "string",
+            "scope": "Public",
+            "stat": true,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "texto",
+                "type": "string",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "Base64",
+            "type": "string",
+            "scope": "Public",
+            "stat": true,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "texto",
+                "type": "string",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "Traduccion",
+            "type": "string",
+            "scope": "Public",
+            "stat": true,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "idioma",
+                "type": "int",
+                "direction": "in"
+              },
+              {
+                "name": "control",
+                "type": "int",
+                "direction": "in"
+              },
+              {
+                "name": "texto",
+                "type": "string",
+                "direction": "in"
+              },
+              {
+                "name": "estado",
+                "type": "string",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "Bitacora",
+            "type": "string",
+            "scope": "Public",
+            "stat": true,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "id",
+                "type": "int",
+                "direction": "in"
+              },
+              {
+                "name": "fecha",
+                "type": "DateTime",
+                "direction": "in"
+              },
+              {
+                "name": "usuario",
+                "type": "string",
+                "direction": "in"
+              },
+              {
+                "name": "actividad",
+                "type": "string",
+                "direction": "in"
+              },
+              {
+                "name": "cifrado",
+                "type": "string",
+                "direction": "in"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "a": "BitacoraDAL",
+        "b": "EncriptadorServicio",
+        "kind": "Association",
+        "label": "encriptador",
+        "cardA": "1",
+        "cardB": "1"
+      },
+      {
+        "a": "UsuarioBLL",
+        "b": "HashHelper",
+        "kind": "Dependency",
+        "label": "hash de contraseña",
+        "cardA": "",
+        "cardB": ""
+      }
+    ]
+  },
+  {
+    "id": "10_secuencia_encriptado",
+    "title": "T03 Cifrado al registrar bitácora",
+    "kind": "sequence",
+    "nodes": [
+      {
+        "key": "bll",
+        "title": "BitacoraBLL",
+        "kind": "Object",
+        "classifier": "BitacoraBLL"
+      },
+      {
+        "key": "dal",
+        "title": "BitacoraDAL",
+        "kind": "Object",
+        "classifier": "BitacoraDAL"
+      },
+      {
+        "key": "iv",
+        "title": "IntegridadDAL",
+        "kind": "Object",
+        "classifier": "IntegridadDAL"
+      },
+      {
+        "key": "aes",
+        "title": "EncriptadorServicio",
+        "kind": "Object",
+        "classifier": "EncriptadorServicio"
+      },
+      {
+        "key": "sha",
+        "title": "VerificadorSHA256",
+        "kind": "Object",
+        "classifier": "VerificadorSHA256"
+      }
+    ],
+    "edges": [],
+    "steps": [
+      {
+        "a": "bll",
+        "b": "dal",
+        "text": "Insertar(registro)"
+      },
+      {
+        "a": "dal",
+        "b": "iv",
+        "text": "Cambiar(\"Bitacora\", comando)"
+      },
+      {
+        "note": "Transacción Serializable y bloqueo exclusivo; validar DVH y DVV antes"
+      },
+      {
+        "a": "dal",
+        "b": "aes",
+        "text": "Encriptar(InformacionAsociada)"
+      },
+      {
+        "a": "aes",
+        "b": "dal",
+        "text": "AES CBC con PKCS7, representado en Base64",
+        "reply": true
+      },
+      {
+        "a": "dal",
+        "b": "dal",
+        "text": "INSERT y obtener IdBitacora"
+      },
+      {
+        "a": "iv",
+        "b": "sha",
+        "text": "Bitacora(id, fecha SQL, usuario, actividad, cifrado)"
+      },
+      {
+        "a": "iv",
+        "b": "iv",
+        "text": "GuardarHash y ActualizarVertical"
+      },
+      {
+        "a": "iv",
+        "b": "iv",
+        "text": "Examinar; Commit solo si es correcta"
+      }
+    ]
+  },
+  {
+    "id": "11_cu_roles",
+    "title": "T04 Gestión de perfiles y permisos",
+    "kind": "usecase",
+    "nodes": [
+      {
+        "key": "actor",
+        "title": "Administrador",
+        "kind": "Actor"
+      },
+      {
+        "key": "uc0",
+        "title": "CU04 Asignar o quitar rol a un usuario",
+        "kind": "UseCase"
+      },
+      {
+        "key": "uc1",
+        "title": "Asignar o quitar componentes de un rol",
+        "kind": "UseCase"
+      },
+      {
+        "key": "uc2",
+        "title": "Editar una familia de permisos",
+        "kind": "UseCase"
+      }
+    ],
+    "edges": [
+      {
+        "a": "actor",
+        "b": "uc0",
+        "kind": "Association",
+        "label": ""
+      },
+      {
+        "a": "actor",
+        "b": "uc1",
+        "kind": "Association",
+        "label": ""
+      },
+      {
+        "a": "actor",
+        "b": "uc2",
+        "kind": "Association",
+        "label": ""
+      }
+    ]
+  },
+  {
+    "id": "12_clases_roles",
+    "title": "T04 Roles y permisos mediante Composite",
+    "kind": "class",
+    "nodes": [
+      {
+        "key": "FormGestionRoles",
+        "title": "FormGestionRoles",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": [
+          {
+            "name": "AsignarAUsuario",
+            "type": "void",
+            "scope": "Private",
+            "stat": false,
+            "abstr": false,
+            "parameters": []
+          },
+          {
+            "name": "QuitarAUsuario",
+            "type": "void",
+            "scope": "Private",
+            "stat": false,
+            "abstr": false,
+            "parameters": []
+          },
+          {
+            "name": "AsignarARol",
+            "type": "void",
+            "scope": "Private",
+            "stat": false,
+            "abstr": false,
+            "parameters": []
+          },
+          {
+            "name": "QuitarDeRol",
+            "type": "void",
+            "scope": "Private",
+            "stat": false,
+            "abstr": false,
+            "parameters": []
+          },
+          {
+            "name": "EditarFamilia",
+            "type": "void",
+            "scope": "Private",
+            "stat": false,
+            "abstr": false,
+            "parameters": []
+          },
+          {
+            "name": "Ejecutar",
+            "type": "void",
+            "scope": "Private",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "accion",
+                "type": "Action",
+                "direction": "in"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "RolesBLL",
+        "title": "RolesBLL",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": [
+          {
+            "name": "CargarParaGestion",
+            "type": "EstadoRoles",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": []
+          },
+          {
+            "name": "CargarRolesUsuario",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "usuario",
+                "type": "Usuario",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "Guardar",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "estado",
+                "type": "EstadoRoles",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "Validar",
+            "type": "void",
+            "scope": "Public",
+            "stat": true,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "estado",
+                "type": "EstadoRoles",
+                "direction": "in"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "RolesDAL",
+        "title": "RolesDAL",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": [
+          {
+            "name": "Cargar",
+            "type": "EstadoRoles",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": []
+          },
+          {
+            "name": "Guardar",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "estado",
+                "type": "EstadoRoles",
+                "direction": "in"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "EstadoRoles",
+        "title": "EstadoRoles",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [
+          {
+            "name": "Version",
+            "type": "long",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "IdAdministradorOriginal",
+            "type": "int",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "Roles",
+            "type": "List<Rol>",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "Permisos",
+            "type": "List<Permiso>",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "Usuarios",
+            "type": "List<Usuario>",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          }
+        ],
+        "methods": []
+      },
+      {
+        "key": "Usuario",
+        "title": "Usuario",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [
+          {
+            "name": "EsAdministradorOriginal",
+            "type": "bool",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "Id",
+            "type": "int",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "Roles",
+            "type": "List<Rol>",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "IdUsuario",
+            "type": "int",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "NombreUsuario",
+            "type": "string",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "Password",
+            "type": "string",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "Nombre",
+            "type": "string",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "Apellido",
+            "type": "string",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "Activo",
+            "type": "bool",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          }
+        ],
+        "methods": [
+          {
+            "name": "AsignarRol",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "r",
+                "type": "Rol",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "QuitarRol",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "r",
+                "type": "Rol",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "TienePermiso",
+            "type": "bool",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "nombre",
+                "type": "string",
+                "direction": "in"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "Rol",
+        "title": "Rol",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [
+          {
+            "name": "Id",
+            "type": "int",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "Nombre",
+            "type": "string",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "Roles",
+            "type": "List<Rol>",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "Permisos",
+            "type": "List<Permiso>",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          }
+        ],
+        "methods": [
+          {
+            "name": "ContieneRol",
+            "type": "bool",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "buscado",
+                "type": "Rol",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "AgregarRol",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "rol",
+                "type": "Rol",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "QuitarRol",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "rol",
+                "type": "Rol",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "AgregarPermiso",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "permiso",
+                "type": "Permiso",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "QuitarPermiso",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "permiso",
+                "type": "Permiso",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "TienePermiso",
+            "type": "bool",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "nombre",
+                "type": "string",
+                "direction": "in"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "Permiso",
+        "title": "Permiso",
+        "kind": "Class",
+        "abstr": true,
+        "staticType": false,
+        "singleton": false,
+        "fields": [
+          {
+            "name": "Id",
+            "type": "int",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "Nombre",
+            "type": "string",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          }
+        ],
+        "methods": [
+          {
+            "name": "ContienePermiso",
+            "type": "bool",
+            "scope": "Public",
+            "stat": false,
+            "abstr": true,
+            "parameters": [
+              {
+                "name": "nombre",
+                "type": "string",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "Agregar",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": true,
+            "parameters": [
+              {
+                "name": "permiso",
+                "type": "Permiso",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "Quitar",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": true,
+            "parameters": [
+              {
+                "name": "permiso",
+                "type": "Permiso",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "ObtenerHijos",
+            "type": "List<Permiso>",
+            "scope": "Public",
+            "stat": false,
+            "abstr": true,
+            "parameters": []
+          }
+        ]
+      },
+      {
+        "key": "PermisoSimple",
+        "title": "PermisoSimple",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": [
+          {
+            "name": "ContienePermiso",
+            "type": "bool",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "nombre",
+                "type": "string",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "Agregar",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "permiso",
+                "type": "Permiso",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "Quitar",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "permiso",
+                "type": "Permiso",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "ObtenerHijos",
+            "type": "List<Permiso>",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": []
+          }
+        ]
+      },
+      {
+        "key": "PermisoCompuesto",
+        "title": "PermisoCompuesto",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": [
+          {
+            "name": "Agregar",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "permiso",
+                "type": "Permiso",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "Quitar",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "permiso",
+                "type": "Permiso",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "ObtenerHijos",
+            "type": "List<Permiso>",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": []
+          },
+          {
+            "name": "ContienePermiso",
+            "type": "bool",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "nombre",
+                "type": "string",
+                "direction": "in"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "MatrizRoles",
+        "title": "MatrizRoles",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": true,
+        "singleton": false,
+        "fields": [],
+        "methods": [
+          {
+            "name": "CrearCatalogo",
+            "type": "EstadoRoles",
+            "scope": "Public",
+            "stat": true,
+            "abstr": false,
+            "parameters": []
+          },
+          {
+            "name": "ValidarCatalogo",
+            "type": "void",
+            "scope": "Public",
+            "stat": true,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "estado",
+                "type": "EstadoRoles",
+                "direction": "in"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "a": "PermisoCompuesto",
+        "b": "Permiso",
+        "kind": "Generalization",
+        "label": "",
+        "cardA": "",
+        "cardB": ""
+      },
+      {
+        "a": "PermisoCompuesto",
+        "b": "Permiso",
+        "kind": "Association",
+        "label": "hijos",
+        "cardA": "1",
+        "cardB": "0..*"
+      },
+      {
+        "a": "PermisoSimple",
+        "b": "Permiso",
+        "kind": "Generalization",
+        "label": "",
+        "cardA": "",
+        "cardB": ""
+      },
+      {
+        "a": "Rol",
+        "b": "Permiso",
+        "kind": "Association",
+        "label": "permisos",
+        "cardA": "1",
+        "cardB": "0..*"
+      },
+      {
+        "a": "Usuario",
+        "b": "Rol",
+        "kind": "Association",
+        "label": "roles",
+        "cardA": "1",
+        "cardB": "0..*"
+      },
+      {
+        "a": "RolesBLL",
+        "b": "RolesDAL",
+        "kind": "Association",
+        "label": "dal",
+        "cardA": "1",
+        "cardB": "1"
+      },
+      {
+        "a": "FormGestionRoles",
+        "b": "Rol",
+        "kind": "Association",
+        "label": "roles",
+        "cardA": "1",
+        "cardB": "0..*"
+      },
+      {
+        "a": "FormGestionRoles",
+        "b": "Usuario",
+        "kind": "Association",
+        "label": "usuarios",
+        "cardA": "1",
+        "cardB": "0..*"
+      },
+      {
+        "a": "FormGestionRoles",
+        "b": "EstadoRoles",
+        "kind": "Association",
+        "label": "estado",
+        "cardA": "1",
+        "cardB": "1"
+      },
+      {
+        "a": "FormGestionRoles",
+        "b": "RolesBLL",
+        "kind": "Association",
+        "label": "rolesBLL",
+        "cardA": "1",
+        "cardB": "1"
+      },
+      {
+        "a": "EstadoRoles",
+        "b": "Usuario",
+        "kind": "Association",
+        "label": "Usuarios",
+        "cardA": "1",
+        "cardB": "0..*"
+      },
+      {
+        "a": "EstadoRoles",
+        "b": "Rol",
+        "kind": "Association",
+        "label": "Roles",
+        "cardA": "1",
+        "cardB": "0..*"
+      },
+      {
+        "a": "EstadoRoles",
+        "b": "Permiso",
+        "kind": "Association",
+        "label": "Permisos",
+        "cardA": "1",
+        "cardB": "0..*"
+      },
+      {
+        "a": "Rol",
+        "b": "Rol",
+        "kind": "Association",
+        "label": "roles heredados",
+        "cardA": "1",
+        "cardB": "0..*"
+      }
+    ]
+  },
+  {
+    "id": "13_secuencia_roles",
+    "title": "T04 Asignar rol a usuario",
+    "kind": "sequence",
+    "nodes": [
+      {
+        "key": "actor",
+        "title": "Administrador",
+        "kind": "Actor",
+        "classifier": null
+      },
+      {
+        "key": "ui",
+        "title": "FormGestionRoles",
+        "kind": "Object",
+        "classifier": "FormGestionRoles"
+      },
+      {
+        "key": "usu",
+        "title": "Usuario seleccionado",
+        "kind": "Object",
+        "classifier": "Usuario"
+      },
+      {
+        "key": "bll",
+        "title": "RolesBLL",
+        "kind": "Object",
+        "classifier": "RolesBLL"
+      },
+      {
+        "key": "dal",
+        "title": "RolesDAL",
+        "kind": "Object",
+        "classifier": "RolesDAL"
+      },
+      {
+        "key": "mat",
+        "title": "MatrizRoles",
+        "kind": "Object",
+        "classifier": "MatrizRoles"
+      }
+    ],
+    "edges": [],
+    "steps": [
+      {
+        "a": "actor",
+        "b": "ui",
+        "text": "Seleccionar usuario y rol; Asignar rol"
+      },
+      {
+        "a": "ui",
+        "b": "ui",
+        "text": "Ejecutar(AsignarAUsuario)"
+      },
+      {
+        "a": "ui",
+        "b": "usu",
+        "text": "AsignarRol(rol)"
+      },
+      {
+        "note": "AsignarRol ignora la misma referencia si ya está asignada"
+      },
+      {
+        "a": "ui",
+        "b": "bll",
+        "text": "Guardar(estado)"
+      },
+      {
+        "a": "bll",
+        "b": "dal",
+        "text": "Cargar() para validar autorización actual"
+      },
+      {
+        "a": "bll",
+        "b": "bll",
+        "text": "ExigirGestion y Validar(estado)"
+      },
+      {
+        "a": "bll",
+        "b": "mat",
+        "text": "ValidarCatalogo(estado)"
+      },
+      {
+        "note": "No ciclos; administrador original protegido; debe quedar un administrador activo"
+      },
+      {
+        "a": "bll",
+        "b": "dal",
+        "text": "Guardar(estado)"
+      },
+      {
+        "note": "Transacción y comparación de SeguridadVersion; si cambió, se cancela"
+      },
+      {
+        "a": "ui",
+        "b": "ui",
+        "text": "RefrescarArboles()"
+      },
+      {
+        "note": "Los permisos de sesiones ya abiertas se actualizan al volver a iniciar sesión"
+      }
+    ]
+  },
+  {
+    "id": "14_cu_idiomas",
+    "title": "T05 Gestión de múltiples idiomas",
+    "kind": "usecase",
+    "nodes": [
+      {
+        "key": "actor",
+        "title": "Usuario / Administrador",
+        "kind": "Actor"
+      },
+      {
+        "key": "uc0",
+        "title": "CU05 Cambiar idioma y conservar preferencia",
+        "kind": "UseCase"
+      },
+      {
+        "key": "uc1",
+        "title": "Administrar idiomas y traducciones (Administrador)",
+        "kind": "UseCase"
+      }
+    ],
+    "edges": [
+      {
+        "a": "actor",
+        "b": "uc0",
+        "kind": "Association",
+        "label": ""
+      },
+      {
+        "a": "actor",
+        "b": "uc1",
+        "kind": "Association",
+        "label": ""
+      }
+    ]
+  },
+  {
+    "id": "15_clases_idiomas",
+    "title": "T05 Observer y traducciones almacenadas en SQL",
+    "kind": "class",
+    "nodes": [
+      {
+        "key": "IdiomaManager",
+        "title": "IdiomaManager",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": true,
+        "fields": [
+          {
+            "name": "IdiomaActual",
+            "type": "Idioma",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          }
+        ],
+        "methods": [
+          {
+            "name": "ReiniciarSesion",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": []
+          },
+          {
+            "name": "ObtenerInstancia",
+            "type": "IdiomaManager",
+            "scope": "Public",
+            "stat": true,
+            "abstr": false,
+            "parameters": []
+          },
+          {
+            "name": "Suscribir",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "observador",
+                "type": "IIdiomaObserver",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "Desuscribir",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "observador",
+                "type": "IIdiomaObserver",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "NotificarObservadores",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": []
+          },
+          {
+            "name": "CargarIdioma",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "idioma",
+                "type": "Idioma",
+                "direction": "in"
+              },
+              {
+                "name": "traducciones",
+                "type": "Dictionary<string, string>",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "Traducir",
+            "type": "string",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "nombreForm",
+                "type": "string",
+                "direction": "in"
+              },
+              {
+                "name": "nombreControl",
+                "type": "string",
+                "direction": "in"
+              },
+              {
+                "name": "textoOriginal",
+                "type": "string",
+                "direction": "in"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "IIdiomaSubject",
+        "title": "IIdiomaSubject",
+        "kind": "Interface",
+        "abstr": true,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": [
+          {
+            "name": "Suscribir",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": true,
+            "parameters": [
+              {
+                "name": "observador",
+                "type": "IIdiomaObserver",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "Desuscribir",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": true,
+            "parameters": [
+              {
+                "name": "observador",
+                "type": "IIdiomaObserver",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "NotificarObservadores",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": true,
+            "parameters": []
+          }
+        ]
+      },
+      {
+        "key": "IIdiomaObserver",
+        "title": "IIdiomaObserver",
+        "kind": "Interface",
+        "abstr": true,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": [
+          {
+            "name": "ActualizarIdioma",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": true,
+            "parameters": []
+          }
+        ]
+      },
+      {
+        "key": "IdiomaBLL",
+        "title": "IdiomaBLL",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": [
+          {
+            "name": "ObtenerIdiomas",
+            "type": "List<Idioma>",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": []
+          },
+          {
+            "name": "ObtenerTodosLosIdiomas",
+            "type": "List<Idioma>",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": []
+          },
+          {
+            "name": "CambiarIdioma",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "idIdioma",
+                "type": "int",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "RestablecerIdiomaUsuario",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": []
+          },
+          {
+            "name": "CrearIdioma",
+            "type": "int",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "nombre",
+                "type": "string",
+                "direction": "in"
+              },
+              {
+                "name": "codigo",
+                "type": "string",
+                "direction": "in"
+              },
+              {
+                "name": "nombreNativo",
+                "type": "string",
+                "direction": "in"
+              },
+              {
+                "name": "activo",
+                "type": "bool",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "CambiarEstadoIdioma",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "idIdioma",
+                "type": "int",
+                "direction": "in"
+              },
+              {
+                "name": "activo",
+                "type": "bool",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "ObtenerTraduccionesParaGestion",
+            "type": "List<Traduccion>",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "idIdioma",
+                "type": "int",
+                "direction": "in"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "IdiomaDAL",
+        "title": "IdiomaDAL",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": [
+          {
+            "name": "ObtenerIdiomaPreferido",
+            "type": "Nullable<int>",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "idUsuario",
+                "type": "int",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "GuardarIdiomaPreferido",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "idUsuario",
+                "type": "int",
+                "direction": "in"
+              },
+              {
+                "name": "idIdioma",
+                "type": "int",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "ObtenerIdiomaPorId",
+            "type": "Idioma",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "idIdioma",
+                "type": "int",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "ObtenerTraduccionesPorIdioma",
+            "type": "List<Traduccion>",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "idIdioma",
+                "type": "int",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "ActualizarTraduccion",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "idIdioma",
+                "type": "int",
+                "direction": "in"
+              },
+              {
+                "name": "idControl",
+                "type": "int",
+                "direction": "in"
+              },
+              {
+                "name": "texto",
+                "type": "string",
+                "direction": "in"
+              },
+              {
+                "name": "estado",
+                "type": "string",
+                "direction": "in"
+              },
+              {
+                "name": "digitoVerificador",
+                "type": "string",
+                "direction": "in"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "Idioma",
+        "title": "Idioma",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [
+          {
+            "name": "Id",
+            "type": "int",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "Nombre",
+            "type": "string",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "Codigo",
+            "type": "string",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "NombreNativo",
+            "type": "string",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "Activo",
+            "type": "bool",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          }
+        ],
+        "methods": [
+          {
+            "name": "ToString",
+            "type": "string",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": []
+          }
+        ]
+      },
+      {
+        "key": "Traduccion",
+        "title": "Traduccion",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [
+          {
+            "name": "IdIdioma",
+            "type": "int",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "IdControl",
+            "type": "int",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "Texto",
+            "type": "string",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "DigitoVerificador",
+            "type": "string",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "ControlNombre",
+            "type": "string",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "FormNombre",
+            "type": "string",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "Estado",
+            "type": "string",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "TextoBase",
+            "type": "string",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          }
+        ],
+        "methods": []
+      },
+      {
+        "key": "ControlIdioma",
+        "title": "ControlIdioma",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [
+          {
+            "name": "Id",
+            "type": "int",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "Control",
+            "type": "string",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "Form",
+            "type": "string",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          }
+        ],
+        "methods": []
+      },
+      {
+        "key": "TraductorFormularios",
+        "title": "TraductorFormularios",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": true,
+        "singleton": false,
+        "fields": [],
+        "methods": [
+          {
+            "name": "TraducirFormulario",
+            "type": "void",
+            "scope": "Public",
+            "stat": true,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "formulario",
+                "type": "Form",
+                "direction": "in"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "FrmPrincipal",
+        "title": "FrmPrincipal",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": [
+          {
+            "name": "ActualizarIdioma",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": []
+          }
+        ]
+      },
+      {
+        "key": "FrmGestionIdiomas",
+        "title": "FrmGestionIdiomas",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": [
+          {
+            "name": "ActualizarIdioma",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": []
+          }
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "a": "IdiomaBLL",
+        "b": "IdiomaDAL",
+        "kind": "Association",
+        "label": "_dal",
+        "cardA": "1",
+        "cardB": "1"
+      },
+      {
+        "a": "IdiomaManager",
+        "b": "IIdiomaSubject",
+        "kind": "Realisation",
+        "label": "",
+        "cardA": "",
+        "cardB": ""
+      },
+      {
+        "a": "IdiomaManager",
+        "b": "IIdiomaObserver",
+        "kind": "Association",
+        "label": "observadores",
+        "cardA": "1",
+        "cardB": "0..*"
+      },
+      {
+        "a": "FrmGestionIdiomas",
+        "b": "IIdiomaObserver",
+        "kind": "Realisation",
+        "label": "",
+        "cardA": "",
+        "cardB": ""
+      },
+      {
+        "a": "FrmGestionIdiomas",
+        "b": "IdiomaBLL",
+        "kind": "Association",
+        "label": "_idiomaBLL",
+        "cardA": "1",
+        "cardB": "1"
+      },
+      {
+        "a": "FrmGestionIdiomas",
+        "b": "Traduccion",
+        "kind": "Association",
+        "label": "_traduccionesActuales",
+        "cardA": "1",
+        "cardB": "0..*"
+      },
+      {
+        "a": "FrmPrincipal",
+        "b": "IIdiomaObserver",
+        "kind": "Realisation",
+        "label": "",
+        "cardA": "",
+        "cardB": ""
+      },
+      {
+        "a": "FrmPrincipal",
+        "b": "IdiomaBLL",
+        "kind": "Association",
+        "label": "_idiomaBLL",
+        "cardA": "1",
+        "cardB": "1"
+      },
+      {
+        "a": "TraductorFormularios",
+        "b": "IdiomaBLL",
+        "kind": "Association",
+        "label": "_idiomaBLL",
+        "cardA": "1",
+        "cardB": "1"
+      },
+      {
+        "a": "IdiomaManager",
+        "b": "Idioma",
+        "kind": "Association",
+        "label": "IdiomaActual",
+        "cardA": "1",
+        "cardB": "0..1"
+      },
+      {
+        "a": "IdiomaBLL",
+        "b": "IdiomaManager",
+        "kind": "Dependency",
+        "label": "CargarIdioma",
+        "cardA": "",
+        "cardB": ""
+      },
+      {
+        "a": "TraductorFormularios",
+        "b": "IdiomaManager",
+        "kind": "Dependency",
+        "label": "Traducir",
+        "cardA": "",
+        "cardB": ""
+      }
+    ]
+  },
+  {
+    "id": "16_secuencia_idiomas",
+    "title": "T05 Cambio de idioma dinámico",
+    "kind": "sequence",
+    "nodes": [
+      {
+        "key": "actor",
+        "title": "Usuario",
+        "kind": "Actor",
+        "classifier": null
+      },
+      {
+        "key": "ui",
+        "title": "FrmPrincipal",
+        "kind": "Object",
+        "classifier": "FrmPrincipal"
+      },
+      {
+        "key": "bll",
+        "title": "IdiomaBLL",
+        "kind": "Object",
+        "classifier": "IdiomaBLL"
+      },
+      {
+        "key": "dal",
+        "title": "IdiomaDAL",
+        "kind": "Object",
+        "classifier": "IdiomaDAL"
+      },
+      {
+        "key": "man",
+        "title": "IdiomaManager",
+        "kind": "Object",
+        "classifier": "IdiomaManager"
+      },
+      {
+        "key": "obs",
+        "title": "Formulario suscrito",
+        "kind": "Object",
+        "classifier": "IIdiomaObserver"
+      },
+      {
+        "key": "trad",
+        "title": "TraductorFormularios",
+        "kind": "Object",
+        "classifier": "TraductorFormularios"
+      }
+    ],
+    "edges": [],
+    "steps": [
+      {
+        "a": "actor",
+        "b": "ui",
+        "text": "Seleccionar un idioma activo"
+      },
+      {
+        "a": "ui",
+        "b": "bll",
+        "text": "CambiarIdioma(idIdioma)"
+      },
+      {
+        "a": "bll",
+        "b": "dal",
+        "text": "ObtenerIdiomaPorId(idIdioma)"
+      },
+      {
+        "note": "Si no existe o está inactivo, se rechaza el cambio"
+      },
+      {
+        "a": "bll",
+        "b": "dal",
+        "text": "ObtenerTraduccionesPorIdioma(idIdioma)"
+      },
+      {
+        "note": "Lectura verificada; solo completas con texto. Diccionario Form.Control → Texto"
+      },
+      {
+        "a": "bll",
+        "b": "dal",
+        "text": "GuardarIdiomaPreferido(idUsuario, idIdioma)"
+      },
+      {
+        "a": "bll",
+        "b": "man",
+        "text": "CargarIdioma(idioma, diccionario)"
+      },
+      {
+        "a": "man",
+        "b": "man",
+        "text": "NotificarObservadores()"
+      },
+      {
+        "note": "loop por cada IIdiomaObserver suscrito"
+      },
+      {
+        "a": "man",
+        "b": "obs",
+        "text": "ActualizarIdioma()"
+      },
+      {
+        "a": "obs",
+        "b": "trad",
+        "text": "TraducirFormulario(this)"
+      },
+      {
+        "note": "Recorrer Tags de título, controles, menús y columnas; registrar claves nuevas"
+      },
+      {
+        "a": "trad",
+        "b": "man",
+        "text": "Traducir(form, clave, textoOriginal)"
+      },
+      {
+        "a": "man",
+        "b": "trad",
+        "text": "Traducción o texto recibido como respaldo",
+        "reply": true
+      },
+      {
+        "note": "No existe FrmBase ni GestorIdioma en el código actual"
+      }
+    ]
+  },
+  {
+    "id": "17_secuencia_guardar_traduccion",
+    "title": "T05 Guardar traducción y actualizar verificadores",
+    "kind": "sequence",
+    "nodes": [
+      {
+        "key": "actor",
+        "title": "Administrador",
+        "kind": "Actor",
+        "classifier": null
+      },
+      {
+        "key": "ui",
+        "title": "FrmGestionIdiomas",
+        "kind": "Object",
+        "classifier": "FrmGestionIdiomas"
+      },
+      {
+        "key": "bll",
+        "title": "IdiomaBLL",
+        "kind": "Object",
+        "classifier": "IdiomaBLL"
+      },
+      {
+        "key": "dal",
+        "title": "IdiomaDAL",
+        "kind": "Object",
+        "classifier": "IdiomaDAL"
+      },
+      {
+        "key": "iv",
+        "title": "IntegridadDAL",
+        "kind": "Object",
+        "classifier": "IntegridadDAL"
+      },
+      {
+        "key": "sha",
+        "title": "VerificadorSHA256",
+        "kind": "Object",
+        "classifier": "VerificadorSHA256"
+      }
+    ],
+    "edges": [],
+    "steps": [
+      {
+        "a": "actor",
+        "b": "ui",
+        "text": "Editar texto y Guardar traducción"
+      },
+      {
+        "a": "ui",
+        "b": "bll",
+        "text": "GuardarTraduccionPorControl(idIdioma, idControl, texto)"
+      },
+      {
+        "a": "bll",
+        "b": "sha",
+        "text": "Traduccion(ids, texto, estado)"
+      },
+      {
+        "a": "bll",
+        "b": "dal",
+        "text": "ActualizarTraduccion(ids, texto, estado, DV)"
+      },
+      {
+        "a": "dal",
+        "b": "iv",
+        "text": "Cambiar(\"Traduccion\", comando)"
+      },
+      {
+        "note": "Verificar antes; escritura y actualización DVV en la misma transacción"
+      },
+      {
+        "a": "dal",
+        "b": "sha",
+        "text": "Traduccion(ids, texto normalizado, estado)"
+      },
+      {
+        "a": "dal",
+        "b": "dal",
+        "text": "UPDATE Texto, Estado y DigitoVerificador"
+      },
+      {
+        "a": "iv",
+        "b": "iv",
+        "text": "ActualizarVertical; Examinar; Commit"
+      },
+      {
+        "a": "ui",
+        "b": "ui",
+        "text": "CargarTraducciones()"
+      },
+      {
+        "note": "Guardar texto no notifica automáticamente; Aplicar vuelve a cargar el idioma"
+      }
+    ]
+  },
+  {
+    "id": "18_cu_bitacora",
+    "title": "T06 Consulta de bitácora",
+    "kind": "usecase",
+    "nodes": [
+      {
+        "key": "actor",
+        "title": "Usuario con permiso Ver bitácora",
+        "kind": "Actor"
+      },
+      {
+        "key": "uc0",
+        "title": "CU03 Consultar bitácora con filtros combinados",
+        "kind": "UseCase"
+      }
+    ],
+    "edges": [
+      {
+        "a": "actor",
+        "b": "uc0",
+        "kind": "Association",
+        "label": ""
+      }
+    ]
+  },
+  {
+    "id": "19_clases_bitacora",
+    "title": "T06 Registro y consulta de auditoría",
+    "kind": "class",
+    "nodes": [
+      {
+        "key": "FrmBitacora",
+        "title": "FrmBitacora",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": [
+          {
+            "name": "Buscar",
+            "type": "void",
+            "scope": "Private",
+            "stat": false,
+            "abstr": false,
+            "parameters": []
+          },
+          {
+            "name": "ActualizarIdioma",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": []
+          }
+        ]
+      },
+      {
+        "key": "BitacoraBLL",
+        "title": "BitacoraBLL",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": [
+          {
+            "name": "Registrar",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "evento",
+                "type": "IBitacoraEvento",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "Registrar",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "usuario",
+                "type": "string",
+                "direction": "in"
+              },
+              {
+                "name": "actividad",
+                "type": "string",
+                "direction": "in"
+              },
+              {
+                "name": "informacion",
+                "type": "string",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "Buscar",
+            "type": "List<Bitacora>",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "desde",
+                "type": "Nullable<DateTime>",
+                "direction": "in"
+              },
+              {
+                "name": "hasta",
+                "type": "Nullable<DateTime>",
+                "direction": "in"
+              },
+              {
+                "name": "usuario",
+                "type": "string",
+                "direction": "in"
+              },
+              {
+                "name": "actividad",
+                "type": "string",
+                "direction": "in"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "BitacoraDAL",
+        "title": "BitacoraDAL",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": [
+          {
+            "name": "Insertar",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "registro",
+                "type": "Bitacora",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "Buscar",
+            "type": "List<Bitacora>",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "desde",
+                "type": "Nullable<DateTime>",
+                "direction": "in"
+              },
+              {
+                "name": "hasta",
+                "type": "Nullable<DateTime>",
+                "direction": "in"
+              },
+              {
+                "name": "usuario",
+                "type": "string",
+                "direction": "in"
+              },
+              {
+                "name": "actividad",
+                "type": "string",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "VerificarIntegridadBaseDatos",
+            "type": "bool",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": []
+          }
+        ]
+      },
+      {
+        "key": "Bitacora",
+        "title": "Bitacora",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [
+          {
+            "name": "IdBitacora",
+            "type": "int",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "Fecha",
+            "type": "DateTime",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "Usuario",
+            "type": "string",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "Actividad",
+            "type": "string",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "InformacionAsociada",
+            "type": "string",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "DigitoVerificador",
+            "type": "string",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "Id",
+            "type": "int",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "IdUsuario",
+            "type": "Nullable<int>",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "IdentificadorUsuario",
+            "type": "string",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "Modulo",
+            "type": "BitacoraModulo",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "Accion",
+            "type": "BitacoraAccion",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "Nivel",
+            "type": "BitacoraNivel",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "Descripcion",
+            "type": "string",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "Equipo",
+            "type": "string",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          }
+        ],
+        "methods": []
+      },
+      {
+        "key": "IBitacoraEvento",
+        "title": "IBitacoraEvento",
+        "kind": "Interface",
+        "abstr": true,
+        "staticType": false,
+        "singleton": false,
+        "fields": [
+          {
+            "name": "Id",
+            "type": "int",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "IdUsuario",
+            "type": "Nullable<int>",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "IdentificadorUsuario",
+            "type": "string",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "Modulo",
+            "type": "BitacoraModulo",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "Accion",
+            "type": "BitacoraAccion",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "Nivel",
+            "type": "BitacoraNivel",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "Descripcion",
+            "type": "string",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "Equipo",
+            "type": "string",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "Fecha",
+            "type": "DateTime",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          }
+        ],
+        "methods": []
+      },
+      {
+        "key": "BitacoraFactory",
+        "title": "BitacoraFactory",
+        "kind": "Class",
+        "abstr": true,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": [
+          {
+            "name": "Crear",
+            "type": "IBitacoraEvento",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "identificadorUsuario",
+                "type": "string",
+                "direction": "in"
+              },
+              {
+                "name": "descripcion",
+                "type": "string",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "CrearEvento",
+            "type": "IBitacoraEvento",
+            "scope": "Protected",
+            "stat": false,
+            "abstr": true,
+            "parameters": []
+          }
+        ]
+      },
+      {
+        "key": "LoginExitosoFactory",
+        "title": "LoginExitosoFactory",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": [
+          {
+            "name": "CrearEvento",
+            "type": "IBitacoraEvento",
+            "scope": "Protected",
+            "stat": false,
+            "abstr": false,
+            "parameters": []
+          }
+        ]
+      },
+      {
+        "key": "LoginFallidoFactory",
+        "title": "LoginFallidoFactory",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": [
+          {
+            "name": "CrearEvento",
+            "type": "IBitacoraEvento",
+            "scope": "Protected",
+            "stat": false,
+            "abstr": false,
+            "parameters": []
+          }
+        ]
+      },
+      {
+        "key": "GestionUsuariosFactory",
+        "title": "GestionUsuariosFactory",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": [
+          {
+            "name": "CrearEvento",
+            "type": "IBitacoraEvento",
+            "scope": "Protected",
+            "stat": false,
+            "abstr": false,
+            "parameters": []
+          }
+        ]
+      },
+      {
+        "key": "BitacoraMapper",
+        "title": "BitacoraMapper",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": true,
+        "singleton": false,
+        "fields": [],
+        "methods": [
+          {
+            "name": "PrepararParaBaseDeDatos",
+            "type": "void",
+            "scope": "Public",
+            "stat": true,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "evento",
+                "type": "Bitacora",
+                "direction": "in"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "EncriptadorServicio",
+        "title": "EncriptadorServicio",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": [
+          {
+            "name": "Encriptar",
+            "type": "string",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "textoPlano",
+                "type": "string",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "Desencriptar",
+            "type": "string",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "textoEncriptado",
+                "type": "string",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "CalcularDV",
+            "type": "string",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "cadenaConcatenada",
+                "type": "string",
+                "direction": "in"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "IntegridadDAL",
+        "title": "IntegridadDAL",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": [
+          {
+            "name": "Verificar",
+            "type": "InformeIntegridad",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": []
+          },
+          {
+            "name": "LeerVerificado",
+            "type": "T",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "leer",
+                "type": "Func<SqlConnection, SqlTransaction, T>",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "Cambiar",
+            "type": "T",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "tabla",
+                "type": "string",
+                "direction": "in"
+              },
+              {
+                "name": "cambiar",
+                "type": "Func<SqlConnection, SqlTransaction, T>",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "PuedeAdministrar",
+            "type": "bool",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": []
+          },
+          {
+            "name": "ArchivarBitacora",
+            "type": "int",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "dias",
+                "type": "int",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "InicializarBaseConfiable",
+            "type": "string",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": []
+          },
+          {
+            "name": "CrearRespaldoConfiable",
+            "type": "string",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "destino",
+                "type": "string",
+                "direction": "in"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "a": "Bitacora",
+        "b": "IBitacoraEvento",
+        "kind": "Realisation",
+        "label": "",
+        "cardA": "",
+        "cardB": ""
+      },
+      {
+        "a": "BitacoraBLL",
+        "b": "BitacoraDAL",
+        "kind": "Association",
+        "label": "_dal",
+        "cardA": "1",
+        "cardB": "1"
+      },
+      {
+        "a": "GestionUsuariosFactory",
+        "b": "BitacoraFactory",
+        "kind": "Generalization",
+        "label": "",
+        "cardA": "",
+        "cardB": ""
+      },
+      {
+        "a": "LoginExitosoFactory",
+        "b": "BitacoraFactory",
+        "kind": "Generalization",
+        "label": "",
+        "cardA": "",
+        "cardB": ""
+      },
+      {
+        "a": "LoginFallidoFactory",
+        "b": "BitacoraFactory",
+        "kind": "Generalization",
+        "label": "",
+        "cardA": "",
+        "cardB": ""
+      },
+      {
+        "a": "BitacoraDAL",
+        "b": "IntegridadDAL",
+        "kind": "Association",
+        "label": "integridad",
+        "cardA": "1",
+        "cardB": "1"
+      },
+      {
+        "a": "BitacoraDAL",
+        "b": "EncriptadorServicio",
+        "kind": "Association",
+        "label": "encriptador",
+        "cardA": "1",
+        "cardB": "1"
+      },
+      {
+        "a": "FrmBitacora",
+        "b": "BitacoraBLL",
+        "kind": "Association",
+        "label": "_bll",
+        "cardA": "1",
+        "cardB": "1"
+      },
+      {
+        "a": "BitacoraBLL",
+        "b": "BitacoraMapper",
+        "kind": "Dependency",
+        "label": "adaptar evento",
+        "cardA": "",
+        "cardB": ""
+      },
+      {
+        "a": "IntegridadDAL",
+        "b": "EncriptadorServicio",
+        "kind": "Dependency",
+        "label": "validar cifrado",
+        "cardA": "",
+        "cardB": ""
+      }
+    ]
+  },
+  {
+    "id": "20_secuencia_bitacora",
+    "title": "T06 Consultar bitácora",
+    "kind": "sequence",
+    "nodes": [
+      {
+        "key": "actor",
+        "title": "Usuario autorizado",
+        "kind": "Actor",
+        "classifier": null
+      },
+      {
+        "key": "ui",
+        "title": "FrmBitacora",
+        "kind": "Object",
+        "classifier": "FrmBitacora"
+      },
+      {
+        "key": "bll",
+        "title": "BitacoraBLL",
+        "kind": "Object",
+        "classifier": "BitacoraBLL"
+      },
+      {
+        "key": "dal",
+        "title": "BitacoraDAL",
+        "kind": "Object",
+        "classifier": "BitacoraDAL"
+      },
+      {
+        "key": "iv",
+        "title": "IntegridadDAL",
+        "kind": "Object",
+        "classifier": "IntegridadDAL"
+      },
+      {
+        "key": "aes",
+        "title": "EncriptadorServicio",
+        "kind": "Object",
+        "classifier": "EncriptadorServicio"
+      }
+    ],
+    "edges": [],
+    "steps": [
+      {
+        "a": "actor",
+        "b": "ui",
+        "text": "Elegir fechas, usuario y actividad; Buscar"
+      },
+      {
+        "a": "ui",
+        "b": "bll",
+        "text": "Buscar(desde?, hasta?, usuario, actividad)"
+      },
+      {
+        "a": "bll",
+        "b": "dal",
+        "text": "Buscar(desde, hasta, usuario, actividad)"
+      },
+      {
+        "a": "dal",
+        "b": "iv",
+        "text": "LeerVerificado(consulta)"
+      },
+      {
+        "note": "Transacción Serializable y bloqueo compartido; verificar antes de leer"
+      },
+      {
+        "a": "dal",
+        "b": "dal",
+        "text": "SELECT filtrado por AND; LIKE; Fecha DESC"
+      },
+      {
+        "note": "loop por cada registro obtenido"
+      },
+      {
+        "a": "dal",
+        "b": "aes",
+        "text": "Desencriptar(InformacionAsociada)"
+      },
+      {
+        "a": "dal",
+        "b": "bll",
+        "text": "List<Bitacora>",
+        "reply": true
+      },
+      {
+        "a": "bll",
+        "b": "ui",
+        "text": "Lista verificada y descifrada",
+        "reply": true
+      },
+      {
+        "a": "ui",
+        "b": "ui",
+        "text": "dgv.DataSource = lista"
+      },
+      {
+        "note": "Si no hay coincidencias, la grilla queda vacía; ante corrupción se bloquea la lectura"
+      }
+    ]
+  },
+  {
+    "id": "21_cu_integridad",
+    "title": "T07 Control y recuperación de integridad",
+    "kind": "usecase",
+    "nodes": [
+      {
+        "key": "actor",
+        "title": "Administrador de SIGAT y SQL",
+        "kind": "Actor"
+      },
+      {
+        "key": "uc0",
+        "title": "Verificar integridad",
+        "kind": "UseCase"
+      },
+      {
+        "key": "uc1",
+        "title": "Crear respaldo comprobado",
+        "kind": "UseCase"
+      },
+      {
+        "key": "uc2",
+        "title": "Recuperar registros o tablas afectadas",
+        "kind": "UseCase"
+      },
+      {
+        "key": "uc3",
+        "title": "Preparar referencia inicial solo una vez",
+        "kind": "UseCase"
+      },
+      {
+        "key": "uc4",
+        "title": "Archivar bitácora anterior a 180 días",
+        "kind": "UseCase"
+      }
+    ],
+    "edges": [
+      {
+        "a": "actor",
+        "b": "uc0",
+        "kind": "Association",
+        "label": ""
+      },
+      {
+        "a": "actor",
+        "b": "uc1",
+        "kind": "Association",
+        "label": ""
+      },
+      {
+        "a": "actor",
+        "b": "uc2",
+        "kind": "Association",
+        "label": ""
+      },
+      {
+        "a": "actor",
+        "b": "uc3",
+        "kind": "Association",
+        "label": ""
+      },
+      {
+        "a": "actor",
+        "b": "uc4",
+        "kind": "Association",
+        "label": ""
+      }
+    ]
+  },
+  {
+    "id": "22_clases_integridad",
+    "title": "T07 SHA256 DVH DVV y recuperación",
+    "kind": "class",
+    "nodes": [
+      {
+        "key": "FrmIntegridad",
+        "title": "FrmIntegridad",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": [
+          {
+            "name": "Operar",
+            "type": "Task",
+            "scope": "Private",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "accion",
+                "type": "Func<string>",
+                "direction": "in"
+              },
+              {
+                "name": "mostrarRuta",
+                "type": "bool",
+                "direction": "in"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "IntegridadBLL",
+        "title": "IntegridadBLL",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": [
+          {
+            "name": "Verificar",
+            "type": "InformeIntegridad",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": []
+          },
+          {
+            "name": "PuedeAdministrar",
+            "type": "bool",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": []
+          },
+          {
+            "name": "InicializarBaseConfiable",
+            "type": "string",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": []
+          },
+          {
+            "name": "CrearRespaldoConfiable",
+            "type": "string",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "destino",
+                "type": "string",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "ArchivarBitacora",
+            "type": "int",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "dias",
+                "type": "int",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "Recuperar",
+            "type": "InformeIntegridad",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "ruta",
+                "type": "string",
+                "direction": "in"
+              },
+              {
+                "name": "tablasCompletas",
+                "type": "bool",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "ExigirIntegridad",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": []
+          }
+        ]
+      },
+      {
+        "key": "IntegridadDAL",
+        "title": "IntegridadDAL",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": [
+          {
+            "name": "Examinar",
+            "type": "Estado",
+            "scope": "Private",
+            "stat": true,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "c",
+                "type": "SqlConnection",
+                "direction": "in"
+              },
+              {
+                "name": "t",
+                "type": "SqlTransaction",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "Verificar",
+            "type": "InformeIntegridad",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": []
+          },
+          {
+            "name": "LeerVerificado",
+            "type": "T",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "leer",
+                "type": "Func<SqlConnection, SqlTransaction, T>",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "Cambiar",
+            "type": "T",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "tabla",
+                "type": "string",
+                "direction": "in"
+              },
+              {
+                "name": "cambiar",
+                "type": "Func<SqlConnection, SqlTransaction, T>",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "InicializarBaseConfiable",
+            "type": "string",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": []
+          },
+          {
+            "name": "CrearRespaldoConfiable",
+            "type": "string",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "destino",
+                "type": "string",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "Recuperar",
+            "type": "InformeIntegridad",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "ruta",
+                "type": "string",
+                "direction": "in"
+              },
+              {
+                "name": "restaurarTablasCompletas",
+                "type": "bool",
+                "direction": "in"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "InformeIntegridad",
+        "title": "InformeIntegridad",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [
+          {
+            "name": "Configurada",
+            "type": "bool",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "Problemas",
+            "type": "List<ProblemaIntegridad>",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "Correcta",
+            "type": "bool",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          }
+        ],
+        "methods": []
+      },
+      {
+        "key": "ProblemaIntegridad",
+        "title": "ProblemaIntegridad",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [
+          {
+            "name": "Tabla",
+            "type": "string",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "Registro",
+            "type": "string",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "Motivo",
+            "type": "string",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          }
+        ],
+        "methods": []
+      },
+      {
+        "key": "IntegridadException",
+        "title": "IntegridadException",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [
+          {
+            "name": "Informe",
+            "type": "InformeIntegridad",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          }
+        ],
+        "methods": []
+      },
+      {
+        "key": "VerificadorSHA256",
+        "title": "VerificadorSHA256",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": true,
+        "singleton": false,
+        "fields": [],
+        "methods": [
+          {
+            "name": "Canonico",
+            "type": "string",
+            "scope": "Public",
+            "stat": true,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "valores",
+                "type": "Object[]",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "Hexadecimal",
+            "type": "string",
+            "scope": "Public",
+            "stat": true,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "texto",
+                "type": "string",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "Base64",
+            "type": "string",
+            "scope": "Public",
+            "stat": true,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "texto",
+                "type": "string",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "Traduccion",
+            "type": "string",
+            "scope": "Public",
+            "stat": true,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "idioma",
+                "type": "int",
+                "direction": "in"
+              },
+              {
+                "name": "control",
+                "type": "int",
+                "direction": "in"
+              },
+              {
+                "name": "texto",
+                "type": "string",
+                "direction": "in"
+              },
+              {
+                "name": "estado",
+                "type": "string",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "Bitacora",
+            "type": "string",
+            "scope": "Public",
+            "stat": true,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "id",
+                "type": "int",
+                "direction": "in"
+              },
+              {
+                "name": "fecha",
+                "type": "DateTime",
+                "direction": "in"
+              },
+              {
+                "name": "usuario",
+                "type": "string",
+                "direction": "in"
+              },
+              {
+                "name": "actividad",
+                "type": "string",
+                "direction": "in"
+              },
+              {
+                "name": "cifrado",
+                "type": "string",
+                "direction": "in"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "EncriptadorServicio",
+        "title": "EncriptadorServicio",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": [
+          {
+            "name": "Encriptar",
+            "type": "string",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "textoPlano",
+                "type": "string",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "Desencriptar",
+            "type": "string",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "textoEncriptado",
+                "type": "string",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "CalcularDV",
+            "type": "string",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "cadenaConcatenada",
+                "type": "string",
+                "direction": "in"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "a": "IntegridadBLL",
+        "b": "IntegridadDAL",
+        "kind": "Association",
+        "label": "dal",
+        "cardA": "1",
+        "cardB": "1"
+      },
+      {
+        "a": "FrmIntegridad",
+        "b": "IntegridadBLL",
+        "kind": "Association",
+        "label": "servicio",
+        "cardA": "1",
+        "cardB": "1"
+      },
+      {
+        "a": "FrmIntegridad",
+        "b": "InformeIntegridad",
+        "kind": "Association",
+        "label": "informe",
+        "cardA": "1",
+        "cardB": "1"
+      },
+      {
+        "a": "InformeIntegridad",
+        "b": "ProblemaIntegridad",
+        "kind": "Association",
+        "label": "Problemas",
+        "cardA": "1",
+        "cardB": "0..*"
+      },
+      {
+        "a": "IntegridadException",
+        "b": "InformeIntegridad",
+        "kind": "Association",
+        "label": "Informe",
+        "cardA": "1",
+        "cardB": "1"
+      },
+      {
+        "a": "IntegridadDAL",
+        "b": "VerificadorSHA256",
+        "kind": "Dependency",
+        "label": "DVH y DVV",
+        "cardA": "",
+        "cardB": ""
+      },
+      {
+        "a": "IntegridadDAL",
+        "b": "EncriptadorServicio",
+        "kind": "Dependency",
+        "label": "validar cifrado",
+        "cardA": "",
+        "cardB": ""
+      }
+    ]
+  },
+  {
+    "id": "23_secuencia_verificacion",
+    "title": "T07 Verificar y bloquear datos alterados",
+    "kind": "sequence",
+    "nodes": [
+      {
+        "key": "ui",
+        "title": "Program / FrmIntegridad",
+        "kind": "Object",
+        "classifier": "FrmIntegridad"
+      },
+      {
+        "key": "bll",
+        "title": "IntegridadBLL",
+        "kind": "Object",
+        "classifier": "IntegridadBLL"
+      },
+      {
+        "key": "dal",
+        "title": "IntegridadDAL",
+        "kind": "Object",
+        "classifier": "IntegridadDAL"
+      },
+      {
+        "key": "sha",
+        "title": "VerificadorSHA256",
+        "kind": "Object",
+        "classifier": "VerificadorSHA256"
+      },
+      {
+        "key": "aes",
+        "title": "EncriptadorServicio",
+        "kind": "Object",
+        "classifier": "EncriptadorServicio"
+      }
+    ],
+    "edges": [],
+    "steps": [
+      {
+        "a": "ui",
+        "b": "bll",
+        "text": "Verificar()"
+      },
+      {
+        "a": "bll",
+        "b": "dal",
+        "text": "Verificar()"
+      },
+      {
+        "a": "dal",
+        "b": "dal",
+        "text": "Transacción Serializable; bloqueo compartido; Examinar"
+      },
+      {
+        "note": "loop Bitacora y Traduccion, ordenadas por sus claves"
+      },
+      {
+        "a": "dal",
+        "b": "sha",
+        "text": "Recalcular SHA-256 de cada fila (DVH)"
+      },
+      {
+        "a": "dal",
+        "b": "dal",
+        "text": "Comparar DVH calculado con guardado"
+      },
+      {
+        "a": "dal",
+        "b": "aes",
+        "text": "Desencriptar para comprobar el cifrado de Bitacora"
+      },
+      {
+        "a": "dal",
+        "b": "sha",
+        "text": "Hexadecimal(Canonico(tabla,cantidad) + claves y hashes)"
+      },
+      {
+        "a": "dal",
+        "b": "dal",
+        "text": "Comparar DVV, cantidad, Version e IdBase"
+      },
+      {
+        "a": "dal",
+        "b": "bll",
+        "text": "InformeIntegridad con Problemas",
+        "reply": true
+      },
+      {
+        "a": "bll",
+        "b": "ui",
+        "text": "InformeIntegridad",
+        "reply": true
+      },
+      {
+        "note": "Correcta = Configurada y sin problemas. Si falla el inicio, abrir recuperación y bloquear login"
+      }
+    ]
+  },
+  {
+    "id": "24_secuencia_respaldo",
+    "title": "T07 Crear y exportar respaldo comprobado",
+    "kind": "sequence",
+    "nodes": [
+      {
+        "key": "actor",
+        "title": "Administrador",
+        "kind": "Actor",
+        "classifier": null
+      },
+      {
+        "key": "ui",
+        "title": "FrmIntegridad",
+        "kind": "Object",
+        "classifier": "FrmIntegridad"
+      },
+      {
+        "key": "bll",
+        "title": "IntegridadBLL",
+        "kind": "Object",
+        "classifier": "IntegridadBLL"
+      },
+      {
+        "key": "dal",
+        "title": "IntegridadDAL",
+        "kind": "Object",
+        "classifier": "IntegridadDAL"
+      },
+      {
+        "key": "aux",
+        "title": "Base auxiliar",
+        "kind": "Object",
+        "classifier": null
+      }
+    ],
+    "edges": [],
+    "steps": [
+      {
+        "a": "actor",
+        "b": "ui",
+        "text": "Crear respaldo; elegir archivo .bak"
+      },
+      {
+        "a": "ui",
+        "b": "bll",
+        "text": "CrearRespaldoConfiable(destino)"
+      },
+      {
+        "a": "bll",
+        "b": "dal",
+        "text": "CrearRespaldoConfiable(destino)"
+      },
+      {
+        "note": "Exigir permisos; verificar estado actual; no sobrescribir archivos existentes"
+      },
+      {
+        "a": "dal",
+        "b": "dal",
+        "text": "PrepararCarpetaCompartida; BACKUP COPY_ONLY CHECKSUM"
+      },
+      {
+        "a": "dal",
+        "b": "aux",
+        "text": "RESTORE VERIFYONLY y restauración con MOVE"
+      },
+      {
+        "a": "dal",
+        "b": "aux",
+        "text": "Examinar DVH y DVV del respaldo"
+      },
+      {
+        "a": "aux",
+        "b": "dal",
+        "text": "Integridad correcta",
+        "reply": true
+      },
+      {
+        "a": "dal",
+        "b": "dal",
+        "text": "Eliminar base auxiliar; ExportarRespaldo"
+      },
+      {
+        "note": "Copiar con permisos del usuario; comparar SHA-256 del archivo; finalizar .bak"
+      },
+      {
+        "a": "dal",
+        "b": "ui",
+        "text": "Ruta del respaldo comprobado",
+        "reply": true
+      },
+      {
+        "note": "Si falla la exportación, conservar copia local e informar su ruta"
+      }
+    ]
+  },
+  {
+    "id": "25_secuencia_recuperacion",
+    "title": "T07 Recuperar datos desde un respaldo",
+    "kind": "sequence",
+    "nodes": [
+      {
+        "key": "actor",
+        "title": "Administrador",
+        "kind": "Actor",
+        "classifier": null
+      },
+      {
+        "key": "ui",
+        "title": "FrmIntegridad",
+        "kind": "Object",
+        "classifier": "FrmIntegridad"
+      },
+      {
+        "key": "bll",
+        "title": "IntegridadBLL",
+        "kind": "Object",
+        "classifier": "IntegridadBLL"
+      },
+      {
+        "key": "dal",
+        "title": "IntegridadDAL",
+        "kind": "Object",
+        "classifier": "IntegridadDAL"
+      },
+      {
+        "key": "aux",
+        "title": "Base auxiliar",
+        "kind": "Object",
+        "classifier": null
+      }
+    ],
+    "edges": [],
+    "steps": [
+      {
+        "a": "actor",
+        "b": "ui",
+        "text": "Seleccionar .bak y confirmar recuperación"
+      },
+      {
+        "a": "ui",
+        "b": "bll",
+        "text": "Recuperar(ruta, tablasCompletas)"
+      },
+      {
+        "a": "bll",
+        "b": "dal",
+        "text": "Recuperar(ruta, restaurarTablasCompletas)"
+      },
+      {
+        "a": "dal",
+        "b": "aux",
+        "text": "Preparar copia accesible; restaurar y verificar respaldo"
+      },
+      {
+        "note": "Debe tener DVH y DVV válidos y el mismo IdBase"
+      },
+      {
+        "a": "dal",
+        "b": "dal",
+        "text": "Transacción Serializable y bloqueo exclusivo"
+      },
+      {
+        "note": "alt recuperación por registros"
+      },
+      {
+        "a": "dal",
+        "b": "dal",
+        "text": "Restaurar filas afectadas o eliminadas desde el respaldo"
+      },
+      {
+        "note": "Si no se conserva la referencia actual, rollback: respaldo insuficiente"
+      },
+      {
+        "note": "else restauración completa explícitamente confirmada"
+      },
+      {
+        "a": "dal",
+        "b": "dal",
+        "text": "Reemplazar tablas protegidas afectadas y sus controles"
+      },
+      {
+        "note": "Se descartan los cambios de esas tablas posteriores al respaldo"
+      },
+      {
+        "a": "dal",
+        "b": "dal",
+        "text": "Examinar; Commit solo si todo es correcto"
+      },
+      {
+        "a": "dal",
+        "b": "ui",
+        "text": "InformeIntegridad correcto",
+        "reply": true
+      },
+      {
+        "note": "Eliminar auxiliares; registrar recuperación fuera de la Bitacora protegida"
+      }
+    ]
+  },
+  {
+    "id": "26_clases_usuarios",
+    "title": "Gestión de cuentas y baja lógica",
+    "kind": "class",
+    "nodes": [
+      {
+        "key": "FrmGestionUsuarios",
+        "title": "FrmGestionUsuarios",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": [
+          {
+            "name": "BtnGuardar_Click",
+            "type": "void",
+            "scope": "Private",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "sender",
+                "type": "Object",
+                "direction": "in"
+              },
+              {
+                "name": "e",
+                "type": "EventArgs",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "BtnEliminar_Click",
+            "type": "void",
+            "scope": "Private",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "sender",
+                "type": "Object",
+                "direction": "in"
+              },
+              {
+                "name": "e",
+                "type": "EventArgs",
+                "direction": "in"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "UsuarioBLL",
+        "title": "UsuarioBLL",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": [
+          {
+            "name": "CrearUsuario",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "nuevoUsuario",
+                "type": "Usuario",
+                "direction": "in"
+              },
+              {
+                "name": "passwordPlana",
+                "type": "string",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "ActualizarUsuario",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "usuarioEditado",
+                "type": "Usuario",
+                "direction": "in"
+              },
+              {
+                "name": "passwordPlana",
+                "type": "string",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "BajaLogicaUsuario",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "idUsuario",
+                "type": "int",
+                "direction": "in"
+              },
+              {
+                "name": "nombreUsuario",
+                "type": "string",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "ValidarDatos",
+            "type": "void",
+            "scope": "Public",
+            "stat": true,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "usuario",
+                "type": "Usuario",
+                "direction": "in"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "UsuarioDAL",
+        "title": "UsuarioDAL",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": [
+          {
+            "name": "ObtenerPorNombreUsuario",
+            "type": "Usuario",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "nombreUsuario",
+                "type": "string",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "ObtenerTodos",
+            "type": "List<Usuario>",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": []
+          },
+          {
+            "name": "Insertar",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "usuario",
+                "type": "Usuario",
+                "direction": "in"
+              },
+              {
+                "name": "administradorInicial",
+                "type": "bool",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "Actualizar",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "usuario",
+                "type": "Usuario",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "Eliminar",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "idUsuario",
+                "type": "int",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "EsAdministradorOriginal",
+            "type": "bool",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "idUsuario",
+                "type": "int",
+                "direction": "in"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "Usuario",
+        "title": "Usuario",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [
+          {
+            "name": "EsAdministradorOriginal",
+            "type": "bool",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "Id",
+            "type": "int",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "Roles",
+            "type": "List<Rol>",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "IdUsuario",
+            "type": "int",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "NombreUsuario",
+            "type": "string",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "Password",
+            "type": "string",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "Nombre",
+            "type": "string",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "Apellido",
+            "type": "string",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          },
+          {
+            "name": "Activo",
+            "type": "bool",
+            "scope": "Public",
+            "stat": false,
+            "property": true
+          }
+        ],
+        "methods": [
+          {
+            "name": "AsignarRol",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "r",
+                "type": "Rol",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "QuitarRol",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "r",
+                "type": "Rol",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "TienePermiso",
+            "type": "bool",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "nombre",
+                "type": "string",
+                "direction": "in"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "RolesBLL",
+        "title": "RolesBLL",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": [
+          {
+            "name": "CargarParaGestion",
+            "type": "EstadoRoles",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": []
+          },
+          {
+            "name": "CargarRolesUsuario",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "usuario",
+                "type": "Usuario",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "Guardar",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "estado",
+                "type": "EstadoRoles",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "Validar",
+            "type": "void",
+            "scope": "Public",
+            "stat": true,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "estado",
+                "type": "EstadoRoles",
+                "direction": "in"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "BitacoraBLL",
+        "title": "BitacoraBLL",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": [
+          {
+            "name": "Registrar",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "evento",
+                "type": "IBitacoraEvento",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "Registrar",
+            "type": "void",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "usuario",
+                "type": "string",
+                "direction": "in"
+              },
+              {
+                "name": "actividad",
+                "type": "string",
+                "direction": "in"
+              },
+              {
+                "name": "informacion",
+                "type": "string",
+                "direction": "in"
+              }
+            ]
+          },
+          {
+            "name": "Buscar",
+            "type": "List<Bitacora>",
+            "scope": "Public",
+            "stat": false,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "desde",
+                "type": "Nullable<DateTime>",
+                "direction": "in"
+              },
+              {
+                "name": "hasta",
+                "type": "Nullable<DateTime>",
+                "direction": "in"
+              },
+              {
+                "name": "usuario",
+                "type": "string",
+                "direction": "in"
+              },
+              {
+                "name": "actividad",
+                "type": "string",
+                "direction": "in"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "GestionUsuariosFactory",
+        "title": "GestionUsuariosFactory",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": false,
+        "singleton": false,
+        "fields": [],
+        "methods": [
+          {
+            "name": "CrearEvento",
+            "type": "IBitacoraEvento",
+            "scope": "Protected",
+            "stat": false,
+            "abstr": false,
+            "parameters": []
+          }
+        ]
+      },
+      {
+        "key": "HashHelper",
+        "title": "HashHelper",
+        "kind": "Class",
+        "abstr": false,
+        "staticType": true,
+        "singleton": false,
+        "fields": [],
+        "methods": [
+          {
+            "name": "ObtenerHashSHA256",
+            "type": "string",
+            "scope": "Public",
+            "stat": true,
+            "abstr": false,
+            "parameters": [
+              {
+                "name": "texto",
+                "type": "string",
+                "direction": "in"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "a": "UsuarioBLL",
+        "b": "UsuarioDAL",
+        "kind": "Association",
+        "label": "_dal",
+        "cardA": "1",
+        "cardB": "1"
+      },
+      {
+        "a": "UsuarioBLL",
+        "b": "BitacoraBLL",
+        "kind": "Association",
+        "label": "_bitacora",
+        "cardA": "1",
+        "cardB": "1"
+      },
+      {
+        "a": "FrmGestionUsuarios",
+        "b": "UsuarioBLL",
+        "kind": "Association",
+        "label": "_usuarioBLL",
+        "cardA": "1",
+        "cardB": "1"
+      },
+      {
+        "a": "UsuarioBLL",
+        "b": "RolesBLL",
+        "kind": "Dependency",
+        "label": "CargarRolesUsuario",
+        "cardA": "",
+        "cardB": ""
+      },
+      {
+        "a": "UsuarioBLL",
+        "b": "HashHelper",
+        "kind": "Dependency",
+        "label": "hash de contraseña",
+        "cardA": "",
+        "cardB": ""
+      }
+    ]
+  },
+  {
+    "id": "27_secuencia_alta_usuario",
+    "title": "Crear una cuenta y registrar su alta",
+    "kind": "sequence",
+    "nodes": [
+      {
+        "key": "actor",
+        "title": "Administrador",
+        "kind": "Actor",
+        "classifier": null
+      },
+      {
+        "key": "ui",
+        "title": "FrmGestionUsuarios",
+        "kind": "Object",
+        "classifier": "FrmGestionUsuarios"
+      },
+      {
+        "key": "bll",
+        "title": "UsuarioBLL",
+        "kind": "Object",
+        "classifier": "UsuarioBLL"
+      },
+      {
+        "key": "dal",
+        "title": "UsuarioDAL",
+        "kind": "Object",
+        "classifier": "UsuarioDAL"
+      },
+      {
+        "key": "hash",
+        "title": "HashHelper",
+        "kind": "Object",
+        "classifier": "HashHelper"
+      },
+      {
+        "key": "bit",
+        "title": "BitacoraBLL",
+        "kind": "Object",
+        "classifier": "BitacoraBLL"
+      }
+    ],
+    "edges": [],
+    "steps": [
+      {
+        "a": "actor",
+        "b": "ui",
+        "text": "Completar usuario, nombre, apellido y contraseña"
+      },
+      {
+        "a": "ui",
+        "b": "bll",
+        "text": "CrearUsuario(usuario, passwordPlana)"
+      },
+      {
+        "a": "bll",
+        "b": "bll",
+        "text": "ValidarDatos(usuario)"
+      },
+      {
+        "a": "bll",
+        "b": "dal",
+        "text": "ObtenerPorNombreUsuario(nombre)"
+      },
+      {
+        "note": "Nombre único y campos obligatorios; si no, cancelar"
+      },
+      {
+        "a": "bll",
+        "b": "hash",
+        "text": "ObtenerHashSHA256(passwordPlana)"
+      },
+      {
+        "a": "bll",
+        "b": "dal",
+        "text": "Insertar(usuario)"
+      },
+      {
+        "a": "bll",
+        "b": "bit",
+        "text": "Registrar(evento de GestionUsuariosFactory(AltaUsuario))"
+      },
+      {
+        "a": "ui",
+        "b": "ui",
+        "text": "Limpiar(); CargarGrilla()"
+      },
+      {
+        "note": "La escritura de Usuarios y su auditoría son operaciones separadas en el código"
+      }
+    ]
+  },
+  {
+    "id": "28_secuencia_preferencia",
+    "title": "Restaurar el idioma propio al iniciar sesión",
+    "kind": "sequence",
+    "nodes": [
+      {
+        "key": "ui",
+        "title": "FrmPrincipal",
+        "kind": "Object",
+        "classifier": "FrmPrincipal"
+      },
+      {
+        "key": "bll",
+        "title": "IdiomaBLL",
+        "kind": "Object",
+        "classifier": "IdiomaBLL"
+      },
+      {
+        "key": "ses",
+        "title": "SesionServicio",
+        "kind": "Object",
+        "classifier": "SesionServicio"
+      },
+      {
+        "key": "dal",
+        "title": "IdiomaDAL",
+        "kind": "Object",
+        "classifier": "IdiomaDAL"
+      },
+      {
+        "key": "man",
+        "title": "IdiomaManager",
+        "kind": "Object",
+        "classifier": "IdiomaManager"
+      }
+    ],
+    "edges": [],
+    "steps": [
+      {
+        "a": "ui",
+        "b": "man",
+        "text": "Suscribir(this)"
+      },
+      {
+        "a": "ui",
+        "b": "bll",
+        "text": "RestablecerIdiomaUsuario()"
+      },
+      {
+        "a": "bll",
+        "b": "ses",
+        "text": "Leer UsuarioActual.IdUsuario"
+      },
+      {
+        "a": "bll",
+        "b": "dal",
+        "text": "ObtenerIdiomas() y ObtenerIdiomaPreferido(idUsuario)"
+      },
+      {
+        "note": "Elegir preferido activo; si no, español activo o primer idioma activo"
+      },
+      {
+        "a": "bll",
+        "b": "bll",
+        "text": "CargarIdioma(id, guardarPreferencia: false)"
+      },
+      {
+        "a": "bll",
+        "b": "dal",
+        "text": "ObtenerIdiomaPorId y ObtenerTraduccionesPorIdioma"
+      },
+      {
+        "a": "bll",
+        "b": "man",
+        "text": "CargarIdioma(idioma, diccionario)"
+      },
+      {
+        "a": "man",
+        "b": "man",
+        "text": "NotificarObservadores()"
+      },
+      {
+        "note": "El idioma alternativo no reemplaza la preferencia guardada si esta está inactiva"
+      }
+    ]
+  },
+  {
+    "id": "29_secuencia_inicializacion",
+    "title": "Preparación inicial de integridad",
+    "kind": "sequence",
+    "nodes": [
+      {
+        "key": "actor",
+        "title": "Administrador SQL",
+        "kind": "Actor",
+        "classifier": null
+      },
+      {
+        "key": "ui",
+        "title": "FrmIntegridad",
+        "kind": "Object",
+        "classifier": "FrmIntegridad"
+      },
+      {
+        "key": "bll",
+        "title": "IntegridadBLL",
+        "kind": "Object",
+        "classifier": "IntegridadBLL"
+      },
+      {
+        "key": "dal",
+        "title": "IntegridadDAL",
+        "kind": "Object",
+        "classifier": "IntegridadDAL"
+      }
+    ],
+    "edges": [],
+    "steps": [
+      {
+        "a": "actor",
+        "b": "ui",
+        "text": "Confirmar referencia inicial confiable"
+      },
+      {
+        "a": "ui",
+        "b": "bll",
+        "text": "InicializarBaseConfiable()"
+      },
+      {
+        "a": "bll",
+        "b": "dal",
+        "text": "InicializarBaseConfiable()"
+      },
+      {
+        "note": "Exigir permisos y rechazar si ya hay controles inicializados"
+      },
+      {
+        "a": "dal",
+        "b": "dal",
+        "text": "CrearArchivoBackup(\"antes_integridad\")"
+      },
+      {
+        "a": "dal",
+        "b": "dal",
+        "text": "Transacción; ValidarLegado por fila"
+      },
+      {
+        "note": "Discrepancias no reconocidas cancelan; solo compatibilidad de redondeo documentada"
+      },
+      {
+        "a": "dal",
+        "b": "dal",
+        "text": "GuardarHash; crear DVV con IdBase nuevo"
+      },
+      {
+        "a": "dal",
+        "b": "dal",
+        "text": "Examinar; Commit"
+      },
+      {
+        "a": "dal",
+        "b": "dal",
+        "text": "CrearRespaldoConfiable()"
+      },
+      {
+        "a": "dal",
+        "b": "ui",
+        "text": "Ruta del respaldo final comprobado",
+        "reply": true
+      }
+    ]
+  },
+  {
+    "id": "30_secuencia_archivar",
+    "title": "Archivar bitácora manteniendo el DVV",
+    "kind": "sequence",
+    "nodes": [
+      {
+        "key": "actor",
+        "title": "Administrador",
+        "kind": "Actor",
+        "classifier": null
+      },
+      {
+        "key": "ui",
+        "title": "FrmIntegridad",
+        "kind": "Object",
+        "classifier": "FrmIntegridad"
+      },
+      {
+        "key": "bll",
+        "title": "IntegridadBLL",
+        "kind": "Object",
+        "classifier": "IntegridadBLL"
+      },
+      {
+        "key": "dal",
+        "title": "IntegridadDAL",
+        "kind": "Object",
+        "classifier": "IntegridadDAL"
+      }
+    ],
+    "edges": [],
+    "steps": [
+      {
+        "a": "actor",
+        "b": "ui",
+        "text": "Archivar bitácora antigua y confirmar"
+      },
+      {
+        "a": "ui",
+        "b": "bll",
+        "text": "ArchivarBitacora(180)"
+      },
+      {
+        "a": "bll",
+        "b": "dal",
+        "text": "ArchivarBitacora(180)"
+      },
+      {
+        "a": "dal",
+        "b": "dal",
+        "text": "ExigirAdministrador; Cambiar(\"Bitacora\", comando)"
+      },
+      {
+        "note": "Verificación inicial y bloqueo exclusivo dentro de una transacción"
+      },
+      {
+        "a": "dal",
+        "b": "dal",
+        "text": "DELETE OUTPUT INTO Bitacora_Historico para fecha anterior al límite"
+      },
+      {
+        "a": "dal",
+        "b": "dal",
+        "text": "ActualizarVertical; Examinar; Commit"
+      },
+      {
+        "a": "dal",
+        "b": "ui",
+        "text": "Cantidad de eventos archivados",
+        "reply": true
+      },
+      {
+        "note": "Bitacora_Historico se crea cuando se usa; no tiene DVV propio"
+      }
+    ]
+  }
+]

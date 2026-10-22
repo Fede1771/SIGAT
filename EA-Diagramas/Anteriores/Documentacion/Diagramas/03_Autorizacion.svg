@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2460" height="1851" viewBox="0 0 2460 1851">
+<rect width="100%" height="100%" fill="white"/>
+<line x1="150.0" y1="235" x2="150.0" y2="1819" stroke="#aeb6bf" stroke-dasharray="6 5"/>
+<line x1="582.0" y1="235" x2="582.0" y2="1819" stroke="#aeb6bf" stroke-dasharray="6 5"/>
+<line x1="1014.0" y1="235" x2="1014.0" y2="1819" stroke="#aeb6bf" stroke-dasharray="6 5"/>
+<line x1="1446.0" y1="235" x2="1446.0" y2="1819" stroke="#aeb6bf" stroke-dasharray="6 5"/>
+<line x1="1878.0" y1="235" x2="1878.0" y2="1819" stroke="#aeb6bf" stroke-dasharray="6 5"/>
+<line x1="2310.0" y1="235" x2="2310.0" y2="1819" stroke="#aeb6bf" stroke-dasharray="6 5"/>
+<text x="1230.0" y="47" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="34" font-weight="bold">A — Comprobación de autorización</text>
+<text x="1230.0" y="97" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">Diagrama de secuencia · correspondencia con el código actual</text>
+<rect x="48.0" y="125" width="204" height="82" fill="#dae8fc" stroke="#8ab2e2" stroke-width="2"/>
+<text x="150.0" y="158" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">rolesBLL:</text>
+<text x="150.0" y="188" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">RolesBLL</text>
+<rect x="480.0" y="125" width="204" height="82" fill="#dae8fc" stroke="#8ab2e2" stroke-width="2"/>
+<text x="582.0" y="158" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">sesion:</text>
+<text x="582.0" y="188" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">SesionServicio</text>
+<rect x="912.0" y="125" width="204" height="82" fill="#dae8fc" stroke="#8ab2e2" stroke-width="2"/>
+<text x="1014.0" y="158" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">usuarioSesion:</text>
+<text x="1014.0" y="188" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">Usuario</text>
+<rect x="1344.0" y="125" width="204" height="82" fill="#dae8fc" stroke="#8ab2e2" stroke-width="2"/>
+<text x="1446.0" y="158" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">gestor:</text>
+<text x="1446.0" y="188" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">Usuario</text>
+<rect x="1776.0" y="125" width="204" height="82" fill="#dae8fc" stroke="#8ab2e2" stroke-width="2"/>
+<text x="1878.0" y="158" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">rol:</text>
+<text x="1878.0" y="188" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">Rol</text>
+<rect x="2208.0" y="125" width="204" height="82" fill="#dae8fc" stroke="#8ab2e2" stroke-width="2"/>
+<text x="2310.0" y="158" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">permiso:</text>
+<text x="2310.0" y="188" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">Permiso</text>
+<text x="420" y="268" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22">1. ObtenerInstancia() «static»</text>
+<line x1="150.0" y1="289" x2="582.0" y2="289" stroke="#757f8a" stroke-width="2"/>
+<polygon points="582.0,289 570.0,283 570.0,295" fill="#757f8a"/>
+<text x="420" y="338" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22">2. instancia de SesionServicio</text>
+<line x1="582.0" y1="359" x2="150.0" y2="359" stroke="#757f8a" stroke-width="2" stroke-dasharray="5 5"/>
+<polygon points="150.0,359 162.0,353 162.0,365" fill="#757f8a"/>
+<text x="420" y="408" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22">3. UsuarioActual {get}</text>
+<line x1="150.0" y1="429" x2="582.0" y2="429" stroke="#757f8a" stroke-width="2"/>
+<polygon points="582.0,429 570.0,423 570.0,435" fill="#757f8a"/>
+<text x="420" y="478" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22">4. usuarioSesion o null</text>
+<line x1="582.0" y1="499" x2="150.0" y2="499" stroke="#757f8a" stroke-width="2" stroke-dasharray="5 5"/>
+<polygon points="150.0,499 162.0,493 162.0,505" fill="#757f8a"/>
+<rect x="38" y="525" width="80" height="32" fill="#fff4cf" stroke="#e6ae19" stroke-width="2"/>
+<text x="78" y="549" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22" font-weight="bold">opt</text>
+<text x="1231.5" y="551" text-anchor="middle" fill="#805b00" font-family="Segoe UI, sans-serif" font-size="20">[usuarioSesion no es null]</text>
+<text x="582.0" y="603" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22">5. IdUsuario {get}</text>
+<line x1="150.0" y1="624" x2="1014.0" y2="624" stroke="#757f8a" stroke-width="2"/>
+<polygon points="1014.0,624 1002.0,618 1002.0,630" fill="#757f8a"/>
+<text x="582.0" y="673" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22">6. id:int</text>
+<line x1="1014.0" y1="694" x2="150.0" y2="694" stroke="#757f8a" stroke-width="2" stroke-dasharray="5 5"/>
+<polygon points="150.0,694 162.0,688 162.0,700" fill="#757f8a"/>
+<line x1="38" y1="525" x2="38" y2="720" stroke="#e6ae19" stroke-width="2"/>
+<line x1="2425" y1="525" x2="2425" y2="720" stroke="#e6ae19" stroke-width="2"/>
+<line x1="38" y1="720" x2="2425" y2="720" stroke="#e6ae19" stroke-width="2"/>
+<line x1="118" y1="525" x2="2425" y2="525" stroke="#e6ae19" stroke-width="2"/>
+<rect x="38" y="743" width="80" height="32" fill="#fff4cf" stroke="#e6ae19" stroke-width="2"/>
+<text x="78" y="767" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22" font-weight="bold">loop</text>
+<text x="1231.5" y="769" text-anchor="middle" fill="#805b00" font-family="Segoe UI, sans-serif" font-size="20">[por cada usuario de estado.Usuarios]</text>
+<rect x="150" y="798" width="2230" height="90" fill="#fff9e8" stroke="#e6ae19" stroke-width="2"/>
+<text x="1265.0" y="833" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">gestor representa el usuario leído del estado actual,</text>
+<text x="1265.0" y="863" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">no necesariamente la misma instancia de la sesión.</text>
+<rect x="56" y="906" width="80" height="32" fill="#fff4cf" stroke="#e6ae19" stroke-width="2"/>
+<text x="96" y="930" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22" font-weight="bold">opt</text>
+<text x="1231.5" y="932" text-anchor="middle" fill="#805b00" font-family="Segoe UI, sans-serif" font-size="20">[gestor.IdUsuario == id y gestor.Activo]</text>
+<text x="798.0" y="984" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22">7. TienePermiso(MatrizRoles.Administracion)</text>
+<line x1="150.0" y1="1005" x2="1446.0" y2="1005" stroke="#757f8a" stroke-width="2"/>
+<polygon points="1446.0,1005 1434.0,999 1434.0,1011" fill="#757f8a"/>
+<rect x="74" y="1031" width="80" height="32" fill="#fff4cf" stroke="#e6ae19" stroke-width="2"/>
+<text x="114" y="1055" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22" font-weight="bold">loop</text>
+<text x="1231.5" y="1057" text-anchor="middle" fill="#805b00" font-family="Segoe UI, sans-serif" font-size="20">[roles del gestor hasta encontrar el permiso]</text>
+<text x="1662.0" y="1109" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22">8. TienePermiso(nombre)</text>
+<line x1="1446.0" y1="1130" x2="1878.0" y2="1130" stroke="#757f8a" stroke-width="2"/>
+<polygon points="1878.0,1130 1866.0,1124 1866.0,1136" fill="#757f8a"/>
+<rect x="150" y="1156" width="2230" height="120" fill="white" stroke="#e6ae19" stroke-width="2"/>
+<text x="180" y="1183" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22" font-weight="bold">ref</text>
+<text x="1265.0" y="1191" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">Roles anidados: TienePermiso(nombre) recursivo;</text>
+<text x="1265.0" y="1221" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">permisos directos: ContienePermiso(nombre).</text>
+<text x="1265.0" y="1251" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">Devuelve true al encontrarlo o false al terminar.</text>
+<text x="1662.0" y="1317" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22">9. bool</text>
+<line x1="1878.0" y1="1338" x2="1446.0" y2="1338" stroke="#757f8a" stroke-width="2" stroke-dasharray="5 5"/>
+<polygon points="1446.0,1338 1458.0,1332 1458.0,1344" fill="#757f8a"/>
+<line x1="74" y1="1031" x2="74" y2="1364" stroke="#e6ae19" stroke-width="2"/>
+<line x1="2389" y1="1031" x2="2389" y2="1364" stroke="#e6ae19" stroke-width="2"/>
+<line x1="74" y1="1364" x2="2389" y2="1364" stroke="#e6ae19" stroke-width="2"/>
+<line x1="154" y1="1031" x2="2389" y2="1031" stroke="#e6ae19" stroke-width="2"/>
+<text x="798.0" y="1410" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22">10. bool</text>
+<line x1="1446.0" y1="1431" x2="150.0" y2="1431" stroke="#757f8a" stroke-width="2" stroke-dasharray="5 5"/>
+<polygon points="150.0,1431 162.0,1425 162.0,1437" fill="#757f8a"/>
+<rect x="74" y="1457" width="80" height="32" fill="#fff4cf" stroke="#e6ae19" stroke-width="2"/>
+<text x="114" y="1481" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22" font-weight="bold">break</text>
+<text x="1231.5" y="1483" text-anchor="middle" fill="#805b00" font-family="Segoe UI, sans-serif" font-size="20">[TienePermiso devuelve true: termina ExigirGestion]</text>
+<text x="420" y="1535" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="22">11. return de ExigirGestion()</text>
+<line x1="150.0" y1="1556" x2="215.0" y2="1556" stroke="#757f8a" stroke-width="2"/>
+<line x1="215.0" y1="1556" x2="215.0" y2="1576" stroke="#757f8a" stroke-width="2"/>
+<line x1="215.0" y1="1576" x2="150.0" y2="1576" stroke="#757f8a" stroke-width="2"/>
+<polygon points="150.0,1576 162.0,1570 162.0,1582" fill="#757f8a"/>
+<line x1="74" y1="1457" x2="74" y2="1602" stroke="#e6ae19" stroke-width="2"/>
+<line x1="2389" y1="1457" x2="2389" y2="1602" stroke="#e6ae19" stroke-width="2"/>
+<line x1="74" y1="1602" x2="2389" y2="1602" stroke="#e6ae19" stroke-width="2"/>
+<line x1="154" y1="1457" x2="2389" y2="1457" stroke="#e6ae19" stroke-width="2"/>
+<line x1="56" y1="906" x2="56" y2="1625" stroke="#e6ae19" stroke-width="2"/>
+<line x1="2407" y1="906" x2="2407" y2="1625" stroke="#e6ae19" stroke-width="2"/>
+<line x1="56" y1="1625" x2="2407" y2="1625" stroke="#e6ae19" stroke-width="2"/>
+<line x1="136" y1="906" x2="2407" y2="906" stroke="#e6ae19" stroke-width="2"/>
+<line x1="38" y1="743" x2="38" y2="1648" stroke="#e6ae19" stroke-width="2"/>
+<line x1="2425" y1="743" x2="2425" y2="1648" stroke="#e6ae19" stroke-width="2"/>
+<line x1="38" y1="1648" x2="2425" y2="1648" stroke="#e6ae19" stroke-width="2"/>
+<line x1="118" y1="743" x2="2425" y2="743" stroke="#e6ae19" stroke-width="2"/>
+<rect x="150" y="1671" width="2230" height="90" fill="#fff9e8" stroke="#e6ae19" stroke-width="2"/>
+<text x="1265.0" y="1706" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">El return termina la comprobación al encontrar un gestor autorizado.</text>
+<text x="1265.0" y="1736" text-anchor="middle" fill="#20262e" font-family="Segoe UI, sans-serif" font-size="20">Si el recorrido termina sin encontrarlo, ExigirGestion lanza InvalidOperationException.</text>
+</svg>

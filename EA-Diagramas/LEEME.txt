@@ -1,0 +1,21 @@
+SIGAT - ENTERPRISE ARCHITECT Y DIAGRAMAS
+
+ACTUAL
+Abrir Actual\SIGAT_Modelo_Actualizado.EAP en Enterprise Architect.
+Para consultar los 44 diagramas sin EA, abrir Actual\index.html.
+La guía de alcance y la validación están dentro de Actual.
+Se conserva únicamente el archivo EAP vigente; se eliminaron los modelos anteriores y el ZIP duplicado.
+
+ANTERIORES
+Conserva diagramas y textos históricos de referencia, sin proyectos EAP anteriores.
+Documentacion reúne los diagramas anteriores de roles e idiomas, con sus fuentes.
+Los EAP intermedios y originales fueron eliminados.
+
+HERRAMIENTAS
+Scripts y extractor usados para construir los modelos. Son material auxiliar,
+no forman parte de SIGAT ni deben ejecutarse para abrir los diagramas.
+Algunos conservan las rutas de trabajo originales: ajustarlas antes de reutilizarlos.
+
+ALCANCE
+El modelo vigente corresponde al código revisado el 21/10/2026.
+T06b (versiones y recomposición de estados) continúa pendiente de implementación.

@@ -1,0 +1,10 @@
+digraph G {
+graph [rankdir=TB, bgcolor="white", pad="0.25", nodesep="0.55", ranksep="0.7", splines=polyline, dpi=72];
+node [fontname="Arial", fontsize=12, color="#404040"];
+edge [fontname="Arial", fontsize=9, color="#555555", arrowsize=0.8];
+"actor" [shape=plaintext, label="«actor»\nUsuario"];
+"uc0" [shape=ellipse, style=filled, fillcolor="#edf2f7", label="CU01 Iniciar sesión"];
+"uc1" [shape=ellipse, style=filled, fillcolor="#edf2f7", label="CU02 Cerrar sesión"];
+"actor" -> "uc0" [dir=none];
+"actor" -> "uc1" [dir=none];
+}

@@ -1,0 +1,135 @@
+@startuml
+skinparam backgroundColor #F8F9FA
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam sequence {
+ParticipantBackgroundColor #DAE8FC
+ParticipantBorderColor #8AB2E2
+LifeLineBorderColor #8AB2E2
+ActivationBackgroundColor white
+ActivationBorderColor #8AB2E2
+ArrowColor #333333
+GroupBorderColor #F0AE42
+GroupHeaderBackgroundColor #FFF0D4
+}
+hide footbox
+autonumber
+title DIAGRAMA DE SECUENCIA — CREAR Y CONFIGURAR ROL
+actor Administrador as A
+participant ":FormGestionRoles" as F #FFF0D4
+participant ":Usuario" as U
+participant ":RolesBLL" as B
+participant ":RolesDAL" as D
+participant ":SesionServicio" as S
+participant "MatrizRoles" as M
+participant ":Rol" as R
+participant ":Permiso" as P
+database "BD SIGAT" as DB #D5E8D4
+note over A,DB: Creación: método existente; falta conectar el comando de interfaz a Ejecutar(() => CrearRol(false)).
+A -> F: 1. Solicitar creación y confirmar nombre
+activate F
+F -> F: CrearRol(false)
+alt [nombre vacío/repetido o cancelación]
+F --> A: Error y recarga / Cancelación sin guardar
+else [nombre válido]
+F -> R: new Rol { Id = Max(Id) + 1, Nombre = texto }
+activate R
+R --> F: nuevo rol
+deactivate R
+F -> F: estado.Roles.Add(nuevo)
+F -> B: Guardar(estado)
+activate B
+B -> D: Cargar()
+activate D
+D -> DB: Leer catálogo, usuarios, relaciones y versión
+activate DB
+DB --> D: Datos persistidos
+deactivate DB
+D --> B: EstadoRoles actual
+deactivate D
+B -> B: ExigirGestion(estado actual)
+B -> S: ObtenerInstancia(); UsuarioActual {get}
+activate S
+S --> B: Identidad de la sesión
+deactivate S
+note over U,B: Buscar el gestor por IdUsuario en el estado leído; exigir Activo.
+B -> U: TienePermiso(Administracion)
+activate U
+U -> R: TienePermiso(nombre)
+activate R
+R -> P: ContienePermiso(nombre)
+activate P
+P --> R: bool
+deactivate P
+R --> U: bool
+deactivate R
+U --> B: bool
+deactivate U
+note over U,P: Consulta resumida: recorre roles/permisos hasta encontrar acceso; incluye descendientes.
+alt [sin autorización]
+B --> F: InvalidOperationException
+F --> A: No se guardó; recargar estado
+else [autorizado]
+B -> B: Validar(estado propuesto)
+B -> M: ValidarCatalogo(estado)
+activate M
+M --> B: void / excepción
+deactivate M
+note over B,M: Validar también protege al administrador original y revisa las asignaciones de usuarios.
+alt [validación fallida]
+B --> F: Excepción de validación
+F --> A: No se guardó; recargar estado
+else [estado válido]
+B -> D: Guardar(estado)
+activate D
+D -> DB: Transacción Serializable: Version, roles y relaciones
+activate DB
+alt [conflicto o error SQL]
+DB --> D: Fallo; sin confirmación
+D --> B: Excepción
+B --> F: Excepción
+F --> A: No se guardó; recargar estado
+else [operación correcta]
+DB --> D: Commit
+D -> D: estado.Version++
+D --> B: void
+B --> F: void
+F -> F: RefrescarArboles()
+F --> A: Rol creado, sin componentes
+end
+deactivate DB
+deactivate D
+end
+end
+deactivate B
+end
+deactivate F
+opt [configurar después; otra acción independiente]
+A -> F: Seleccionar permiso y rol destino; Asignar componente
+activate F
+F -> F: Ejecutar(AsignarARol); Destino()
+F -> R: AgregarPermiso(permiso)
+activate R
+R --> F: void
+deactivate R
+F -> B: Guardar(estado)
+activate B
+ref over B,DB: Mismo flujo de autorización, validación y persistencia anterior. Cada clic guarda por separado.
+B --> F: void, si correcto
+deactivate B
+F -> F: RefrescarArboles(); CargarRol(nodos, rol)
+loop [por cada permiso del rol]
+F -> F: CargarNodosRecursivo(nodoPadre, permiso)
+F -> P: ObtenerHijos()
+activate P
+P --> F: List<Permiso>
+deactivate P
+opt [familia con hijos]
+F -> F: Recursión por cada hijo; una hoja devuelve lista vacía
+end
+end
+F --> A: Árbol actualizado; cambios persistidos
+deactivate F
+end
+note over A,DB: Configuración mostrada para destino válido distinto de Administrador. Ante error: mensaje y CargarDatos.
+@enduml

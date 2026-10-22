@@ -1,0 +1,133 @@
+classDiagram
+    direction TB
+    class Usuario {
+    }
+    class Rol {
+    }
+    class Permiso {
+        <<abstract>>
+    }
+    class PermisoSimple {
+    }
+    class PermisoCompuesto {
+    }
+    class Idioma {
+    }
+    class Traduccion {
+    }
+    class ControlIdioma {
+    }
+    class Bitacora {
+    }
+    class IBitacoraEvento {
+        <<interface>>
+    }
+    class InformeIntegridad {
+    }
+    class UsuarioBLL {
+    }
+    class RolesBLL {
+    }
+    class IdiomaBLL {
+    }
+    class BitacoraBLL {
+    }
+    class IntegridadBLL {
+    }
+    class UsuarioDAL {
+    }
+    class RolesDAL {
+    }
+    class IdiomaDAL {
+    }
+    class BitacoraDAL {
+    }
+    class IntegridadDAL {
+    }
+    class SesionServicio {
+        <<singleton>>
+    }
+    class IdiomaManager {
+        <<singleton>>
+    }
+    class IIdiomaObserver {
+        <<interface>>
+    }
+    class IIdiomaSubject {
+        <<interface>>
+    }
+    class VerificadorSHA256 {
+        <<static>>
+    }
+    class HashHelper {
+        <<static>>
+    }
+    class EncriptadorServicio {
+    }
+    class FrmPrincipal {
+    }
+    class FrmLogin {
+    }
+    class FrmGestionUsuarios {
+    }
+    class FormGestionRoles {
+    }
+    class FrmGestionIdiomas {
+    }
+    class FrmBitacora {
+    }
+    class FrmIntegridad {
+    }
+    class TraductorFormularios {
+        <<static>>
+    }
+    Bitacora ..|> IBitacoraEvento
+    PermisoCompuesto --|> Permiso
+    PermisoCompuesto "1" --> "0..*" Permiso : hijos
+    PermisoSimple --|> Permiso
+    Rol "1" --> "0..*" Permiso : permisos
+    Usuario "1" --> "0..*" Rol : roles
+    BitacoraBLL "1" --> "1" BitacoraDAL : _dal
+    IdiomaBLL "1" --> "1" IdiomaDAL : _dal
+    IntegridadBLL "1" --> "1" IntegridadDAL : dal
+    RolesBLL "1" --> "1" RolesDAL : dal
+    UsuarioBLL "1" --> "1" UsuarioDAL : _dal
+    UsuarioBLL "1" --> "1" BitacoraBLL : _bitacora
+    BitacoraDAL "1" --> "1" IntegridadDAL : integridad
+    BitacoraDAL "1" --> "1" EncriptadorServicio : encriptador
+    IdiomaDAL "1" --> "1" IntegridadDAL : integridad
+    IdiomaManager ..|> IIdiomaSubject
+    IdiomaManager "1" --> "0..*" IIdiomaObserver : observadores
+    FormGestionRoles ..|> IIdiomaObserver
+    FormGestionRoles "1" --> "0..*" Rol : roles
+    FormGestionRoles "1" --> "0..*" Usuario : usuarios
+    FormGestionRoles "1" --> "1" RolesBLL : rolesBLL
+    FrmBitacora ..|> IIdiomaObserver
+    FrmBitacora "1" --> "1" BitacoraBLL : _bll
+    FrmGestionIdiomas ..|> IIdiomaObserver
+    FrmGestionIdiomas "1" --> "1" IdiomaBLL : _idiomaBLL
+    FrmGestionIdiomas "1" --> "0..*" Traduccion : _traduccionesActuales
+    FrmGestionUsuarios ..|> IIdiomaObserver
+    FrmGestionUsuarios "1" --> "1" UsuarioBLL : _usuarioBLL
+    FrmIntegridad "1" --> "1" IntegridadBLL : servicio
+    FrmIntegridad "1" --> "1" InformeIntegridad : informe
+    FrmLogin "1" --> "1" UsuarioBLL : _usuarioBLL
+    FrmPrincipal ..|> IIdiomaObserver
+    FrmPrincipal "1" --> "1" BitacoraBLL : _bitacora
+    FrmPrincipal "1" --> "1" IdiomaBLL : _idiomaBLL
+    TraductorFormularios "1" --> "1" IdiomaBLL : _idiomaBLL
+    SesionServicio "1" --> "0..1" Usuario : UsuarioActual
+    IdiomaManager "1" --> "0..1" Idioma : IdiomaActual
+    UsuarioBLL ..> IntegridadBLL : ExigirIntegridad
+    UsuarioBLL ..> RolesBLL : CargarRolesUsuario
+    UsuarioBLL ..> SesionServicio : IniciarSesion
+    UsuarioBLL ..> HashHelper : hash de contraseña
+    IdiomaBLL ..> IdiomaManager : CargarIdioma
+    IdiomaBLL ..> SesionServicio : preferencia por usuario
+    FrmPrincipal ..> SesionServicio : sesión actual
+    IntegridadDAL ..> VerificadorSHA256 : DVH y DVV
+    IntegridadDAL ..> EncriptadorServicio : validar cifrado
+    IntegridadBLL ..> SesionServicio : autorizar recuperación
+    TraductorFormularios ..> IdiomaManager : Traducir
+    FrmPrincipal ..> FrmIntegridad : recuperación modal
+    Rol "1" --> "0..*" Rol : roles heredados

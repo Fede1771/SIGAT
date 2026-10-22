@@ -1,0 +1,17 @@
+sequenceDiagram
+    autonumber
+    actor actor as Administrador SQL
+    participant ui as FrmIntegridad
+    participant bll as IntegridadBLL
+    participant dal as IntegridadDAL
+    actor->>ui: Confirmar referencia inicial confiable
+    ui->>bll: InicializarBaseConfiable()
+    bll->>dal: InicializarBaseConfiable()
+    Note over actor,dal: Exigir permisos y rechazar si ya hay controles inicializados
+    dal->>dal: CrearArchivoBackup("antes_integridad")
+    dal->>dal: Transacción  ValidarLegado por fila
+    Note over actor,dal: Discrepancias no reconocidas cancelan  solo compatibilidad de redondeo documentada
+    dal->>dal: GuardarHash  crear DVV con IdBase nuevo
+    dal->>dal: Examinar  Commit
+    dal->>dal: CrearRespaldoConfiable()
+    dal-->>ui: Ruta del respaldo final comprobado

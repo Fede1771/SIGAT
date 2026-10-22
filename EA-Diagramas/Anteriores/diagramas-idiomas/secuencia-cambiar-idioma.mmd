@@ -1,0 +1,96 @@
+sequenceDiagram
+    autonumber
+    actor U as Usuario
+    participant UI as FrmGestionIdiomas
+    participant BLL as IdiomaBLL
+    participant DAL as IdiomaDAL
+    database SQL as Base SIGAT
+    participant S as SesionServicio
+    participant M as IdiomaManager
+    participant O as Pantalla suscrita - IIdiomaObserver
+    participant T as TraductorFormularios
+
+    Note over U,UI: Seleccionar el combo carga textos para editar.<br/>El cambio de interfaz ocurre al presionar Aplicar.<br/>El selector superior de FrmPrincipal utiliza la misma BLL.
+    U->>UI: Presionar Aplicar
+    break No hay idioma seleccionado
+        UI-->>U: Terminar sin mostrar mensaje ni cambiar idioma
+    end
+    UI->>BLL: CambiarIdioma(idIdioma)
+    BLL->>BLL: CargarIdioma(idIdioma, true)
+    BLL->>DAL: ObtenerIdiomaPorId(idIdioma)
+    DAL->>SQL: Consultar Idioma por ID
+    SQL-->>DAL: Registro o ninguno
+    DAL-->>BLL: Idioma o null
+    break Idioma inexistente o inactivo
+        BLL-->>UI: InvalidOperationException
+        UI-->>U: MessageBox.Show(ex.Message)
+    end
+    BLL->>DAL: ObtenerTraduccionesPorIdioma(idIdioma)
+    DAL->>SQL: Consultar Traduccion y Control donde Texto no es NULL
+    SQL-->>DAL: Registros de traducciones
+    DAL-->>BLL: List de Traduccion
+    Note over BLL,M: Una lista vacía no bloquea el cambio.<br/>Se carga un diccionario vacío y se utilizan textos de respaldo.
+    loop Cada traducción recuperada
+        BLL->>M: ClaveDe(FormNombre, ControlNombre)
+        M-->>BLL: Clave Formulario.Control
+        BLL->>BLL: diccionario[clave] = Texto
+    end
+    BLL->>S: ObtenerInstancia().UsuarioActual
+    S-->>BLL: Usuario actual
+    break No hay sesión autenticada
+        BLL-->>UI: InvalidOperationException
+        UI-->>U: Mostrar error
+    end
+    BLL->>DAL: GuardarIdiomaPreferido(IdUsuario, idIdioma)
+    DAL->>SQL: Transacción Serializable - validar cuenta e idioma activos y actualizar o insertar UsuarioIdioma
+    break Falla la validación o el guardado
+        SQL-->>DAL: Error - la transacción se revierte
+        DAL-->>BLL: Excepción
+        BLL-->>UI: Excepción
+        UI-->>U: Mostrar error sin cargar el nuevo idioma
+    end
+    DAL->>SQL: COMMIT
+    DAL-->>BLL: Preferencia guardada
+    BLL->>M: CargarIdioma(idiomaElegido, diccionario)
+    M->>M: Asignar IdiomaActual y diccionario
+    M->>M: NotificarObservadores()
+    loop Cada observador suscrito
+        M->>O: ActualizarIdioma()
+        O->>T: TraducirFormulario(this)
+        Note over O,T: Recorrer título, menús, controles y columnas con Tag.<br/>Recorrer controles hijos, omitiendo formularios alojados.<br/>Los textos sin clave y TreeView.Nodes no se traducen aquí.
+        loop Cada elemento etiquetado
+            T->>BLL: RegistrarClaveNueva(nombreForm, clave, textoBase)
+            BLL->>DAL: ExisteControl(clave, nombreForm)
+            DAL->>SQL: Consultar existencia del control
+            SQL-->>DAL: Resultado
+            DAL-->>BLL: Existe o no existe
+            opt La clave todavía no existe
+                BLL->>DAL: ObtenerOCrearControl(clave, nombreForm)
+                DAL->>SQL: Consultar o insertar Control
+                SQL-->>DAL: IdControl
+                DAL-->>BLL: IdControl
+                BLL->>DAL: ObtenerIdIdiomaPorCodigo(es)
+                DAL->>SQL: Consultar idioma base
+                SQL-->>DAL: IdIdiomaBase
+                DAL-->>BLL: IdIdiomaBase
+                BLL->>DAL: CrearPendientesParaTodosLosIdiomas(idControl, idIdiomaBase, textoBase)
+                DAL->>SQL: Insertar texto base en español y pendientes en otros idiomas
+                DAL-->>BLL: Registro completado
+            end
+            BLL-->>T: Clave registrada o existente
+            T->>M: Traducir(nombreForm, clave, textoOriginal)
+            alt La clave existe en el diccionario
+                M-->>T: Texto traducido
+            else La clave no existe
+                M-->>T: textoOriginal
+            end
+            T->>T: Asignar Text o HeaderText
+        end
+        T-->>O: Traducción del formulario terminada
+        Note over O: Cada pantalla completa sus ajustes específicos,<br/>como encabezados, idioma activo y navegación.
+    end
+    M-->>BLL: Idioma cargado y observadores notificados
+    BLL-->>UI: Cambio terminado
+    UI-->>U: Elementos cubiertos por el traductor actualizados
+
+    Note over T,M: El respaldo actual es el texto recibido del elemento.<br/>No es una consulta automática al catálogo español.

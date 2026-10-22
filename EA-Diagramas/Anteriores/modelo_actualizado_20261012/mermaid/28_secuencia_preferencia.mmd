@@ -1,0 +1,17 @@
+sequenceDiagram
+    autonumber
+    participant ui as FrmPrincipal
+    participant bll as IdiomaBLL
+    participant ses as SesionServicio
+    participant dal as IdiomaDAL
+    participant man as IdiomaManager
+    ui->>man: Suscribir(this)
+    ui->>bll: RestablecerIdiomaUsuario()
+    bll->>ses: Leer UsuarioActual.IdUsuario
+    bll->>dal: ObtenerIdiomas() y ObtenerIdiomaPreferido(idUsuario)
+    Note over ui,man: Elegir preferido activo  si no, español activo o primer idioma activo
+    bll->>bll: CargarIdioma(id, guardarPreferencia: false)
+    bll->>dal: ObtenerIdiomaPorId y ObtenerTraduccionesPorIdioma
+    bll->>man: CargarIdioma(idioma, diccionario)
+    man->>man: NotificarObservadores()
+    Note over ui,man: El idioma alternativo no reemplaza la preferencia guardada si esta está inactiva

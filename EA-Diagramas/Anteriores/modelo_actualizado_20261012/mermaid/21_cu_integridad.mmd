@@ -1,0 +1,12 @@
+flowchart TB
+    actor["Administrador de SIGAT y SQL"]
+    uc0(["Verificar integridad"])
+    uc1(["Crear respaldo comprobado"])
+    uc2(["Recuperar registros o tablas afectadas"])
+    uc3(["Preparar referencia inicial solo una vez"])
+    uc4(["Archivar bitácora anterior a 180 días"])
+    actor --- uc0
+    actor --- uc1
+    actor --- uc2
+    actor --- uc3
+    actor --- uc4

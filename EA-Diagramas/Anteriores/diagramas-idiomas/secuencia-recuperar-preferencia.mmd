@@ -1,0 +1,49 @@
+sequenceDiagram
+    autonumber
+    participant UI as FrmPrincipal
+    participant BLL as IdiomaBLL
+    participant DAL as IdiomaDAL
+    database SQL as Base SIGAT
+    participant S as SesionServicio
+    participant M as IdiomaManager
+
+    Note over UI,S: Después de autenticar, IniciarSesion ya limpió<br/>el idioma anterior mediante ReiniciarSesion.
+    UI->>M: Suscribir(this)
+    UI->>BLL: ObtenerIdiomas()
+    BLL->>DAL: ObtenerIdiomas()
+    DAL->>SQL: Consultar idiomas activos
+    SQL-->>DAL: Idiomas
+    DAL-->>BLL: List de Idioma
+    BLL-->>UI: Idiomas activos
+    UI->>UI: CargarMenuDeIdiomas(idiomas)
+    UI->>UI: AplicarIdiomaPorDefecto(idiomas)
+    alt IdiomaActual ya está cargado
+        UI->>UI: ActualizarIdioma()
+    else IdiomaActual es null
+        UI->>BLL: RestablecerIdiomaUsuario()
+        BLL->>S: ObtenerInstancia().UsuarioActual
+        S-->>BLL: Usuario actual
+        BLL->>DAL: ObtenerIdiomas()
+        DAL->>SQL: Consultar idiomas activos
+        SQL-->>DAL: Idiomas
+        DAL-->>BLL: List de Idioma
+        BLL->>DAL: ObtenerIdiomaPreferido(IdUsuario)
+        DAL->>SQL: Consultar UsuarioIdioma por cuenta
+        SQL-->>DAL: IdIdioma preferido o ninguno
+        DAL-->>BLL: int o null
+        BLL->>BLL: Elegir preferido activo, español o primer idioma activo
+        break No hay idiomas activos
+            BLL-->>UI: InvalidOperationException
+        end
+        BLL->>BLL: CargarIdioma(idIdioma, false)
+        Note over BLL,M: Obtener el idioma y sus traducciones, construir el diccionario<br/>y llamar a CargarIdioma para notificar observadores.<br/>Este camino no guarda ni reemplaza la preferencia.
+        BLL->>DAL: ObtenerIdiomaPorId(idIdioma)
+        DAL-->>BLL: Idioma
+        BLL->>DAL: ObtenerTraduccionesPorIdioma(idIdioma)
+        DAL-->>BLL: List de Traduccion
+        BLL->>BLL: Construir diccionario de textos
+        BLL->>M: CargarIdioma(idioma, diccionario)
+        M->>M: NotificarObservadores()
+        M-->>BLL: Notificaciones completadas
+        BLL-->>UI: Preferencia recuperada o respaldo aplicado
+    end

@@ -1,0 +1,21 @@
+sequenceDiagram
+    autonumber
+    actor actor as Administrador
+    participant ui as FormGestionRoles
+    participant usu as Usuario seleccionado
+    participant bll as RolesBLL
+    participant dal as RolesDAL
+    participant mat as MatrizRoles
+    actor->>ui: Seleccionar usuario y rol  Asignar rol
+    ui->>ui: Ejecutar(AsignarAUsuario)
+    ui->>usu: AsignarRol(rol)
+    Note over actor,mat: AsignarRol ignora la misma referencia si ya está asignada
+    ui->>bll: Guardar(estado)
+    bll->>dal: Cargar() para validar autorización actual
+    bll->>bll: ExigirGestion y Validar(estado)
+    bll->>mat: ValidarCatalogo(estado)
+    Note over actor,mat: No ciclos  administrador original protegido  debe quedar un administrador activo
+    bll->>dal: Guardar(estado)
+    Note over actor,mat: Transacción y comparación de SeguridadVersion  si cambió, se cancela
+    ui->>ui: RefrescarArboles()
+    Note over actor,mat: Los permisos de sesiones ya abiertas se actualizan al volver a iniciar sesión

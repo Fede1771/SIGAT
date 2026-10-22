@@ -1,0 +1,29 @@
+sequenceDiagram
+    autonumber
+    actor actor as Usuario
+    participant ui as FrmLogin
+    participant bll as UsuarioBLL
+    participant iv as IntegridadBLL
+    participant dal as UsuarioDAL
+    participant hash as HashHelper
+    participant roles as RolesBLL
+    participant ses as SesionServicio
+    participant bit as BitacoraBLL
+    actor->>ui: Ingresar usuario y contraseña
+    ui->>bll: Autenticar(nombreUsuario, passwordPlana, out usuario)
+    bll->>iv: ExigirIntegridad()
+    iv-->>bll: Continuar solo si es correcta
+    bll->>dal: ObtenerPorNombreUsuario(nombreUsuario)
+    dal-->>bll: Usuario o null
+    bll->>hash: ObtenerHashSHA256(passwordPlana)
+    hash-->>bll: Hash hexadecimal
+    Note over actor,bit: alt usuario inexistente, hash distinto o cuenta inactiva
+    bll->>bit: Registrar(evento de LoginFallidoFactory)
+    bll-->>ui: CredencialesInvalidas o UsuarioInactivo
+    Note over actor,bit: else credenciales válidas y cuenta activa
+    bll->>roles: CargarRolesUsuario(usuario)
+    bll->>ses: IniciarSesion(usuario)
+    bll->>bit: Registrar(evento de LoginExitosoFactory)
+    bll-->>ui: ResultadoLogin.Exito
+    ui->>ui: Hide()  FrmPrincipal.ShowDialog()
+    Note over actor,bit: FrmPrincipal.Load restaura el idioma preferido de la cuenta

@@ -1,0 +1,20 @@
+sequenceDiagram
+    autonumber
+    actor actor as Usuario autorizado
+    participant ui as FrmBitacora
+    participant bll as BitacoraBLL
+    participant dal as BitacoraDAL
+    participant iv as IntegridadDAL
+    participant aes as EncriptadorServicio
+    actor->>ui: Elegir fechas, usuario y actividad  Buscar
+    ui->>bll: Buscar(desde?, hasta?, usuario, actividad)
+    bll->>dal: Buscar(desde, hasta, usuario, actividad)
+    dal->>iv: LeerVerificado(consulta)
+    Note over actor,aes: Transacción Serializable y bloqueo compartido  verificar antes de leer
+    dal->>dal: SELECT filtrado por AND  LIKE  Fecha DESC
+    Note over actor,aes: loop por cada registro obtenido
+    dal->>aes: Desencriptar(InformacionAsociada)
+    dal-->>bll: List<Bitacora>
+    bll-->>ui: Lista verificada y descifrada
+    ui->>ui: dgv.DataSource = lista
+    Note over actor,aes: Si no hay coincidencias, la grilla queda vacía  ante corrupción se bloquea la lectura

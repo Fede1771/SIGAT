@@ -1,0 +1,17 @@
+sequenceDiagram
+    autonumber
+    actor actor as Usuario
+    participant ui as FrmPrincipal
+    participant bit as BitacoraBLL
+    participant ses as SesionServicio
+    participant idi as IdiomaManager
+    participant login as FrmLogin
+    actor->>ui: Cerrar sesión
+    ui->>bit: Registrar(usuario, "Logout", información)
+    Note over actor,login: El registro se cifra y guarda mediante la escritura protegida de BitacoraDAL
+    ui->>ui: CerrarFormularioActual()
+    ui->>ses: CerrarSesion()
+    ses->>idi: ReiniciarSesion()
+    ses->>ses: UsuarioActual = null
+    ui->>login: Hide()  new FrmLogin().ShowDialog()
+    ui->>ui: Close() al terminar el diálogo

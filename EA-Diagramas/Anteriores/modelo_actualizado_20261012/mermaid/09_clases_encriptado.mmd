@@ -1,0 +1,29 @@
+classDiagram
+    direction TB
+    class HashHelper {
+        <<static>>
+        +ObtenerHashSHA256(texto: string): string$
+    }
+    class EncriptadorServicio {
+        +Encriptar(textoPlano: string): string
+        +Desencriptar(textoEncriptado: string): string
+        +CalcularDV(cadenaConcatenada: string): string
+    }
+    class UsuarioBLL {
+        +Autenticar(nombreUsuario: string, passwordPlana: string, out usuarioValidado: Usuario): ResultadoLogin
+        +CrearUsuario(nuevoUsuario: Usuario, passwordPlana: string): void
+    }
+    class BitacoraDAL {
+        +Insertar(registro: Bitacora): void
+        +Buscar(desde: Nullable~DateTime~, hasta: Nullable~DateTime~, usuario: string, actividad: string): List~Bitacora~
+    }
+    class VerificadorSHA256 {
+        <<static>>
+        +Canonico(valores: Object[]): string$
+        +Hexadecimal(texto: string): string$
+        +Base64(texto: string): string$
+        +Traduccion(idioma: int, control: int, texto: string, estado: string): string$
+        +Bitacora(id: int, fecha: DateTime, usuario: string, actividad: string, cifrado: string): string$
+    }
+    BitacoraDAL "1" --> "1" EncriptadorServicio : encriptador
+    UsuarioBLL ..> HashHelper : hash de contraseña

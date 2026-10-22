@@ -1,0 +1,83 @@
+@startuml
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam classBackgroundColor #DAE8FC
+skinparam classBorderColor #8AB2E2
+class FormGestionRoles {
+- Ejecutar(accion: Action)
+- CrearRol(anidado: bool)
+- AsignarARol()
+- EditarFamilia()
+}
+class RolesBLL {
++ CargarParaGestion(): EstadoRoles
++ Guardar(estado: EstadoRoles)
+- {static} ExigirGestion(estado: EstadoRoles)
++ {static} Validar(estado: EstadoRoles)
+}
+class RolesDAL {
++ Cargar(): EstadoRoles
++ Guardar(estado: EstadoRoles)
+}
+class EstadoRoles {
++ Version: long
++ IdAdministradorOriginal: int
++ Roles: List<Rol>
++ Permisos: List<Permiso>
++ Usuarios: List<Usuario>
+}
+class SesionServicio {
++ {static} ObtenerInstancia(): SesionServicio
++ UsuarioActual: Usuario
+}
+class MatrizRoles <<static>> {
++ {static} CrearCatalogo(): EstadoRoles
++ {static} ValidarCatalogo(estado: EstadoRoles)
+}
+class Usuario {
++ Roles: List<Rol>
++ AsignarRol(rol: Rol)
++ QuitarRol(rol: Rol)
++ TienePermiso(nombre: string): bool
+}
+class Rol {
++ Roles: List<Rol>
++ Permisos: List<Permiso>
++ AgregarRol(rol: Rol)
++ QuitarRol(rol: Rol)
++ AgregarPermiso(permiso: Permiso)
++ QuitarPermiso(permiso: Permiso)
++ ContieneRol(rol: Rol): bool
++ TienePermiso(nombre: string): bool
+}
+abstract class Permiso {
++ Id: int
++ Nombre: string
++ {abstract} ContienePermiso(nombre: string): bool
++ {abstract} Agregar(permiso: Permiso)
++ {abstract} Quitar(permiso: Permiso)
++ {abstract} ObtenerHijos(): List<Permiso>
+}
+class PermisoSimple
+class PermisoCompuesto {
+- hijos: List<Permiso>
+}
+FormGestionRoles --> RolesBLL
+FormGestionRoles --> EstadoRoles
+RolesBLL --> RolesDAL
+RolesBLL ..> MatrizRoles
+RolesBLL ..> SesionServicio
+RolesDAL ..> EstadoRoles
+SesionServicio --> "0..1" Usuario : UsuarioActual
+EstadoRoles --> "0..*" Rol
+EstadoRoles --> "0..*" Permiso
+EstadoRoles --> "0..*" Usuario
+Usuario --> "0..*" Rol
+Rol --> "0..*" Rol : roles anidados
+Rol --> "0..*" Permiso
+Permiso <|-- PermisoSimple
+Permiso <|-- PermisoCompuesto
+PermisoCompuesto --> "0..*" Permiso : hijos
+note bottom of FormGestionRoles : CrearRol existe pero no tiene acceso en la UI actual.
+note bottom of Rol : Rol no hereda de Permiso.
+@enduml

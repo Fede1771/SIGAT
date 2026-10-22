@@ -1,0 +1,2619 @@
+{
+  "01_arquitectura": {
+    "width": 709.0880000000001,
+    "height": 708.32,
+    "rects": {
+      "SIGAT.UI": {
+        "left": 306.7984,
+        "top": 29.999999999999982,
+        "right": 418.8016,
+        "bottom": 81.83999999999999
+      },
+      "SIGAT.BLL": {
+        "left": 297.73504,
+        "top": 179.11999999999998,
+        "right": 427.86496,
+        "bottom": 230.95999999999998
+      },
+      "SIGAT.DAL": {
+        "left": 296.66944000000007,
+        "top": 328.24,
+        "right": 428.93056,
+        "bottom": 380.08
+      },
+      "SIGAT.BE": {
+        "left": 211.86304,
+        "top": 626.48,
+        "right": 331.33696000000003,
+        "bottom": 678.32
+      },
+      "SIGAT.SERVICIOS": {
+        "left": 481.71968,
+        "top": 477.35999999999996,
+        "right": 679.08032,
+        "bottom": 529.1999999999999
+      }
+    }
+  },
+  "02_der": {
+    "width": 837.0880000000001,
+    "height": 2279.2000000000003,
+    "rects": {
+      "AdministradorOriginal": {
+        "left": 66.06208000000001,
+        "top": 823.91744,
+        "right": 298.61632000000003,
+        "bottom": 962.8025600000001
+      },
+      "Bitacora": {
+        "left": 29.998720000000002,
+        "top": 528.2374400000001,
+        "right": 334.67968,
+        "bottom": 759.2825600000001
+      },
+      "Control": {
+        "left": 594.2112000000001,
+        "top": 1437.99744,
+        "right": 770.8128,
+        "bottom": 1599.92256
+      },
+      "Idioma": {
+        "left": 558.46464,
+        "top": 1165.3574400000002,
+        "right": 806.5593600000001,
+        "bottom": 1373.36256
+      },
+      "IntegridadTabla": {
+        "left": 61.995519999999985,
+        "top": 256.5574399999999,
+        "right": 302.68288,
+        "bottom": 464.56255999999985
+      },
+      "Permiso": {
+        "left": 585.6748799999999,
+        "top": 2009.19744,
+        "right": 779.3491200000001,
+        "bottom": 2171.12256
+      },
+      "PermisoHijo": {
+        "left": 97.76512000000001,
+        "top": 2110.3174400000003,
+        "right": 266.91328,
+        "bottom": 2249.2025599999997
+      },
+      "Rol": {
+        "left": 585.6748799999999,
+        "top": 1691.11744,
+        "right": 779.3491200000001,
+        "bottom": 1830.00256
+      },
+      "RolHijo": {
+        "left": 97.76512000000001,
+        "top": 1703.9174400000002,
+        "right": 266.91328,
+        "bottom": 1842.8025599999999
+      },
+      "RolPermiso": {
+        "left": 88.17472000000001,
+        "top": 1907.11744,
+        "right": 276.50368000000003,
+        "bottom": 2046.00256
+      },
+      "SeguridadVersion": {
+        "left": 85.78432000000001,
+        "top": 29.99743999999986,
+        "right": 278.89408000000003,
+        "bottom": 191.92255999999986
+      },
+      "Traduccion": {
+        "left": 67.89376,
+        "top": 1229.3574400000002,
+        "right": 296.78464,
+        "bottom": 1437.36256
+      },
+      "UsuarioIdioma": {
+        "left": 90.30016,
+        "top": 1027.11744,
+        "right": 274.37824,
+        "bottom": 1166.0025600000001
+      },
+      "UsuarioRol": {
+        "left": 90.30016,
+        "top": 1500.7174400000001,
+        "right": 274.37824,
+        "bottom": 1639.6025600000003
+      },
+      "Usuarios": {
+        "left": 557.9347200000001,
+        "top": 870.6374400000001,
+        "right": 807.08928,
+        "bottom": 1101.68256
+      }
+    }
+  },
+  "03_clases_global": {
+    "width": 2468.32,
+    "height": 2304.8,
+    "rects": {
+      "Usuario": {
+        "left": 1669.938048,
+        "top": 773.6800000000001,
+        "right": 1770.2219519999999,
+        "bottom": 825.52
+      },
+      "Rol": {
+        "left": 2045.896128,
+        "top": 868.0799999999999,
+        "right": 2105.6238719999997,
+        "bottom": 919.9200000000001
+      },
+      "Permiso": {
+        "left": 2319.90144,
+        "top": 1014.0001920000001,
+        "right": 2438.33856,
+        "bottom": 1081.199808
+      },
+      "PermisoSimple": {
+        "left": 1991.9980799999998,
+        "top": 983.28,
+        "right": 2159.52192,
+        "bottom": 1035.1200000000001
+      },
+      "PermisoCompuesto": {
+        "left": 1970.67456,
+        "top": 1108.08,
+        "right": 2180.84544,
+        "bottom": 1159.92
+      },
+      "Idioma": {
+        "left": 1334.358464,
+        "top": 2092.08,
+        "right": 1425.033536,
+        "bottom": 2143.92
+      },
+      "Traduccion": {
+        "left": 505.58592,
+        "top": 2076.08,
+        "right": 637.87008,
+        "bottom": 2127.92
+      },
+      "ControlIdioma": {
+        "left": 65.21504,
+        "top": 418.48,
+        "right": 224.14496,
+        "bottom": 470.32
+      },
+      "Bitacora": {
+        "left": 91.865984,
+        "top": 37.68,
+        "right": 197.49401600000002,
+        "bottom": 89.52000000000001
+      },
+      "IBitacoraEvento": {
+        "left": 484.23936,
+        "top": 30.000192,
+        "right": 659.2166400000001,
+        "bottom": 97.199808
+      },
+      "InformeIntegridad": {
+        "left": 869.98208,
+        "top": 292.08000000000004,
+        "right": 1061.98592,
+        "bottom": 343.92
+      },
+      "UsuarioBLL": {
+        "left": 502.9248,
+        "top": 799.2800000000001,
+        "right": 640.5312,
+        "bottom": 851.1200000000001
+      },
+      "RolesBLL": {
+        "left": 1320.49472,
+        "top": 1072.8799999999999,
+        "right": 1438.8972800000001,
+        "bottom": 1124.72
+      },
+      "IdiomaBLL": {
+        "left": 507.72864000000004,
+        "top": 1960.88,
+        "right": 635.72736,
+        "bottom": 2012.7200000000003
+      },
+      "BitacoraBLL": {
+        "left": 894.50816,
+        "top": 1320.88,
+        "right": 1037.45984,
+        "bottom": 1372.7200000000003
+      },
+      "IntegridadBLL": {
+        "left": 886.51904,
+        "top": 407.28000000000003,
+        "right": 1045.4489600000002,
+        "bottom": 459.12
+      },
+      "UsuarioDAL": {
+        "left": 896.1094400000001,
+        "top": 799.2800000000001,
+        "right": 1035.8585600000001,
+        "bottom": 851.1200000000001
+      },
+      "RolesDAL": {
+        "left": 1659.80736,
+        "top": 1072.8799999999999,
+        "right": 1780.35264,
+        "bottom": 1124.72
+      },
+      "IdiomaDAL": {
+        "left": 1112.83904,
+        "top": 1911.28,
+        "right": 1242.9689600000002,
+        "bottom": 1963.1200000000001
+      },
+      "BitacoraDAL": {
+        "left": 1307.15456,
+        "top": 1330.48,
+        "right": 1452.2374399999999,
+        "bottom": 1382.3200000000002
+      },
+      "IntegridadDAL": {
+        "left": 1639.54944,
+        "top": 1464.88,
+        "right": 1800.61056,
+        "bottom": 1516.7200000000003
+      },
+      "SesionServicio": {
+        "left": 1296.464,
+        "top": 506.800192,
+        "right": 1462.9279999999999,
+        "bottom": 573.999808
+      },
+      "IdiomaManager": {
+        "left": 881.1680000000001,
+        "top": 2092.400192,
+        "right": 1050.8000000000002,
+        "bottom": 2159.5998080000004
+      },
+      "IIdiomaObserver": {
+        "left": 1289.5347199999999,
+        "top": 1626.8001920000002,
+        "right": 1469.8572800000002,
+        "bottom": 1693.9998080000003
+      },
+      "IIdiomaSubject": {
+        "left": 1297.01696,
+        "top": 2207.600192,
+        "right": 1462.37504,
+        "bottom": 2274.799808
+      },
+      "VerificadorSHA256": {
+        "left": 1974.91968,
+        "top": 1457.2001920000002,
+        "right": 2176.60032,
+        "bottom": 1524.3998080000001
+      },
+      "HashHelper": {
+        "left": 898.22912,
+        "top": 668.4001920000001,
+        "right": 1033.73888,
+        "bottom": 735.599808
+      },
+      "EncriptadorServicio": {
+        "left": 1970.1331199999997,
+        "top": 1327.28,
+        "right": 2181.38688,
+        "bottom": 1379.1200000000001
+      },
+      "FrmPrincipal": {
+        "left": 71.59711999999999,
+        "top": 1279.28,
+        "right": 217.76288,
+        "bottom": 1331.1200000000001
+      },
+      "FrmLogin": {
+        "left": 86.02016,
+        "top": 799.2800000000001,
+        "right": 203.33984,
+        "bottom": 851.1200000000001
+      },
+      "FrmGestionUsuarios": {
+        "left": 35.32639999999999,
+        "top": 1653.68,
+        "right": 254.03360000000004,
+        "bottom": 1705.5200000000002
+      },
+      "FormGestionRoles": {
+        "left": 865.7024,
+        "top": 1205.68,
+        "right": 1066.2656000000002,
+        "bottom": 1257.5200000000002
+      },
+      "FrmGestionIdiomas": {
+        "left": 40.13024,
+        "top": 1944.88,
+        "right": 249.22976,
+        "bottom": 1996.7200000000003
+      },
+      "FrmBitacora": {
+        "left": 500.77631999999994,
+        "top": 1437.68,
+        "right": 642.6796800000001,
+        "bottom": 1489.5200000000002
+      },
+      "FrmIntegridad": {
+        "left": 492.79296,
+        "top": 381.68000000000006,
+        "right": 650.66304,
+        "bottom": 433.52
+      },
+      "TraductorFormularios": {
+        "left": 29.998399999999993,
+        "top": 2169.200192,
+        "right": 259.3616,
+        "bottom": 2236.399808
+      }
+    }
+  },
+  "04_cu_login_logout": {
+    "width": 619.3760000000001,
+    "height": 256.48,
+    "rects": {
+      "actor": {
+        "left": 261.99244799999997,
+        "top": 30.000063999999988,
+        "right": 353.751552,
+        "bottom": 88.87993599999999
+      },
+      "uc0": {
+        "left": 29.99967999999999,
+        "top": 168.88,
+        "right": 275.34112000000005,
+        "bottom": 226.48000000000002
+      },
+      "uc1": {
+        "left": 339.9680000000001,
+        "top": 168.88,
+        "right": 589.3760000000001,
+        "bottom": 226.48000000000002
+      }
+    }
+  },
+  "05_clases_login": {
+    "width": 3483.2000000000003,
+    "height": 1601.7600000000002,
+    "rects": {
+      "FrmLogin": {
+        "left": 1112.39552,
+        "top": 30.00012799999996,
+        "right": 1579.79648,
+        "bottom": 130.47987199999997
+      },
+      "UsuarioBLL": {
+        "left": 881.58656,
+        "top": 227.75936000000013,
+        "right": 1810.6054400000003,
+        "bottom": 439.6006400000001
+      },
+      "UsuarioDAL": {
+        "left": 29.9904,
+        "top": 548.4012799999999,
+        "right": 582.2016,
+        "bottom": 764.07872
+      },
+      "Usuario": {
+        "left": 1052.4288,
+        "top": 1192.2425600000001,
+        "right": 1393.3632,
+        "bottom": 1571.75744
+      },
+      "HashHelper": {
+        "left": 646.0128000000001,
+        "top": 598.31744,
+        "right": 1041.3791999999999,
+        "bottom": 714.16256
+      },
+      "SesionServicio": {
+        "left": 1005.9744,
+        "top": 872.8787200000002,
+        "right": 1439.8176,
+        "bottom": 1094.9612800000002
+      },
+      "RolesBLL": {
+        "left": 1315.88224,
+        "top": 579.11936,
+        "right": 1728.30976,
+        "bottom": 733.36064
+      },
+      "BitacoraBLL": {
+        "left": 1792.04992,
+        "top": 582.96128,
+        "right": 2794.67008,
+        "bottom": 729.51872
+      },
+      "IntegridadBLL": {
+        "left": 2858.2848,
+        "top": 536.8812800000001,
+        "right": 3453.2352,
+        "bottom": 775.59872
+      }
+    }
+  },
+  "06_secuencia_login": {
+    "width": 2195,
+    "height": 1589,
+    "rects": {
+      "actor": {
+        "left": 79.5,
+        "top": 65,
+        "right": 285.5,
+        "bottom": 120
+      },
+      "ui": {
+        "left": 314.5,
+        "top": 65,
+        "right": 520.5,
+        "bottom": 120
+      },
+      "bll": {
+        "left": 549.5,
+        "top": 65,
+        "right": 755.5,
+        "bottom": 120
+      },
+      "iv": {
+        "left": 784.5,
+        "top": 65,
+        "right": 990.5,
+        "bottom": 120
+      },
+      "dal": {
+        "left": 1019.5,
+        "top": 65,
+        "right": 1225.5,
+        "bottom": 120
+      },
+      "hash": {
+        "left": 1254.5,
+        "top": 65,
+        "right": 1460.5,
+        "bottom": 120
+      },
+      "roles": {
+        "left": 1489.5,
+        "top": 65,
+        "right": 1695.5,
+        "bottom": 120
+      },
+      "ses": {
+        "left": 1724.5,
+        "top": 65,
+        "right": 1930.5,
+        "bottom": 120
+      },
+      "bit": {
+        "left": 1959.5,
+        "top": 65,
+        "right": 2165.5,
+        "bottom": 120
+      }
+    },
+    "steps": [
+      {
+        "a": "actor",
+        "b": "ui",
+        "text": "Ingresar usuario y contraseña",
+        "y": 178,
+        "seq": 1
+      },
+      {
+        "a": "ui",
+        "b": "bll",
+        "text": "Autenticar(nombreUsuario, passwordPlana, out usuario)",
+        "y": 271,
+        "seq": 2
+      },
+      {
+        "a": "bll",
+        "b": "iv",
+        "text": "ExigirIntegridad()",
+        "y": 344,
+        "seq": 3
+      },
+      {
+        "a": "iv",
+        "b": "bll",
+        "text": "Continuar solo si es correcta",
+        "reply": true,
+        "y": 417,
+        "seq": 4
+      },
+      {
+        "a": "bll",
+        "b": "dal",
+        "text": "ObtenerPorNombreUsuario(nombreUsuario)",
+        "y": 490,
+        "seq": 5
+      },
+      {
+        "a": "dal",
+        "b": "bll",
+        "text": "Usuario o null",
+        "reply": true,
+        "y": 563,
+        "seq": 6
+      },
+      {
+        "a": "bll",
+        "b": "hash",
+        "text": "ObtenerHashSHA256(passwordPlana)",
+        "y": 636,
+        "seq": 7
+      },
+      {
+        "a": "hash",
+        "b": "bll",
+        "text": "Hash hexadecimal",
+        "reply": true,
+        "y": 709,
+        "seq": 8
+      },
+      {
+        "note": "alt usuario inexistente, hash distinto o cuenta inactiva",
+        "y": 775
+      },
+      {
+        "a": "bll",
+        "b": "bit",
+        "text": "Registrar(evento de LoginFallidoFactory)",
+        "y": 850,
+        "seq": 9
+      },
+      {
+        "a": "bll",
+        "b": "ui",
+        "text": "CredencialesInvalidas o UsuarioInactivo",
+        "reply": true,
+        "y": 943,
+        "seq": 10
+      },
+      {
+        "note": "else credenciales válidas y cuenta activa",
+        "y": 1009
+      },
+      {
+        "a": "bll",
+        "b": "roles",
+        "text": "CargarRolesUsuario(usuario)",
+        "y": 1084,
+        "seq": 11
+      },
+      {
+        "a": "bll",
+        "b": "ses",
+        "text": "IniciarSesion(usuario)",
+        "y": 1157,
+        "seq": 12
+      },
+      {
+        "a": "bll",
+        "b": "bit",
+        "text": "Registrar(evento de LoginExitosoFactory)",
+        "y": 1230,
+        "seq": 13
+      },
+      {
+        "a": "bll",
+        "b": "ui",
+        "text": "ResultadoLogin.Exito",
+        "reply": true,
+        "y": 1303,
+        "seq": 14
+      },
+      {
+        "a": "ui",
+        "b": "ui",
+        "text": "Hide(); FrmPrincipal.ShowDialog()",
+        "y": 1416,
+        "seq": 15
+      },
+      {
+        "note": "FrmPrincipal.Load restaura el idioma preferido de la cuenta",
+        "y": 1482
+      }
+    ]
+  },
+  "07_clases_logout": {
+    "width": 1560.624,
+    "height": 1123.68,
+    "rects": {
+      "FrmPrincipal": {
+        "left": 81.47968,
+        "top": 62.00012799999996,
+        "right": 569.14432,
+        "bottom": 162.47987199999997
+      },
+      "SesionServicio": {
+        "left": 29.9904,
+        "top": 291.7587199999999,
+        "right": 463.83359999999993,
+        "bottom": 513.8412799999999
+      },
+      "IdiomaManager": {
+        "left": 633.27104,
+        "top": 29.99871999999997,
+        "right": 865.35296,
+        "bottom": 194.48127999999997
+      },
+      "BitacoraBLL": {
+        "left": 528.0019200000002,
+        "top": 329.52127999999993,
+        "right": 1530.62208,
+        "bottom": 476.0787199999999
+      },
+      "BitacoraDAL": {
+        "left": 528.0019200000002,
+        "top": 611.12128,
+        "right": 1530.62208,
+        "bottom": 757.6787199999999
+      },
+      "IntegridadDAL": {
+        "left": 685.43424,
+        "top": 854.96128,
+        "right": 1373.1897600000002,
+        "bottom": 1093.6787199999999
+      },
+      "FrmLogin": {
+        "left": 929.0521600000001,
+        "top": 86.31999999999996,
+        "right": 1046.3718400000002,
+        "bottom": 138.15999999999997
+      }
+    }
+  },
+  "08_secuencia_logout": {
+    "width": 1490,
+    "height": 922,
+    "rects": {
+      "actor": {
+        "left": 79.5,
+        "top": 65,
+        "right": 285.5,
+        "bottom": 120
+      },
+      "ui": {
+        "left": 314.5,
+        "top": 65,
+        "right": 520.5,
+        "bottom": 120
+      },
+      "bit": {
+        "left": 549.5,
+        "top": 65,
+        "right": 755.5,
+        "bottom": 120
+      },
+      "ses": {
+        "left": 784.5,
+        "top": 65,
+        "right": 990.5,
+        "bottom": 120
+      },
+      "idi": {
+        "left": 1019.5,
+        "top": 65,
+        "right": 1225.5,
+        "bottom": 120
+      },
+      "login": {
+        "left": 1254.5,
+        "top": 65,
+        "right": 1460.5,
+        "bottom": 120
+      }
+    },
+    "steps": [
+      {
+        "a": "actor",
+        "b": "ui",
+        "text": "Cerrar sesión",
+        "y": 178,
+        "seq": 1
+      },
+      {
+        "a": "ui",
+        "b": "bit",
+        "text": "Registrar(usuario, \"Logout\", información)",
+        "y": 271,
+        "seq": 2
+      },
+      {
+        "note": "El registro se cifra y guarda mediante la escritura protegida de BitacoraDAL",
+        "y": 337
+      },
+      {
+        "a": "ui",
+        "b": "ui",
+        "text": "CerrarFormularioActual()",
+        "y": 432,
+        "seq": 3
+      },
+      {
+        "a": "ui",
+        "b": "ses",
+        "text": "CerrarSesion()",
+        "y": 505,
+        "seq": 4
+      },
+      {
+        "a": "ses",
+        "b": "idi",
+        "text": "ReiniciarSesion()",
+        "y": 578,
+        "seq": 5
+      },
+      {
+        "a": "ses",
+        "b": "ses",
+        "text": "UsuarioActual = null",
+        "y": 651,
+        "seq": 6
+      },
+      {
+        "a": "ui",
+        "b": "login",
+        "text": "Hide(); new FrmLogin().ShowDialog()",
+        "y": 724,
+        "seq": 7
+      },
+      {
+        "a": "ui",
+        "b": "ui",
+        "text": "Close() al terminar el diálogo",
+        "y": 817,
+        "seq": 8
+      }
+    ]
+  },
+  "09_clases_encriptado": {
+    "width": 2899.84,
+    "height": 492.64,
+    "rects": {
+      "HashHelper": {
+        "left": 296.8288,
+        "top": 331.43744,
+        "right": 692.1952,
+        "bottom": 447.28255999999993
+      },
+      "EncriptadorServicio": {
+        "left": 1303.73952,
+        "top": 316.08128,
+        "right": 1746.08448,
+        "bottom": 462.6387199999999
+      },
+      "UsuarioBLL": {
+        "left": 30.002559999999995,
+        "top": 62.64127999999995,
+        "right": 959.0214400000001,
+        "bottom": 186.15871999999996
+      },
+      "BitacoraDAL": {
+        "left": 1023.6019200000001,
+        "top": 62.64127999999995,
+        "right": 2026.2220800000005,
+        "bottom": 186.15871999999996
+      },
+      "VerificadorSHA256": {
+        "left": 2090.32384,
+        "top": 29.999359999999957,
+        "right": 2869.8361600000003,
+        "bottom": 218.80063999999996
+      }
+    }
+  },
+  "10_secuencia_encriptado": {
+    "width": 1255,
+    "height": 922,
+    "rects": {
+      "bll": {
+        "left": 79.5,
+        "top": 65,
+        "right": 285.5,
+        "bottom": 120
+      },
+      "dal": {
+        "left": 314.5,
+        "top": 65,
+        "right": 520.5,
+        "bottom": 120
+      },
+      "iv": {
+        "left": 549.5,
+        "top": 65,
+        "right": 755.5,
+        "bottom": 120
+      },
+      "aes": {
+        "left": 784.5,
+        "top": 65,
+        "right": 990.5,
+        "bottom": 120
+      },
+      "sha": {
+        "left": 1019.5,
+        "top": 65,
+        "right": 1225.5,
+        "bottom": 120
+      }
+    },
+    "steps": [
+      {
+        "a": "bll",
+        "b": "dal",
+        "text": "Insertar(registro)",
+        "y": 178,
+        "seq": 1
+      },
+      {
+        "a": "dal",
+        "b": "iv",
+        "text": "Cambiar(\"Bitacora\", comando)",
+        "y": 251,
+        "seq": 2
+      },
+      {
+        "note": "Transacción Serializable y bloqueo exclusivo; validar DVH y DVV antes",
+        "y": 317
+      },
+      {
+        "a": "dal",
+        "b": "aes",
+        "text": "Encriptar(InformacionAsociada)",
+        "y": 392,
+        "seq": 3
+      },
+      {
+        "a": "aes",
+        "b": "dal",
+        "text": "AES CBC con PKCS7, representado en Base64",
+        "reply": true,
+        "y": 465,
+        "seq": 4
+      },
+      {
+        "a": "dal",
+        "b": "dal",
+        "text": "INSERT y obtener IdBitacora",
+        "y": 558,
+        "seq": 5
+      },
+      {
+        "a": "iv",
+        "b": "sha",
+        "text": "Bitacora(id, fecha SQL, usuario, actividad, cifrado)",
+        "y": 631,
+        "seq": 6
+      },
+      {
+        "a": "iv",
+        "b": "iv",
+        "text": "GuardarHash y ActualizarVertical",
+        "y": 724,
+        "seq": 7
+      },
+      {
+        "a": "iv",
+        "b": "iv",
+        "text": "Examinar; Commit solo si es correcta",
+        "y": 817,
+        "seq": 8
+      }
+    ]
+  },
+  "11_cu_roles": {
+    "width": 1461.44,
+    "height": 256.48,
+    "rects": {
+      "actor": {
+        "left": 702.92096,
+        "top": 30.000063999999988,
+        "right": 846.96704,
+        "bottom": 88.87993599999999
+      },
+      "uc0": {
+        "left": 30.01024000000002,
+        "top": 168.88,
+        "right": 479.87775999999997,
+        "bottom": 226.48000000000002
+      },
+      "uc1": {
+        "left": 544.53824,
+        "top": 168.88,
+        "right": 1005.34976,
+        "bottom": 226.48000000000002
+      },
+      "uc2": {
+        "left": 1068.848,
+        "top": 168.88,
+        "right": 1431.4400000000003,
+        "bottom": 226.48000000000002
+      }
+    }
+  },
+  "12_clases_roles": {
+    "width": 2076.6400000000003,
+    "height": 1827.0400000000002,
+    "rects": {
+      "FormGestionRoles": {
+        "left": 715.08736,
+        "top": 30.001280000000133,
+        "right": 998.9286400000001,
+        "bottom": 245.67872000000017
+      },
+      "RolesBLL": {
+        "left": 29.99423999999999,
+        "top": 362.1593600000001,
+        "right": 442.42176,
+        "bottom": 516.4006400000001
+      },
+      "RolesDAL": {
+        "left": 48.656639999999996,
+        "top": 760.8812800000002,
+        "right": 394.95936000000006,
+        "bottom": 884.3987200000001
+      },
+      "EstadoRoles": {
+        "left": 519.62176,
+        "top": 342.96128000000016,
+        "right": 791.19424,
+        "bottom": 535.5987200000002
+      },
+      "Usuario": {
+        "left": 755.3408000000001,
+        "top": 632.8825600000002,
+        "right": 1096.2752,
+        "bottom": 1012.3974400000002
+      },
+      "Rol": {
+        "left": 660.416,
+        "top": 1109.6825600000002,
+        "right": 1047.2,
+        "bottom": 1443.1174400000002
+      },
+      "Permiso": {
+        "left": 1243.32928,
+        "top": 1540.3987200000001,
+        "right": 1613.0867200000002,
+        "bottom": 1797.0412800000004
+      },
+      "PermisoSimple": {
+        "left": 1243.32928,
+        "top": 1191.6012800000003,
+        "right": 1613.0867200000002,
+        "bottom": 1361.1987200000003
+      },
+      "PermisoCompuesto": {
+        "left": 1676.9612800000004,
+        "top": 1191.6012800000003,
+        "right": 2046.71872,
+        "bottom": 1361.1987200000003
+      },
+      "MatrizRoles": {
+        "left": 1063.56544,
+        "top": 72.23936000000015,
+        "right": 1476.0505600000001,
+        "bottom": 203.44064000000014
+      }
+    }
+  },
+  "13_secuencia_roles": {
+    "width": 1490,
+    "height": 1239,
+    "rects": {
+      "actor": {
+        "left": 79.5,
+        "top": 65,
+        "right": 285.5,
+        "bottom": 120
+      },
+      "ui": {
+        "left": 314.5,
+        "top": 65,
+        "right": 520.5,
+        "bottom": 120
+      },
+      "usu": {
+        "left": 549.5,
+        "top": 65,
+        "right": 755.5,
+        "bottom": 120
+      },
+      "bll": {
+        "left": 784.5,
+        "top": 65,
+        "right": 990.5,
+        "bottom": 120
+      },
+      "dal": {
+        "left": 1019.5,
+        "top": 65,
+        "right": 1225.5,
+        "bottom": 120
+      },
+      "mat": {
+        "left": 1254.5,
+        "top": 65,
+        "right": 1460.5,
+        "bottom": 120
+      }
+    },
+    "steps": [
+      {
+        "a": "actor",
+        "b": "ui",
+        "text": "Seleccionar usuario y rol; Asignar rol",
+        "y": 198,
+        "seq": 1
+      },
+      {
+        "a": "ui",
+        "b": "ui",
+        "text": "Ejecutar(AsignarAUsuario)",
+        "y": 311,
+        "seq": 2
+      },
+      {
+        "a": "ui",
+        "b": "usu",
+        "text": "AsignarRol(rol)",
+        "y": 384,
+        "seq": 3
+      },
+      {
+        "note": "AsignarRol ignora la misma referencia si ya está asignada",
+        "y": 450
+      },
+      {
+        "a": "ui",
+        "b": "bll",
+        "text": "Guardar(estado)",
+        "y": 525,
+        "seq": 4
+      },
+      {
+        "a": "bll",
+        "b": "dal",
+        "text": "Cargar() para validar autorización actual",
+        "y": 618,
+        "seq": 5
+      },
+      {
+        "a": "bll",
+        "b": "bll",
+        "text": "ExigirGestion y Validar(estado)",
+        "y": 711,
+        "seq": 6
+      },
+      {
+        "a": "bll",
+        "b": "mat",
+        "text": "ValidarCatalogo(estado)",
+        "y": 784,
+        "seq": 7
+      },
+      {
+        "note": "No ciclos; administrador original protegido; debe quedar un administrador activo",
+        "y": 850
+      },
+      {
+        "a": "bll",
+        "b": "dal",
+        "text": "Guardar(estado)",
+        "y": 925,
+        "seq": 8
+      },
+      {
+        "note": "Transacción y comparación de SeguridadVersion; si cambió, se cancela",
+        "y": 991
+      },
+      {
+        "a": "ui",
+        "b": "ui",
+        "text": "RefrescarArboles()",
+        "y": 1066,
+        "seq": 9
+      },
+      {
+        "note": "Los permisos de sesiones ya abiertas se actualizan al volver a iniciar sesión",
+        "y": 1132
+      }
+    ]
+  },
+  "14_cu_idiomas": {
+    "width": 1247.856,
+    "height": 256.48,
+    "rects": {
+      "actor": {
+        "left": 497.42464,
+        "top": 30.000063999999988,
+        "right": 723.63136,
+        "bottom": 88.87993599999999
+      },
+      "uc0": {
+        "left": 30.002559999999995,
+        "top": 168.88,
+        "right": 567.05344,
+        "bottom": 226.48000000000002
+      },
+      "uc1": {
+        "left": 630.4025600000001,
+        "top": 168.88,
+        "right": 1217.85344,
+        "bottom": 226.48000000000002
+      }
+    }
+  },
+  "15_clases_idiomas": {
+    "width": 2508.6400000000003,
+    "height": 1277.28,
+    "rects": {
+      "IdiomaManager": {
+        "left": 88.62976000000003,
+        "top": 632.8825599999999,
+        "right": 808.3302400000001,
+        "bottom": 908.71744
+      },
+      "IIdiomaSubject": {
+        "left": 30.000640000000022,
+        "top": 1045.67744,
+        "right": 473.35936000000004,
+        "bottom": 1207.60256
+      },
+      "IIdiomaObserver": {
+        "left": 1790.4908800000003,
+        "top": 1068.7174400000001,
+        "right": 2031.10912,
+        "bottom": 1184.56256
+      },
+      "IdiomaBLL": {
+        "left": 976.59584,
+        "top": 285.3612799999999,
+        "right": 1709.16416,
+        "bottom": 524.07872
+      },
+      "IdiomaDAL": {
+        "left": 872.00576,
+        "top": 674.48128,
+        "right": 1813.75424,
+        "bottom": 867.1187199999999
+      },
+      "Idioma": {
+        "left": 536.70848,
+        "top": 1006.0025599999999,
+        "right": 757.05152,
+        "bottom": 1247.27744
+      },
+      "Traduccion": {
+        "left": 2233.15648,
+        "top": 273.84127999999987,
+        "right": 2471.64352,
+        "bottom": 535.59872
+      },
+      "ControlIdioma": {
+        "left": 2319.03552,
+        "top": 30.00127999999993,
+        "right": 2478.5644800000005,
+        "bottom": 176.55871999999994
+      },
+      "TraductorFormularios": {
+        "left": 900.4403199999999,
+        "top": 45.357439999999926,
+        "right": 1302.11968,
+        "bottom": 161.20255999999992
+      },
+      "FrmPrincipal": {
+        "left": 1585.69088,
+        "top": 53.040127999999925,
+        "right": 1826.30912,
+        "bottom": 153.51987199999996
+      },
+      "FrmGestionIdiomas": {
+        "left": 2014.4908800000003,
+        "top": 53.040127999999925,
+        "right": 2255.10912,
+        "bottom": 153.51987199999996
+      }
+    }
+  },
+  "16_secuencia_idiomas": {
+    "width": 1725,
+    "height": 1453,
+    "rects": {
+      "actor": {
+        "left": 79.5,
+        "top": 65,
+        "right": 285.5,
+        "bottom": 120
+      },
+      "ui": {
+        "left": 314.5,
+        "top": 65,
+        "right": 520.5,
+        "bottom": 120
+      },
+      "bll": {
+        "left": 549.5,
+        "top": 65,
+        "right": 755.5,
+        "bottom": 120
+      },
+      "dal": {
+        "left": 784.5,
+        "top": 65,
+        "right": 990.5,
+        "bottom": 120
+      },
+      "man": {
+        "left": 1019.5,
+        "top": 65,
+        "right": 1225.5,
+        "bottom": 120
+      },
+      "obs": {
+        "left": 1254.5,
+        "top": 65,
+        "right": 1460.5,
+        "bottom": 120
+      },
+      "trad": {
+        "left": 1489.5,
+        "top": 65,
+        "right": 1695.5,
+        "bottom": 120
+      }
+    },
+    "steps": [
+      {
+        "a": "actor",
+        "b": "ui",
+        "text": "Seleccionar un idioma activo",
+        "y": 178,
+        "seq": 1
+      },
+      {
+        "a": "ui",
+        "b": "bll",
+        "text": "CambiarIdioma(idIdioma)",
+        "y": 251,
+        "seq": 2
+      },
+      {
+        "a": "bll",
+        "b": "dal",
+        "text": "ObtenerIdiomaPorId(idIdioma)",
+        "y": 324,
+        "seq": 3
+      },
+      {
+        "note": "Si no existe o está inactivo, se rechaza el cambio",
+        "y": 390
+      },
+      {
+        "a": "bll",
+        "b": "dal",
+        "text": "ObtenerTraduccionesPorIdioma(idIdioma)",
+        "y": 505,
+        "seq": 4
+      },
+      {
+        "note": "Lectura verificada; solo completas con texto. Diccionario Form.Control → Texto",
+        "y": 571
+      },
+      {
+        "a": "bll",
+        "b": "dal",
+        "text": "GuardarIdiomaPreferido(idUsuario, idIdioma)",
+        "y": 686,
+        "seq": 5
+      },
+      {
+        "a": "bll",
+        "b": "man",
+        "text": "CargarIdioma(idioma, diccionario)",
+        "y": 759,
+        "seq": 6
+      },
+      {
+        "a": "man",
+        "b": "man",
+        "text": "NotificarObservadores()",
+        "y": 852,
+        "seq": 7
+      },
+      {
+        "note": "loop por cada IIdiomaObserver suscrito",
+        "y": 918
+      },
+      {
+        "a": "man",
+        "b": "obs",
+        "text": "ActualizarIdioma()",
+        "y": 993,
+        "seq": 8
+      },
+      {
+        "a": "obs",
+        "b": "trad",
+        "text": "TraducirFormulario(this)",
+        "y": 1066,
+        "seq": 9
+      },
+      {
+        "note": "Recorrer Tags de título, controles, menús y columnas; registrar claves nuevas",
+        "y": 1132
+      },
+      {
+        "a": "trad",
+        "b": "man",
+        "text": "Traducir(form, clave, textoOriginal)",
+        "y": 1207,
+        "seq": 10
+      },
+      {
+        "a": "man",
+        "b": "trad",
+        "text": "Traducción o texto recibido como respaldo",
+        "reply": true,
+        "y": 1280,
+        "seq": 11
+      },
+      {
+        "note": "No existe FrmBase ni GestorIdioma en el código actual",
+        "y": 1346
+      }
+    ]
+  },
+  "17_secuencia_guardar_traduccion": {
+    "width": 1490,
+    "height": 1123,
+    "rects": {
+      "actor": {
+        "left": 79.5,
+        "top": 65,
+        "right": 285.5,
+        "bottom": 120
+      },
+      "ui": {
+        "left": 314.5,
+        "top": 65,
+        "right": 520.5,
+        "bottom": 120
+      },
+      "bll": {
+        "left": 549.5,
+        "top": 65,
+        "right": 755.5,
+        "bottom": 120
+      },
+      "dal": {
+        "left": 784.5,
+        "top": 65,
+        "right": 990.5,
+        "bottom": 120
+      },
+      "iv": {
+        "left": 1019.5,
+        "top": 65,
+        "right": 1225.5,
+        "bottom": 120
+      },
+      "sha": {
+        "left": 1254.5,
+        "top": 65,
+        "right": 1460.5,
+        "bottom": 120
+      }
+    },
+    "steps": [
+      {
+        "a": "actor",
+        "b": "ui",
+        "text": "Editar texto y Guardar traducción",
+        "y": 198,
+        "seq": 1
+      },
+      {
+        "a": "ui",
+        "b": "bll",
+        "text": "GuardarTraduccionPorControl(idIdioma, idControl, texto)",
+        "y": 311,
+        "seq": 2
+      },
+      {
+        "a": "bll",
+        "b": "sha",
+        "text": "Traduccion(ids, texto, estado)",
+        "y": 384,
+        "seq": 3
+      },
+      {
+        "a": "bll",
+        "b": "dal",
+        "text": "ActualizarTraduccion(ids, texto, estado, DV)",
+        "y": 477,
+        "seq": 4
+      },
+      {
+        "a": "dal",
+        "b": "iv",
+        "text": "Cambiar(\"Traduccion\", comando)",
+        "y": 550,
+        "seq": 5
+      },
+      {
+        "note": "Verificar antes; escritura y actualización DVV en la misma transacción",
+        "y": 616
+      },
+      {
+        "a": "dal",
+        "b": "sha",
+        "text": "Traduccion(ids, texto normalizado, estado)",
+        "y": 691,
+        "seq": 6
+      },
+      {
+        "a": "dal",
+        "b": "dal",
+        "text": "UPDATE Texto, Estado y DigitoVerificador",
+        "y": 784,
+        "seq": 7
+      },
+      {
+        "a": "iv",
+        "b": "iv",
+        "text": "ActualizarVertical; Examinar; Commit",
+        "y": 877,
+        "seq": 8
+      },
+      {
+        "a": "ui",
+        "b": "ui",
+        "text": "CargarTraducciones()",
+        "y": 950,
+        "seq": 9
+      },
+      {
+        "note": "Guardar texto no notifica automáticamente; Aplicar vuelve a cargar el idioma",
+        "y": 1016
+      }
+    ]
+  },
+  "18_cu_bitacora": {
+    "width": 612.0640000000001,
+    "height": 256.48,
+    "rects": {
+      "actor": {
+        "left": 150.77696000000003,
+        "top": 30.000063999999988,
+        "right": 461.28704,
+        "bottom": 88.87993599999999
+      },
+      "uc0": {
+        "left": 29.995520000000035,
+        "top": 168.88,
+        "right": 582.06848,
+        "bottom": 226.48000000000002
+      }
+    }
+  },
+  "19_clases_bitacora": {
+    "width": 2909.6000000000004,
+    "height": 1681.1200000000001,
+    "rects": {
+      "FrmBitacora": {
+        "left": 812.6028800000001,
+        "top": 168.24128000000002,
+        "right": 1053.2211200000002,
+        "bottom": 291.75872
+      },
+      "BitacoraBLL": {
+        "left": 431.60192000000006,
+        "top": 604.0812800000001,
+        "right": 1434.2220800000002,
+        "bottom": 750.63872
+      },
+      "BitacoraDAL": {
+        "left": 30.001919999999973,
+        "top": 924.72128,
+        "right": 1032.62208,
+        "bottom": 1071.27872
+      },
+      "Bitacora": {
+        "left": 1493.61536,
+        "top": 30.001279999999998,
+        "right": 1770.54464,
+        "bottom": 429.99872000000005
+      },
+      "IBitacoraEvento": {
+        "left": 1497.88352,
+        "top": 527.2774400000001,
+        "right": 1766.2764800000002,
+        "bottom": 827.4425600000001
+      },
+      "BitacoraFactory": {
+        "left": 2037.0156799999997,
+        "top": 607.91744,
+        "right": 2676.7443200000002,
+        "bottom": 746.8025600000001
+      },
+      "LoginExitosoFactory": {
+        "left": 1834.1504000000002,
+        "top": 179.76012799999998,
+        "right": 2140.4096,
+        "bottom": 280.239872
+      },
+      "LoginFallidoFactory": {
+        "left": 2203.7504000000004,
+        "top": 179.76012799999998,
+        "right": 2510.0096,
+        "bottom": 280.239872
+      },
+      "GestionUsuariosFactory": {
+        "left": 2573.3504000000003,
+        "top": 179.76012799999998,
+        "right": 2879.6096,
+        "bottom": 280.239872
+      },
+      "BitacoraMapper": {
+        "left": 1097.3337600000002,
+        "top": 940.07744,
+        "right": 1568.49024,
+        "bottom": 1055.92256
+      },
+      "EncriptadorServicio": {
+        "left": 310.13952,
+        "top": 1504.5612800000001,
+        "right": 752.4844800000001,
+        "bottom": 1651.1187200000004
+      },
+      "IntegridadDAL": {
+        "left": 614.6342400000001,
+        "top": 1168.5612800000001,
+        "right": 1302.38976,
+        "bottom": 1407.2787200000002
+      }
+    }
+  },
+  "20_secuencia_bitacora": {
+    "width": 1490,
+    "height": 1171,
+    "rects": {
+      "actor": {
+        "left": 79.5,
+        "top": 65,
+        "right": 285.5,
+        "bottom": 120
+      },
+      "ui": {
+        "left": 314.5,
+        "top": 65,
+        "right": 520.5,
+        "bottom": 120
+      },
+      "bll": {
+        "left": 549.5,
+        "top": 65,
+        "right": 755.5,
+        "bottom": 120
+      },
+      "dal": {
+        "left": 784.5,
+        "top": 65,
+        "right": 990.5,
+        "bottom": 120
+      },
+      "iv": {
+        "left": 1019.5,
+        "top": 65,
+        "right": 1225.5,
+        "bottom": 120
+      },
+      "aes": {
+        "left": 1254.5,
+        "top": 65,
+        "right": 1460.5,
+        "bottom": 120
+      }
+    },
+    "steps": [
+      {
+        "a": "actor",
+        "b": "ui",
+        "text": "Elegir fechas, usuario y actividad; Buscar",
+        "y": 198,
+        "seq": 1
+      },
+      {
+        "a": "ui",
+        "b": "bll",
+        "text": "Buscar(desde?, hasta?, usuario, actividad)",
+        "y": 291,
+        "seq": 2
+      },
+      {
+        "a": "bll",
+        "b": "dal",
+        "text": "Buscar(desde, hasta, usuario, actividad)",
+        "y": 384,
+        "seq": 3
+      },
+      {
+        "a": "dal",
+        "b": "iv",
+        "text": "LeerVerificado(consulta)",
+        "y": 457,
+        "seq": 4
+      },
+      {
+        "note": "Transacción Serializable y bloqueo compartido; verificar antes de leer",
+        "y": 523
+      },
+      {
+        "a": "dal",
+        "b": "dal",
+        "text": "SELECT filtrado por AND; LIKE; Fecha DESC",
+        "y": 618,
+        "seq": 5
+      },
+      {
+        "note": "loop por cada registro obtenido",
+        "y": 684
+      },
+      {
+        "a": "dal",
+        "b": "aes",
+        "text": "Desencriptar(InformacionAsociada)",
+        "y": 759,
+        "seq": 6
+      },
+      {
+        "a": "dal",
+        "b": "bll",
+        "text": "List<Bitacora>",
+        "reply": true,
+        "y": 832,
+        "seq": 7
+      },
+      {
+        "a": "bll",
+        "b": "ui",
+        "text": "Lista verificada y descifrada",
+        "reply": true,
+        "y": 905,
+        "seq": 8
+      },
+      {
+        "a": "ui",
+        "b": "ui",
+        "text": "dgv.DataSource = lista",
+        "y": 998,
+        "seq": 9
+      },
+      {
+        "note": "Si no hay coincidencias, la grilla queda vacía; ante corrupción se bloquea la lectura",
+        "y": 1064
+      }
+    ]
+  },
+  "21_cu_integridad": {
+    "width": 2239.2000000000003,
+    "height": 256.48,
+    "rects": {
+      "actor": {
+        "left": 815.20896,
+        "top": 30.000063999999988,
+        "right": 1107.5750400000002,
+        "bottom": 88.87993599999999
+      },
+      "uc0": {
+        "left": 29.999360000000003,
+        "top": 168.88,
+        "right": 267.18464000000006,
+        "bottom": 226.48000000000002
+      },
+      "uc1": {
+        "left": 331.55328000000003,
+        "top": 168.88,
+        "right": 669.6307200000001,
+        "bottom": 226.48000000000002
+      },
+      "uc2": {
+        "left": 734.41344,
+        "top": 168.88,
+        "right": 1188.37056,
+        "bottom": 226.48000000000002
+      },
+      "uc3": {
+        "left": 1253.05408,
+        "top": 168.88,
+        "right": 1709.7299200000002,
+        "bottom": 226.48000000000002
+      },
+      "uc4": {
+        "left": 1774.3315199999997,
+        "top": 168.88,
+        "right": 2209.1884800000003,
+        "bottom": 226.48000000000002
+      }
+    }
+  },
+  "22_clases_integridad": {
+    "width": 1510.9120000000003,
+    "height": 1091.68,
+    "rects": {
+      "FrmIntegridad": {
+        "left": 577.0041600000001,
+        "top": 30.00012799999996,
+        "right": 1078.51584,
+        "bottom": 130.47987199999997
+      },
+      "IntegridadBLL": {
+        "left": 459.88480000000004,
+        "top": 227.7612799999999,
+        "right": 1054.8352000000002,
+        "bottom": 466.4787199999999
+      },
+      "IntegridadDAL": {
+        "left": 413.48224000000005,
+        "top": 563.7593599999999,
+        "right": 1101.23776,
+        "bottom": 775.60064
+      },
+      "InformeIntegridad": {
+        "left": 1118.59648,
+        "top": 273.8412799999999,
+        "right": 1480.9235200000003,
+        "bottom": 420.3987199999999
+      },
+      "ProblemaIntegridad": {
+        "left": 1195.21024,
+        "top": 596.4012799999999,
+        "right": 1404.30976,
+        "bottom": 742.95872
+      },
+      "IntegridadException": {
+        "left": 1166.62912,
+        "top": 30.00012799999996,
+        "right": 1432.8908800000002,
+        "bottom": 130.47987199999997
+      },
+      "VerificadorSHA256": {
+        "left": 30.00383999999999,
+        "top": 872.8793599999999,
+        "right": 809.51616,
+        "bottom": 1061.68064
+      },
+      "EncriptadorServicio": {
+        "left": 873.7875200000001,
+        "top": 894.00128,
+        "right": 1316.1324800000002,
+        "bottom": 1040.55872
+      }
+    }
+  },
+  "23_secuencia_verificacion": {
+    "width": 1255,
+    "height": 1236,
+    "rects": {
+      "ui": {
+        "left": 79.5,
+        "top": 65,
+        "right": 285.5,
+        "bottom": 120
+      },
+      "bll": {
+        "left": 314.5,
+        "top": 65,
+        "right": 520.5,
+        "bottom": 120
+      },
+      "dal": {
+        "left": 549.5,
+        "top": 65,
+        "right": 755.5,
+        "bottom": 120
+      },
+      "sha": {
+        "left": 784.5,
+        "top": 65,
+        "right": 990.5,
+        "bottom": 120
+      },
+      "aes": {
+        "left": 1019.5,
+        "top": 65,
+        "right": 1225.5,
+        "bottom": 120
+      }
+    },
+    "steps": [
+      {
+        "a": "ui",
+        "b": "bll",
+        "text": "Verificar()",
+        "y": 178,
+        "seq": 1
+      },
+      {
+        "a": "bll",
+        "b": "dal",
+        "text": "Verificar()",
+        "y": 251,
+        "seq": 2
+      },
+      {
+        "a": "dal",
+        "b": "dal",
+        "text": "Transacción Serializable; bloqueo compartido; Examinar",
+        "y": 364,
+        "seq": 3
+      },
+      {
+        "note": "loop Bitacora y Traduccion, ordenadas por sus claves",
+        "y": 430
+      },
+      {
+        "a": "dal",
+        "b": "sha",
+        "text": "Recalcular SHA-256 de cada fila (DVH)",
+        "y": 525,
+        "seq": 4
+      },
+      {
+        "a": "dal",
+        "b": "dal",
+        "text": "Comparar DVH calculado con guardado",
+        "y": 618,
+        "seq": 5
+      },
+      {
+        "a": "dal",
+        "b": "aes",
+        "text": "Desencriptar para comprobar el cifrado de Bitacora",
+        "y": 691,
+        "seq": 6
+      },
+      {
+        "a": "dal",
+        "b": "sha",
+        "text": "Hexadecimal(Canonico(tabla,cantidad) + claves y hashes)",
+        "y": 804,
+        "seq": 7
+      },
+      {
+        "a": "dal",
+        "b": "dal",
+        "text": "Comparar DVV, cantidad, Version e IdBase",
+        "y": 917,
+        "seq": 8
+      },
+      {
+        "a": "dal",
+        "b": "bll",
+        "text": "InformeIntegridad con Problemas",
+        "reply": true,
+        "y": 990,
+        "seq": 9
+      },
+      {
+        "a": "bll",
+        "b": "ui",
+        "text": "InformeIntegridad",
+        "reply": true,
+        "y": 1063,
+        "seq": 10
+      },
+      {
+        "note": "Correcta = Configurada y sin problemas. Si falla el inicio, abrir recuperación y bloquear login",
+        "y": 1129
+      }
+    ]
+  },
+  "24_secuencia_respaldo": {
+    "width": 1255,
+    "height": 1211,
+    "rects": {
+      "actor": {
+        "left": 79.5,
+        "top": 65,
+        "right": 285.5,
+        "bottom": 120
+      },
+      "ui": {
+        "left": 314.5,
+        "top": 65,
+        "right": 520.5,
+        "bottom": 120
+      },
+      "bll": {
+        "left": 549.5,
+        "top": 65,
+        "right": 755.5,
+        "bottom": 120
+      },
+      "dal": {
+        "left": 784.5,
+        "top": 65,
+        "right": 990.5,
+        "bottom": 120
+      },
+      "aux": {
+        "left": 1019.5,
+        "top": 65,
+        "right": 1225.5,
+        "bottom": 120
+      }
+    },
+    "steps": [
+      {
+        "a": "actor",
+        "b": "ui",
+        "text": "Crear respaldo; elegir archivo .bak",
+        "y": 198,
+        "seq": 1
+      },
+      {
+        "a": "ui",
+        "b": "bll",
+        "text": "CrearRespaldoConfiable(destino)",
+        "y": 271,
+        "seq": 2
+      },
+      {
+        "a": "bll",
+        "b": "dal",
+        "text": "CrearRespaldoConfiable(destino)",
+        "y": 344,
+        "seq": 3
+      },
+      {
+        "note": "Exigir permisos; verificar estado actual; no sobrescribir archivos existentes",
+        "y": 410
+      },
+      {
+        "a": "dal",
+        "b": "dal",
+        "text": "PrepararCarpetaCompartida; BACKUP COPY_ONLY CHECKSUM",
+        "y": 545,
+        "seq": 4
+      },
+      {
+        "a": "dal",
+        "b": "aux",
+        "text": "RESTORE VERIFYONLY y restauración con MOVE",
+        "y": 638,
+        "seq": 5
+      },
+      {
+        "a": "dal",
+        "b": "aux",
+        "text": "Examinar DVH y DVV del respaldo",
+        "y": 711,
+        "seq": 6
+      },
+      {
+        "a": "aux",
+        "b": "dal",
+        "text": "Integridad correcta",
+        "reply": true,
+        "y": 784,
+        "seq": 7
+      },
+      {
+        "a": "dal",
+        "b": "dal",
+        "text": "Eliminar base auxiliar; ExportarRespaldo",
+        "y": 897,
+        "seq": 8
+      },
+      {
+        "note": "Copiar con permisos del usuario; comparar SHA-256 del archivo; finalizar .bak",
+        "y": 963
+      },
+      {
+        "a": "dal",
+        "b": "ui",
+        "text": "Ruta del respaldo comprobado",
+        "reply": true,
+        "y": 1038,
+        "seq": 9
+      },
+      {
+        "note": "Si falla la exportación, conservar copia local e informar su ruta",
+        "y": 1104
+      }
+    ]
+  },
+  "25_secuencia_recuperacion": {
+    "width": 1255,
+    "height": 1475,
+    "rects": {
+      "actor": {
+        "left": 79.5,
+        "top": 65,
+        "right": 285.5,
+        "bottom": 120
+      },
+      "ui": {
+        "left": 314.5,
+        "top": 65,
+        "right": 520.5,
+        "bottom": 120
+      },
+      "bll": {
+        "left": 549.5,
+        "top": 65,
+        "right": 755.5,
+        "bottom": 120
+      },
+      "dal": {
+        "left": 784.5,
+        "top": 65,
+        "right": 990.5,
+        "bottom": 120
+      },
+      "aux": {
+        "left": 1019.5,
+        "top": 65,
+        "right": 1225.5,
+        "bottom": 120
+      }
+    },
+    "steps": [
+      {
+        "a": "actor",
+        "b": "ui",
+        "text": "Seleccionar .bak y confirmar recuperación",
+        "y": 198,
+        "seq": 1
+      },
+      {
+        "a": "ui",
+        "b": "bll",
+        "text": "Recuperar(ruta, tablasCompletas)",
+        "y": 271,
+        "seq": 2
+      },
+      {
+        "a": "bll",
+        "b": "dal",
+        "text": "Recuperar(ruta, restaurarTablasCompletas)",
+        "y": 364,
+        "seq": 3
+      },
+      {
+        "a": "dal",
+        "b": "aux",
+        "text": "Preparar copia accesible; restaurar y verificar respaldo",
+        "y": 457,
+        "seq": 4
+      },
+      {
+        "note": "Debe tener DVH y DVV válidos y el mismo IdBase",
+        "y": 523
+      },
+      {
+        "a": "dal",
+        "b": "dal",
+        "text": "Transacción Serializable y bloqueo exclusivo",
+        "y": 638,
+        "seq": 5
+      },
+      {
+        "note": "alt recuperación por registros",
+        "y": 704
+      },
+      {
+        "a": "dal",
+        "b": "dal",
+        "text": "Restaurar filas afectadas o eliminadas desde el respaldo",
+        "y": 819,
+        "seq": 6
+      },
+      {
+        "note": "Si no se conserva la referencia actual, rollback: respaldo insuficiente",
+        "y": 885
+      },
+      {
+        "note": "else restauración completa explícitamente confirmada",
+        "y": 953
+      },
+      {
+        "a": "dal",
+        "b": "dal",
+        "text": "Reemplazar tablas protegidas afectadas y sus controles",
+        "y": 1068,
+        "seq": 7
+      },
+      {
+        "note": "Se descartan los cambios de esas tablas posteriores al respaldo",
+        "y": 1134
+      },
+      {
+        "a": "dal",
+        "b": "dal",
+        "text": "Examinar; Commit solo si todo es correcto",
+        "y": 1229,
+        "seq": 8
+      },
+      {
+        "a": "dal",
+        "b": "ui",
+        "text": "InformeIntegridad correcto",
+        "reply": true,
+        "y": 1302,
+        "seq": 9
+      },
+      {
+        "note": "Eliminar auxiliares; registrar recuperación fuera de la Bitacora protegida",
+        "y": 1368
+      }
+    ]
+  },
+  "26_clases_usuarios": {
+    "width": 2613.76,
+    "height": 1004,
+    "rects": {
+      "FrmGestionUsuarios": {
+        "left": 991.86816,
+        "top": 158.00128000000004,
+        "right": 1482.7238399999999,
+        "bottom": 281.51872000000003
+      },
+      "UsuarioBLL": {
+        "left": 910.4793599999999,
+        "top": 506.79936,
+        "right": 1564.11264,
+        "bottom": 661.04064
+      },
+      "UsuarioDAL": {
+        "left": 29.9904,
+        "top": 758.3212800000001,
+        "right": 582.2016,
+        "bottom": 973.99872
+      },
+      "Usuario": {
+        "left": 1546.8927999999999,
+        "top": 30.002560000000038,
+        "right": 1887.8271999999997,
+        "bottom": 409.5174400000001
+      },
+      "RolesBLL": {
+        "left": 645.4822399999999,
+        "top": 789.0393600000001,
+        "right": 1057.90976,
+        "bottom": 943.2806400000002
+      },
+      "BitacoraBLL": {
+        "left": 1121.58592,
+        "top": 792.8812800000001,
+        "right": 2124.20608,
+        "bottom": 939.4387200000001
+      },
+      "GestionUsuariosFactory": {
+        "left": 1951.4304000000002,
+        "top": 169.52012800000003,
+        "right": 2257.6895999999997,
+        "bottom": 269.9998720000001
+      },
+      "HashHelper": {
+        "left": 2188.4768,
+        "top": 808.2374400000001,
+        "right": 2583.8432,
+        "bottom": 924.0825600000001
+      }
+    }
+  },
+  "27_secuencia_alta_usuario": {
+    "width": 1490,
+    "height": 990,
+    "rects": {
+      "actor": {
+        "left": 79.5,
+        "top": 65,
+        "right": 285.5,
+        "bottom": 120
+      },
+      "ui": {
+        "left": 314.5,
+        "top": 65,
+        "right": 520.5,
+        "bottom": 120
+      },
+      "bll": {
+        "left": 549.5,
+        "top": 65,
+        "right": 755.5,
+        "bottom": 120
+      },
+      "dal": {
+        "left": 784.5,
+        "top": 65,
+        "right": 990.5,
+        "bottom": 120
+      },
+      "hash": {
+        "left": 1019.5,
+        "top": 65,
+        "right": 1225.5,
+        "bottom": 120
+      },
+      "bit": {
+        "left": 1254.5,
+        "top": 65,
+        "right": 1460.5,
+        "bottom": 120
+      }
+    },
+    "steps": [
+      {
+        "a": "actor",
+        "b": "ui",
+        "text": "Completar usuario, nombre, apellido y contraseña",
+        "y": 198,
+        "seq": 1
+      },
+      {
+        "a": "ui",
+        "b": "bll",
+        "text": "CrearUsuario(usuario, passwordPlana)",
+        "y": 291,
+        "seq": 2
+      },
+      {
+        "a": "bll",
+        "b": "bll",
+        "text": "ValidarDatos(usuario)",
+        "y": 364,
+        "seq": 3
+      },
+      {
+        "a": "bll",
+        "b": "dal",
+        "text": "ObtenerPorNombreUsuario(nombre)",
+        "y": 437,
+        "seq": 4
+      },
+      {
+        "note": "Nombre único y campos obligatorios; si no, cancelar",
+        "y": 503
+      },
+      {
+        "a": "bll",
+        "b": "hash",
+        "text": "ObtenerHashSHA256(passwordPlana)",
+        "y": 578,
+        "seq": 5
+      },
+      {
+        "a": "bll",
+        "b": "dal",
+        "text": "Insertar(usuario)",
+        "y": 651,
+        "seq": 6
+      },
+      {
+        "a": "bll",
+        "b": "bit",
+        "text": "Registrar(evento de GestionUsuariosFactory(AltaUsuario))",
+        "y": 724,
+        "seq": 7
+      },
+      {
+        "a": "ui",
+        "b": "ui",
+        "text": "Limpiar(); CargarGrilla()",
+        "y": 817,
+        "seq": 8
+      },
+      {
+        "note": "La escritura de Usuarios y su auditoría son operaciones separadas en el código",
+        "y": 883
+      }
+    ]
+  },
+  "28_secuencia_preferencia": {
+    "width": 1255,
+    "height": 990,
+    "rects": {
+      "ui": {
+        "left": 79.5,
+        "top": 65,
+        "right": 285.5,
+        "bottom": 120
+      },
+      "bll": {
+        "left": 314.5,
+        "top": 65,
+        "right": 520.5,
+        "bottom": 120
+      },
+      "ses": {
+        "left": 549.5,
+        "top": 65,
+        "right": 755.5,
+        "bottom": 120
+      },
+      "dal": {
+        "left": 784.5,
+        "top": 65,
+        "right": 990.5,
+        "bottom": 120
+      },
+      "man": {
+        "left": 1019.5,
+        "top": 65,
+        "right": 1225.5,
+        "bottom": 120
+      }
+    },
+    "steps": [
+      {
+        "a": "ui",
+        "b": "man",
+        "text": "Suscribir(this)",
+        "y": 178,
+        "seq": 1
+      },
+      {
+        "a": "ui",
+        "b": "bll",
+        "text": "RestablecerIdiomaUsuario()",
+        "y": 251,
+        "seq": 2
+      },
+      {
+        "a": "bll",
+        "b": "ses",
+        "text": "Leer UsuarioActual.IdUsuario",
+        "y": 324,
+        "seq": 3
+      },
+      {
+        "a": "bll",
+        "b": "dal",
+        "text": "ObtenerIdiomas() y ObtenerIdiomaPreferido(idUsuario)",
+        "y": 397,
+        "seq": 4
+      },
+      {
+        "note": "Elegir preferido activo; si no, español activo o primer idioma activo",
+        "y": 463
+      },
+      {
+        "a": "bll",
+        "b": "bll",
+        "text": "CargarIdioma(id, guardarPreferencia: false)",
+        "y": 578,
+        "seq": 5
+      },
+      {
+        "a": "bll",
+        "b": "dal",
+        "text": "ObtenerIdiomaPorId y ObtenerTraduccionesPorIdioma",
+        "y": 651,
+        "seq": 6
+      },
+      {
+        "a": "bll",
+        "b": "man",
+        "text": "CargarIdioma(idioma, diccionario)",
+        "y": 724,
+        "seq": 7
+      },
+      {
+        "a": "man",
+        "b": "man",
+        "text": "NotificarObservadores()",
+        "y": 817,
+        "seq": 8
+      },
+      {
+        "note": "El idioma alternativo no reemplaza la preferencia guardada si esta está inactiva",
+        "y": 883
+      }
+    ]
+  },
+  "29_secuencia_inicializacion": {
+    "width": 1100,
+    "height": 1123,
+    "rects": {
+      "actor": {
+        "left": 79.5,
+        "top": 65,
+        "right": 285.5,
+        "bottom": 120
+      },
+      "ui": {
+        "left": 314.5,
+        "top": 65,
+        "right": 520.5,
+        "bottom": 120
+      },
+      "bll": {
+        "left": 549.5,
+        "top": 65,
+        "right": 755.5,
+        "bottom": 120
+      },
+      "dal": {
+        "left": 784.5,
+        "top": 65,
+        "right": 990.5,
+        "bottom": 120
+      }
+    },
+    "steps": [
+      {
+        "a": "actor",
+        "b": "ui",
+        "text": "Confirmar referencia inicial confiable",
+        "y": 198,
+        "seq": 1
+      },
+      {
+        "a": "ui",
+        "b": "bll",
+        "text": "InicializarBaseConfiable()",
+        "y": 271,
+        "seq": 2
+      },
+      {
+        "a": "bll",
+        "b": "dal",
+        "text": "InicializarBaseConfiable()",
+        "y": 344,
+        "seq": 3
+      },
+      {
+        "note": "Exigir permisos y rechazar si ya hay controles inicializados",
+        "y": 410
+      },
+      {
+        "a": "dal",
+        "b": "dal",
+        "text": "CrearArchivoBackup(\"antes_integridad\")",
+        "y": 525,
+        "seq": 4
+      },
+      {
+        "a": "dal",
+        "b": "dal",
+        "text": "Transacción; ValidarLegado por fila",
+        "y": 618,
+        "seq": 5
+      },
+      {
+        "note": "Discrepancias no reconocidas cancelan; solo compatibilidad de redondeo documentada",
+        "y": 684
+      },
+      {
+        "a": "dal",
+        "b": "dal",
+        "text": "GuardarHash; crear DVV con IdBase nuevo",
+        "y": 779,
+        "seq": 6
+      },
+      {
+        "a": "dal",
+        "b": "dal",
+        "text": "Examinar; Commit",
+        "y": 852,
+        "seq": 7
+      },
+      {
+        "a": "dal",
+        "b": "dal",
+        "text": "CrearRespaldoConfiable()",
+        "y": 945,
+        "seq": 8
+      },
+      {
+        "a": "dal",
+        "b": "ui",
+        "text": "Ruta del respaldo final comprobado",
+        "reply": true,
+        "y": 1018,
+        "seq": 9
+      }
+    ]
+  },
+  "30_secuencia_archivar": {
+    "width": 1100,
+    "height": 977,
+    "rects": {
+      "actor": {
+        "left": 79.5,
+        "top": 65,
+        "right": 285.5,
+        "bottom": 120
+      },
+      "ui": {
+        "left": 314.5,
+        "top": 65,
+        "right": 520.5,
+        "bottom": 120
+      },
+      "bll": {
+        "left": 549.5,
+        "top": 65,
+        "right": 755.5,
+        "bottom": 120
+      },
+      "dal": {
+        "left": 784.5,
+        "top": 65,
+        "right": 990.5,
+        "bottom": 120
+      }
+    },
+    "steps": [
+      {
+        "a": "actor",
+        "b": "ui",
+        "text": "Archivar bitácora antigua y confirmar",
+        "y": 198,
+        "seq": 1
+      },
+      {
+        "a": "ui",
+        "b": "bll",
+        "text": "ArchivarBitacora(180)",
+        "y": 271,
+        "seq": 2
+      },
+      {
+        "a": "bll",
+        "b": "dal",
+        "text": "ArchivarBitacora(180)",
+        "y": 344,
+        "seq": 3
+      },
+      {
+        "a": "dal",
+        "b": "dal",
+        "text": "ExigirAdministrador; Cambiar(\"Bitacora\", comando)",
+        "y": 457,
+        "seq": 4
+      },
+      {
+        "note": "Verificación inicial y bloqueo exclusivo dentro de una transacción",
+        "y": 523
+      },
+      {
+        "a": "dal",
+        "b": "dal",
+        "text": "DELETE OUTPUT INTO Bitacora_Historico para fecha anterior al límite",
+        "y": 638,
+        "seq": 5
+      },
+      {
+        "a": "dal",
+        "b": "dal",
+        "text": "ActualizarVertical; Examinar; Commit",
+        "y": 731,
+        "seq": 6
+      },
+      {
+        "a": "dal",
+        "b": "ui",
+        "text": "Cantidad de eventos archivados",
+        "reply": true,
+        "y": 804,
+        "seq": 7
+      },
+      {
+        "note": "Bitacora_Historico se crea cuando se usa; no tiene DVV propio",
+        "y": 870
+      }
+    ]
+  }
+}

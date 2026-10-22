@@ -1,0 +1,93 @@
+classDiagram
+    direction TB
+    class FormGestionRoles {
+        -AsignarAUsuario(): void
+        -QuitarAUsuario(): void
+        -AsignarARol(): void
+        -QuitarDeRol(): void
+        -EditarFamilia(): void
+        -Ejecutar(accion: Action): void
+    }
+    class RolesBLL {
+        +CargarParaGestion(): EstadoRoles
+        +CargarRolesUsuario(usuario: Usuario): void
+        +Guardar(estado: EstadoRoles): void
+        +Validar(estado: EstadoRoles): void$
+    }
+    class RolesDAL {
+        +Cargar(): EstadoRoles
+        +Guardar(estado: EstadoRoles): void
+    }
+    class EstadoRoles {
+        +Version: long
+        +IdAdministradorOriginal: int
+        +Roles: List~Rol~
+        +Permisos: List~Permiso~
+        +Usuarios: List~Usuario~
+    }
+    class Usuario {
+        +EsAdministradorOriginal: bool
+        +Id: int
+        +Roles: List~Rol~
+        +IdUsuario: int
+        +NombreUsuario: string
+        +Password: string
+        +Nombre: string
+        +Apellido: string
+        +Activo: bool
+        +AsignarRol(r: Rol): void
+        +QuitarRol(r: Rol): void
+        +TienePermiso(nombre: string): bool
+    }
+    class Rol {
+        +Id: int
+        +Nombre: string
+        +Roles: List~Rol~
+        +Permisos: List~Permiso~
+        +ContieneRol(buscado: Rol): bool
+        +AgregarRol(rol: Rol): void
+        +QuitarRol(rol: Rol): void
+        +AgregarPermiso(permiso: Permiso): void
+        +QuitarPermiso(permiso: Permiso): void
+        +TienePermiso(nombre: string): bool
+    }
+    class Permiso {
+        <<abstract>>
+        +Id: int
+        +Nombre: string
+        +ContienePermiso(nombre: string): bool*
+        +Agregar(permiso: Permiso): void*
+        +Quitar(permiso: Permiso): void*
+        +ObtenerHijos(): List~Permiso~*
+    }
+    class PermisoSimple {
+        +ContienePermiso(nombre: string): bool
+        +Agregar(permiso: Permiso): void
+        +Quitar(permiso: Permiso): void
+        +ObtenerHijos(): List~Permiso~
+    }
+    class PermisoCompuesto {
+        +Agregar(permiso: Permiso): void
+        +Quitar(permiso: Permiso): void
+        +ObtenerHijos(): List~Permiso~
+        +ContienePermiso(nombre: string): bool
+    }
+    class MatrizRoles {
+        <<static>>
+        +CrearCatalogo(): EstadoRoles$
+        +ValidarCatalogo(estado: EstadoRoles): void$
+    }
+    PermisoCompuesto --|> Permiso
+    PermisoCompuesto "1" --> "0..*" Permiso : hijos
+    PermisoSimple --|> Permiso
+    Rol "1" --> "0..*" Permiso : permisos
+    Usuario "1" --> "0..*" Rol : roles
+    RolesBLL "1" --> "1" RolesDAL : dal
+    FormGestionRoles "1" --> "0..*" Rol : roles
+    FormGestionRoles "1" --> "0..*" Usuario : usuarios
+    FormGestionRoles "1" --> "1" EstadoRoles : estado
+    FormGestionRoles "1" --> "1" RolesBLL : rolesBLL
+    EstadoRoles "1" --> "0..*" Usuario : Usuarios
+    EstadoRoles "1" --> "0..*" Rol : Roles
+    EstadoRoles "1" --> "0..*" Permiso : Permisos
+    Rol "1" --> "0..*" Rol : roles heredados

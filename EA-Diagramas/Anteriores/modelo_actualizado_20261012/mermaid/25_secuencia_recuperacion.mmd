@@ -1,0 +1,22 @@
+sequenceDiagram
+    autonumber
+    actor actor as Administrador
+    participant ui as FrmIntegridad
+    participant bll as IntegridadBLL
+    participant dal as IntegridadDAL
+    participant aux as Base auxiliar
+    actor->>ui: Seleccionar .bak y confirmar recuperación
+    ui->>bll: Recuperar(ruta, tablasCompletas)
+    bll->>dal: Recuperar(ruta, restaurarTablasCompletas)
+    dal->>aux: Preparar copia accesible  restaurar y verificar respaldo
+    Note over actor,aux: Debe tener DVH y DVV válidos y el mismo IdBase
+    dal->>dal: Transacción Serializable y bloqueo exclusivo
+    Note over actor,aux: alt recuperación por registros
+    dal->>dal: Restaurar filas afectadas o eliminadas desde el respaldo
+    Note over actor,aux: Si no se conserva la referencia actual, rollback: respaldo insuficiente
+    Note over actor,aux: else restauración completa explícitamente confirmada
+    dal->>dal: Reemplazar tablas protegidas afectadas y sus controles
+    Note over actor,aux: Se descartan los cambios de esas tablas posteriores al respaldo
+    dal->>dal: Examinar  Commit solo si todo es correcto
+    dal-->>ui: InformeIntegridad correcto
+    Note over actor,aux: Eliminar auxiliares  registrar recuperación fuera de la Bitacora protegida

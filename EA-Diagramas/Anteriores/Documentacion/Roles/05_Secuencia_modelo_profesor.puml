@@ -1,0 +1,127 @@
+@startuml
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam sequence {
+ParticipantBackgroundColor #DAE8FC
+ParticipantBorderColor #8AB2E2
+LifeLineBorderColor #888888
+ArrowColor #666666
+GroupBorderColor #E6AE19
+GroupHeaderBackgroundColor #FFF4CF
+GroupBackgroundColor white
+}
+hide footbox
+autonumber
+title Crear y configurar un rol — modelo de la imagen de referencia
+actor Administrador as A
+participant "sistema:FormGestionRoles" as F
+participant "gestor:Usuario" as U
+participant "rolesBLL:RolesBLL" as B
+participant "rolesDAL:RolesDAL" as D
+participant "sesion:SesionServicio" as S
+participant "MatrizRoles" as M
+participant "rol:Rol" as R
+participant "permiso:Permiso" as P
+note over A,P: CrearRol existe, pero su comando de interfaz está pendiente.\nSistema representa FormGestionRoles; no se agrega una clase nueva.
+A -> F: Solicitar Crear rol «entrada UI pendiente»
+F -> F: Ejecutar(() => CrearRol(false)) «enlace previsto»
+F -> F: CrearRol(false): abrir diálogo de nombre
+A -> F: Confirmar nombre
+alt [cancelación o nombre vacío/repetido]
+ref over A,F: Cancelar: termina sin guardar. Nombre inválido: error y recarga.\nNo se ejecuta la rama de creación correcta.
+else [nombre válido]
+F -> R: new Rol { Id = Max(Id) + 1, Nombre = texto }
+F -> F: estado.Roles.Add(nuevo)
+F -> B: Guardar(estado)
+B -> D: Cargar()
+D --> B: estado persistido actual
+B -> B: ExigirGestion(estado persistido)
+B -> S: ObtenerInstancia() «static»
+S --> B: instancia
+B -> S: UsuarioActual {get}
+S --> B: usuario de sesión o null
+ref over B,U: Obtener IdUsuario de la sesión y buscarlo en estado.Usuarios.\ngestor es la instancia del usuario en el estado recién leído.
+opt [gestor encontrado y activo]
+B -> U: TienePermiso(MatrizRoles.Administracion)
+loop [por cada rol del gestor, hasta encontrar el permiso]
+U -> R: TienePermiso(nombre)
+ref over R,R: Primero consulta TienePermiso en los roles anidados.
+loop [permisos directos, hasta encontrar el permiso]
+R -> P: ContienePermiso(nombre)
+P --> R: bool «implementación simple o compuesta»
+end
+R --> U: bool
+end
+U --> B: bool
+end
+alt [sin autorización]
+ref over F,B: InvalidOperationException. Ejecutar informa y recarga mediante CargarDatos.\nNo se guarda el rol propuesto.
+else [gestor autorizado]
+B -> B: Validar(estado) «static»
+B -> M: ValidarCatalogo(estado)
+alt [catálogo inválido]
+ref over F,M: Excepción; Ejecutar informa y recarga. No se llama a DAL.Guardar.
+else [catálogo válido]
+M --> B: void
+ref over B,U: Validar comprueba además administrador original activo con rol 1,\nun administrador disponible y roles de usuarios dentro del catálogo.
+alt [validación adicional falla]
+ref over F,B: Excepción; Ejecutar informa y recarga. No se llama a DAL.Guardar.
+else [estado válido]
+B -> D: Guardar(estado)
+note over B,D: Transacción Serializable: control de Version y administrador protegido.\nActualiza roles y relaciones; confirma con Commit y aumenta estado.Version.
+alt [conflicto de versión o error SQL]
+ref over F,D: No se confirma el cambio. Ejecutar informa y recarga desde SQL.
+else [guardado correcto]
+D --> B: void
+B --> F: void
+F -> F: RefrescarArboles()
+ref over F,P: Reconstruye árboles del catálogo y del usuario mediante CargarRol\ny CargarNodosRecursivo. Detalle del recorrido más abajo.
+F --> A: Cambios guardados; nuevo rol sin componentes
+opt [el gestor decide configurar el nuevo rol; nueva acción independiente]
+A -> F: Seleccionar permiso y rol destino; Asignar componente
+F -> F: Ejecutar(AsignarARol)
+F -> F: AsignarARol(); Destino()
+alt [destino inválido, Administrador o sin origen válido]
+ref over A,F: Error y recarga; no se guarda esta acción.
+else [destino y permiso válidos]
+F -> R: AgregarPermiso(permiso)
+note over R,P: El rol guarda una referencia a Permiso.\nUna hoja y una familia utilizan la misma operación.
+F -> B: Guardar(estado)
+ref over B,D: Repite autorización, validación y transacción anteriores.\nEs un segundo guardado; crear y configurar no son una única transacción.
+alt [error al guardar la configuración]
+ref over A,D: Ejecutar informa y recarga. El rol creado anteriormente permanece.
+else [configuración guardada]
+B --> F: void
+F -> F: RefrescarArboles()
+loop [por cada rol del catálogo]
+F -> F: CargarRol(nodos, rol)
+F -> R: Permisos {get}
+R --> F: List<Permiso>
+loop [por cada permiso del rol]
+F -> F: CargarNodosRecursivo(nodoPadre, permiso)
+F -> P: ObtenerHijos()
+P --> F: List<Permiso> «hoja: vacía; familia: hijos»
+opt [la lista de hijos no está vacía]
+loop [por cada hijo]
+F -> F: CargarNodosRecursivo(nodo, hijo)
+end
+end
+end
+F -> R: Roles {get}
+R --> F: List<Rol>
+opt [hay roles anidados]
+ref over F,R: Por cada hijo: CargarRol(nodo.Nodes, hijo), recursivamente.
+end
+end
+F --> A: Árbol actualizado; configuración persistida
+end
+end
+end
+end
+end
+end
+end
+end
+note over A,P: Las clases participan por responsabilidades reales: sesión y usuario autorizan,\nBLL valida, DAL persiste y Rol/Permiso representan y recorren la arquitectura.
+@enduml

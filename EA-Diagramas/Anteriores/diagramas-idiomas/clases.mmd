@@ -1,0 +1,163 @@
+classDiagram
+direction TB
+
+class IIdiomaSubject {
+    <<interface>>
+    +Suscribir(IIdiomaObserver observador) void
+    +Desuscribir(IIdiomaObserver observador) void
+    +NotificarObservadores() void
+}
+class IIdiomaObserver {
+    <<interface>>
+    +ActualizarIdioma() void
+}
+class IdiomaManager {
+    <<Singleton>>
+    -IdiomaManager _instancia$
+    -List~IIdiomaObserver~ _observadores
+    -Dictionary _traducciones
+    +Idioma IdiomaActual
+    -IdiomaManager()
+    +ObtenerInstancia() IdiomaManager$
+    +Suscribir(IIdiomaObserver observador) void
+    +Desuscribir(IIdiomaObserver observador) void
+    +NotificarObservadores() void
+    +CargarIdioma(Idioma idioma, Dictionary traducciones) void
+    +Traducir(string nombreForm, string nombreControl, string textoOriginal) string
+    +ClaveDe(string nombreForm, string nombreControl) string$
+    +ReiniciarSesion() void
+}
+class Idioma {
+    +int Id
+    +string Nombre
+    +string Codigo
+    +string NombreNativo
+    +bool Activo
+    +ToString() string
+}
+class Traduccion {
+    +int IdIdioma
+    +int IdControl
+    +string Texto
+    +string DigitoVerificador
+    +string ControlNombre
+    +string FormNombre
+    +string Estado
+    +string TextoBase
+}
+class ControlIdioma {
+    +int Id
+    +string Control
+    +string Form
+}
+class IdiomaBLL {
+    -IdiomaDAL _dal
+    +ObtenerIdiomas() List~Idioma~
+    +ObtenerTodosLosIdiomas() List~Idioma~
+    +CambiarIdioma(int idIdioma) void
+    +RestablecerIdiomaUsuario() void
+    -CargarIdioma(int idIdioma, bool guardarPreferencia) void
+    +CrearIdioma(string nombre, string codigo, string nombreNativo, bool activo) int
+    +CambiarEstadoIdioma(int idIdioma, bool activo) void
+    +ObtenerTraduccionesParaGestion(int idIdioma) List~Traduccion~
+    +GuardarTraduccionPorControl(int idIdioma, int idControl, string texto) void
+    +RegistrarClaveNueva(string nombreForm, string nombreControl, string textoBase) void
+}
+class IdiomaDAL {
+    -string cadena
+    +ObtenerIdiomaPreferido(int idUsuario) int?
+    +GuardarIdiomaPreferido(int idUsuario, int idIdioma) void
+    +ObtenerIdiomas() List~Idioma~
+    +ObtenerTodosLosIdiomas() List~Idioma~
+    +ObtenerIdiomaPorId(int idIdioma) Idioma
+    +ObtenerIdIdiomaPorCodigo(string codigo) int
+    +ExisteIdiomaPorNombre(string nombre) bool
+    +ExisteIdiomaPorCodigo(string codigo) bool
+    +InsertarIdioma(Idioma idioma) int
+    +CambiarEstadoIdioma(int idIdioma, bool activo) void
+    +ObtenerTraduccionesPorIdioma(int idIdioma) List~Traduccion~
+    +ObtenerTraduccionesParaGestion(int idIdioma) List~Traduccion~
+    +ObtenerOCrearControl(string nombreControl, string nombreForm) int
+    +ExisteControl(string nombreControl, string nombreForm) bool
+    +CrearTraduccionesPendientes(int idIdioma) void
+    +CrearPendientesParaTodosLosIdiomas(int idControl, int idIdiomaBase, string textoBase) void
+    +ActualizarTraduccion(int idIdioma, int idControl, string texto, string estado, string digitoVerificador) void
+}
+class TraductorFormularios {
+    <<static>>
+    -IdiomaBLL _idiomaBLL$
+    +TraducirFormulario(Form formulario) void$
+    -TraducirControles(string nombreForm, Control.ControlCollection controles) void$
+    -TraducirMenu(string nombreForm, ToolStripItemCollection items) void$
+    -RegistrarClave(string nombreForm, string nombreControl, string textoBase) void$
+    -Traducir(string nombreForm, string clave, string textoOriginal) string$
+}
+class SesionServicio {
+    <<Singleton>>
+    +Usuario UsuarioActual
+    +bool EstaAutenticado
+    +ObtenerInstancia() SesionServicio$
+    +IniciarSesion(Usuario usuarioLogueado) void
+    +CerrarSesion() void
+}
+class Usuario {
+    +int IdUsuario
+    +string NombreUsuario
+    +bool Activo
+}
+class Form {
+    <<WindowsForms>>
+}
+class FrmPrincipal {
+    +ActualizarIdioma() void
+}
+class FrmGestionUsuarios {
+    +ActualizarIdioma() void
+}
+class FrmGestionIdiomas {
+    +ActualizarIdioma() void
+}
+class FrmBitacora {
+    +ActualizarIdioma() void
+}
+class FormGestionRoles {
+    +ActualizarIdioma() void
+}
+
+IIdiomaSubject <|.. IdiomaManager
+IdiomaManager "1" o-- "0..*" IIdiomaObserver : observadores
+IdiomaManager --> "0..1" Idioma : IdiomaActual
+IdiomaBLL --> IdiomaDAL : _dal
+IdiomaBLL ..> IdiomaManager : carga y notifica
+IdiomaBLL ..> SesionServicio : cuenta actual
+IdiomaDAL ..> Idioma : consulta y guarda
+IdiomaDAL ..> Traduccion : consulta y actualiza
+Traduccion "0..*" --> "1" Idioma : IdIdioma en SQL
+Traduccion "0..*" --> "1" ControlIdioma : IdControl en SQL
+SesionServicio --> "0..1" Usuario : UsuarioActual
+SesionServicio ..> IdiomaManager : ReiniciarSesion
+TraductorFormularios ..> IdiomaBLL : registra claves
+TraductorFormularios ..> IdiomaManager : consulta textos
+Form <|-- FrmPrincipal
+Form <|-- FrmGestionUsuarios
+Form <|-- FrmGestionIdiomas
+Form <|-- FrmBitacora
+Form <|-- FormGestionRoles
+IIdiomaObserver <|.. FrmPrincipal
+IIdiomaObserver <|.. FrmGestionUsuarios
+IIdiomaObserver <|.. FrmGestionIdiomas
+IIdiomaObserver <|.. FrmBitacora
+IIdiomaObserver <|.. FormGestionRoles
+FrmPrincipal ..> IdiomaBLL : cambia y recupera idioma
+FrmGestionIdiomas ..> IdiomaBLL : gestiona idiomas y textos
+FrmPrincipal ..> TraductorFormularios
+FrmGestionUsuarios ..> TraductorFormularios
+FrmGestionIdiomas ..> TraductorFormularios
+FrmBitacora ..> TraductorFormularios
+FormGestionRoles ..> TraductorFormularios
+
+note for IdiomaManager "Dictionary representa Dictionary&lt;string, string&gt;.\nIdiomaActual tiene lectura pública y escritura privada."
+note for Traduccion "Las asociaciones mediante IDs representan relaciones SQL.\nNo hay una lista Traducciones dentro de Idioma."
+note for IdiomaDAL "La preferencia por cuenta se guarda en la tabla SQL UsuarioIdioma."
+note for Usuario "Se muestran los miembros relevantes para idiomas."
+note for IIdiomaObserver "Cada pantalla se suscribe al cargar y se desuscribe al cerrar."

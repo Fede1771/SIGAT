@@ -1,0 +1,77 @@
+classDiagram
+    direction TB
+    class FrmLogin {
+        -BtnLogin_Click(sender: Object, e: EventArgs): void
+    }
+    class UsuarioBLL {
+        +Autenticar(nombreUsuario: string, passwordPlana: string, out usuarioValidado: Usuario): ResultadoLogin
+        +ObtenerTodos(): List~Usuario~
+        +CrearUsuario(nuevoUsuario: Usuario, passwordPlana: string): void
+        +ActualizarUsuario(usuarioEditado: Usuario, passwordPlana: string): void
+        +BajaLogicaUsuario(idUsuario: int, nombreUsuario: string): void
+        +CrearAdministradorInicial(usuario: Usuario, passwordPlana: string): void
+        +ValidarDatos(usuario: Usuario): void$
+    }
+    class UsuarioDAL {
+        +ObtenerPorNombreUsuario(nombreUsuario: string): Usuario
+        +ObtenerTodos(): List~Usuario~
+        +Insertar(usuario: Usuario, administradorInicial: bool): void
+        +Actualizar(usuario: Usuario): void
+        +Eliminar(idUsuario: int): void
+        +EsAdministradorOriginal(idUsuario: int): bool
+    }
+    class Usuario {
+        +EsAdministradorOriginal: bool
+        +Id: int
+        +Roles: List~Rol~
+        +IdUsuario: int
+        +NombreUsuario: string
+        +Password: string
+        +Nombre: string
+        +Apellido: string
+        +Activo: bool
+        +AsignarRol(r: Rol): void
+        +QuitarRol(r: Rol): void
+        +TienePermiso(nombre: string): bool
+    }
+    class HashHelper {
+        <<static>>
+        +ObtenerHashSHA256(texto: string): string$
+    }
+    class SesionServicio {
+        <<singleton>>
+        +UsuarioActual: Usuario
+        +EstaAutenticado: bool
+        +ObtenerInstancia(): SesionServicio$
+        +IniciarSesion(usuarioLogueado: Usuario): void
+        +CerrarSesion(): void
+    }
+    class RolesBLL {
+        +CargarParaGestion(): EstadoRoles
+        +CargarRolesUsuario(usuario: Usuario): void
+        +Guardar(estado: EstadoRoles): void
+        +Validar(estado: EstadoRoles): void$
+    }
+    class BitacoraBLL {
+        +Registrar(evento: IBitacoraEvento): void
+        +Registrar(usuario: string, actividad: string, informacion: string): void
+        +Buscar(desde: Nullable~DateTime~, hasta: Nullable~DateTime~, usuario: string, actividad: string): List~Bitacora~
+    }
+    class IntegridadBLL {
+        +Verificar(): InformeIntegridad
+        +PuedeAdministrar(): bool
+        +InicializarBaseConfiable(): string
+        +CrearRespaldoConfiable(destino: string): string
+        +ArchivarBitacora(dias: int): int
+        +Recuperar(ruta: string, tablasCompletas: bool): InformeIntegridad
+        +ExigirIntegridad(): void
+    }
+    UsuarioBLL "1" --> "1" UsuarioDAL : _dal
+    UsuarioBLL "1" --> "1" BitacoraBLL : _bitacora
+    FrmLogin "1" --> "1" UsuarioBLL : _usuarioBLL
+    SesionServicio "1" --> "0..1" Usuario : UsuarioActual
+    UsuarioBLL ..> IntegridadBLL : ExigirIntegridad
+    UsuarioBLL ..> RolesBLL : CargarRolesUsuario
+    UsuarioBLL ..> SesionServicio : IniciarSesion
+    UsuarioBLL ..> HashHelper : hash de contraseña
+    IntegridadBLL ..> SesionServicio : autorizar recuperación

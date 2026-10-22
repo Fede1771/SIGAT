@@ -1,0 +1,16 @@
+digraph G {
+graph [rankdir=TB, bgcolor="white", pad="0.25", nodesep="0.55", ranksep="0.7", splines=polyline, dpi=72];
+node [fontname="Arial", fontsize=12, color="#404040"];
+edge [fontname="Arial", fontsize=9, color="#555555", arrowsize=0.8];
+"actor" [shape=plaintext, label="«actor»\nAdministrador de SIGAT y SQL"];
+"uc0" [shape=ellipse, style=filled, fillcolor="#edf2f7", label="Verificar integridad"];
+"uc1" [shape=ellipse, style=filled, fillcolor="#edf2f7", label="Crear respaldo comprobado"];
+"uc2" [shape=ellipse, style=filled, fillcolor="#edf2f7", label="Recuperar registros o tablas afectadas"];
+"uc3" [shape=ellipse, style=filled, fillcolor="#edf2f7", label="Preparar referencia inicial solo una vez"];
+"uc4" [shape=ellipse, style=filled, fillcolor="#edf2f7", label="Archivar bitácora anterior a 180 días"];
+"actor" -> "uc0" [dir=none];
+"actor" -> "uc1" [dir=none];
+"actor" -> "uc2" [dir=none];
+"actor" -> "uc3" [dir=none];
+"actor" -> "uc4" [dir=none];
+}

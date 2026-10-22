@@ -1,0 +1,91 @@
+@startuml
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam defaultFontSize 18
+skinparam sequence {
+  ParticipantBackgroundColor #DAE8FC
+  ParticipantBorderColor #8AB2E2
+  LifeLineBorderColor #888888
+  ArrowColor #666666
+  GroupBorderColor #E6AE19
+  GroupHeaderBackgroundColor #FFF4CF
+  GroupBackgroundColor white
+}
+hide footbox
+autonumber
+title Asignar rol a usuario — SIGAT
+actor Administrador as A
+participant "form:FormGestionRoles" as F
+participant "destino:Usuario" as U
+participant "rolesBLL:RolesBLL" as B
+participant "rolesDAL:RolesDAL" as D
+participant "sesion:SesionServicio" as S
+participant "MatrizRoles\n«static»" as M
+participant "rol:Rol" as R
+participant "permiso:Permiso" as P
+note over F,P: Precondición: sesión iniciada y EstadoRoles cargado.\nLas selecciones son eventos de UI, no métodos SeleccionarUsuario / SeleccionarRol.
+A -> F: Seleccionar usuario (ComboBox)
+F -> F: RefrescarUsuario()
+A -> F: Seleccionar rol (TreeView.AfterSelect)
+note over F,U: AfterSelect guarda e.Node.Tag en origenUsuario.
+A -> F: Pulsar Asignar rol (Button.Click)
+F -> F: Ejecutar(AsignarAUsuario)
+F -> F: AsignarAUsuario()
+alt [origenUsuario no es Rol o no hay usuario seleccionado]
+note over F,U: AsignarAUsuario o UsuarioSeleccionado lanza InvalidOperationException.
+ref over A,D: E — Manejo de error y recarga
+else [selección válida]
+F -> F: UsuarioSeleccionado()
+F -> U: AsignarRol(rol)
+U --> F: retorno void
+note over F,U: Asignación en memoria. Si ya existe la misma instancia de rol, no se duplica.
+F -> B: Guardar(estado)
+B -> D: Cargar()
+break [Cargar() lanza una excepción]
+D --> B: excepción
+B --> F: excepción
+ref over A,D: E — Manejo de error y recarga
+end
+D --> B: estadoActual:EstadoRoles
+B -> B: ExigirGestion(estadoActual)
+ref over B,P: A — Comprobación de autorización
+break [no existe gestor activo con permiso]
+B --> F: InvalidOperationException
+ref over A,D: E — Manejo de error y recarga
+end
+B -> B: Validar(estado) «static»
+B -> M: ValidarCatalogo(estado)
+break [ValidarCatalogo lanza una excepción]
+M --> B: InvalidOperationException
+B --> F: InvalidOperationException
+ref over A,D: E — Manejo de error y recarga
+end
+M --> B: retorno void
+note over B,M: Validar también comprueba: administrador original activo y con rol 1,\nadministrador disponible y roles de usuarios pertenecientes al catálogo.\nEstas consultas usan las entidades del estado; no cambian sus asignaciones.
+break [falla otra regla de Validar]
+B --> F: InvalidOperationException
+ref over A,D: E — Manejo de error y recarga
+end
+B -> D: Guardar(estado)
+note over B,D: DAL: transacción Serializable, control de versión, protección de la cuenta original,\nreemplazo de relaciones y Commit. Tras confirmar, estado.Version aumenta.\nUn fallo revierte la transacción; no se confirma un guardado parcial.
+break [conflicto de versión, protección o error SQL]
+D --> B: excepción
+B --> F: excepción
+ref over A,D: E — Manejo de error y recarga
+end
+D --> B: retorno void
+B --> F: retorno void
+F -> F: RefrescarArboles()
+note over F,P: Limpia y reconstruye los árboles del catálogo, actualiza el combo de destino,\nrecorre estado.Roles y estado.Permisos, y llama a RefrescarUsuario().
+F -> F: RefrescarUsuario()
+F -> U: Roles {get}
+U --> F: List<Rol>
+loop [por cada rol asignado al usuario]
+F -> F: CargarRol(tvUsuarioPermisos.Nodes, rol)
+ref over F,P: R — Recorrido de roles y permisos
+end
+note over F,U: lblEstado.Text = Cambios guardados. Se aplican al volver a iniciar sesión.\nLa UI muestra el resultado; no se devuelve un string desde Guardar().
+end
+@enduml
+

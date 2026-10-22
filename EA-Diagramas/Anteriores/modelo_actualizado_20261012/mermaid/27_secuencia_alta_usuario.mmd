@@ -1,0 +1,18 @@
+sequenceDiagram
+    autonumber
+    actor actor as Administrador
+    participant ui as FrmGestionUsuarios
+    participant bll as UsuarioBLL
+    participant dal as UsuarioDAL
+    participant hash as HashHelper
+    participant bit as BitacoraBLL
+    actor->>ui: Completar usuario, nombre, apellido y contraseña
+    ui->>bll: CrearUsuario(usuario, passwordPlana)
+    bll->>bll: ValidarDatos(usuario)
+    bll->>dal: ObtenerPorNombreUsuario(nombre)
+    Note over actor,bit: Nombre único y campos obligatorios  si no, cancelar
+    bll->>hash: ObtenerHashSHA256(passwordPlana)
+    bll->>dal: Insertar(usuario)
+    bll->>bit: Registrar(evento de GestionUsuariosFactory(AltaUsuario))
+    ui->>ui: Limpiar()  CargarGrilla()
+    Note over actor,bit: La escritura de Usuarios y su auditoría son operaciones separadas en el código

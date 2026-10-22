@@ -1,0 +1,68 @@
+@startuml
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam sequence {
+ParticipantBackgroundColor #DAE8FC
+ParticipantBorderColor #8AB2E2
+ArrowColor #666666
+GroupBorderColor #E6AE19
+GroupHeaderBackgroundColor #FFF4CF
+}
+hide footbox
+autonumber
+title CU01 — Crear rol: lógica existente, entrada UI pendiente
+actor Administrador as A
+participant "form:FormGestionRoles" as F
+participant "estado:EstadoRoles" as E
+participant "nuevo:Rol" as R
+participant "rolesBLL:RolesBLL" as B
+participant "rolesDAL:RolesDAL" as D
+participant "sesion:SesionServicio" as S
+participant "MatrizRoles" as M
+note over A,F: PENDIENTE: no hay botón actual que llame CrearRol.\nEntrada prevista: Ejecutar(() => CrearRol(false)).
+A -> F: Solicitar creación de rol «entrada pendiente»
+F -> F: Ejecutar(accion)
+F -> F: CrearRol(false)
+F -> F: Mostrar diálogo y validar nombre
+break [cancelación o nombre inválido]
+ref over A,F: Cancelación: sin guardar. Nombre inválido: mensaje y CargarDatos.\nVer Especificacion_roles.txt, alternativas A1 y A2.
+end
+F -> E: Roles {get}; calcular Max(Id) + 1
+E --> F: List<Rol>
+F -> R: new Rol { Id = ..., Nombre = texto }
+F -> E: Roles.Add(nuevo) «operación de List<Rol>»
+opt [variante CrearRol(true)]
+ref over F,R: Destino() exige rol distinto de Administrador.\npadre.AgregarRol(nuevo) incorpora la relación anidada.
+end
+F -> B: Guardar(estado)
+B -> D: Cargar()
+D --> B: estado persistido actual
+B -> B: ExigirGestion(estado persistido)
+B -> S: ObtenerInstancia() «static»
+S --> B: instancia
+B -> S: UsuarioActual {get}
+S --> B: usuario de sesión o null
+ref over B,S: Usuario vigente y activo: TienePermiso(Administracion).\nVer detalle 03_Autorizacion del paquete previo.
+break [gestor no autorizado]
+ref over F,B: Excepción -> Ejecutar informa y CargarDatos recarga SQL.
+end
+B -> B: Validar(estado propuesto) «static»
+B -> M: ValidarCatalogo(estado)
+M --> B: void, si catálogo válido
+note over B,M: Validar también conserva administrador original activo con rol 1,\nun administrador disponible y asignaciones dentro del catálogo.
+break [validación falla]
+ref over F,B: Excepción -> Ejecutar informa y recarga; no llama a Guardar de DAL.
+end
+B -> D: Guardar(estado)
+note over E,D: Transacción Serializable; compara Version, protege al administrador,\nactualiza Rol y reconstruye relaciones. Commit y estado.Version++.
+break [conflicto de versión o error de SQL]
+ref over F,D: Sin Commit exitoso: no se confirma la operación.\nEjecutar informa y recarga el estado desde SQL.
+end
+D --> B: void, después de Commit
+B --> F: void
+F -> F: RefrescarArboles()
+ref over F,R: Representa Roles y Permisos.\nVer CU02 y 04_Recorrido_Composite.
+F --> A: Cambios guardados; nuevo rol vacío
+note over A,M: Configurar el rol es otro caso de uso: cada acción tiene su guardado.\nNo se hacen participar hojas o familias en la creación de un rol vacío.
+@enduml

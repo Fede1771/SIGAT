@@ -1,0 +1,33 @@
+digraph G {
+graph [rankdir=LR, bgcolor="white", pad="0.25", nodesep="0.55", ranksep="0.7", splines=polyline, dpi=72];
+node [fontname="Arial", fontsize=12, color="#404040"];
+edge [fontname="Arial", fontsize=9, color="#555555", arrowsize=0.8];
+"AdministradorOriginal" [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="8"><TR><TD BGCOLOR="#edf2f7"><B>AdministradorOriginal</B><BR/>«table»</TD></TR><TR><TD ALIGN="LEFT">PK +Id: int<BR ALIGN="LEFT"/>+IdUsuario: int<BR ALIGN="LEFT"/></TD></TR></TABLE>>];
+"Bitacora" [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="8"><TR><TD BGCOLOR="#edf2f7"><B>Bitacora</B><BR/>«table»</TD></TR><TR><TD ALIGN="LEFT">PK +IdBitacora: int<BR ALIGN="LEFT"/>+Fecha: datetime<BR ALIGN="LEFT"/>+Usuario: varchar<BR ALIGN="LEFT"/>+Actividad: varchar<BR ALIGN="LEFT"/>+InformacionAsociada: nvarchar<BR ALIGN="LEFT"/>+DigitoVerificador: nvarchar<BR ALIGN="LEFT"/></TD></TR></TABLE>>];
+"Control" [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="8"><TR><TD BGCOLOR="#edf2f7"><B>Control</B><BR/>«table»</TD></TR><TR><TD ALIGN="LEFT">PK +Id: int<BR ALIGN="LEFT"/>+Control: varchar<BR ALIGN="LEFT"/>+Form: varchar<BR ALIGN="LEFT"/></TD></TR></TABLE>>];
+"Idioma" [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="8"><TR><TD BGCOLOR="#edf2f7"><B>Idioma</B><BR/>«table»</TD></TR><TR><TD ALIGN="LEFT">PK +Id: int<BR ALIGN="LEFT"/>+Nombre: varchar<BR ALIGN="LEFT"/>+Codigo: varchar<BR ALIGN="LEFT"/>+NombreNativo: nvarchar<BR ALIGN="LEFT"/>+Activo: bit<BR ALIGN="LEFT"/></TD></TR></TABLE>>];
+"IntegridadTabla" [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="8"><TR><TD BGCOLOR="#edf2f7"><B>IntegridadTabla</B><BR/>«table»</TD></TR><TR><TD ALIGN="LEFT">PK +Tabla: nvarchar<BR ALIGN="LEFT"/>+HashVertical: char<BR ALIGN="LEFT"/>+Cantidad: bigint<BR ALIGN="LEFT"/>+IdBase: uniqueidentifier<BR ALIGN="LEFT"/>+Version: int<BR ALIGN="LEFT"/></TD></TR></TABLE>>];
+"Permiso" [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="8"><TR><TD BGCOLOR="#edf2f7"><B>Permiso</B><BR/>«table»</TD></TR><TR><TD ALIGN="LEFT">PK +Id: int<BR ALIGN="LEFT"/>+Nombre: nvarchar<BR ALIGN="LEFT"/>+EsCompuesto: bit<BR ALIGN="LEFT"/></TD></TR></TABLE>>];
+"PermisoHijo" [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="8"><TR><TD BGCOLOR="#edf2f7"><B>PermisoHijo</B><BR/>«table»</TD></TR><TR><TD ALIGN="LEFT">PK +IdPadre: int<BR ALIGN="LEFT"/>PK +IdHijo: int<BR ALIGN="LEFT"/></TD></TR></TABLE>>];
+"Rol" [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="8"><TR><TD BGCOLOR="#edf2f7"><B>Rol</B><BR/>«table»</TD></TR><TR><TD ALIGN="LEFT">PK +Id: int<BR ALIGN="LEFT"/>+Nombre: nvarchar<BR ALIGN="LEFT"/></TD></TR></TABLE>>];
+"RolHijo" [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="8"><TR><TD BGCOLOR="#edf2f7"><B>RolHijo</B><BR/>«table»</TD></TR><TR><TD ALIGN="LEFT">PK +IdPadre: int<BR ALIGN="LEFT"/>PK +IdHijo: int<BR ALIGN="LEFT"/></TD></TR></TABLE>>];
+"RolPermiso" [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="8"><TR><TD BGCOLOR="#edf2f7"><B>RolPermiso</B><BR/>«table»</TD></TR><TR><TD ALIGN="LEFT">PK +IdRol: int<BR ALIGN="LEFT"/>PK +IdPermiso: int<BR ALIGN="LEFT"/></TD></TR></TABLE>>];
+"SeguridadVersion" [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="8"><TR><TD BGCOLOR="#edf2f7"><B>SeguridadVersion</B><BR/>«table»</TD></TR><TR><TD ALIGN="LEFT">PK +Id: int<BR ALIGN="LEFT"/>+Version: bigint<BR ALIGN="LEFT"/>+Esquema: int<BR ALIGN="LEFT"/></TD></TR></TABLE>>];
+"Traduccion" [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="8"><TR><TD BGCOLOR="#edf2f7"><B>Traduccion</B><BR/>«table»</TD></TR><TR><TD ALIGN="LEFT">PK +Id_Idioma: int<BR ALIGN="LEFT"/>PK +Id_Control: int<BR ALIGN="LEFT"/>+Texto: nvarchar<BR ALIGN="LEFT"/>+DigitoVerificador: char<BR ALIGN="LEFT"/>+Estado: varchar<BR ALIGN="LEFT"/></TD></TR></TABLE>>];
+"UsuarioIdioma" [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="8"><TR><TD BGCOLOR="#edf2f7"><B>UsuarioIdioma</B><BR/>«table»</TD></TR><TR><TD ALIGN="LEFT">PK +IdUsuario: int<BR ALIGN="LEFT"/>+IdIdioma: int<BR ALIGN="LEFT"/></TD></TR></TABLE>>];
+"UsuarioRol" [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="8"><TR><TD BGCOLOR="#edf2f7"><B>UsuarioRol</B><BR/>«table»</TD></TR><TR><TD ALIGN="LEFT">PK +IdUsuario: int<BR ALIGN="LEFT"/>PK +IdRol: int<BR ALIGN="LEFT"/></TD></TR></TABLE>>];
+"Usuarios" [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="8"><TR><TD BGCOLOR="#edf2f7"><B>Usuarios</B><BR/>«table»</TD></TR><TR><TD ALIGN="LEFT">PK +IdUsuario: int<BR ALIGN="LEFT"/>+NombreUsuario: varchar<BR ALIGN="LEFT"/>+Password: varchar<BR ALIGN="LEFT"/>+Nombre: varchar<BR ALIGN="LEFT"/>+Apellido: varchar<BR ALIGN="LEFT"/>+Activo: bit<BR ALIGN="LEFT"/></TD></TR></TABLE>>];
+"AdministradorOriginal" -> "Usuarios" [arrowhead=vee,label="IdUsuario → IdUsuario",taillabel="0..1",headlabel="1"];
+"PermisoHijo" -> "Permiso" [arrowhead=vee,label="IdHijo → Id",taillabel="0..*",headlabel="1"];
+"PermisoHijo" -> "Permiso" [arrowhead=vee,label="IdPadre → Id",taillabel="0..*",headlabel="1"];
+"RolHijo" -> "Rol" [arrowhead=vee,label="IdHijo → Id",taillabel="0..*",headlabel="1"];
+"RolHijo" -> "Rol" [arrowhead=vee,label="IdPadre → Id",taillabel="0..*",headlabel="1"];
+"RolPermiso" -> "Permiso" [arrowhead=vee,label="IdPermiso → Id",taillabel="0..*",headlabel="1"];
+"RolPermiso" -> "Rol" [arrowhead=vee,label="IdRol → Id",taillabel="0..*",headlabel="1"];
+"UsuarioRol" -> "Rol" [arrowhead=vee,label="IdRol → Id",taillabel="0..*",headlabel="1"];
+"UsuarioRol" -> "Usuarios" [arrowhead=vee,label="IdUsuario → IdUsuario",taillabel="0..*",headlabel="1"];
+"Traduccion" -> "Control" [arrowhead=vee,label="Id_Control → Id",taillabel="0..*",headlabel="1"];
+"Traduccion" -> "Idioma" [arrowhead=vee,label="Id_Idioma → Id",taillabel="0..*",headlabel="1"];
+"UsuarioIdioma" -> "Idioma" [arrowhead=vee,label="IdIdioma → Id",taillabel="0..*",headlabel="1"];
+"UsuarioIdioma" -> "Usuarios" [arrowhead=vee,label="IdUsuario → IdUsuario",taillabel="0..1",headlabel="1"];
+}

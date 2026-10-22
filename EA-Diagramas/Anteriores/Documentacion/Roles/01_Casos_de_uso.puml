@@ -1,0 +1,24 @@
+@startuml
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam usecaseBackgroundColor #DAE8FC
+skinparam usecaseBorderColor #8AB2E2
+left to right direction
+actor "Gestor autorizado
+Administración del sistema" as Gestor
+rectangle SIGAT {
+usecase "CU01 Crear rol
+[entrada UI pendiente]" as Crear #FFF4CF
+usecase "CU02 Configurar rol" as Configurar
+usecase "CU03 Editar familia de permisos" as Familia
+usecase "CU04 Asignar / quitar rol a usuario" as Asignar
+usecase "CU05 Eliminar rol
+[entrada UI pendiente]" as Eliminar #FFF4CF
+}
+Gestor -- Crear
+Gestor -- Configurar
+Gestor -- Familia
+Gestor -- Asignar
+Gestor -- Eliminar
+note bottom of Crear : Crear no obliga a configurar inmediatamente.
+@enduml

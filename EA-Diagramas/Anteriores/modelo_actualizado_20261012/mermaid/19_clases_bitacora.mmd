@@ -1,0 +1,86 @@
+classDiagram
+    direction TB
+    class FrmBitacora {
+        -Buscar(): void
+        +ActualizarIdioma(): void
+    }
+    class BitacoraBLL {
+        +Registrar(evento: IBitacoraEvento): void
+        +Registrar(usuario: string, actividad: string, informacion: string): void
+        +Buscar(desde: Nullable~DateTime~, hasta: Nullable~DateTime~, usuario: string, actividad: string): List~Bitacora~
+    }
+    class BitacoraDAL {
+        +Insertar(registro: Bitacora): void
+        +Buscar(desde: Nullable~DateTime~, hasta: Nullable~DateTime~, usuario: string, actividad: string): List~Bitacora~
+        +VerificarIntegridadBaseDatos(): bool
+    }
+    class Bitacora {
+        +IdBitacora: int
+        +Fecha: DateTime
+        +Usuario: string
+        +Actividad: string
+        +InformacionAsociada: string
+        +DigitoVerificador: string
+        +Id: int
+        +IdUsuario: Nullable~int~
+        +IdentificadorUsuario: string
+        +Modulo: BitacoraModulo
+        +Accion: BitacoraAccion
+        +Nivel: BitacoraNivel
+        +Descripcion: string
+        +Equipo: string
+    }
+    class IBitacoraEvento {
+        <<interface>>
+        +Id: int
+        +IdUsuario: Nullable~int~
+        +IdentificadorUsuario: string
+        +Modulo: BitacoraModulo
+        +Accion: BitacoraAccion
+        +Nivel: BitacoraNivel
+        +Descripcion: string
+        +Equipo: string
+        +Fecha: DateTime
+    }
+    class BitacoraFactory {
+        <<abstract>>
+        +Crear(identificadorUsuario: string, descripcion: string): IBitacoraEvento
+        #CrearEvento(): IBitacoraEvento*
+    }
+    class LoginExitosoFactory {
+        #CrearEvento(): IBitacoraEvento
+    }
+    class LoginFallidoFactory {
+        #CrearEvento(): IBitacoraEvento
+    }
+    class GestionUsuariosFactory {
+        #CrearEvento(): IBitacoraEvento
+    }
+    class BitacoraMapper {
+        <<static>>
+        +PrepararParaBaseDeDatos(evento: Bitacora): void$
+    }
+    class EncriptadorServicio {
+        +Encriptar(textoPlano: string): string
+        +Desencriptar(textoEncriptado: string): string
+        +CalcularDV(cadenaConcatenada: string): string
+    }
+    class IntegridadDAL {
+        +Verificar(): InformeIntegridad
+        +LeerVerificado(leer: Func~SqlConnection, SqlTransaction, T~): T
+        +Cambiar(tabla: string, cambiar: Func~SqlConnection, SqlTransaction, T~): T
+        +PuedeAdministrar(): bool
+        +ArchivarBitacora(dias: int): int
+        +InicializarBaseConfiable(): string
+        +CrearRespaldoConfiable(destino: string): string
+    }
+    Bitacora ..|> IBitacoraEvento
+    BitacoraBLL "1" --> "1" BitacoraDAL : _dal
+    GestionUsuariosFactory --|> BitacoraFactory
+    LoginExitosoFactory --|> BitacoraFactory
+    LoginFallidoFactory --|> BitacoraFactory
+    BitacoraDAL "1" --> "1" IntegridadDAL : integridad
+    BitacoraDAL "1" --> "1" EncriptadorServicio : encriptador
+    FrmBitacora "1" --> "1" BitacoraBLL : _bll
+    BitacoraBLL ..> BitacoraMapper : adaptar evento
+    IntegridadDAL ..> EncriptadorServicio : validar cifrado

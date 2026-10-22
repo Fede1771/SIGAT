@@ -1,0 +1,57 @@
+classDiagram
+    direction TB
+    class FrmGestionUsuarios {
+        -BtnGuardar_Click(sender: Object, e: EventArgs): void
+        -BtnEliminar_Click(sender: Object, e: EventArgs): void
+    }
+    class UsuarioBLL {
+        +CrearUsuario(nuevoUsuario: Usuario, passwordPlana: string): void
+        +ActualizarUsuario(usuarioEditado: Usuario, passwordPlana: string): void
+        +BajaLogicaUsuario(idUsuario: int, nombreUsuario: string): void
+        +ValidarDatos(usuario: Usuario): void$
+    }
+    class UsuarioDAL {
+        +ObtenerPorNombreUsuario(nombreUsuario: string): Usuario
+        +ObtenerTodos(): List~Usuario~
+        +Insertar(usuario: Usuario, administradorInicial: bool): void
+        +Actualizar(usuario: Usuario): void
+        +Eliminar(idUsuario: int): void
+        +EsAdministradorOriginal(idUsuario: int): bool
+    }
+    class Usuario {
+        +EsAdministradorOriginal: bool
+        +Id: int
+        +Roles: List~Rol~
+        +IdUsuario: int
+        +NombreUsuario: string
+        +Password: string
+        +Nombre: string
+        +Apellido: string
+        +Activo: bool
+        +AsignarRol(r: Rol): void
+        +QuitarRol(r: Rol): void
+        +TienePermiso(nombre: string): bool
+    }
+    class RolesBLL {
+        +CargarParaGestion(): EstadoRoles
+        +CargarRolesUsuario(usuario: Usuario): void
+        +Guardar(estado: EstadoRoles): void
+        +Validar(estado: EstadoRoles): void$
+    }
+    class BitacoraBLL {
+        +Registrar(evento: IBitacoraEvento): void
+        +Registrar(usuario: string, actividad: string, informacion: string): void
+        +Buscar(desde: Nullable~DateTime~, hasta: Nullable~DateTime~, usuario: string, actividad: string): List~Bitacora~
+    }
+    class GestionUsuariosFactory {
+        #CrearEvento(): IBitacoraEvento
+    }
+    class HashHelper {
+        <<static>>
+        +ObtenerHashSHA256(texto: string): string$
+    }
+    UsuarioBLL "1" --> "1" UsuarioDAL : _dal
+    UsuarioBLL "1" --> "1" BitacoraBLL : _bitacora
+    FrmGestionUsuarios "1" --> "1" UsuarioBLL : _usuarioBLL
+    UsuarioBLL ..> RolesBLL : CargarRolesUsuario
+    UsuarioBLL ..> HashHelper : hash de contraseña
