@@ -1,6 +1,7 @@
 # SIGAT
 
 **Sistema de Gestión de Activos Tecnológicos**
+
 Proyecto universitario de Ingeniería de Software · Universidad Abierta Interamericana
 
 ![C#](https://img.shields.io/badge/C%23-512BD4?style=flat-square&logo=dotnet&logoColor=white)
@@ -9,6 +10,10 @@ Proyecto universitario de Ingeniería de Software · Universidad Abierta Interam
 ![SQL Server](https://img.shields.io/badge/SQL%20Server-CC2927?style=flat-square)
 
 SIGAT es una aplicación de escritorio desarrollada como proyecto académico para aplicar análisis, diseño orientado a objetos, arquitectura en capas, patrones de diseño y persistencia en SQL Server. Este repositorio contiene el código fuente, las pruebas automatizadas y los scripts de preparación de la base de datos.
+
+**Accesos rápidos:** [Instalación](#requisitos-e-instalación) · [Modelo de Enterprise Architect](EA-Diagramas/Actual/SIGAT_Modelo_Actualizado.EAP) · [Diagramas](#diagramas-y-documentación) · [Guía de integridad](Querys/GUIA_INTEGRIDAD.md) · [Demostración](#recorrido-para-la-demostración)
+
+> **Estado actual:** están implementados los módulos administrativos y técnicos. La gestión operativa de activos y el historial de versiones de entidades —T06b— continúan pendientes.
 
 ## Datos académicos
 
@@ -33,7 +38,8 @@ SIGAT es una aplicación de escritorio desarrollada como proyecto académico par
 - [Integridad y recuperación](#integridad-y-recuperación)
 - [Pruebas automatizadas](#pruebas-automatizadas)
 - [Recorrido para la demostración](#recorrido-para-la-demostración)
-- [Documentación y trabajo pendiente](#documentación-y-trabajo-pendiente)
+- [Diagramas y documentación](#diagramas-y-documentación)
+- [Estado de la tercera entrega](#estado-de-la-tercera-entrega)
 
 ## Propósito y alcance
 
@@ -74,6 +80,8 @@ La solución contiene cinco proyectos de aplicación y un proyecto de pruebas:
 
 El recorrido habitual es **UI → BLL → DAL**. Las capas utilizan BE para representar datos y relaciones, y SERVICIOS para las funciones transversales. Las capas inferiores no dependen de la interfaz.
 
+![Arquitectura de SIGAT y dependencias entre proyectos](EA-Diagramas/Actual/diagramas/01_arquitectura.png)
+
 ```text
 SIGAT/
 ├── SIGAT.slnx          Solución para Visual Studio
@@ -85,7 +93,7 @@ SIGAT/
 ├── SIGAT.Tests/        Pruebas automatizadas
 ├── Querys/             Instalación y mantenimiento SQL
 ├── EA-Diagramas/       Modelo actual y diagramas
-└── Documentacion/      Capturas, traducciones y notas de integridad
+└── Documentacion/      Material auxiliar local de la entrega
 ```
 
 En cada formulario, `*.Designer.cs` contiene la creación y distribución de los controles; el archivo `.cs` contiene el comportamiento, los eventos y la carga de datos. [EntornoDiseno.cs](SIGAT.UI/EntornoDiseno.cs) evita ejecutar la lógica de sesión y consultas de los constructores al abrir los formularios en el diseñador.
@@ -130,6 +138,13 @@ La conexión definida en [ConexionBD.cs](SIGAT.DAL/ConexionBD.cs) utiliza:
 
 ### Primera instalación
 
+Clonar el repositorio y entrar en la carpeta del proyecto:
+
+```powershell
+git clone https://github.com/Fede1771/SIGAT.git
+cd SIGAT
+```
+
 1. Instalar SQL Server Express con instancia `SQLEXPRESS` y conectarse con una cuenta autorizada para crear bases.
 2. Abrir [01_Instalacion_Completa.sql](Querys/01_Instalacion_Completa.sql), cambiar `@ClaveAdmin` y ejecutar **todo el archivo**. El instalador se detiene si la base ya existe.
 3. Ejecutar [04_Verificacion_Integridad.sql](Querys/04_Verificacion_Integridad.sql) para revisar la estructura y configuración.
@@ -173,6 +188,14 @@ El archivo debe ser accesible para SQL Server en el equipo donde se ejecuta el s
 
 Ver [Guía de integridad](Querys/GUIA_INTEGRIDAD.md) para preparar la referencia y demostrar detección y recuperación en una copia de ensayo.
 
+### Situaciones habituales al iniciar
+
+| Situación | Qué revisar |
+|---|---|
+| Se abre Integridad y recuperación antes del login. | El inicio comprueba la base antes de autenticar. Si faltan verificadores en una instalación nueva, preparar el control inicial; si hubo una alteración, revisar el informe y recuperar desde un respaldo confiable. |
+| SQL Server no encuentra el `.bak`. | La ruta se interpreta en el equipo del servicio SQL. Comprobar que el archivo exista allí y que la cuenta del servicio pueda leerlo. |
+| No se puede conectar con la base. | Verificar que la instancia `SQLEXPRESS` esté iniciada, que exista `SIGAT` y que el usuario de Windows tenga acceso. Si se usa otra instancia, ajustar `ConexionBD.cs`. |
+
 ## Pruebas automatizadas
 
 Las pruebas utilizan **MSTest** y cubren Composite, sesión, idiomas, cifrado, presentación, diseñador y persistencia.
@@ -209,16 +232,38 @@ dotnet test SIGAT.Tests/SIGAT.Tests.csproj --filter "TestCategory=SQLIntegration
 
 Para explicar el código, partir de [Program.cs](SIGAT.UI/Program.cs), continuar con el formulario del módulo y seguir la llamada a su BLL y DAL. En cada recorrido, identificar qué valida cada capa y dónde se confirma la transacción.
 
-## Documentación y trabajo pendiente
+## Diagramas y documentación
 
-La carpeta de entrega académica reúne las especificaciones de casos de uso y los diagramas de arquitectura, clases, secuencia y datos. Se presenta junto con el proyecto. El repositorio incluye el [modelo actualizado de Enterprise Architect](EA-Diagramas/Actual/SIGAT_Modelo_Actualizado.EAP), su [índice de diagramas](EA-Diagramas/Actual/index.html), la [guía del diseñador](GUIA_DISENADOR.txt) y las guías SQL enlazadas anteriormente.
+La carpeta [EA-Diagramas/Actual](EA-Diagramas/Actual) contiene el **único modelo `.EAP` vigente**, actualizado el **21/10/2026**, y **44 diagramas exportados a PNG**. Los archivos de `Anteriores` conservan material gráfico de referencia; no son la documentación vigente.
 
-Los modelos existentes requieren una revisión de correspondencia con la versión actual: deben reflejar roles y familias, Observer y el alcance vigente de DVH/DVV. La documentación de una versión anterior no sustituye el comportamiento implementado en el código.
+- **Para editar:** descargar [SIGAT_Modelo_Actualizado.EAP](EA-Diagramas/Actual/SIGAT_Modelo_Actualizado.EAP) y abrirlo en Enterprise Architect.
+- **Para consultar en GitHub:** abrir las imágenes de la tabla siguiente o la [carpeta de diagramas](EA-Diagramas/Actual/diagramas).
+- **Para consultar en el equipo:** abrir [index.html](EA-Diagramas/Actual/index.html) desde la copia local. GitHub muestra el archivo HTML como código fuente.
 
-Los principales pendientes de la entrega final son:
+| Tema | Diagramas principales |
+|---|---|
+| Arquitectura | [Dependencias entre proyectos](EA-Diagramas/Actual/diagramas/01_arquitectura.png) |
+| G06 · Clases por capa | [BE](EA-Diagramas/Actual/diagramas/02_clases_be.png) · [BLL](EA-Diagramas/Actual/diagramas/03_clases_bll.png) · [DAL](EA-Diagramas/Actual/diagramas/04_clases_dal.png) · [SERVICIOS](EA-Diagramas/Actual/diagramas/05_clases_servicios.png) · [UI](EA-Diagramas/Actual/diagramas/06_clases_ui.png) |
+| G07 · Datos | [Modelo integrado](EA-Diagramas/Actual/diagramas/07_der_integrado.png) · [Seguridad](EA-Diagramas/Actual/diagramas/08_der_seguridad.png) · [Idiomas](EA-Diagramas/Actual/diagramas/09_der_idiomas.png) |
+| Autenticación | [Clases de login](EA-Diagramas/Actual/diagramas/11_clases_login.png) · [Clases de cierre de sesión](EA-Diagramas/Actual/diagramas/12_clases_logout.png) · [Secuencia de login](EA-Diagramas/Actual/diagramas/25_sec_login.png) |
+| Composite | [Roles, permisos y familias](EA-Diagramas/Actual/diagramas/14_clases_roles.png) |
+| Observer | [Gestión de idiomas](EA-Diagramas/Actual/diagramas/15_clases_idiomas.png) · [Cambio de idioma](EA-Diagramas/Actual/diagramas/29_sec_idioma.png) |
+| Bitácora | [Clases](EA-Diagramas/Actual/diagramas/16_clases_bitacora.png) · [Registro de eventos](EA-Diagramas/Actual/diagramas/35_sec_auditar.png) |
+| Integridad | [Clases](EA-Diagramas/Actual/diagramas/17_clases_integridad.png) · [Verificación](EA-Diagramas/Actual/diagramas/37_sec_verificar.png) · [Recuperación](EA-Diagramas/Actual/diagramas/39_sec_recuperar.png) |
 
-- **T06b — Control de cambios:** conservar versiones de una entidad, identificar quién y cuándo la modificó, consultar sus valores históricos y recomponer un estado anterior. La bitácora actual registra eventos, pero no implementa ese historial de versiones.
-- **G06 — Diagramas de clases:** integrar los módulos implementados en un diagrama por capa y separar los aspectos técnicos y de negocio.
-- **G07 — Modelo de datos:** actualizar tablas, claves y relaciones conforme al esquema final, incorporando la estructura de T06b cuando se implemente.
-- **Auditoría y consistencia:** ampliar la cobertura de eventos y coordinar el guardado de operaciones con su auditoría; completar las autorizaciones en negocio y las transacciones de creación e importación de idiomas.
-- **Alcance de negocio:** desarrollar inventario de activos, asignaciones, movimientos, mantenimiento y reportes según el propósito general de SIGAT.
+Los diagramas muestran miembros principales para facilitar la lectura; las notas de las clases incluyen las firmas extraídas del código. Las secuencias presentan el recorrido principal y describen las alternativas mediante notas. El [informe de validación](EA-Diagramas/Actual/fuentes/validacion.json) registra las comprobaciones del modelo frente a las fuentes revisadas.
+
+La carpeta académica con las especificaciones de casos de uso se presenta junto con el proyecto. Como material de apoyo, el repositorio incluye la [guía del diseñador](GUIA_DISENADOR.txt), la [guía de scripts SQL](Querys/README.md) y la [guía de integridad](Querys/GUIA_INTEGRIDAD.md).
+
+## Estado de la tercera entrega
+
+| Requisito | Situación actual y trabajo restante |
+|---|---|
+| **T04 · Perfiles de usuario** | Roles, permisos y familias implementados con Composite. Revisar que las especificaciones y la demostración reflejen la asignación de roles y la edición de familias disponibles en la interfaz. |
+| **T08 · Dígitos verificadores** | Control de Usuarios y UsuarioRol implementado. Documentar y demostrar inicialización, detección de alteraciones, respaldo, recuperación y aceptación explícita de pérdida. |
+| **T05 · Múltiples idiomas** | Implementado con Observer, preferencia por cuenta y gestión de traducciones. Mantener alineados los casos de uso y las secuencias con las validaciones actuales. |
+| **T06b · Control de cambios** | **Pendiente de implementación.** Se necesitan versiones de una entidad, consulta de quién/cuándo/qué cambió y recomposición de un estado anterior. La bitácora y el archivo de eventos no sustituyen esta funcionalidad. |
+| **G06 · Clases por capa** | Diagramas actuales generados para las cinco capas. Revisar su presentación académica y ampliarlos con las clases de T06b cuando se implemente. |
+| **G07 · Modelo de datos** | Modelo actual generado con tablas, claves y relaciones. Incorporar la estructura de versiones de T06b cuando exista y mantener la separación entre negocio y soporte técnico. |
+
+Como mejoras posteriores quedan ampliar los eventos auditados, coordinar las operaciones con su auditoría y completar autorizaciones de negocio y transacciones de idiomas. Los módulos de inventario, asignaciones de activos, movimientos, mantenimiento y reportes forman parte de la evolución funcional de SIGAT.
