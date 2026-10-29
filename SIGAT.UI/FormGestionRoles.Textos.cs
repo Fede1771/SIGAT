@@ -1,0 +1,51 @@
+namespace SIGAT.UI;
+
+partial class FormGestionRoles
+{
+    // Claves estables: los nombres de cuentas, roles y familias no forman parte de las leyendas.
+    private static readonly Dictionary<string, string> TextosDinamicos = new()
+    {
+        ["agregarSeleccionados"] = "Agregar seleccionados",
+        ["cancelar"] = "Cancelar",
+        ["otrasRutas"] = "También se obtiene por:",
+        ["base"] = "Elemento base del sistema: no se puede eliminar.",
+        ["tipoRol"] = "Rol",
+        ["adminProtegido"] = "Rol Administrador protegido. Su composición es de solo lectura.",
+        ["agregarComponente"] = "Agregar componente existente",
+        ["agregarPermiso"] = "Agregar permiso o familia",
+        ["ayudaFamilias"] = "Una familia puede contener permisos y otras familias. Quitar un componente elimina solo esa relación.",
+        ["ayudaRoles"] = "Las asignaciones directas se editan aquí. Para modificar un permiso heredado, abrí su origen.",
+        ["ayudaUsuarios"] = "Marcá los roles directos. Debajo podés consultar los accesos y todas sus rutas de herencia.",
+        ["buscarComponente"] = "Buscar componente...",
+        ["confirmarGuardado"] = "Los accesos de sesiones abiertas se actualizarán al volver a iniciar sesión.",
+        ["contraer"] = "Contraer todo",
+        ["descartar"] = "¿Descartar todos los cambios pendientes de este módulo?",
+        ["directo"] = "Directo",
+        ["eliminar"] = "¿Eliminar la familia del catálogo? Sus componentes se conservarán.",
+        ["errorGuardar"] = "No se guardó. La copia de trabajo se conserva; descartá y pulsá Recargar si otra persona cambió el catálogo.",
+        ["expandir"] = "Expandir todo",
+        ["familia"] = "Familia",
+        ["guardado"] = "Cambios guardados. Se aplican al volver a iniciar sesión.",
+        ["guardar"] = "Guardar cambios",
+        ["heredado"] = "Heredado",
+        ["impacto"] = "Se utiliza en:",
+        ["inactivo"] = "Inactivo",
+        ["incluirRol"] = "Incluir otro rol",
+        ["original"] = "Cuenta original protegida: no se puede quitar Administrador.",
+        ["pendientes"] = "Cambios pendientes:",
+        ["permiso"] = "Permiso",
+        ["protegido"] = "Protegido",
+        ["revision"] = "Revisar cambios antes de guardar",
+        ["ruta"] = "Procedencia:",
+        ["salir"] = "Hay cambios pendientes. Sí: guardar. No: descartar. Cancelar: seguir editando.",
+        ["seguirEditando"] = "Seguir editando",
+        ["seleccionarFamilia"] = "Seleccioná un permiso o familia",
+        ["seleccionarRol"] = "Seleccioná un rol",
+        ["seleccionarUsuario"] = "Seleccioná un usuario",
+        ["selectorAyuda"] = "Marcá los componentes para la copia de trabajo. Se excluyen los ya asignados y los que formarían ciclos. Los datos se persistirán con Guardar cambios en la pantalla principal.",
+        ["simple"] = "Permiso simple: representa una acción y no admite componentes.",
+        ["sinCambios"] = "Sin cambios pendientes.",
+        ["sinUso"] = "Sin asignaciones.",
+        ["subfamilia"] = "Crear subfamilia",
+    };
+}

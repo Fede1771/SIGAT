@@ -20,6 +20,7 @@ internal static partial class TemaVisual
 
     public static void Formulario(Form form)
     {
+        DisenoAdaptativo.Configurar(form);
         // Preparamos los colores antes de mostrar la ventana: Shown llega después del primer dibujo.
         form.HandleCreated += (_, _) => Aplicar(form);
         form.Load += (_, _) => Aplicar(form);

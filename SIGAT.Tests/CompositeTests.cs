@@ -83,43 +83,20 @@ public class CompositeTests
                 datos.Usuarios.Add(auditor);
                 datos.Usuarios.Add(new Usuario { IdUsuario = 44, NombreUsuario = "inactivo", Activo = false });
                 cargar.Invoke(form, new object[] { datos });
-                var jerarquia = (System.Windows.Forms.TreeView)form.Controls.Find("tvRolesJerarquia", true)[0];
-                var usuario = (System.Windows.Forms.TreeView)form.Controls.Find("tvUsuarioPermisos", true)[0];
-                Assert.AreEqual(5, jerarquia.Nodes.Count);
-                var catalogo = (System.Windows.Forms.TreeView)form.Controls.Find("tvCatalogoGeneral", true)[0];
-                Assert.HasCount(2, catalogo.Nodes);
-                Assert.AreEqual("PERMISOS SIMPLES", catalogo.Nodes[0].Text);
-                Assert.AreEqual("PERMISOS COMPUESTOS (FAMILIAS)", catalogo.Nodes[1].Text);
-                foreach (System.Windows.Forms.TreeNode grupo in catalogo.Nodes)
-                    foreach (System.Windows.Forms.TreeNode componente in grupo.Nodes)
-                        Assert.IsInstanceOfType<Permiso>(componente.Tag);
-                Assert.HasCount(1, form.Controls.Find("btnEditarFamilia", true));
-                Assert.AreEqual(6, usuario.Nodes[0].Nodes.Count);
-                Assert.IsInstanceOfType<Rol>(usuario.Nodes[0].Tag);
-                var combo = (System.Windows.Forms.ComboBox)form.Controls.Find("cbUsuarios", true)[0];
-                Assert.AreEqual(3, combo.Items.Count);
-                Assert.IsEmpty(form.Controls.Find("btnCrearRolAnidado", true));
-                Assert.IsEmpty(form.Controls.Find("btnCrearRol", true));
-                Assert.IsEmpty(form.Controls.Find("btnEliminarRol", true));
-                foreach (string boton in new[] { "btnAsignarARol", "btnQuitarDeRol" })
-                    Assert.HasCount(1, form.Controls.Find(boton, true));
-                var distribucion = (System.Windows.Forms.TableLayoutPanel)combo.Parent!.Parent!;
-                Assert.AreEqual(1, distribucion.GetColumn(combo.Parent));
-                var destino = form.Controls.Find("cbRolDestino", true)[0];
-                Assert.AreEqual(2, distribucion.GetColumn(destino.Parent!.Parent!));
-                Assert.AreEqual(1, distribucion.GetRowSpan(destino.Parent!.Parent!));
-                Assert.AreEqual(2, distribucion.GetRowSpan(jerarquia.Parent!.Parent!));
-                Assert.AreEqual(0, distribucion.GetColumn(jerarquia.Parent!.Parent!));
-                Assert.AreEqual(2, distribucion.GetColumn(catalogo.Parent!.Parent!));
-                Assert.AreEqual(1, distribucion.GetRow(catalogo.Parent!.Parent!));
-                Assert.AreEqual("cuentaRegistrada", ((Usuario)combo.Items[0]).NombreUsuario);
-                Assert.AreEqual(42, ((Usuario)combo.Items[0]).IdUsuario);
+                var tabs = (System.Windows.Forms.TabControl)form.Controls.Find("vistasRoles", true).Single();
+                Assert.HasCount(3, tabs.TabPages);
+                var usuarios = (System.Windows.Forms.ListBox)form.Controls.Find("listaUsuarios", true).Single();
+                Assert.HasCount(3, usuarios.Items);
+                Assert.HasCount(5, ((System.Windows.Forms.ListBox)form.Controls.Find("listaRoles", true).Single()).Items);
+                Assert.HasCount(7, ((System.Windows.Forms.ListBox)form.Controls.Find("listaFamilias", true).Single()).Items);
+                Assert.IsFalse(form.TieneCambios);
+                Assert.IsFalse(form.Controls.Find("btnGuardarCambios", true).Single().Enabled);
+                Assert.IsEmpty(form.Controls.Find("cbRolDestino", true));
+                Assert.IsFalse(form.Controls.Find("btnAgregarPermisoRol", true).Single().Enabled, "Administrador debe ser de solo lectura.");
                 Assert.AreEqual(1, cuenta.Roles.Count);
-                combo.SelectedIndex = 1;
-                Assert.AreEqual("Auditor", usuario.Nodes[0].Text);
                 cargar.Invoke(form, new object[] { new EstadoRoles() });
-                Assert.AreEqual(0, combo.Items.Count);
-                Assert.AreEqual(0, usuario.Nodes.Count);
+                Assert.IsEmpty(usuarios.Items);
+
             }
             catch (Exception ex) { error = ex; }
         });

@@ -30,6 +30,10 @@ namespace SIGAT.UI
             itemIntegridad.Visible = usuarioLogueado != null && usuarioLogueado.TienePermiso(MatrizRoles.Administracion);
             ConfigurarMarcoVisual();
             this.FormClosed += FrmPrincipal_FormClosed;
+            FormClosing += (_, e) =>
+            {
+                if (formularioActual is FormGestionRoles roles && !roles.ConfirmarSalida()) e.Cancel = true;
+            };
         }
 
         private void FrmPrincipal_Load(object sender, EventArgs e)
@@ -43,7 +47,7 @@ namespace SIGAT.UI
 
         private void FrmPrincipal_FormClosed(object sender, FormClosedEventArgs e)
         {
-            CerrarFormularioActual();
+            if (!CerrarFormularioActual()) return;
             IdiomaManager.ObtenerInstancia().Desuscribir(this);
         }
 
@@ -90,6 +94,7 @@ namespace SIGAT.UI
         private void ItemIntegridad_Click(object sender, EventArgs e)
         {
             if (!PuedeAbrir(MatrizRoles.Administracion)) return;
+            if (formularioActual is FormGestionRoles roles && !roles.ConfirmarSalida()) return;
             using var dialogo = new FrmIntegridad();
             dialogo.ShowDialog(this);
             if (new IntegridadBLL().Verificar().Correcta) _idiomaBLL.RestablecerIdiomaUsuario();
@@ -117,8 +122,8 @@ namespace SIGAT.UI
         {
             string nombreUsuario = SesionServicio.ObtenerInstancia().UsuarioActual.NombreUsuario;
 
+            if (!CerrarFormularioActual()) return;
             _bitacora.Registrar(nombreUsuario, "Logout", "Cierre de sesión seguro.");
-            CerrarFormularioActual();
             SesionServicio.ObtenerInstancia().CerrarSesion();
 
             this.Hide();
@@ -170,7 +175,7 @@ namespace SIGAT.UI
         // Alojamos la pantalla dentro del panel central. Cerramos la anterior para no acumular formularios ni observadores.
         private void AbrirFormulario(Form formHijo)
         {
-            CerrarFormularioActual();
+            if (!CerrarFormularioActual()) { formHijo.Dispose(); return; }
             panelInicio.Visible = false;
             formularioActual = formHijo;
             formHijo.TopLevel = false;
@@ -277,19 +282,21 @@ namespace SIGAT.UI
 
         private void MostrarInicio()
         {
-            CerrarFormularioActual();
+            if (!CerrarFormularioActual()) return;
             panelInicio.Visible = true;
             panelInicio.BringToFront();
             TemaVisual.Aplicar(panelInicio);
             SeleccionarSeccion("Inicio");
         }
 
-        private void CerrarFormularioActual()
+        private bool CerrarFormularioActual()
         {
-            if (formularioActual == null) return;
+            if (formularioActual == null) return true;
+            if (formularioActual is FormGestionRoles roles && !roles.ConfirmarSalida()) return false;
             formularioActual.Close();
             formularioActual.Dispose();
             formularioActual = null;
+            return true;
         }
 
         private void SeleccionarSeccion(string section)
