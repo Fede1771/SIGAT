@@ -31,7 +31,7 @@ public class PresentacionVisualTests
                 using var form = new FormGestionRoles(); QuitarCarga(form);
                 typeof(FormGestionRoles).GetMethod("InicializarDatos", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(form, new object[] { datos });
                 Preparar(form, new Size(1240, 820));
-                var tabs = (TabControl)form.Controls.Find("vistasRoles", true)[0]; tabs.SelectedIndex = 1;
+                Assert.IsFalse(form.Controls.Find("paginaRoles", true)[0] is TabPage);
                 ((ListBox)form.Controls.Find("listaRoles", true)[0]).SelectedIndex = 1;
                 var tree = (TreeView)form.Controls.Find("tvRolesJerarquia", true)[0];
                 tree.SelectedNode = tree.Nodes.Cast<TreeNode>().Single(n => n.Text.StartsWith(familia.Nombre)).Nodes[0];
@@ -41,7 +41,8 @@ public class PresentacionVisualTests
                 Guardar(form, Environment.GetEnvironmentVariable("SIGAT_VISUAL_PREVIEW"), "roles-v2-oscuro-herencia");
                 ((Button)form.Controls.Find("btnAbrirOrigenRol", true)[0]).PerformClick();
                 Application.DoEvents();
-                Assert.AreEqual(2, tabs.SelectedIndex);
+                Assert.IsTrue(form.Controls.Find("paginaRoles", true)[0].Visible);
+                Assert.IsTrue(form.Controls.Find("paginaFamilias", true)[0].Visible);
                 Assert.AreEqual(familia.Nombre, form.Controls.Find("tituloFamilias", true)[0].Text);
                 var componentes = (TreeView)form.Controls.Find("tvCatalogoGeneral", true)[0];
                 componentes.SelectedNode = componentes.Nodes[0];
@@ -72,7 +73,7 @@ public class PresentacionVisualTests
     }
 
     [TestMethod]
-    public void TresVistasPermitenEditarDescartarYRecorrerJerarquiasSinSql()
+    public void TresColumnasPermitenEditarDescartarYRecorrerJerarquiasSinSql()
     {
         EnInterfaz(() =>
         {
@@ -95,15 +96,14 @@ public class PresentacionVisualTests
             QuitarCarga(form);
             typeof(FormGestionRoles).GetMethod("InicializarDatos", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(form, new object[] { datos });
             Preparar(form, new Size(1240, 820));
-            var tabs = (TabControl)form.Controls.Find("vistasRoles", true)[0];
-            Assert.HasCount(3, tabs.TabPages);
+            Assert.IsEmpty(form.Controls.Find("vistasRoles", true));
+            Assert.HasCount(3, form.Controls.Find("columnasRoles", true)[0].Controls);
             foreach (var size in new[] { new Size(1440, 900), new Size(864, 650), new Size(480, 640), new Size(1240, 820) })
             {
                 form.MinimumSize = Size.Empty;
                 form.ClientSize = size;
                 for (int i = 0; i < 3; i++)
                 {
-                    tabs.SelectedIndex = i;
                     Application.DoEvents();
                     string suf = new[] { "Usuarios", "Roles", "Familias" }[i];
                     var lista = (ListBox)form.Controls.Find("lista" + suf, true)[0];
@@ -127,7 +127,6 @@ public class PresentacionVisualTests
                     Guardar(form, Environment.GetEnvironmentVariable("SIGAT_VISUAL_PREVIEW"), "roles-v2-" + i + "-" + size.Width);
                 }
             }
-            tabs.SelectedIndex = 0;
             var roles = (CheckedListBox)form.Controls.Find("rolesUsuario", true)[0];
             roles.SetItemChecked(1, true);
             Application.DoEvents();
@@ -138,6 +137,93 @@ public class PresentacionVisualTests
             form.DescartarCambios();
             Assert.IsFalse(form.TieneCambios);
             Assert.IsFalse(roles.GetItemChecked(1));
+        });
+    }
+
+    [TestMethod]
+    public void ColumnasSimultaneasConEscaladoYDesplazamientoIndependiente()
+    {
+        EnInterfaz(() =>
+        {
+            foreach (float escala in new[] { 1f, 1.25f, 1.5f })
+            {
+                using var form = new FormGestionRoles(); QuitarCarga(form);
+                typeof(FormGestionRoles).GetMethod("InicializarDatos", BindingFlags.NonPublic | BindingFlags.Instance)!
+                    .Invoke(form, new object[] { EdicionRolesTests.Base() });
+                // Escalar controles y tipografía simula las medidas del escritorio con escalado de Windows.
+                form.Scale(new SizeF(escala, escala));
+                form.Font = new Font("Segoe UI", 10F * escala);
+                Preparar(form, new Size(escala == 1f ? 1120 : escala == 1.25f ? 1440 : 1680, (int)(780 * escala)));
+                Application.DoEvents();
+                var visor = (Panel)form.Controls.Find("visorColumnas", true)[0];
+                var columnas = form.Controls.Find("columnasRoles", true)[0];
+                Assert.HasCount(3, columnas.Controls);
+                foreach (var c in columnas.Controls.Cast<Control>())
+                {
+                    Assert.IsTrue(c.Visible);
+                    Assert.IsTrue(c.Width >= 270 * escala, c.Name + " debe conservar un ancho legible.");
+                    Assert.IsTrue(visor.RectangleToScreen(visor.ClientRectangle).Contains(c.RectangleToScreen(c.ClientRectangle)),
+                        "Las tres columnas deben verse completas en escritorio: " + c.Name);
+                }
+                foreach (string n in new[] { "contenedorDetalleUsuarios", "contenedorDetalleRoles", "contenedorDetalleFamilias" })
+                    Assert.IsTrue(((Panel)form.Controls.Find(n, true)[0]).AutoScroll);
+                Guardar(form, Environment.GetEnvironmentVariable("SIGAT_VISUAL_PREVIEW"), "columnas-escala-" + escala);
+                form.MinimumSize = Size.Empty; form.ClientSize = new Size(480, 620); Application.DoEvents();
+                Assert.IsTrue(visor.HorizontalScroll.Visible, "Una ventana excepcionalmente pequeña debe desplazar las columnas, no ocultarlas.");
+                foreach (var c in columnas.Controls.Cast<Control>()) Assert.IsTrue(c.Visible);
+                foreach (string n in new[] { "btnGuardarCambios", "btnDescartarCambios", "btnRecargarDatos" })
+                {
+                    var boton = form.Controls.Find(n, true)[0];
+                    Assert.IsTrue(form.RectangleToScreen(form.ClientRectangle).Contains(boton.RectangleToScreen(boton.ClientRectangle)), n);
+                }
+            }
+        });
+    }
+
+    [TestMethod]
+    public void CambiarContextosConservaBorradorYSeleccionesIndependientes()
+    {
+        EnInterfaz(() =>
+        {
+            using var form = new FormGestionRoles(); QuitarCarga(form);
+            var original = EdicionRolesTests.Base();
+            typeof(FormGestionRoles).GetMethod("InicializarDatos", BindingFlags.NonPublic | BindingFlags.Instance)!.Invoke(form, new object[] { original });
+            Preparar(form, new Size(1240, 820));
+            var usuarios = (ListBox)form.Controls.Find("listaUsuarios", true)[0]; usuarios.SelectedIndex = 1;
+            var cuentas = (CheckedListBox)form.Controls.Find("rolesUsuario", true)[0]; cuentas.SetItemChecked(1, true); Application.DoEvents();
+            var seleccion = usuarios.SelectedItem;
+            var roles = (ListBox)form.Controls.Find("listaRoles", true)[0]; roles.SelectedIndex = 3;
+            var familias = (ListBox)form.Controls.Find("listaFamilias", true)[0]; familias.SelectedIndex = 2;
+            Application.DoEvents();
+            Assert.IsTrue(form.TieneCambios);
+            Assert.AreSame(seleccion, usuarios.SelectedItem);
+            Assert.IsTrue(cuentas.GetItemChecked(1));
+            Assert.HasCount(1, original.Usuarios[1].Roles, "Los cambios siguen en memoria y no alteran los datos confirmados.");
+            form.DescartarCambios();
+            Assert.IsFalse(form.TieneCambios); Assert.IsFalse(cuentas.GetItemChecked(1));
+        });
+    }
+
+    [TestMethod]
+    public void MenuContraibleGanaEspacioSinCerrarElModuloNiPerderBorrador()
+    {
+        EnInterfaz(() =>
+        {
+            var datos = EdicionRolesTests.Base(); SesionServicio.ObtenerInstancia().IniciarSesion(datos.Usuarios[0]);
+            using var principal = new FrmPrincipal(); QuitarCarga(principal); Preparar(principal, new Size(1366, 850));
+            var form = new FormGestionRoles(); QuitarCarga(form);
+            typeof(FormGestionRoles).GetMethod("InicializarDatos", BindingFlags.NonPublic | BindingFlags.Instance)!.Invoke(form, new object[] { datos });
+            typeof(FrmPrincipal).GetMethod("AbrirFormulario", BindingFlags.NonPublic | BindingFlags.Instance)!.Invoke(principal, new object[] { form });
+            var usuario = (ListBox)form.Controls.Find("listaUsuarios", true)[0]; usuario.SelectedIndex = 1;
+            ((CheckedListBox)form.Controls.Find("rolesUsuario", true)[0]).SetItemChecked(1, true); Application.DoEvents();
+            var host = principal.Controls.Find("panelContenido", true)[0]; int ancho = host.Width;
+            var menu = (Button)principal.Controls.Find("btnAlternarMenu", true)[0]; menu.PerformClick(); Application.DoEvents();
+            Assert.IsTrue(host.Width > ancho + 100); Assert.AreSame(form, host.Controls[0]); Assert.IsTrue(form.TieneCambios);
+            foreach (var boton in principal.Controls.Find("panelNavegacion", true)[0].Controls.OfType<BotonNavegacion>())
+            { Assert.IsTrue(boton.MostrarSoloIcono); Assert.IsFalse(string.IsNullOrWhiteSpace(boton.AccessibleName)); }
+            Guardar(principal, Environment.GetEnvironmentVariable("SIGAT_VISUAL_PREVIEW"), "columnas-menu-contraido");
+            menu.PerformClick(); Application.DoEvents(); Assert.AreEqual(ancho, host.Width); Assert.IsTrue(form.TieneCambios);
+            form.DescartarCambios();
         });
     }
 

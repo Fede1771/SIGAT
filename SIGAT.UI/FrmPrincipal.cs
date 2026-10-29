@@ -8,6 +8,7 @@ namespace SIGAT.UI
 {
     public partial class FrmPrincipal : Form, IIdiomaObserver
     {
+        private bool menuContraido;
         private BitacoraBLL _bitacora = new BitacoraBLL();
         private IdiomaBLL _idiomaBLL = new IdiomaBLL();
 
@@ -38,6 +39,8 @@ namespace SIGAT.UI
 
         private void FrmPrincipal_Load(object sender, EventArgs e)
         {
+            _idiomaBLL.RegistrarClaveNueva(Name, "menu_expandir", "Expandir menú");
+            _idiomaBLL.RegistrarClaveNueva(Name, "menu_contraer", "Contraer menú");
             IdiomaManager.ObtenerInstancia().Suscribir(this);
 
             List<Idioma> idiomas = _idiomaBLL.ObtenerIdiomas();
@@ -208,6 +211,10 @@ namespace SIGAT.UI
             navSalir.Click += (_, _) => itemLogout.PerformClick();
             btnIdiomaVisual.Click += (_, _) => MostrarSelectorIdioma();
             btnTemaVisual.Click += CambiarTema_Click;
+            btnAlternarMenu.Click += (_, _) => AlternarMenu();
+            DpiChanged += (_, _) => AplicarEstadoMenu();
+            Shown += (_, _) => AplicarEstadoMenu();
+            AplicarEstadoMenu();
             foreach (var acceso in new[]
             {
                 ("FrmGestionUsuarios", itemUsuarios, IconoVisual.Usuarios, navFrmGestionUsuarios, inicioFrmGestionUsuarios),
@@ -326,6 +333,37 @@ namespace SIGAT.UI
                 entry.Value.Text = IdiomaManager.ObtenerInstancia().Traducir(Name, entry.Value.Tag.ToString(), entry.Value.Text);
                 if (entry.Value.Seleccionado) lblSeccion.Text = entry.Value.Text;
             }
+            AplicarEstadoMenu();
+        }
+
+        private void AlternarMenu()
+        {
+            menuContraido = !menuContraido;
+            AplicarEstadoMenu();
+        }
+
+        private void AplicarEstadoMenu()
+        {
+            float escala = Math.Max(DeviceDpi / 96f, Font.Height / 17f);
+            marcoPrincipal.SuspendLayout();
+            try
+            {
+                marcoPrincipal.ColumnStyles[0].Width = (menuContraido ? 64 : 236) * escala;
+                barraLateral.Padding = new Padding((int)((menuContraido ? 4 : 12) * escala));
+                label2.Visible = lblRoles.Visible = !menuContraido;
+                foreach (var boton in navegacion.Values.Append(navSalir))
+                {
+                    boton.MostrarSoloIcono = menuContraido;
+                    boton.AccessibleName = boton.Text;
+                    ayudaMenu.SetToolTip(boton, boton.Text);
+                    boton.Invalidate();
+                }
+                string accion = IdiomaManager.ObtenerInstancia().Traducir(Name,
+                    menuContraido ? "menu_expandir" : "menu_contraer", menuContraido ? "Expandir menú" : "Contraer menú");
+                btnAlternarMenu.AccessibleName = accion;
+                ayudaMenu.SetToolTip(btnAlternarMenu, accion);
+            }
+            finally { marcoPrincipal.ResumeLayout(true); }
         }
 
         // El botón muestra el modo al que vamos a cambiar, no el modo que ya está activo.

@@ -8,7 +8,7 @@ public partial class FormGestionRoles : Form, IIdiomaObserver
 {
     private readonly RolesBLL rolesBLL = new();
     private EdicionRoles edicion = new(new EstadoRoles());
-    private bool cargando, detalleCompacto;
+    private bool cargando;
     private bool distribuyendo, distribucionPendiente;
     private int usuarioId, rolId, familiaId;
     private readonly HashSet<int> familiasModificadas = new();
@@ -45,27 +45,10 @@ public partial class FormGestionRoles : Form, IIdiomaObserver
             visor.ClientSizeChanged += (_, _) => ProgramarDistribucion();
         Shown += (_, _) => AjustarDistribucion();
         DpiChanged += (_, _) => AjustarDistribucion();
-        btnVerLista.Click += (_, _) => { detalleCompacto = false; AjustarDistribucion(); };
-        vistasRoles.Selecting += (_, e) => { if (!cargando && TieneCambios && !ResolverPendientes()) e.Cancel = true; };
-        vistasRoles.SelectedIndexChanged += (_, _) => { detalleCompacto = false; AjustarDistribucion(); };
-        vistasRoles.DrawItem += (_, e) =>
-        {
-            bool actual = e.Index == vistasRoles.SelectedIndex;
-            using var brush = new SolidBrush(TemaVisual.ColorActual(actual ? TemaVisual.AzulSuave : Color.White));
-            e.Graphics.FillRectangle(brush, e.Bounds);
-            TextRenderer.DrawText(e.Graphics, vistasRoles.TabPages[e.Index].Text, Font, e.Bounds,
-                TemaVisual.ColorActual(TemaVisual.Texto, true), TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
-            if ((e.State & DrawItemState.Focus) != 0) e.DrawFocusRectangle();
-        };
+        visorColumnas.ClientSizeChanged += (_, _) => ProgramarDistribucion();
         buscarUsuarios.TextChanged += (_, _) => PoblarListas();
         buscarRoles.TextChanged += (_, _) => PoblarListas();
         buscarFamilias.TextChanged += (_, _) => PoblarListas();
-        foreach (var lista in new[] { listaUsuarios, listaRoles, listaFamilias })
-        {
-            void AbrirDetalle() { if (lista.SelectedItem != null) { detalleCompacto = true; AjustarDistribucion(); } }
-            lista.MouseClick += (_, _) => AbrirDetalle();
-            lista.KeyDown += (_, e) => { if (e.KeyCode == Keys.Enter) { AbrirDetalle(); e.Handled = true; } };
-        }
         listaUsuarios.SelectedIndexChanged += (_, _) => Seleccionar(listaUsuarios, id => usuarioId = id);
         listaRoles.SelectedIndexChanged += (_, _) => Seleccionar(listaRoles, id => rolId = id);
         listaFamilias.SelectedIndexChanged += (_, _) => Seleccionar(listaFamilias, id => familiaId = id);
@@ -336,14 +319,14 @@ public partial class FormGestionRoles : Form, IIdiomaObserver
     private void AbrirOrigen()
     {
         if (tvRolesJerarquia.SelectedNode?.Tag is not Nodo n) return;
-        if (!ResolverPendientes()) return;
         if (n.FamiliaOrigen.HasValue)
         {
             familiaId = n.FamiliaOrigen.Value; buscarFamilias.Clear();
-            vistasRoles.SelectedTab = paginaFamilias;
+            visorColumnas.ScrollControlIntoView(paginaFamilias);
         }
         else if (n.RolOrigen.HasValue) { rolId = n.RolOrigen.Value; buscarRoles.Clear(); }
-        PoblarListas(); detalleCompacto = true; AjustarDistribucion();
+        PoblarListas(); AjustarDistribucion();
+        if (n.FamiliaOrigen.HasValue) tvCatalogoGeneral.Focus(); else tvRolesJerarquia.Focus();
     }
 
     public void DescartarCambios()
@@ -394,69 +377,60 @@ public partial class FormGestionRoles : Form, IIdiomaObserver
 
     private void AjustarDistribucion()
     {
-        if (vistasRoles == null || distribuyendo) return;
+        if (columnasRoles == null || distribuyendo) return;
         distribuyendo = true;
         try
         {
-        float escala = DeviceDpi / 96f;
-        bool compacto = ClientSize.Width < 900 * escala;
-        btnVerLista.Visible = compacto && detalleCompacto;
-        vistasRoles.SizeMode = compacto ? TabSizeMode.Normal : TabSizeMode.Fixed;
-        foreach (var (vista, lista, detalle) in new[] { (vistaUsuarios, seleccionUsuarios, contenedorDetalleUsuarios),
-            (vistaRoles, seleccionRoles, contenedorDetalleRoles), (vistaFamilias, seleccionFamilias, contenedorDetalleFamilias) })
-        {
-            vista.SuspendLayout();
-            lista.Visible = !compacto || !detalleCompacto;
-            detalle.Visible = !compacto || detalleCompacto;
-            vista.ColumnStyles[0].SizeType = compacto ? SizeType.Percent : SizeType.Absolute;
-            vista.ColumnStyles[0].Width = compacto ? (detalleCompacto ? 0 : 100) : 260 * escala;
-            vista.ColumnStyles[1].SizeType = SizeType.Percent;
-            vista.ColumnStyles[1].Width = compacto && !detalleCompacto ? 0 : 100;
-            vista.ResumeLayout(true);
-        }
-        foreach (var panel in new[] { encabezadoRoles, detalleUsuarios, detalleRoles, detalleFamilias })
-            foreach (var label in panel.Controls.OfType<Label>()) label.MaximumSize = new Size(Math.Max(1, panel.ClientSize.Width - panel.Padding.Horizontal), 0);
-        int disponible = Math.Max(1, ClientSize.Width - layoutPrincipal.Padding.Horizontal);
-        int anchoAcciones = Math.Min(disponible, accionesGuardado.Controls.Cast<Control>().Sum(c => c.GetPreferredSize(Size.Empty).Width + c.Margin.Horizontal));
-        accionesGuardado.AutoSize = false;
-        accionesGuardado.MaximumSize = Size.Empty;
-        accionesGuardado.Width = anchoAcciones;
-        int altoAcciones = accionesGuardado.GetPreferredSize(new Size(anchoAcciones, 0)).Height;
-        accionesGuardado.Height = altoAcciones;
-        accionesGuardado.MinimumSize = new Size(0, altoAcciones);
-        pieRoles.ColumnStyles[0].SizeType = SizeType.Percent;
-        pieRoles.ColumnStyles[0].Width = 100;
-        pieRoles.ColumnStyles[1].SizeType = SizeType.Absolute;
-        pieRoles.ColumnStyles[1].Width = compacto ? 0 : anchoAcciones;
-        pieRoles.RowCount = compacto ? 2 : 1;
-        pieRoles.RowStyles.Clear();
-        pieRoles.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-        if (compacto) pieRoles.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-        pieRoles.SetCellPosition(accionesGuardado, new TableLayoutPanelCellPosition(compacto ? 0 : 1, compacto ? 1 : 0));
-        pieRoles.SetColumnSpan(accionesGuardado, compacto ? 2 : 1);
-        pieRoles.SetColumnSpan(lblEstado, compacto ? 2 : 1);
-        lblEstado.MaximumSize = new Size(Math.Max(1, disponible - (compacto ? 0 : anchoAcciones)), 0);
-        foreach (var (visor, tabla) in new[] { (contenedorDetalleUsuarios, detalleUsuarios),
-            (contenedorDetalleRoles, detalleRoles), (contenedorDetalleFamilias, detalleFamilias) })
-        {
-            if (!visor.Visible || visor.ClientSize.Width <= 0) continue;
-            int ancho = Math.Max(1, visor.ClientSize.Width - 1);
-            tabla.Width = ancho;
-            foreach (var l in tabla.Controls.OfType<Label>()) l.MaximumSize = new Size(Math.Max(1, ancho - l.Margin.Horizontal), 0);
-            int alto = 0;
-            foreach (Control c in tabla.Controls)
+            float escala = Math.Max(DeviceDpi / 96f, Font.Height / 17f);
+            int disponible = Math.Max(1, visorColumnas.ClientSize.Width);
+            int ancho = Math.Max(disponible, (int)Math.Ceiling(3 * 280 * escala));
+            int alto = Math.Max(1, visorColumnas.ClientSize.Height - (ancho > disponible ? SystemInformation.HorizontalScrollBarHeight : 0));
+            visorColumnas.AutoScrollMinSize = new Size(ancho, 0);
+            columnasRoles.Bounds = new Rectangle(visorColumnas.AutoScrollPosition, new Size(ancho, alto));
+            foreach (var vista in new[] { vistaUsuarios, vistaRoles, vistaFamilias })
+                vista.RowStyles[0].Height = 160 * escala;
+            foreach (var (visor, tabla, acciones) in new[] {
+                (contenedorDetalleUsuarios, detalleUsuarios, (FlowLayoutPanel)null),
+                (contenedorDetalleRoles, detalleRoles, accionesRol),
+                (contenedorDetalleFamilias, detalleFamilias, accionesFamilia) })
             {
-                var fila = tabla.RowStyles[tabla.GetRow(c)];
-                alto += fila.SizeType == SizeType.Percent ? (int)((c is CheckedListBox ? 130 : 180) * escala) :
-                    fila.SizeType == SizeType.Absolute ? (int)fila.Height :
-                    c.GetPreferredSize(new Size(Math.Max(1, ancho - c.Margin.Horizontal), 0)).Height + c.Margin.Vertical;
+                int anchoDetalle = Math.Max(1, visor.ClientSize.Width - SystemInformation.VerticalScrollBarWidth - 2);
+                foreach (var l in tabla.Controls.OfType<Label>()) l.MaximumSize = new Size(anchoDetalle, 0);
+                if (acciones != null)
+                {
+                    acciones.MaximumSize = new Size(anchoDetalle, 0);
+                    foreach (Button boton in acciones.Controls.OfType<Button>())
+                        boton.MaximumSize = new Size(Math.Max(100, anchoDetalle - boton.Margin.Horizontal), 0);
+                }
+                int minimo = 0;
+                foreach (Control c in tabla.Controls)
+                {
+                    var fila = tabla.RowStyles[tabla.GetRow(c)];
+                    minimo += fila.SizeType == SizeType.Percent ? (int)((c is CheckedListBox ? 115 : 200) * escala) :
+                        fila.SizeType == SizeType.Absolute ? (int)(84 * escala) :
+                        c.GetPreferredSize(new Size(Math.Max(1, anchoDetalle - c.Margin.Horizontal), 0)).Height + c.Margin.Vertical;
+                    if (fila.SizeType == SizeType.Absolute) fila.Height = 84 * escala;
+                }
+                int altura = Math.Max(visor.ClientSize.Height, minimo);
+                visor.AutoScrollMinSize = new Size(0, altura);
+                tabla.Bounds = new Rectangle(visor.AutoScrollPosition, new Size(anchoDetalle, altura));
             }
-            int altura = Math.Max(visor.ClientSize.Height, alto);
-            visor.AutoScrollMinSize = new Size(0, altura);
-            tabla.Bounds = new Rectangle(visor.AutoScrollPosition, new Size(Math.Max(1, visor.ClientSize.Width - 1), altura));
-            tabla.PerformLayout();
-            visor.PerformLayout();
-        }
+            int espacioPie = Math.Max(1, pieRoles.ClientSize.Width);
+            int accionesAncho = accionesGuardado.Controls.Cast<Control>().Sum(c => c.GetPreferredSize(Size.Empty).Width + c.Margin.Horizontal);
+            bool pieCompacto = espacioPie < accionesAncho + 230 * escala;
+            pieRoles.ColumnStyles[1].SizeType = SizeType.Absolute;
+            pieRoles.ColumnStyles[1].Width = pieCompacto ? 0 : accionesAncho;
+            pieRoles.RowCount = pieCompacto ? 2 : 1;
+            pieRoles.RowStyles.Clear();
+            pieRoles.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            if (pieCompacto) pieRoles.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            pieRoles.SetCellPosition(accionesGuardado, new TableLayoutPanelCellPosition(pieCompacto ? 0 : 1, pieCompacto ? 1 : 0));
+            pieRoles.SetColumnSpan(accionesGuardado, pieCompacto ? 2 : 1);
+            pieRoles.SetColumnSpan(lblEstado, pieCompacto ? 2 : 1);
+            accionesGuardado.MaximumSize = new Size(espacioPie, 0);
+            lblEstado.MaximumSize = new Size(Math.Max(1, espacioPie - (pieCompacto ? 0 : accionesAncho)), 0);
+            foreach (var l in encabezadoRoles.Controls.OfType<Label>())
+                l.MaximumSize = new Size(Math.Max(1, encabezadoRoles.ClientSize.Width), 0);
         }
         finally { distribuyendo = false; }
     }
@@ -471,6 +445,6 @@ public partial class FormGestionRoles : Form, IIdiomaObserver
             tree.ContextMenuStrip.Items[0].Text = T("expandir", "Expandir todo");
             tree.ContextMenuStrip.Items[1].Text = T("contraer", "Contraer todo");
         }
-        PoblarListas(); AjustarDistribucion(); vistasRoles.Invalidate();
+        PoblarListas(); AjustarDistribucion();
     }
 }

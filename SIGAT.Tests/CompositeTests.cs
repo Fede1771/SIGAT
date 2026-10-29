@@ -83,8 +83,9 @@ public class CompositeTests
                 datos.Usuarios.Add(auditor);
                 datos.Usuarios.Add(new Usuario { IdUsuario = 44, NombreUsuario = "inactivo", Activo = false });
                 cargar.Invoke(form, new object[] { datos });
-                var tabs = (System.Windows.Forms.TabControl)form.Controls.Find("vistasRoles", true).Single();
-                Assert.HasCount(3, tabs.TabPages);
+                var columnas = form.Controls.Find("columnasRoles", true).Single();
+                Assert.HasCount(3, columnas.Controls);
+                Assert.IsEmpty(form.Controls.Find("vistasRoles", true));
                 var usuarios = (System.Windows.Forms.ListBox)form.Controls.Find("listaUsuarios", true).Single();
                 Assert.HasCount(3, usuarios.Items);
                 Assert.HasCount(5, ((System.Windows.Forms.ListBox)form.Controls.Find("listaRoles", true).Single()).Items);

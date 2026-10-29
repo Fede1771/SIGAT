@@ -55,7 +55,7 @@ El objetivo académico es poder explicar y demostrar cómo una operación atravi
 |---|---|
 | Autenticación | Ingreso mediante usuario y contraseña, rechazo de credenciales incorrectas y cuentas inactivas, sesión compartida y cierre de sesión. |
 | Usuarios | Alta, modificación de datos y contraseña, baja lógica y reactivación. Las cuentas nuevas se crean sin roles. |
-| Roles y permisos | Tres vistas: Usuarios, Roles y Familias y permisos. Edición en memoria con Guardar/Descartar, búsqueda, procedencia de accesos, impacto de familias compartidas y anidamiento de familias y roles sin ciclos. |
+| Roles y permisos | Tres columnas simultáneas: Usuarios, Roles y Familias y permisos. Edición en memoria con Guardar/Descartar, búsqueda, procedencia de accesos, impacto de familias compartidas y anidamiento de familias y roles sin ciclos. |
 | Idiomas | Cambio de idioma durante la sesión, preferencia por cuenta, creación y activación de idiomas, edición e importación/exportación de traducciones. |
 | Bitácora | Registro de accesos, cierre de sesión, altas, modificaciones y bajas de usuarios; intento de registro de errores inesperados y auditoría del recálculo de integridad. Consultas combinadas por fecha, usuario y actividad. |
 | Integridad | DVH/DVV de Usuarios y UsuarioRol, verificación antes del acceso, respaldos comprobados, recuperación y recálculo administrativo con confirmación. |
@@ -124,7 +124,7 @@ Ver bitácora y Consultar inventario son permisos simples; los otros cinco son c
 
 Las asignaciones se conservan en SQL. La composición del rol Administrador está protegida. Los cambios se reflejan en los permisos de una cuenta al volver a iniciar sesión.
 
-La gestión se divide en tres tareas:
+La gestión presenta tres columnas simultáneas, con selección independiente y un único borrador:
 
 | Vista | Operaciones |
 |---|---|
@@ -132,7 +132,7 @@ La gestión se divide en tres tareas:
 | **Roles** | Agregar permisos o familias, incluir otros roles y quitar asignaciones directas. Los permisos heredados indican su origen. |
 | **Familias y permisos** | Crear familias y subfamilias, agregar componentes existentes y quitar relaciones. Los permisos simples son de consulta; una familia en uso no puede eliminarse. |
 
-**Guardar cambios** abre una revisión de las operaciones y del impacto de las familias compartidas. **Descartar** restaura la última versión confirmada sin escribir SQL. Al salir o cambiar de vista con una edición pendiente se puede guardar, descartar o continuar editando. Si otro administrador modificó el catálogo, el guardado rechaza el conflicto y conserva la copia de trabajo; después de descartar, **Recargar** obtiene el estado vigente.
+**Guardar cambios** abre una revisión de las operaciones y del impacto de las familias compartidas. **Descartar** restaura la última versión confirmada sin escribir SQL. Al abandonar el módulo o recargar con una edición pendiente se puede guardar, descartar o continuar editando. Si otro administrador modificó el catálogo, el guardado rechaza el conflicto y conserva la copia de trabajo; después de descartar, **Recargar** obtiene el estado vigente.
 
 [EdicionRoles.cs](SIGAT.BLL/EdicionRoles.cs) mantiene la copia del grafo por ID, conservando familias compartidas. Cada operación se valida antes de reemplazar el borrador. Esta edición temporal no constituye el historial de versiones de T06b.
 

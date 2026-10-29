@@ -74,6 +74,8 @@ public sealed class BotonNavegacion : Button
 {
     [System.ComponentModel.DefaultValue(false)]
     public bool Seleccionado { get; set; }
+    [System.ComponentModel.DefaultValue(false)]
+    public bool MostrarSoloIcono { get; set; }
     private Bitmap icon;
     private IconoVisual tipo;
     private Color colorIcono;
@@ -122,9 +124,15 @@ public sealed class BotonNavegacion : Button
         }
         BackColor = TemaVisual.ColorActual(Seleccionado ? TemaVisual.AzulSuave : Color.White);
         ForeColor = TemaVisual.ColorActual(Seleccionado ? TemaVisual.Azul : TemaVisual.Texto, true);
-        base.OnPaint(e);
+        if (MostrarSoloIcono)
+        {
+            using var fondo = new SolidBrush(BackColor);
+            e.Graphics.FillRectangle(fondo, ClientRectangle);
+            if (Focused && ShowFocusCues) ControlPaint.DrawFocusRectangle(e.Graphics, Rectangle.Inflate(ClientRectangle, -4, -4));
+        }
+        else base.OnPaint(e);
         if (Seleccionado) using (var brush = new SolidBrush(actual)) e.Graphics.FillRectangle(brush, 0, 10, 3, Height - 20);
-        e.Graphics.DrawImage(icon, 12, (Height - 24) / 2, 24, 24);
+        e.Graphics.DrawImage(icon, MostrarSoloIcono ? (Width - 24) / 2 : 12, (Height - 24) / 2, 24, 24);
     }
 
     protected override void Dispose(bool disposing)

@@ -11,6 +11,9 @@ namespace SIGAT.UI
         private Button btnTemaVisual;
         private Button btnIdiomaVisual;
         private TableLayoutPanel barraLateral;
+        private TableLayoutPanel cabeceraMenu;
+        private Button btnAlternarMenu;
+        private ToolTip ayudaMenu;
         private TableLayoutPanel panelNavegacion;
         private BotonNavegacion navInicio;
         private BotonNavegacion navFrmGestionUsuarios;
@@ -48,7 +51,7 @@ namespace SIGAT.UI
             base.Dispose(disposing);
         }
 
-        // Estructura visual editable desde el diseÃ±ador; el comportamiento queda en el .cs.
+        // Estructura visual editable desde el diseñador; el comportamiento queda en el .cs.
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
@@ -69,6 +72,16 @@ namespace SIGAT.UI
             btnTemaVisual = new Button();
             btnIdiomaVisual = new Button();
             barraLateral = new TableLayoutPanel();
+            cabeceraMenu = new TableLayoutPanel { Name = "cabeceraMenu", Dock = DockStyle.Fill, Margin = Padding.Empty, ColumnCount = 2, RowCount = 1, BackColor = Color.White };
+            cabeceraMenu.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            cabeceraMenu.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 44F));
+            cabeceraMenu.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            btnAlternarMenu = new Button { Name = "btnAlternarMenu", Text = "☰", Dock = DockStyle.Fill, FlatStyle = FlatStyle.Flat,
+                Margin = new Padding(2,12,4,12), Font = new Font("Segoe UI", 15F), AccessibleName = "Contraer menú", BackColor = Color.White };
+            btnAlternarMenu.FlatAppearance.BorderSize = 0;
+            ayudaMenu = new ToolTip(components);
+            cabeceraMenu.Controls.Add(label2, 0, 0);
+            cabeceraMenu.Controls.Add(btnAlternarMenu, 1, 0);
             panelNavegacion = new TableLayoutPanel();
             navInicio = new BotonNavegacion();
             navFrmGestionUsuarios = new BotonNavegacion();
@@ -123,7 +136,7 @@ namespace SIGAT.UI
             itemUsuarios.Name = "itemUsuarios";
             itemUsuarios.Size = new Size(223, 22);
             itemUsuarios.Tag = "menu_usuarios";
-            itemUsuarios.Text = "GestiÃ³n de Usuarios";
+            itemUsuarios.Text = "Gestión de Usuarios";
             itemUsuarios.Click += ItemUsuarios_Click;
             // 
             // itemBitacora
@@ -131,7 +144,7 @@ namespace SIGAT.UI
             itemBitacora.Name = "itemBitacora";
             itemBitacora.Size = new Size(223, 22);
             itemBitacora.Tag = "menu_bitacora";
-            itemBitacora.Text = "BitÃ¡cora";
+            itemBitacora.Text = "Bitácora";
             itemBitacora.Click += ItemBitacora_Click;
             // 
             // itemLogout
@@ -139,21 +152,21 @@ namespace SIGAT.UI
             itemLogout.Name = "itemLogout";
             itemLogout.Size = new Size(223, 22);
             itemLogout.Tag = "menu_logout";
-            itemLogout.Text = "Cerrar SesiÃ³n";
+            itemLogout.Text = "Cerrar Sesión";
             itemLogout.Click += ItemLogout_Click;
             // 
             // itemRoles
             // 
             itemRoles.Name = "itemRoles";
             itemRoles.Size = new Size(223, 22);
-            itemRoles.Text = "GestiÃ³n de roles y permisos";
+            itemRoles.Text = "Gestión de roles y permisos";
             itemRoles.Click += ItemRoles_Click;
             // 
             // itemIntegridad
             // 
             itemIntegridad.Name = "itemIntegridad";
             itemIntegridad.Size = new Size(223, 22);
-            itemIntegridad.Text = "Integridad y recuperaciÃ³n";
+            itemIntegridad.Text = "Integridad y recuperación";
             itemIntegridad.Click += ItemIntegridad_Click;
             // 
             // itemIdioma
@@ -177,7 +190,7 @@ namespace SIGAT.UI
             marcoPrincipal.ColumnCount = 2;
             marcoPrincipal.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 236F));
             marcoPrincipal.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-            marcoPrincipal.Controls.Add(label2, 0, 0);
+            marcoPrincipal.Controls.Add(cabeceraMenu, 0, 0);
             marcoPrincipal.Controls.Add(encabezadoPrincipal, 1, 0);
             marcoPrincipal.Controls.Add(barraLateral, 0, 1);
             marcoPrincipal.Controls.Add(panelContenido, 1, 1);
