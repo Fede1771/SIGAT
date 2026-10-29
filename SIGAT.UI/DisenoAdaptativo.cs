@@ -55,7 +55,12 @@ internal static class DisenoAdaptativo
                 if (form is FrmGestionUsuarios || form is FrmGestionIdiomas)
                     alto = EditorLateral(raiz, ancho, Dp, form is FrmGestionIdiomas);
                 if (form is FrmLogin)
-                    alto += form.Padding.Vertical;
+                {
+                    // Las filas ya están escaladas por WinForms. El margen del
+                    // formulario queda fuera del visor y no forma parte del contenido.
+                    alto = raiz.Padding.Vertical + (int)Math.Ceiling(raiz.RowStyles.Cast<RowStyle>()
+                        .Where(fila => fila.SizeType == SizeType.Absolute).Sum(fila => fila.Height));
+                }
                 if (form is FrmBitacora || form is FrmIntegridad)
                 {
                     int fijos = raiz.Controls.Cast<Control>().Where(c =>

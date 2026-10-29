@@ -198,9 +198,14 @@ public partial class FormGestionRoles : Form, IIdiomaObserver
             tituloUsuarios.Text = usuario?.NombreUsuario ?? T("seleccionarUsuario", "Seleccioná un usuario");
             ayudaUsuarios.Text = T("ayudaUsuarios", "Marcá los roles directos. Debajo podés consultar los accesos y todas sus rutas de herencia.") +
                 (usuarioId > 0 && usuarioId == Estado.IdAdministradorOriginal ? " " + T("original", "Cuenta original protegida: no se puede quitar Administrador.") : "");
+            bool cuentaProtegida = usuario != null && usuarioId == Estado.IdAdministradorOriginal;
+            var administrador = cuentaProtegida ? Estado.Roles.Find(r => r.Id == 1) : null;
+            lblRolProtegido.Visible = administrador != null;
+            lblRolProtegido.Text = administrador == null ? "" : administrador.Nombre + " · " + T("protegido", "Protegido");
             rolesUsuario.Items.Clear();
-            foreach (var r in Estado.Roles) rolesUsuario.Items.Add(new Opcion(r.Id, r.Nombre +
-                (r.Id == 1 && usuarioId == Estado.IdAdministradorOriginal ? " · " + T("protegido", "Protegido") : "")), usuario?.Roles.Any(h => h.Id == r.Id) == true);
+            // Una asignación inamovible se presenta como información, sin casilla editable.
+            foreach (var r in Estado.Roles.Where(r => !cuentaProtegida || r.Id != 1))
+                rolesUsuario.Items.Add(new Opcion(r.Id, r.Nombre), usuario?.Roles.Any(h => h.Id == r.Id) == true);
             rolesUsuario.Enabled = usuario != null;
             ActualizarArbol(tvUsuarioPermisos, () => { if (usuario != null) foreach (var r in usuario.Roles) tvUsuarioPermisos.Nodes.Add(NodoRol(r, true, null)); });
             var rol = Estado.Roles.Find(r => r.Id == rolId);

@@ -15,6 +15,84 @@ namespace SIGAT.Tests;
 public class PresentacionVisualTests
 {
     [TestMethod]
+    public void LoginSoloDesplazaCuandoElContenidoNoCabe()
+    {
+        EnInterfaz(() =>
+        {
+            foreach (float escala in new[] { 1f, 1.25f, 1.5f })
+            {
+                using var login = (FrmLogin)typeof(FrmLogin).GetConstructor(BindingFlags.Instance | BindingFlags.NonPublic,
+                    null, new[] { typeof(bool) }, null)!.Invoke(new object[] { false });
+                login.Scale(new SizeF(escala, escala));
+                login.Font = new Font("Segoe UI", 10F * escala);
+                Preparar(login, new Size((int)(460 * escala), (int)(610 * escala)));
+                var visor = (Panel)login.Controls.Find("visorAdaptativo", true)[0];
+                Assert.IsFalse(visor.VerticalScroll.Visible, "El login no necesita scroll a escala " + escala);
+                Assert.IsFalse(visor.HorizontalScroll.Visible);
+                var ingresar = login.Controls.Find("btnLogin", true)[0];
+                Assert.IsTrue(visor.RectangleToScreen(visor.ClientRectangle).Contains(ingresar.RectangleToScreen(ingresar.ClientRectangle)),
+                    $"Ingresar debe quedar accesible a escala {escala}: botón {ingresar.RectangleToScreen(ingresar.ClientRectangle)}, visor {visor.RectangleToScreen(visor.ClientRectangle)}, scroll {visor.AutoScrollPosition}.");
+                Guardar(login, Environment.GetEnvironmentVariable("SIGAT_VISUAL_PREVIEW"), "login-sin-scroll-" + escala);
+                login.MinimumSize = Size.Empty;
+                login.ClientSize = new Size((int)(460 * escala), (int)(300 * escala));
+                Application.DoEvents();
+                Assert.IsTrue(visor.VerticalScroll.Visible, "En ventanas muy bajas el contenido debe seguir siendo accesible.");
+                login.Controls.Find("txtUsuario", true)[0].Focus();
+                ingresar.Focus();
+                Application.DoEvents();
+                Assert.IsTrue(visor.RectangleToScreen(visor.ClientRectangle).Contains(ingresar.RectangleToScreen(ingresar.ClientRectangle)),
+                    $"Ingresar debe quedar accesible a escala {escala}: botón {ingresar.RectangleToScreen(ingresar.ClientRectangle)}, visor {visor.RectangleToScreen(visor.ClientRectangle)}, scroll {visor.AutoScrollPosition}.");
+                login.ClientSize = new Size((int)(460 * escala), (int)(610 * escala));
+                Application.DoEvents();
+                Assert.IsFalse(visor.VerticalScroll.Visible, "Al recuperar espacio debe desaparecer la barra.");
+            }
+        });
+    }
+
+    [TestMethod]
+    public void RolProtegidoSeMuestraSinCasillaYConservaLasAsignacionesEditables()
+    {
+        EnInterfaz(() =>
+        {
+            var tema = typeof(FrmPrincipal).Assembly.GetType("SIGAT.UI.TemaVisual")!.GetMethod("CambiarModo")!;
+            try
+            {
+                foreach (bool oscuro in new[] { false, true })
+                {
+                    tema.Invoke(null, new object[] { oscuro });
+                    var datos = EdicionRolesTests.Base();
+                    using var form = new FormGestionRoles(); QuitarCarga(form);
+                    typeof(FormGestionRoles).GetMethod("InicializarDatos", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(form, new object[] { datos });
+                    Preparar(form, new Size(1240, 820));
+                    var protegido = (Label)form.Controls.Find("lblRolProtegido", true)[0];
+                    var roles = (CheckedListBox)form.Controls.Find("rolesUsuario", true)[0];
+                    var usuarios = (ListBox)form.Controls.Find("listaUsuarios", true)[0];
+                    int Id(object item) => (int)item.GetType().GetProperty("Id")!.GetValue(item)!;
+                    Assert.IsTrue(protegido.Visible);
+                    StringAssert.Contains(protegido.Text, "Administrador");
+                    StringAssert.Contains(protegido.Text, "Protegido");
+                    Assert.IsFalse(protegido.TabStop);
+                    Assert.AreEqual(AccessibleRole.StaticText, protegido.AccessibleRole);
+                    Assert.AreNotEqual(roles.BackColor, protegido.BackColor, "La asignación fija debe distinguirse con fondo gris.");
+                    Assert.IsFalse(roles.Items.Cast<object>().Any(item => Id(item) == 1), "La cuenta original no debe mostrar una casilla para Administrador.");
+                    Assert.IsFalse(form.TieneCambios);
+                    roles.SetItemChecked(0, true); Application.DoEvents();
+                    Assert.IsTrue(form.TieneCambios, "Los otros roles siguen siendo editables.");
+                    form.DescartarCambios();
+                    Assert.IsFalse(form.TieneCambios);
+                    Assert.IsTrue(protegido.Visible);
+                    Assert.IsTrue(datos.Usuarios[0].Roles.Any(r => r.Id == 1));
+                    Guardar(form, Environment.GetEnvironmentVariable("SIGAT_VISUAL_PREVIEW"), "admin-protegido-" + (oscuro ? "oscuro" : "claro"));
+                    usuarios.SelectedIndex = 1; Application.DoEvents();
+                    Assert.IsFalse(protegido.Visible, "La asignación fija corresponde solo al administrador original.");
+                    Assert.IsTrue(roles.Items.Cast<object>().Any(item => Id(item) == 1), "En otra cuenta Administrador sigue disponible según la lógica actual.");
+                }
+            }
+            finally { tema.Invoke(null, new object[] { false }); }
+        });
+    }
+
+    [TestMethod]
     public void HerenciaAbreLaFamiliaDeOrigenYElSelectorConservaMarcasAlFiltrar()
     {
         EnInterfaz(() =>
