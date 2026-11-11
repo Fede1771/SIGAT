@@ -246,6 +246,34 @@ IF COL_LENGTH(''dbo.UsuarioRol'',''DigitoVerificador'') IS NULL
 DELETE dbo.IntegridadTabla WHERE Tabla IN (''Bitacora'',''Traduccion'');
 IF NOT EXISTS(SELECT 1 FROM sys.indexes WHERE object_id=OBJECT_ID(''dbo.UsuarioIdioma'') AND name=''IX_UsuarioIdioma_IdIdioma'')
     CREATE INDEX IX_UsuarioIdioma_IdIdioma ON dbo.UsuarioIdioma(IdIdioma);
+-- El historial conserva las cuentas retiradas y los nombres históricos de actores y roles.
+IF OBJECT_ID(''dbo.UsuarioVersion'',''U'') IS NULL
+BEGIN
+    CREATE TABLE dbo.UsuarioVersion (
+        IdUsuario int NOT NULL,
+        Version int NOT NULL CHECK (Version>0),
+        FechaUtc datetime2(7) NOT NULL DEFAULT SYSUTCDATETIME(),
+        IdActor int NULL,
+        Actor nvarchar(256) NOT NULL,
+        Operacion varchar(24) NOT NULL CHECK (Operacion IN (''EstadoInicial'',''Alta'',''Edicion'',''Baja'',''Reactivacion'',''Roles'',''Restauracion'',''Recuperacion'')),
+        NombreUsuario varchar(50) NOT NULL,
+        Nombre varchar(100) NOT NULL,
+        Apellido varchar(100) NOT NULL,
+        Activo bit NOT NULL,
+        Roles nvarchar(max) NOT NULL CHECK (ISJSON(Roles)=1),
+        Existe bit NOT NULL,
+        CambioClave bit NOT NULL,
+        VersionOrigen int NULL,
+        CONSTRAINT PK_UsuarioVersion PRIMARY KEY (IdUsuario,Version),
+        CONSTRAINT CK_UsuarioVersion_Origen CHECK (VersionOrigen<Version),
+        CONSTRAINT FK_UsuarioVersion_Origen FOREIGN KEY (IdUsuario,VersionOrigen) REFERENCES dbo.UsuarioVersion(IdUsuario,Version)
+    );
+    INSERT dbo.UsuarioVersion (IdUsuario,Version,Actor,Operacion,NombreUsuario,Nombre,Apellido,Activo,Roles,Existe,CambioClave)
+    SELECT u.IdUsuario,1,N''Migración'',''EstadoInicial'',u.NombreUsuario,u.Nombre,u.Apellido,u.Activo,
+           COALESCE((SELECT r.Id,r.Nombre FROM dbo.UsuarioRol ur JOIN dbo.Rol r ON r.Id=ur.IdRol
+                     WHERE ur.IdUsuario=u.IdUsuario ORDER BY r.Id FOR JSON PATH),N''[]''),1,0
+    FROM dbo.Usuarios u;
+END;
 COMMIT TRANSACTION;';
     EXEC sys.sp_executesql @Sql;
     PRINT N'Actualización completa finalizada. Revise las cuentas sin rol con 03_Consultar_Usuarios.sql.';

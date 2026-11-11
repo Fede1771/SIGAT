@@ -102,6 +102,11 @@ public class IntegridadTests
         Assert.IsTrue(idioma.ObtenerTraduccionesPorIdioma(1).Any(t=>t.Texto=="Texto sin DVH"));
         Assert.IsTrue(integridad.Recuperar(backup).Correcta);
         Assert.AreEqual("Pérez",usuarios.ObtenerPorNombreUsuario("dv_prueba")!.Apellido);
+        var recuperacion = usuarios.ConsultarHistorial(cuenta.IdUsuario);
+        Assert.AreEqual(OperacionUsuarioVersion.Recuperacion, recuperacion.Versiones[0].Operacion);
+        Assert.AreEqual("Pérez", recuperacion.Versiones[0].Estado.Apellido);
+        Assert.IsFalse(recuperacion.Versiones.Any(version => version.Estado.Apellido == "ALTERADO"));
+        Assert.ThrowsExactly<InvalidOperationException>(() => roles.Guardar(estado));
         Assert.AreEqual("Cuenta alterada",bitacora.Buscar(null,null,"admin","Incidente").First().InformacionAsociada);
 
         Sql($"UPDATE dbo.Usuarios SET DigitoVerificador=REPLICATE('0',64) WHERE IdUsuario={cuenta.IdUsuario}");

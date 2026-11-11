@@ -7,7 +7,7 @@
 3. Abrir `01_Instalacion_Completa.sql`, cambiar `@ClaveAdmin` y ejecutar **todo el archivo**. Dejar `@Base = N'SIGAT'` para la conexión actual.
 4. Ejecutar `04_Verificacion_Integridad.sql` y abrir SIGAT. Preparar la primera referencia de integridad y el respaldo comprobado; luego ingresar con `admin` y la contraseña elegida.
 
-**El archivo 01 es autónomo:** instala las 15 tablas de la aplicación y sus relaciones, idiomas y traducciones, 5 roles iniciales, 7 permisos base y 16 relaciones directas entre roles y permisos. Incluye administrador protegido, roles editables, roles anidados y componentes de familias. La bitácora empieza vacía y solo se crea la cuenta `admin`. Las traducciones pendientes del catálogo siguen pendientes; la aplicación registra nuevas claves al abrir formularios.
+**El archivo 01 es autónomo:** instala las 16 tablas de la aplicación y sus relaciones, idiomas y traducciones, 5 roles iniciales, 7 permisos base y 16 relaciones directas entre roles y permisos. Incluye administrador protegido, roles editables, roles anidados y componentes de familias. La bitácora empieza vacía y solo se crea la cuenta `admin`, con su primera versión. Las traducciones pendientes del catálogo siguen pendientes; la aplicación registra nuevas claves al abrir formularios.
 
 El instalador utiliza el nivel de compatibilidad del motor, sin exigir 170 a versiones anteriores. Se detiene si la base ya existe, incluso vacía. Si falla al crear la estructura, revierte tablas y datos, pero puede quedar una base vacía: revisar el error y esa base antes de repetir. Ejecutar todo el archivo permite detenerlo ante errores, también desde SSMS sin modo SQLCMD.
 
@@ -24,6 +24,8 @@ Si otra cuenta de Windows va a ejecutar SIGAT, un administrador del servidor deb
 El nuevo 02 reúne las migraciones anteriores **10 → 12 → 13 → 14** en una sola transacción. Conserva cuentas, contraseñas, bitácora, idiomas y traducciones. Al migrar el esquema viejo, conserva asignaciones por nombres de roles admitidos; un perfil `Operador` no se convierte automáticamente en un rol distinto. Requiere la cuenta original ID 1 activa con perfil/rol Administrador. Si una etapa falla, revierte toda la actualización.
 
 Sobre el esquema actual conserva roles personalizados y asignaciones. Se puede repetir sin reiniciar el catálogo ni reponer permisos retirados; la versión interna de seguridad avanza al aplicar la etapa de protección.
+
+La actualización crea `UsuarioVersion` y registra una versión inicial para cada cuenta al incorporar T06b. Volver a ejecutar el script conserva el historial y las credenciales existentes. Actualizá la base antes de usar la versión de SIGAT que incluye el historial.
 
 ## Archivos de uso habitual
 

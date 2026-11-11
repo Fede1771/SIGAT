@@ -13,6 +13,9 @@ namespace SIGAT.SERVICIOS
         // 3. Propiedades del usuario logueado
         public Usuario? UsuarioActual { get; private set; }
 
+        public AutorCambioUsuario? ObtenerAutorCambio() =>
+            UsuarioActual is Usuario usuario ? new(usuario.IdUsuario, usuario.NombreUsuario) : null;
+
         public bool EstaAutenticado
         {
             get

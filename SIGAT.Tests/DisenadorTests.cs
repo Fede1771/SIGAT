@@ -28,7 +28,7 @@ public class DisenadorTests
                 LicenseManager.CurrentContext = new ContextoDiseno();
                 Type[] formularios = typeof(FrmPrincipal).Assembly.GetTypes()
                     .Where(t => t.IsSubclassOf(typeof(Form)) && !t.IsAbstract).ToArray();
-                Assert.HasCount(9, formularios);
+                Assert.HasCount(10, formularios);
                 foreach (Type tipo in formularios)
                 {
                     using var formulario = (Form)Activator.CreateInstance(tipo)!;
@@ -79,6 +79,7 @@ public class DisenadorTests
                     }
                     if (formulario is FrmGestionUsuarios)
                     {
+                        Assert.IsInstanceOfType<Button>(formulario.Controls.Find("btnHistorial", true).Single());
                         var grilla = (DataGridView)formulario.Controls.Find("dgvUsuarios", true)[0];
                         Assert.IsFalse(grilla.AutoGenerateColumns);
                         Assert.HasCount(7, grilla.Columns);

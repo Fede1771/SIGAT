@@ -13,6 +13,8 @@ namespace SIGAT.BLL
         private UsuarioDAL _dal = new UsuarioDAL();
         private BitacoraBLL _bitacora = new BitacoraBLL();
 
+        private static AutorCambioUsuario? AutorActual() => SesionServicio.ObtenerInstancia().ObtenerAutorCambio();
+
         // Identificamos al responsable de la operación para la bitácora; sin sesión usamos el identificador Sistema.
         private string ObtenerNombreUsuarioActual()
         {
@@ -90,7 +92,7 @@ namespace SIGAT.BLL
             }
 
             nuevoUsuario.Password = HashHelper.ObtenerHashSHA256(passwordPlana);
-            _dal.Insertar(nuevoUsuario);
+            _dal.Insertar(nuevoUsuario, autor: AutorActual());
 
             // USAMOS LA FÁBRICA: Gestión de Usuarios (Pasando el Enum exacto)
             BitacoraFactory fabrica = new GestionUsuariosFactory(BitacoraAccion.AltaUsuario);
@@ -106,7 +108,7 @@ namespace SIGAT.BLL
             if (existente != null && existente.IdUsuario != usuarioEditado.IdUsuario)
                 throw new ArgumentException("El nombre de usuario ya existe en el sistema.");
             usuarioEditado.Password = string.IsNullOrEmpty(passwordPlana) ? "" : HashHelper.ObtenerHashSHA256(passwordPlana);
-            _dal.Actualizar(usuarioEditado);
+            _dal.Actualizar(usuarioEditado, AutorActual());
 
             // USAMOS LA FÁBRICA: Gestión de Usuarios
             BitacoraFactory fabrica = new GestionUsuariosFactory(BitacoraAccion.ModificacionUsuario);
@@ -117,7 +119,7 @@ namespace SIGAT.BLL
         // La baja desactiva la cuenta y registra el evento. Conservamos el usuario para mantener su historial.
         public void BajaLogicaUsuario(int idUsuario, string nombreUsuario)
         {
-            _dal.Eliminar(idUsuario);
+            _dal.Eliminar(idUsuario, AutorActual());
 
             // USAMOS LA FÁBRICA: Gestión de Usuarios
             BitacoraFactory fabrica = new GestionUsuariosFactory(BitacoraAccion.BajaUsuario);
@@ -132,6 +134,27 @@ namespace SIGAT.BLL
             if (string.IsNullOrWhiteSpace(passwordPlana)) throw new ArgumentException("La contraseña es obligatoria.");
             usuario.Password = HashHelper.ObtenerHashSHA256(passwordPlana);
             _dal.Insertar(usuario, true);
+        }
+
+        public IReadOnlyList<CuentaConHistorial> ListarCuentasConHistorial()
+        {
+            new RolesBLL().CargarParaGestion();
+            return _dal.ListarCuentasConHistorial();
+        }
+
+        public HistorialUsuario ConsultarHistorial(int idUsuario)
+        {
+            new RolesBLL().CargarParaGestion();
+            return _dal.ConsultarHistorial(idUsuario);
+        }
+
+        public void RestaurarVersion(int idUsuario, int numero, long versionSeguridad)
+        {
+            var estado = new RolesBLL().CargarParaGestion();
+            if (estado.Version != versionSeguridad)
+                throw new InvalidOperationException("Otra operación modificó los datos de seguridad. Recargue antes de continuar.");
+            var autor = RolesBLL.ExigirGestion(estado);
+            _dal.RestaurarVersion(idUsuario, numero, versionSeguridad, new(autor.IdUsuario, autor.NombreUsuario));
         }
 
         // Centralizamos las reglas de los campos para que el alta y la edición usen las mismas validaciones.

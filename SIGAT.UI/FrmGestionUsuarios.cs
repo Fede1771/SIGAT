@@ -129,6 +129,21 @@ namespace SIGAT.UI
 
         private void BtnLimpiar_Click(object sender, EventArgs e) { Limpiar(); }
 
+        private void BtnHistorial_Click(object sender, EventArgs e)
+        {
+            bool hayBorrador = !string.IsNullOrEmpty(txtPass.Text) ||
+                (dgvUsuarios.CurrentRow?.DataBoundItem is Usuario cuenta && cuenta.IdUsuario == _idSeleccionado
+                    ? txtUsername.Text != cuenta.NombreUsuario || txtNombre.Text != cuenta.Nombre ||
+                      txtApellido.Text != cuenta.Apellido || chkActivo.Checked != cuenta.Activo
+                    : txtUsername.Text.Length + txtNombre.Text.Length + txtApellido.Text.Length > 0 || !chkActivo.Checked);
+            using var historial = new DlgHistorialUsuario();
+            historial.Configurar(_usuarioBLL, _idSeleccionado, hayBorrador);
+            historial.ShowDialog(this);
+            if (!historial.HuboRestauracion) return;
+            try { Limpiar(); CargarGrilla(); }
+            catch (Exception ex) { MessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Error); }
+        }
+
         // Volvemos al modo alta y descartamos la selección y la clave escrita para no reutilizar datos de otra cuenta.
         private void Limpiar()
         {

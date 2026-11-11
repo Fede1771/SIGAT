@@ -96,20 +96,16 @@ namespace SIGAT.DAL
         }
 
         // Catálogo y asignaciones se guardan en una transacción. La versión rechaza cambios realizados desde una lectura desactualizada.
-        public void Guardar(EstadoRoles estado)
+        public void Guardar(EstadoRoles estado, AutorCambioUsuario? autor = null)
         {
             // Catálogo, jerarquía y asignaciones se guardan juntos.
             // Dos administradores no pueden sobrescribirse sin recibir un conflicto.
             integridad.Cambiar("UsuarioRol", (conexion, transaccion) =>
             {
                 ConfigurarConexion(conexion, transaccion);
-                using (SqlCommand comando = new SqlCommand(@"UPDATE dbo.SeguridadVersion WITH (UPDLOCK)
-                    SET Version = Version + 1 WHERE Id = 1 AND Version = @Version", conexion, transaccion))
-                {
-                    comando.Parameters.Add("@Version", SqlDbType.BigInt).Value = estado.Version;
-                    if (comando.ExecuteNonQuery() != 1)
-                        throw new InvalidOperationException("Otro usuario modificó los roles. Se recargarán los datos; vuelva a realizar el cambio.");
-                }
+                HistorialUsuarioDAL.ExigirEsquema(conexion, transaccion);
+                UsuarioDAL.AvanzarVersionSeguridad(conexion, transaccion, estado.Version);
+                var cuentasAntes = HistorialUsuarioDAL.Capturar(conexion, transaccion);
                 int protegido;
                 // Leemos el ID protegido desde SQL, sin confiar en la marca que pueda traer la pantalla.
                 using (SqlCommand comando = new SqlCommand("SELECT IdUsuario FROM dbo.AdministradorOriginal WHERE Id=1", conexion, transaccion))
@@ -171,6 +167,9 @@ namespace SIGAT.DAL
                     foreach (Rol rol in usuario.Roles)
                         InsertarPar(conexion, transaccion, "INSERT dbo.UsuarioRol (IdUsuario, IdRol) VALUES (@Uno, @Dos)", usuario.IdUsuario, rol.Id);
                 }
+                foreach (var (id, cuenta) in HistorialUsuarioDAL.Capturar(conexion, transaccion))
+                    if (!cuentasAntes[id].MismosRolesQue(cuenta))
+                        HistorialUsuarioDAL.Registrar(conexion, transaccion, id, cuenta, OperacionUsuarioVersion.Roles, autor);
                 return 0;
             });
             estado.Version++;

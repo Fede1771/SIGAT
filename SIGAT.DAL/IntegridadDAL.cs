@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Security.AccessControl;
 using System.Security.Principal;
 using Microsoft.Data.SqlClient;
+using SIGAT.BE;
 using SIGAT.BE.Integridad;
 using SIGAT.SERVICIOS;
 
@@ -487,7 +488,7 @@ public sealed class IntegridadDAL
     }
 
     // Usamos un respaldo verificado de la misma base. La transacción permite cancelar toda la recuperación si no alcanza para reparar.
-    public InformeIntegridad Recuperar(string ruta, bool restaurarTablasCompletas = false)
+    public InformeIntegridad Recuperar(string ruta, bool restaurarTablasCompletas = false, AutorCambioUsuario? autor = null)
     {
         if (string.IsNullOrWhiteSpace(ruta)) throw new ArgumentException("Seleccione un respaldo comprobado.");
         return ConBaseAuxiliar(ruta, origen =>
@@ -501,13 +502,15 @@ public sealed class IntegridadDAL
             if (actual.Controles.Values.Any(v => v.Base != origen.Controles.Values.First().Base))
                 throw new InvalidOperationException("El respaldo pertenece a otra base. No se modificó ningún registro.");
             if (actual.Informe.Correcta) { t.Commit(); return actual.Informe; }
+            HistorialUsuarioDAL.ExigirEsquema(c, t);
+            var cuentasAntes = HistorialUsuarioDAL.Capturar(c, t);
             if (restaurarTablasCompletas)
             {
                 RestaurarSeguridadCompleta(c, t, origen);
-                var restaurado = Examinar(c, t).Informe;
-                Exigir(restaurado); t.Commit();
+                var restaurado = Examinar(c, t);
+                ConfirmarRecuperacion(c, t, actual, restaurado, cuentasAntes, autor);
                 Registrar("Recuperación completa verificada de Usuarios y UsuarioRol desde " + ruta);
-                return restaurado;
+                return restaurado.Informe;
             }
             if (Tablas.Any(tabla => !actual.Controles.ContainsKey(tabla)))
                 throw new InvalidOperationException("Falta un control DVV. Use la restauración completa de las tablas de seguridad desde un respaldo comprobado.");
@@ -542,11 +545,37 @@ public sealed class IntegridadDAL
             }
             var final = Examinar(c, t);
             // La última comprobación ocurre antes del Commit: si sigue habiendo daño, no se confirma la reparación.
-            Exigir(final.Informe);
-            t.Commit();
+            ConfirmarRecuperacion(c, t, actual, final, cuentasAntes, autor);
             Registrar("Recuperación verificada " + (restaurarTablasCompletas ? "de tablas completas" : "por registros") + " desde " + ruta + ". Incidentes: " + string.Join("; ", actual.Informe.Problemas));
             return final.Informe;
         });
+    }
+
+    private static void ConfirmarRecuperacion(SqlConnection c, SqlTransaction t, Estado antes, Estado despues,
+        Dictionary<int, EstadoUsuarioVersion> cuentasAntes, AutorCambioUsuario? autor)
+    {
+        Exigir(despues.Informe);
+        UsuarioDAL.AvanzarVersionSeguridad(c, t);
+        var cuentasDespues = HistorialUsuarioDAL.Capturar(c, t);
+        var clavesAntes = antes.Filas["Usuarios"].ToDictionary(fila => (int)fila.Valores[0]!, fila => (string?)fila.Valores[2]);
+        foreach (var fila in despues.Filas["Usuarios"])
+        {
+            int id = (int)fila.Valores[0]!;
+            var cuenta = cuentasDespues[id];
+            bool estaba = cuentasAntes.TryGetValue(id, out var anterior);
+            bool cambioClave = estaba && !string.Equals(clavesAntes[id], (string?)fila.Valores[2], StringComparison.Ordinal);
+            if (!estaba || cambioClave || !anterior!.CoincideCon(cuenta))
+                HistorialUsuarioDAL.Registrar(c, t, id, cuenta, OperacionUsuarioVersion.Recuperacion, autor, cambioClave);
+        }
+        foreach (var (id, cuenta) in cuentasAntes)
+            if (!cuentasDespues.ContainsKey(id))
+            {
+                // Para una cuenta retirada preferimos la última versión registrada a los datos dañados.
+                var ultima = HistorialUsuarioDAL.Consultar(c, t, id).FirstOrDefault();
+                HistorialUsuarioDAL.Registrar(c, t, id, ultima?.Estado ?? cuenta,
+                    OperacionUsuarioVersion.Recuperacion, autor, existe: false);
+            }
+        t.Commit();
     }
     private static void RestaurarSeguridadCompleta(SqlConnection c, SqlTransaction t, Estado origen)
     {

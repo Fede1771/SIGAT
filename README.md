@@ -13,7 +13,7 @@ SIGAT es una aplicación de escritorio desarrollada como proyecto académico par
 
 **Accesos rápidos:** [Instalación](#requisitos-e-instalación) · [Modelo de Enterprise Architect](EA-Diagramas/Actual/SIGAT_Modelo_Actualizado.EAP) · [Diagramas](#diagramas-y-documentación) · [Guía de integridad](Querys/GUIA_INTEGRIDAD.md) · [Demostración](#recorrido-para-la-demostración)
 
-> **Estado actual:** están implementados los módulos administrativos y técnicos. La gestión operativa de activos y el historial de versiones de entidades —T06b— continúan pendientes.
+> **Estado actual:** están implementados los módulos administrativos y técnicos, incluido el historial de cuentas de usuario de T06b. La gestión operativa de activos continúa pendiente.
 
 ## Datos académicos
 
@@ -58,6 +58,7 @@ El objetivo académico es poder explicar y demostrar cómo una operación atravi
 | Roles y permisos | Tres columnas simultáneas: Usuarios, Roles y Familias y permisos. Edición en memoria con Guardar/Descartar, búsqueda, procedencia de accesos, impacto de familias compartidas y anidamiento de familias y roles sin ciclos. |
 | Idiomas | Cambio de idioma durante la sesión, preferencia por cuenta, creación y activación de idiomas, edición e importación/exportación de traducciones. |
 | Bitácora | Registro de accesos, cierre de sesión, altas, modificaciones y bajas de usuarios; intento de registro de errores inesperados y auditoría del recálculo de integridad. Consultas combinadas por fecha, usuario y actividad. |
+| Control de cambios (T06b) | Historial de usuarios con autor, fecha, operación y estado de cada versión. Comparación y restauración autorizada de los datos de la cuenta y sus roles directos. |
 | Integridad | DVH/DVV de Usuarios y UsuarioRol, verificación antes del acceso, respaldos comprobados, recuperación y recálculo administrativo con confirmación. |
 | Presentación | Interfaz Windows Forms, modos claro y oscuro y formularios compatibles con el diseñador de Visual Studio. |
 
@@ -135,6 +136,12 @@ La gestión presenta tres columnas simultáneas, con selección independiente y 
 **Guardar cambios** abre una revisión de las operaciones y del impacto de las familias compartidas. **Descartar** restaura la última versión confirmada sin escribir SQL. Al abandonar el módulo o recargar con una edición pendiente se puede guardar, descartar o continuar editando. Si otro administrador modificó el catálogo, el guardado rechaza el conflicto y conserva la copia de trabajo; después de descartar, **Recargar** obtiene el estado vigente.
 
 [EdicionRoles.cs](SIGAT.BLL/EdicionRoles.cs) mantiene la copia del grafo por ID, conservando familias compartidas. Cada operación se valida antes de reemplazar el borrador. Esta edición temporal no constituye el historial de versiones de T06b.
+
+### Historial de usuarios
+
+Desde **Gestión de usuarios → Ver historial** se puede elegir una cuenta, comparar una versión con la anterior y la actual, y restaurar sus datos y roles directos. La restauración crea una versión nueva que referencia la elegida. Los roles se aplican con los permisos vigentes. El historial indica si cambió la contraseña mediante una marca, y restaurar una versión conserva la credencial vigente.
+
+El historial registra altas, ediciones, bajas lógicas, reactivaciones, cambios de roles directos, restauraciones y cambios de cuentas por recuperación selectiva o completa de seguridad desde SIGAT. Los cambios confirmados y su versión comparten una transacción. La instalación y la actualización registran el estado inicial de las cuentas existentes. El acceso requiere **Administración del sistema**. El alcance son las operaciones de SIGAT y su recuperación de seguridad. Una restauración de la base completa desde SQL Server devuelve también el historial a la fecha de ese respaldo.
 
 
 ## Requisitos e instalación
@@ -226,6 +233,7 @@ Las pruebas `SQLIntegration` requieren bases exclusivas con prefijo `SIGAT_Roles
 | `SIGAT_ROLES_TEST_CONNECTION` | Roles, permisos y gestión de usuarios. |
 | `SIGAT_IDIOMA_TEST_CONNECTION` | Preferencias de idioma y concurrencia con la desactivación. |
 | `SIGAT_INTEGRIDAD_TEST_CONNECTION` | Inicialización, alteraciones, respaldos, recuperación y recálculo. |
+| `SIGAT_HISTORIAL_TEST_CONNECTION` | Versionado, permisos, restauración y reversión si falla el historial. |
 
 Deben prepararse según las condiciones de cada prueba: algunas esperan cuentas de ensayo determinadas y la prueba de integridad comienza sin referencia inicializada. Estas pruebas modifican datos y generan respaldos; no se ejecutan sobre la base habitual.
 
@@ -242,6 +250,7 @@ dotnet test SIGAT.Tests/SIGAT.Tests.csproj --filter "TestCategory=SQLIntegration
 3. **Observer:** cambiar el idioma y observar la actualización de las pantallas abiertas; volver a ingresar para comprobar la preferencia de la cuenta.
 4. **Bitácora:** consultar los eventos de acceso y gestión de usuarios mediante filtros combinados.
 5. **Integridad:** en una copia de ensayo con respaldo previo, modificar externamente una cuenta, verificar la detección y recuperar el dato original.
+6. **T06b:** crear una cuenta, asignarle el rol Auditor, editar el apellido y darla de baja. En **Ver historial**, comparar las versiones y restaurar la versión anterior a la edición. Comprobar el apellido, el estado, el rol y la nueva entrada con su autor y fecha.
 
 Para explicar el código, partir de [Program.cs](SIGAT.UI/Program.cs), continuar con el formulario del módulo y seguir la llamada a su BLL y DAL. En cada recorrido, identificar qué valida cada capa y dónde se confirma la transacción.
 
@@ -275,8 +284,8 @@ La carpeta académica con las especificaciones de casos de uso se presenta junto
 | **T04 · Perfiles de usuario** | Roles, permisos y familias implementados con Composite. Revisar que las especificaciones y la demostración reflejen la asignación de roles y la edición de familias disponibles en la interfaz. |
 | **T08 · Dígitos verificadores** | Control de Usuarios y UsuarioRol implementado. Documentar y demostrar inicialización, detección de alteraciones, respaldo, recuperación y aceptación explícita de pérdida. |
 | **T05 · Múltiples idiomas** | Implementado con Observer, preferencia por cuenta y gestión de traducciones. Mantener alineados los casos de uso y las secuencias con las validaciones actuales. |
-| **T06b · Control de cambios** | **Pendiente de implementación.** Se necesitan versiones de una entidad, consulta de quién/cuándo/qué cambió y recomposición de un estado anterior. La bitácora y el archivo de eventos no sustituyen esta funcionalidad. |
-| **G06 · Clases por capa** | Diagramas actuales generados para las cinco capas. Revisar su presentación académica y ampliarlos con las clases de T06b cuando se implemente. |
-| **G07 · Modelo de datos** | Modelo actual generado con tablas, claves y relaciones. Incorporar la estructura de versiones de T06b cuando exista y mantener la separación entre negocio y soporte técnico. |
+| **T06b · Control de cambios** | Implementado sobre cuentas de usuario. El historial registra quién, cuándo y qué cambió, y permite recomponer y restaurar una versión. |
+| **G06 · Clases por capa** | Los diagramas exportados corresponden al modelo del 21/10/2026. Queda incorporar las clases del historial de usuarios. |
+| **G07 · Modelo de datos** | Queda incorporar `UsuarioVersion` al modelo de Enterprise Architect. El esquema SQL vigente ya incluye la tabla. |
 
 Como mejoras posteriores quedan ampliar los eventos auditados, coordinar las operaciones con su auditoría y completar autorizaciones de negocio y transacciones de idiomas. Los módulos de inventario, asignaciones de activos, movimientos, mantenimiento y reportes forman parte de la evolución funcional de SIGAT.

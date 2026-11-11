@@ -30,7 +30,11 @@ public sealed class IntegridadBLL
     public string InicializarBaseConfiable() { ExigirAdministradorAplicacion(); return dal.InicializarBaseConfiable(); }
     public string CrearRespaldoConfiable(string? destino = null) { ExigirAdministradorAplicacion(); return dal.CrearRespaldoConfiable(destino); }
     public int ArchivarBitacora(int dias) { ExigirAdministradorAplicacion(); return dal.ArchivarBitacora(dias); }
-    public InformeIntegridad Recuperar(string ruta, bool tablasCompletas = false) { ExigirAdministradorAplicacion(); return dal.Recuperar(ruta, tablasCompletas); }
+    public InformeIntegridad Recuperar(string ruta, bool tablasCompletas = false)
+    {
+        ExigirAdministradorAplicacion();
+        return dal.Recuperar(ruta, tablasCompletas, SesionServicio.ObtenerInstancia().ObtenerAutorCambio());
+    }
     // Aceptar el estado actual es una decisión administrativa explícita y queda registrada en SQL y en el log externo.
     public InformeIntegridad RecalcularIntegridad()
     {

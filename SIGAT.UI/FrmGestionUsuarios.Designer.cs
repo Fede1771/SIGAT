@@ -32,6 +32,7 @@ namespace SIGAT.UI
         private Button btnGuardar;
         private Button btnEliminar;
         private Button btnLimpiar;
+        private Button btnHistorial;
         private Label lblAyuda;
 
 
@@ -75,6 +76,7 @@ namespace SIGAT.UI
             btnGuardar = new Button();
             btnEliminar = new Button();
             btnLimpiar = new Button();
+            btnHistorial = new Button();
             lblAyuda = new Label();
             tablelayoutpanel1.SuspendLayout();
             tablelayoutpanel2.SuspendLayout();
@@ -296,13 +298,15 @@ namespace SIGAT.UI
             tablelayoutpanel8.Controls.Add(txtApellido, 0, 8);
             tablelayoutpanel8.Controls.Add(chkActivo, 0, 9);
             tablelayoutpanel8.Controls.Add(tablelayoutpanel10, 0, 10);
-            tablelayoutpanel8.Controls.Add(lblAyuda, 0, 11);
+            tablelayoutpanel8.Controls.Add(btnHistorial, 0, 11);
+            tablelayoutpanel8.Controls.Add(lblAyuda, 0, 12);
             tablelayoutpanel8.Dock = DockStyle.Top;
             tablelayoutpanel8.Font = new Font("Segoe UI", 10F);
             tablelayoutpanel8.ForeColor = Color.FromArgb(30, 45, 65);
             tablelayoutpanel8.Location = new Point(0, 0);
             tablelayoutpanel8.Name = "tablelayoutpanel8";
             tablelayoutpanel8.Padding = new Padding(16);
+            tablelayoutpanel8.RowStyles.Add(new RowStyle());
             tablelayoutpanel8.RowStyles.Add(new RowStyle());
             tablelayoutpanel8.RowStyles.Add(new RowStyle());
             tablelayoutpanel8.RowStyles.Add(new RowStyle());
@@ -543,7 +547,23 @@ namespace SIGAT.UI
             btnLimpiar.Text = "Limpiar";
             btnLimpiar.UseVisualStyleBackColor = false;
             btnLimpiar.Click += BtnLimpiar_Click;
-            // 
+            //
+            // btnHistorial
+            //
+            btnHistorial.AutoSize = true;
+            btnHistorial.BackColor = Color.White;
+            btnHistorial.Dock = DockStyle.Top;
+            btnHistorial.FlatStyle = FlatStyle.Flat;
+            btnHistorial.ForeColor = Color.FromArgb(30, 45, 65);
+            btnHistorial.Margin = new Padding(0, 0, 0, 12);
+            btnHistorial.MinimumSize = new Size(0, 40);
+            btnHistorial.Name = "btnHistorial";
+            btnHistorial.TabIndex = 11;
+            btnHistorial.Tag = "btn_historial_usuario";
+            btnHistorial.Text = "Ver historial";
+            btnHistorial.UseVisualStyleBackColor = false;
+            btnHistorial.Click += BtnHistorial_Click;
+            //
             // lblAyuda
             // 
             lblAyuda.AutoSize = true;
@@ -556,7 +576,7 @@ namespace SIGAT.UI
             lblAyuda.Name = "lblAyuda";
             lblAyuda.Padding = new Padding(12);
             lblAyuda.Size = new Size(300, 99);
-            lblAyuda.TabIndex = 11;
+            lblAyuda.TabIndex = 12;
             lblAyuda.Tag = "lbl_ayuda_roles";
             lblAyuda.Text = "Las cuentas nuevas se crean sin roles. Asigná sus accesos desde Gestión de roles y permisos.\n\nPara reactivar una cuenta, seleccionála, marcá Activo y guardá.";
             // 

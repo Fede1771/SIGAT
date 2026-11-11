@@ -36,17 +36,17 @@ namespace SIGAT.BLL
         // Volvemos a consultar la autorización en la base antes de guardar. Los permisos de la sesión podrían haber cambiado.
         public void Guardar(EstadoRoles estado)
         {
-            ExigirGestion(dal.Cargar());
+            var autor = ExigirGestion(dal.Cargar());
             Validar(estado);
-            dal.Guardar(estado);
+            dal.Guardar(estado, new(autor.IdUsuario, autor.NombreUsuario));
         }
 
-        private static void ExigirGestion(EstadoRoles estado)
+        internal static Usuario ExigirGestion(EstadoRoles estado)
         {
             int? id = SesionServicio.ObtenerInstancia().UsuarioActual?.IdUsuario;
             foreach (Usuario usuario in estado.Usuarios)
             {
-                if (usuario.IdUsuario == id && usuario.Activo && usuario.TienePermiso(MatrizRoles.Administracion)) return;
+                if (usuario.IdUsuario == id && usuario.Activo && usuario.TienePermiso(MatrizRoles.Administracion)) return usuario;
             }
             throw new InvalidOperationException("No tiene permiso para gestionar roles.");
         }

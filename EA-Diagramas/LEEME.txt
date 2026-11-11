@@ -18,4 +18,4 @@ Algunos conservan las rutas de trabajo originales: ajustarlas antes de reutiliza
 
 ALCANCE
 El modelo vigente corresponde al código revisado el 21/10/2026.
-T06b (versiones y recomposición de estados) continúa pendiente de implementación.
+El modelo del 21/10/2026 registra T06b como pendiente. La implementación posterior versiona las cuentas de usuario y está descrita en el README principal.
