@@ -119,6 +119,18 @@ public class HistorialUsuarioTests
                         Assert.AreEqual("Pérez", detalle.Rows[2].Cells["Seleccionada"].Value);
                         Assert.AreEqual("Gómez", detalle.Rows[2].Cells["Vigente"].Value);
                         Assert.IsTrue(restaurar.Enabled);
+                        Assert.IsFalse(string.IsNullOrEmpty(detalle.Rows[4].Cells["Seleccionada"].ToolTipText),
+                            "El cambio de roles directos debe identificarse sin modificar sus datos.");
+                        var idiomas = SIGAT.SERVICIOS.Idiomas.IdiomaManager.ObtenerInstancia();
+                        idiomas.CargarIdioma(new SIGAT.BE.Idiomas.Idioma { Id = 1, Nombre = "Prueba", Codigo = "es" },
+                            new Dictionary<string, string>
+                            {
+                                [dialogo.Name + ".ayudaRestaurar"] = "Restoring creates a new version."
+                            });
+                        Assert.AreEqual(2, versiones.CurrentRow!.Cells["Version"].Value,
+                            "Cambiar el idioma debe conservar la versión seleccionada.");
+                        Assert.AreEqual("Restoring creates a new version.", dialogo.Controls.Find("lblRestauracion", true).Single().Text);
+                        Assert.IsTrue(restaurar.Enabled);
                     }
                     catch (Exception ex) { error = ex; }
                     finally { dialogo.Close(); }

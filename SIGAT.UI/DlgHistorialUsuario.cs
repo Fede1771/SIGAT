@@ -6,7 +6,7 @@ using SIGAT.SERVICIOS.Idiomas;
 
 namespace SIGAT.UI;
 
-public partial class DlgHistorialUsuario : Form
+public partial class DlgHistorialUsuario : Form, IIdiomaObserver
 {
     private UsuarioBLL servicio = new();
     private int idInicial;
@@ -33,7 +33,14 @@ public partial class DlgHistorialUsuario : Form
         ["inactivo"] = "Inactivo",
         ["sinRoles"] = "Sin roles",
         ["sinVersiones"] = "No hay versiones para mostrar.",
-        ["comparacion"] = "Compará la versión seleccionada con la anterior y con el estado actual de la cuenta.",
+        ["comparacion_cambios"] = "Compará las versiones. Los valores resaltados en negrita cambiaron respecto de la versión anterior.",
+        ["modificado"] = "Cambió respecto de la versión anterior.",
+        ["coincideActual"] = "Esta versión coincide con el estado actual. No es necesario restaurarla.",
+        ["cuentaRetirada"] = "La cuenta fue retirada. Su historial se conserva para consulta.",
+        ["versionRetirada"] = "Esta versión registra una cuenta retirada y no puede restaurarse.",
+        ["sinSeleccion"] = "Seleccioná una versión para consultar sus datos.",
+        ["sinCuentas"] = "No hay cuentas con historial registrado.",
+        ["ayudaRestaurar"] = "Restaurar crea una versión nueva y conserva la contraseña actual.",
         ["confirmar"] = "¿Restaurar la versión {0} de la cuenta #{1}? Se creará una versión nueva. Los roles se aplicarán con los permisos vigentes.",
         ["descartar"] = "Al cerrar el historial se descartarán los cambios sin guardar en el formulario de usuarios."
     };
@@ -43,18 +50,36 @@ public partial class DlgHistorialUsuario : Form
         InitializeComponent();
         if (EntornoDiseno.Activo) return;
         TemaVisual.Formulario(this);
-        Shown += (_, _) => Intentar(() =>
+        Shown += CargarHistorial;
+        FormClosed += (_, _) => IdiomaManager.ObtenerInstancia().Desuscribir(this);
+        dgvDetalle.CellFormatting += (_, e) =>
         {
-            TraductorFormularios.TraducirFormulario(this);
-            var idiomas = new IdiomaBLL();
-            foreach (var (clave, texto) in Textos)
-                idiomas.RegistrarClaveNueva(Name, clave, texto);
-            CargarCuentas(idInicial);
-        });
+            if (e.RowIndex < 0 || dgvDetalle.Rows[e.RowIndex].Cells[e.ColumnIndex].Tag is not true) return;
+            e.CellStyle!.BackColor = TemaVisual.ColorActual(TemaVisual.AmbarSuave);
+            e.CellStyle.ForeColor = TemaVisual.ColorActual(TemaVisual.Ambar, true);
+            e.CellStyle.Font = TemaVisual.FuenteResaltada;
+            e.CellStyle.SelectionBackColor = e.CellStyle.BackColor;
+            e.CellStyle.SelectionForeColor = e.CellStyle.ForeColor;
+        };
         cmbCuentas.SelectionChangeCommitted += (_, _) => Intentar(CargarVersiones);
         dgvVersiones.CurrentCellChanged += (_, _) => MostrarDetalle();
         btnRecargar.Click += (_, _) => Intentar(() => CargarCuentas(CuentaSeleccionada?.IdUsuario ?? idInicial));
         btnRestaurar.Click += (_, _) => Intentar(Restaurar);
+    }
+
+    private void CargarHistorial(object? sender, EventArgs e) => Intentar(() =>
+    {
+        var idiomas = new IdiomaBLL();
+        foreach (var (clave, texto) in Textos) idiomas.RegistrarClaveNueva(Name, clave, texto);
+        TraductorFormularios.TraducirFormulario(this);
+        IdiomaManager.ObtenerInstancia().Suscribir(this);
+        CargarCuentas(idInicial);
+    });
+
+    public void ActualizarIdioma()
+    {
+        TraductorFormularios.TraducirFormulario(this);
+        MostrarVersiones(dgvVersiones.CurrentRow?.Cells["Version"].Value as int?);
     }
 
     public bool HuboRestauracion { get; private set; }
@@ -89,7 +114,15 @@ public partial class DlgHistorialUsuario : Form
         MostrarDetalle();
         if (CuentaSeleccionada is not { } cuenta) return;
         historial = servicio.ConsultarHistorial(cuenta.IdUsuario);
-        foreach (var version in historial.Versiones)
+        MostrarVersiones();
+    }
+
+    // Volvemos a presentar las versiones al cambiar el idioma, conservando la selección y sin consultar ni modificar cuentas.
+    private void MostrarVersiones(int? numeroSeleccionado = null)
+    {
+        dgvVersiones.Rows.Clear();
+        if (historial is not { } datos) { MostrarDetalle(); return; }
+        foreach (var version in datos.Versiones)
         {
             string operacion = T("op_" + version.Operacion);
             if (version.VersionOrigen is int origen) operacion = string.Format(operacion, origen);
@@ -98,6 +131,9 @@ public partial class DlgHistorialUsuario : Form
             if (version.Autor.IdUsuario is int idActor) autor += $" · #{idActor}";
             dgvVersiones.Rows.Add(version.Numero, version.FechaUtc.ToLocalTime().ToString("G"), autor, operacion);
         }
+        if (numeroSeleccionado is int numero)
+            foreach (DataGridViewRow fila in dgvVersiones.Rows)
+                if (fila.Cells["Version"].Value is int valor && valor == numero) dgvVersiones.CurrentCell = fila.Cells["Version"];
         MostrarDetalle();
     }
 
@@ -105,26 +141,40 @@ public partial class DlgHistorialUsuario : Form
     {
         dgvDetalle.Rows.Clear();
         btnRestaurar.Enabled = false;
+        lblRestauracion.Text = "";
         if (historial is not { } datos || dgvVersiones.CurrentRow is not { } fila)
         {
-            lblAyuda.Text = T("sinVersiones");
+            lblAyuda.Text = T(CuentaSeleccionada == null ? "sinCuentas" :
+                historial?.Versiones.Count > 0 ? "sinSeleccion" : "sinVersiones");
             return;
         }
 
-        lblAyuda.Text = T("comparacion");
+        lblAyuda.Text = T("comparacion_cambios");
         var version = datos.Versiones[fila.Index];
         var anterior = datos.Versiones.Skip(fila.Index + 1).FirstOrDefault();
-        Comparar("usuario", estado => estado.NombreUsuario);
-        Comparar("nombre", estado => estado.Nombre);
-        Comparar("apellido", estado => estado.Apellido);
-        Comparar("estado", estado => T(estado.Activo ? "activo" : "inactivo"));
-        Comparar("roles", estado => estado.Roles.Count == 0 ? T("sinRoles") : string.Join(", ", estado.Roles.Select(rol => rol.Nombre)));
+        Comparar("usuario", estado => estado.NombreUsuario, (a, b) => a.NombreUsuario == b.NombreUsuario);
+        Comparar("nombre", estado => estado.Nombre, (a, b) => a.Nombre == b.Nombre);
+        Comparar("apellido", estado => estado.Apellido, (a, b) => a.Apellido == b.Apellido);
+        Comparar("estado", estado => T(estado.Activo ? "activo" : "inactivo"), (a, b) => a.Activo == b.Activo);
+        Comparar("roles", estado => estado.Roles.Count == 0 ? T("sinRoles") : string.Join(", ", estado.Roles.Select(rol => rol.Nombre)),
+            (a, b) => a.MismosRolesQue(b));
         btnRestaurar.Enabled = version.Existe && datos.EstadoActual is { } vigente && !vigente.CoincideCon(version.Estado);
+        lblRestauracion.Text = T(datos.EstadoActual == null ? "cuentaRetirada" : !version.Existe ? "versionRetirada" :
+            btnRestaurar.Enabled ? "ayudaRestaurar" : "coincideActual");
 
-        void Comparar(string campo, Func<EstadoUsuarioVersion, string> mostrar) =>
-            dgvDetalle.Rows.Add(T(campo), anterior == null ? "—" : anterior.Existe ? mostrar(anterior.Estado) : T("retirada"),
+        void Comparar(string campo, Func<EstadoUsuarioVersion, string> mostrar,
+            Func<EstadoUsuarioVersion, EstadoUsuarioVersion, bool> iguales)
+        {
+            int indice = dgvDetalle.Rows.Add(T(campo), anterior == null ? "—" : anterior.Existe ? mostrar(anterior.Estado) : T("retirada"),
                 version.Existe ? mostrar(version.Estado) : T("retirada"),
                 datos.EstadoActual is { } actual ? mostrar(actual) : T("retirada"));
+            // Comparamos valores de la entidad, no textos traducidos. El alta inicial no tiene un estado anterior comparable.
+            if (anterior == null || (anterior.Existe == version.Existe &&
+                (!version.Existe || iguales(anterior.Estado, version.Estado)))) return;
+            var celda = dgvDetalle.Rows[indice].Cells["Seleccionada"];
+            celda.Tag = true;
+            celda.ToolTipText = T("modificado");
+        }
     }
 
     private void Restaurar()

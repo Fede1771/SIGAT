@@ -17,6 +17,7 @@ internal static partial class TemaVisual
     public static readonly Color Ambar = Color.FromArgb(132, 84, 17);
     public static readonly Color AmbarSuave = Color.FromArgb(255, 245, 219);
     public static readonly Font FuenteEstado = new Font("Segoe UI", 9F, FontStyle.Bold);
+    public static readonly Font FuenteResaltada = new Font("Segoe UI", 10F, FontStyle.Bold);
 
     public static void Formulario(Form form)
     {
@@ -76,6 +77,8 @@ public sealed class BotonNavegacion : Button
     public bool Seleccionado { get; set; }
     [System.ComponentModel.DefaultValue(false)]
     public bool MostrarSoloIcono { get; set; }
+    [System.ComponentModel.DefaultValue(false)]
+    public bool EsAccesoRapido { get; set; }
     private Bitmap icon;
     private IconoVisual tipo;
     private Color colorIcono;
@@ -106,7 +109,7 @@ public sealed class BotonNavegacion : Button
         Cursor = Cursors.Hand;
         TextAlign = ContentAlignment.MiddleLeft;
         Padding = new Padding(44, 0, 10, 0);
-        Height = 54;
+        Height = 40;
         Dock = DockStyle.Top;
         Font = new Font("Segoe UI", 10F);
         UseVisualStyleBackColor = false;
@@ -116,11 +119,12 @@ public sealed class BotonNavegacion : Button
     protected override void OnPaint(PaintEventArgs e)
     {
         Color actual = TemaVisual.ColorActual(TemaVisual.Azul);
-        if (actual != colorIcono)
+        int ladoIcono = EsAccesoRapido ? (int)Math.Round(52 * DeviceDpi / 96f) : 24;
+        if (actual != colorIcono || icon.Width != ladoIcono)
         {
             icon.Dispose();
             colorIcono = actual;
-            icon = TemaVisual.Icono(tipo, colorIcono);
+            icon = TemaVisual.Icono(tipo, colorIcono, ladoIcono);
         }
         BackColor = TemaVisual.ColorActual(Seleccionado ? TemaVisual.AzulSuave : Color.White);
         ForeColor = TemaVisual.ColorActual(Seleccionado ? TemaVisual.Azul : TemaVisual.Texto, true);
@@ -132,7 +136,9 @@ public sealed class BotonNavegacion : Button
         }
         else base.OnPaint(e);
         if (Seleccionado) using (var brush = new SolidBrush(actual)) e.Graphics.FillRectangle(brush, 0, 10, 3, Height - 20);
-        e.Graphics.DrawImage(icon, MostrarSoloIcono ? (Width - 24) / 2 : 12, (Height - 24) / 2, 24, 24);
+        int xIcono = MostrarSoloIcono || EsAccesoRapido ? (Width - ladoIcono) / 2 : 12;
+        int yIcono = EsAccesoRapido ? (int)Math.Round(22 * DeviceDpi / 96f) : (Height - ladoIcono) / 2;
+        e.Graphics.DrawImage(icon, xIcono, yIcono, ladoIcono, ladoIcono);
     }
 
     protected override void Dispose(bool disposing)

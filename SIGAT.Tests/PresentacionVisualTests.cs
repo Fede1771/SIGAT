@@ -121,7 +121,7 @@ public class PresentacionVisualTests
                 Application.DoEvents();
                 Assert.IsTrue(form.Controls.Find("paginaRoles", true)[0].Visible);
                 Assert.IsTrue(form.Controls.Find("paginaFamilias", true)[0].Visible);
-                Assert.AreEqual(familia.Nombre, form.Controls.Find("tituloFamilias", true)[0].Text);
+                Assert.AreEqual("Contenido de: " + familia.Nombre, form.Controls.Find("tituloFamilias", true)[0].Text);
                 var componentes = (TreeView)form.Controls.Find("tvCatalogoGeneral", true)[0];
                 componentes.SelectedNode = componentes.Nodes[0];
                 ((Button)form.Controls.Find("btnQuitarComponenteFamilia", true)[0]).PerformClick();
@@ -396,17 +396,30 @@ public class PresentacionVisualTests
             events.RemoveHandler(key, events[key]); // Datos locales, sin llamadas SQL.
             typeof(FrmIntegridad).GetField("administrador", BindingFlags.Instance | BindingFlags.NonPublic)!.SetValue(form, true);
             Preparar(form, new Size(1040, 670));
+            // La prueba bombea mensajes sin Application.Run: instalamos el contexto que usa la aplicación real.
+            SynchronizationContext.SetSynchronizationContext(new WindowsFormsSynchronizationContext());
             var tarea = (Task)typeof(FrmIntegridad).GetMethod("Operar", BindingFlags.Instance | BindingFlags.NonPublic)!
                 .Invoke(form, new object[] { (Func<string>)(() => ""), false })!;
             var limite = DateTime.UtcNow.AddSeconds(5);
             while (!tarea.IsCompleted && DateTime.UtcNow < limite) { Application.DoEvents(); Thread.Sleep(10); }
-            Assert.IsTrue(tarea.IsCompleted);
+            Assert.IsTrue(tarea.IsCompleted, "La operación debe finalizar en el hilo de la interfaz.");
             tarea.GetAwaiter().GetResult();
             Assert.IsFalse(form.Controls.Find("btnContinuar", true)[0].Enabled);
             Assert.IsTrue(form.Controls.Find("btnRecuperar", true)[0].Enabled);
             Assert.IsTrue(form.Controls.Find("btnRecalcular", true)[0].Enabled);
             Assert.IsFalse(form.Controls.Find("btnBackupVerificado", true)[0].Enabled);
             Guardar(form, Environment.GetEnvironmentVariable("SIGAT_VISUAL_PREVIEW"), "integridad");
+            var avanzadas = (CheckBox)form.Controls.Find("chkOpcionesAvanzadas", true)[0];
+            var completas = (CheckBox)form.Controls.Find("completas", true)[0];
+            Assert.IsFalse(form.Controls.Find("panelAvanzado", true)[0].Visible);
+            avanzadas.Checked = true;
+            Application.DoEvents();
+            Assert.IsTrue(completas.Visible);
+            Assert.IsTrue(form.Controls.Find("btnRecalcular", true)[0].Visible);
+            completas.Checked = true;
+            avanzadas.Checked = false;
+            Assert.IsFalse(completas.Checked, "Ocultar las opciones avanzadas no debe dejar una recuperación completa seleccionada en secreto.");
+            Assert.IsFalse(form.Controls.Find("btnContinuar", true)[0].Enabled);
         });
     }
 
@@ -514,6 +527,32 @@ public class PresentacionVisualTests
                 Preparar(form, new Size(1160, 750));
                 Guardar(form, directory, name);
                 ComprobarGrillas(form);
+                if (form == usuarios)
+                {
+                    gridUsers.CurrentCell = gridUsers.Rows[0].Cells["NombreUsuario"];
+                    typeof(FrmGestionUsuarios).GetMethod("SeleccionarFila", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(usuarios, null);
+                    StringAssert.Contains(usuarios.Controls.Find("label9", true)[0].Text, "admin");
+                    StringAssert.Contains(usuarios.Controls.Find("lblAyudaClave", true)[0].Text, "conservar");
+                    usuarios.Controls.Find("txtPass", true)[0].Text = "Borrador sin guardar";
+                    Guardar(form, directory, "usuarios-edicion");
+                    typeof(FrmGestionUsuarios).GetMethod("Limpiar", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(usuarios, null);
+                    Assert.AreEqual("", usuarios.Controls.Find("txtPass", true)[0].Text);
+                    Assert.AreEqual("Nuevo usuario", usuarios.Controls.Find("label9", true)[0].Text);
+                    var datos = gridUsers.DataSource;
+                    gridUsers.DataSource = new List<Usuario>();
+                    StringAssert.Contains(usuarios.Controls.Find("lblEstadoLista", true)[0].Text, "No hay usuarios");
+                    gridUsers.DataSource = datos;
+                }
+                if (form == bitacora)
+                {
+                    var datos = gridLog.DataSource;
+                    gridLog.DataSource = new List<Bitacora>();
+                    Assert.IsTrue(bitacora.Controls.Find("lblVacio", true)[0].Visible);
+                    Guardar(form, directory, "bitacora-vacia");
+                    gridLog.DataSource = datos;
+                    Assert.IsFalse(bitacora.Controls.Find("lblVacio", true)[0].Visible,
+                        "El aviso debe desaparecer al recuperar resultados.");
+                }
                 form.MinimumSize = Size.Empty;
                 form.ClientSize = new Size(864, 650);
                 form.PerformLayout();
@@ -539,6 +578,159 @@ public class PresentacionVisualTests
 
             }
         });
+    }
+
+    [TestMethod]
+    public void HistorialConservaComparacionYSeleccionAlCambiarTemaYTamano()
+    {
+        EnInterfaz(() =>
+        {
+            var tema = typeof(FrmPrincipal).Assembly.GetType("SIGAT.UI.TemaVisual")!.GetMethod("CambiarModo")!;
+            using var dialogo = new DlgHistorialUsuario();
+            var carga = typeof(DlgHistorialUsuario).GetMethod("CargarHistorial", BindingFlags.Instance | BindingFlags.NonPublic)!;
+            dialogo.Shown -= (EventHandler)carga.CreateDelegate(typeof(EventHandler), dialogo);
+            var inicial = new EstadoUsuarioVersion("ana", "Ana", "Pérez", true, Array.Empty<RolVersionUsuario>());
+            var editado = inicial with { Apellido = "Gómez" };
+            var actual = editado with { Activo = false };
+            var autor = new AutorCambioUsuario(1, "admin");
+            var historial = new HistorialUsuario(10, actual, new[]
+            {
+                new UsuarioVersion(2, 5, DateTime.UtcNow, autor, OperacionUsuarioVersion.Baja, actual, true, false, null),
+                new UsuarioVersion(2, 4, DateTime.UtcNow.AddMinutes(-1), autor, OperacionUsuarioVersion.Edicion, editado, true, false, null),
+                new UsuarioVersion(2, 3, DateTime.UtcNow.AddMinutes(-2), autor, OperacionUsuarioVersion.Edicion, inicial, true, true, null),
+                new UsuarioVersion(2, 2, DateTime.UtcNow.AddMinutes(-3), autor, OperacionUsuarioVersion.Edicion, inicial, true, false, null),
+                new UsuarioVersion(2, 1, DateTime.UtcNow.AddMinutes(-4), autor, OperacionUsuarioVersion.Alta, inicial with { Nombre = "A." }, true, false, null)
+            });
+            var cuentas = (ComboBox)dialogo.Controls.Find("cmbCuentas", true).Single();
+            cuentas.DisplayMember = "Value";
+            cuentas.DataSource = new[] { KeyValuePair.Create(new CuentaConHistorial(2, "ana", true), "ana · #2") };
+            typeof(DlgHistorialUsuario).GetField("historial", BindingFlags.Instance | BindingFlags.NonPublic)!.SetValue(dialogo, historial);
+            typeof(DlgHistorialUsuario).GetMethod("MostrarVersiones", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(dialogo, new object?[] { null });
+            var versiones = (DataGridView)dialogo.Controls.Find("dgvVersiones", true).Single();
+            var detalle = (DataGridView)dialogo.Controls.Find("dgvDetalle", true).Single();
+            var restaurar = (Button)dialogo.Controls.Find("btnRestaurar", true).Single();
+            Preparar(dialogo, new Size(920, 640));
+            Assert.IsFalse(restaurar.Enabled, "No se restaura un estado idéntico al actual.");
+            StringAssert.Contains(dialogo.Controls.Find("lblRestauracion", true).Single().Text, "coincide");
+            versiones.CurrentCell = versiones.Rows[1].Cells["Version"];
+            try
+            {
+                foreach (bool oscuro in new[] { false, true, false })
+                {
+                    tema.Invoke(null, new object[] { oscuro });
+                    foreach (var size in new[] { new Size(920, 640), new Size(700, 515) })
+                    {
+                        dialogo.ClientSize = size;
+                        Application.DoEvents();
+                        ComprobarGrillas(dialogo);
+                        Assert.AreEqual(4, versiones.CurrentRow!.Cells["Version"].Value);
+                        Assert.IsTrue(restaurar.Enabled);
+                        Assert.AreEqual("Pérez", detalle.Rows[2].Cells["Anterior"].Value);
+                        Assert.AreEqual("Gómez", detalle.Rows[2].Cells["Seleccionada"].Value);
+                        var cambio = detalle.Rows[2].Cells["Seleccionada"];
+                        var estilo = new DataGridViewCellStyle(detalle.DefaultCellStyle);
+                        var formato = new DataGridViewCellFormattingEventArgs(2, 2, cambio.Value, typeof(string), estilo);
+                        typeof(DataGridView).GetMethod("OnCellFormatting", BindingFlags.Instance | BindingFlags.NonPublic,
+                            null, new[] { typeof(DataGridViewCellFormattingEventArgs) }, null)!.Invoke(detalle, new object[] { formato });
+                        Assert.IsTrue(formato.CellStyle.Font!.Bold);
+                        Assert.AreNotEqual(detalle.DefaultCellStyle.BackColor, formato.CellStyle.BackColor);
+                        Assert.IsFalse(string.IsNullOrEmpty(cambio.ToolTipText));
+                        if (size.Width == 920)
+                            foreach (var grilla in new[] { versiones, detalle })
+                            {
+                                var ultimaFila = grilla.GetRowDisplayRectangle(4, false);
+                                Assert.IsTrue(ultimaFila.Height > 0 && ultimaFila.Bottom <= grilla.ClientSize.Height,
+                                    "Las cinco filas deben entrar completas en el tamaño habitual: " + grilla.Name);
+                            }
+                        Guardar(dialogo, Environment.GetEnvironmentVariable("SIGAT_VISUAL_PREVIEW"), "historial-" + (oscuro ? "oscuro" : "claro") + "-" + size.Width);
+                    }
+                }
+            }
+            finally { tema.Invoke(null, new object[] { false }); }
+        });
+    }
+
+    [TestMethod]
+    public void BuscarEnUnaColumnaConservaLosOtrosArbolesYElBorrador()
+    {
+        EnInterfaz(() =>
+        {
+            using var form = new FormGestionRoles(); QuitarCarga(form);
+            typeof(FormGestionRoles).GetMethod("InicializarDatos", BindingFlags.NonPublic | BindingFlags.Instance)!
+                .Invoke(form, new object[] { EdicionRolesTests.Base() });
+            Preparar(form, new Size(1440, 900));
+            var usuarios = (ListBox)form.Controls.Find("listaUsuarios", true)[0];
+            usuarios.SelectedIndex = 1;
+            var marcas = (CheckedListBox)form.Controls.Find("rolesUsuario", true)[0];
+            marcas.SetItemChecked(1, true); Application.DoEvents();
+            var listaRoles = (ListBox)form.Controls.Find("listaRoles", true)[0];
+            var rol = listaRoles.SelectedItem;
+            var treeRoles = (TreeView)form.Controls.Find("tvRolesJerarquia", true)[0];
+            var nodoRol = treeRoles.Nodes[0];
+            var familia = ((ListBox)form.Controls.Find("listaFamilias", true)[0]).SelectedItem;
+            var filtro = (TextBox)form.Controls.Find("buscarUsuarios", true)[0];
+            filtro.Text = "nadie-con-ese-nombre";
+            var espera = System.Diagnostics.Stopwatch.StartNew();
+            while (usuarios.Items.Count != 0 && espera.ElapsedMilliseconds < 3000) { Application.DoEvents(); Thread.Sleep(10); }
+            Assert.IsEmpty(usuarios.Items);
+            Assert.AreSame(rol, listaRoles.SelectedItem);
+            Assert.AreSame(nodoRol, treeRoles.Nodes[0], "Buscar usuarios no reconstruye el árbol de otro contexto.");
+            Assert.AreSame(familia, ((ListBox)form.Controls.Find("listaFamilias", true)[0]).SelectedItem);
+            Assert.IsTrue(form.TieneCambios);
+            filtro.Clear();
+            espera.Restart();
+            while (usuarios.Items.Count == 0 && espera.ElapsedMilliseconds < 3000) { Application.DoEvents(); Thread.Sleep(10); }
+            usuarios.SelectedIndex = 1;
+            Assert.IsTrue(marcas.GetItemChecked(1), "El filtro no descarta las asignaciones pendientes.");
+            form.DescartarCambios();
+            Assert.IsFalse(marcas.GetItemChecked(1));
+            Guardar(form, Environment.GetEnvironmentVariable("SIGAT_VISUAL_PREVIEW"), "roles-mejorados");
+        });
+    }
+
+    [TestMethod]
+    [TestCategory("SQLIntegration")]
+    public void CargaRolesSinBloquearLaEdicionYTraduceSinConsultarOtraVezSql()
+    {
+        string? cadena = Environment.GetEnvironmentVariable("SIGAT_ROLES_TEST_CONNECTION");
+        if (string.IsNullOrWhiteSpace(cadena)) { Assert.Inconclusive("Requiere una base exclusiva de pruebas."); return; }
+        SqlPruebas.Preparar(cadena);
+        var nombreBase = new Microsoft.Data.SqlClient.SqlConnectionStringBuilder(cadena).InitialCatalog;
+        string? anterior = Environment.GetEnvironmentVariable("SIGAT_BASE_PRUEBAS");
+        try
+        {
+            Environment.SetEnvironmentVariable("SIGAT_BASE_PRUEBAS", nombreBase);
+            EnInterfaz(() =>
+            {
+                var datos = new SIGAT.DAL.RolesDAL(cadena).Cargar();
+                SesionServicio.ObtenerInstancia().IniciarSesion(datos.Usuarios.Single(u => u.IdUsuario == datos.IdAdministradorOriginal));
+                using var form = new FormGestionRoles { ShowInTaskbar = false, Opacity = 0, ClientSize = new Size(1500, 900) };
+                var campo = typeof(FormGestionRoles).GetField("consultando", BindingFlags.Instance | BindingFlags.NonPublic)!;
+                var tiempo = System.Diagnostics.Stopwatch.StartNew();
+                form.Show();
+                Assert.IsTrue((bool)campo.GetValue(form)!);
+                Assert.IsFalse(form.Controls.Find("visorColumnas", true)[0].Enabled);
+                Assert.IsFalse(form.Controls.Find("btnGuardarCambios", true)[0].Enabled);
+                bool respondio = false;
+                form.BeginInvoke((Action)(() => respondio = true));
+                while ((bool)campo.GetValue(form)! && tiempo.Elapsed < TimeSpan.FromSeconds(30))
+                { Application.DoEvents(); Thread.Sleep(10); }
+                Assert.IsTrue(respondio);
+                Assert.IsFalse((bool)campo.GetValue(form)!, "La carga debe finalizar.");
+                Assert.IsTrue(form.Controls.Find("visorColumnas", true)[0].Enabled);
+                Assert.HasCount(datos.Usuarios.Count, ((ListBox)form.Controls.Find("listaUsuarios", true)[0]).Items);
+                Assert.HasCount(3, form.Controls.Find("columnasRoles", true)[0].Controls);
+                Assert.IsFalse(form.TieneCambios);
+                Assert.IsFalse(form.Controls.Find("btnAgregarPermisoRol", true)[0].Enabled, "Administrador sigue protegido.");
+                // Una actualización de idioma ya no necesita conectarse a SQL.
+                Environment.SetEnvironmentVariable("SIGAT_BASE_PRUEBAS", "SIGAT_Roles_Pruebas_NoExiste_SoloLectura");
+                form.ActualizarIdioma();
+                Environment.SetEnvironmentVariable("SIGAT_BASE_PRUEBAS", nombreBase);
+                Guardar(form, Environment.GetEnvironmentVariable("SIGAT_VISUAL_PREVIEW"), "roles-carga-real");
+                Console.WriteLine($"Carga de roles en base de prueba: {tiempo.ElapsedMilliseconds} ms.");
+            });
+        }
+        finally { Environment.SetEnvironmentVariable("SIGAT_BASE_PRUEBAS", anterior); }
     }
 
     private static void ComprobarGrillas(Control parent)

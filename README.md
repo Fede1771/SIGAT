@@ -15,6 +15,10 @@ SIGAT es una aplicación de escritorio desarrollada como proyecto académico par
 
 > **Estado actual:** están implementados los módulos administrativos y técnicos, incluido el historial de cuentas de usuario de T06b. La gestión operativa de activos continúa pendiente.
 
+![Inicio de SIGAT en modo oscuro, con accesos rápidos ampliados](Recursos/Capturas/inicio-oscuro.png)
+
+*Vista del inicio con una cuenta de prueba. Los accesos disponibles dependen de los permisos de la cuenta.*
+
 ## Datos académicos
 
 | Dato | Información |
@@ -31,6 +35,7 @@ SIGAT es una aplicación de escritorio desarrollada como proyecto académico par
 
 - [Propósito y alcance](#propósito-y-alcance)
 - [Funcionalidades implementadas](#funcionalidades-implementadas)
+- [Interfaz y uso cotidiano](#interfaz-y-uso-cotidiano)
 - [Arquitectura del proyecto](#arquitectura-del-proyecto)
 - [Patrones de diseño](#patrones-de-diseño)
 - [Roles y permisos](#roles-y-permisos)
@@ -55,16 +60,34 @@ El objetivo académico es poder explicar y demostrar cómo una operación atravi
 |---|---|
 | Autenticación | Ingreso mediante usuario y contraseña, rechazo de credenciales incorrectas y cuentas inactivas, sesión compartida y cierre de sesión. |
 | Usuarios | Alta, modificación de datos y contraseña, baja lógica y reactivación. Las cuentas nuevas se crean sin roles. |
-| Roles y permisos | Tres columnas simultáneas: Usuarios, Roles y Familias y permisos. Edición en memoria con Guardar/Descartar, búsqueda, procedencia de accesos, impacto de familias compartidas y anidamiento de familias y roles sin ciclos. |
+| Roles y permisos | Tres columnas simultáneas: Usuarios, Roles y Familias y permisos. Carga sin bloquear la ventana, búsquedas independientes, edición en memoria con Guardar/Descartar, procedencia de accesos, impacto de familias compartidas y anidamiento sin ciclos. |
 | Idiomas | Cambio de idioma durante la sesión, preferencia por cuenta, creación y activación de idiomas, edición e importación/exportación de traducciones. |
-| Bitácora | Registro de accesos, cierre de sesión, altas, modificaciones y bajas de usuarios; intento de registro de errores inesperados y auditoría del recálculo de integridad. Consultas combinadas por fecha, usuario y actividad. |
+| Bitácora | Registro de accesos, cierre de sesión, altas, modificaciones y bajas de usuarios; intento de registro de errores inesperados y auditoría del recálculo de integridad. Consultas combinadas por fecha, usuario y actividad mediante desplegable, con compatibilidad entre nombres históricos equivalentes. |
 | Control de cambios (T06b) | Historial de usuarios con autor, fecha, operación y estado de cada versión. Comparación y restauración autorizada de los datos de la cuenta y sus roles directos. |
 | Integridad | DVH/DVV de Usuarios y UsuarioRol, verificación antes del acceso, respaldos comprobados, recuperación y recálculo administrativo con confirmación. |
-| Presentación | Interfaz Windows Forms, modos claro y oscuro y formularios compatibles con el diseñador de Visual Studio. |
+| Presentación | Interfaz Windows Forms sencilla, modos claro y oscuro, menú lateral contraíble, accesos rápidos con íconos ampliados y formularios compatibles con el diseñador de Visual Studio. |
 
 El administrador original está protegido contra baja, desactivación y retiro de su rol Administrador. Tampoco se permite desactivar español, el idioma activo de la sesión ni un idioma elegido por algún usuario registrado, aunque su cuenta esté inactiva.
 
 Las traducciones se guardan en SQL por formulario y clave de control. Cuando falta una traducción, se conserva el texto de respaldo de la interfaz.
+
+## Interfaz y uso cotidiano
+
+- **Inicio:** accesos rápidos con íconos ampliados y nombres debajo. Se acomodan en filas según el ancho disponible.
+- **Navegación:** el menú lateral permite cambiar de módulo y se puede contraer para ganar espacio. Las opciones respetan los permisos de la sesión.
+- **Apariencia:** modos claro y oscuro. El tema se conserva localmente por cuenta; el idioma se guarda en SQL.
+- **Roles y permisos:** se mantienen las tres columnas. Cada título identifica qué cuenta, rol o familia se está editando. Filtrar una columna conserva el borrador y las selecciones de las otras.
+- **Historial:** las versiones se presentan en una vista compacta; los campos modificados se destacan en la comparación. Restaurar requiere revisar y confirmar la versión elegida.
+- **Integridad:** Verificar, Crear respaldo, Recuperar y Cerrar/Continuar quedan a la vista. Las operaciones de mayor alcance se agrupan en **Opciones avanzadas**.
+
+### Consultar la bitácora
+
+1. Elegir una actividad en el desplegable o dejar **Todas las actividades**.
+2. Opcionalmente, escribir parte del nombre de usuario. Caracteres como `_`, `%` y `[` se buscan como texto literal.
+3. Para limitar el período, marcar **Fechas** y elegir desde/hasta. Si la casilla está desmarcada, las fechas no filtran; si está marcada, se incluye todo el día final.
+4. Pulsar **Buscar**. Los filtros se combinan y las opciones de actividad permanecen disponibles aunque la búsqueda no devuelva registros.
+
+Los eventos históricos `Login Exitoso` y actuales `LoginExitoso` se consultan juntos; también se agrupan `Error Crítico del Sistema` y `ErrorCritico`. Esta compatibilidad es de lectura: conserva los nombres y detalles originales de los eventos almacenados. Actividades distintas con nombres parecidos no se mezclan.
 
 ## Arquitectura del proyecto
 
@@ -94,7 +117,8 @@ SIGAT/
 ├── SIGAT.Tests/        Pruebas automatizadas
 ├── Querys/             Instalación y mantenimiento SQL
 ├── EA-Diagramas/       Modelo actual y diagramas
-└── Documentacion/      Material auxiliar local de la entrega
+├── Recursos/Capturas/  Vistas de la interfaz con datos de prueba
+└── output/pdf/         Propuestas y documentación de apoyo
 ```
 
 En cada formulario, `*.Designer.cs` contiene la creación y distribución de los controles; el archivo `.cs` contiene el comportamiento, los eventos y la carga de datos. [EntornoDiseno.cs](SIGAT.UI/EntornoDiseno.cs) evita ejecutar la lógica de sesión y consultas de los constructores al abrir los formularios en el diseñador.
@@ -134,6 +158,8 @@ La gestión presenta tres columnas simultáneas, con selección independiente y 
 | **Familias y permisos** | Crear familias y subfamilias, agregar componentes existentes y quitar relaciones. Los permisos simples son de consulta; una familia en uso no puede eliminarse. |
 
 **Guardar cambios** abre una revisión de las operaciones y del impacto de las familias compartidas. **Descartar** restaura la última versión confirmada sin escribir SQL. Al abandonar el módulo o recargar con una edición pendiente se puede guardar, descartar o continuar editando. Si otro administrador modificó el catálogo, el guardado rechaza el conflicto y conserva la copia de trabajo; después de descartar, **Recargar** obtiene el estado vigente.
+
+La carga consulta y valida los datos fuera del hilo de la interfaz. Durante ese proceso se muestra el estado de carga y se bloquea la edición. Las claves de traducción existentes se comprueban mediante una lectura por formulario y los cambios de idioma reutilizan las traducciones de la sesión. Las búsquedas filtran la copia en memoria y actualizan solamente su columna. La autorización, la integridad y las validaciones al guardar se mantienen.
 
 [EdicionRoles.cs](SIGAT.BLL/EdicionRoles.cs) mantiene la copia del grafo por ID, conservando familias compartidas. Cada operación se valida antes de reemplazar el borrador. Esta edición temporal no constituye el historial de versiones de T06b.
 
@@ -184,6 +210,8 @@ Cerrar SIGAT, crear un respaldo con [05_Backup.sql](Querys/05_Backup.sql) y ejec
 
 Si se actualiza desde el control anterior de Bitacora/Traduccion, preparar la nueva referencia de Usuarios/UsuarioRol desde SIGAT y generar un **respaldo comprobado nuevo**. Los backups anteriores a ese cambio de esquema se conservan como respaldo histórico completo, no como fuente de recuperación selectiva del esquema nuevo.
 
+Si la base ya tiene el esquema vigente, los cambios recientes de interfaz, filtros y carga de roles no requieren volver a ejecutar el instalador ni la actualización SQL. Cerrar la aplicación, obtener los cambios y recompilar es suficiente. Las nuevas claves de traducción se registran al abrir la pantalla correspondiente.
+
 Las instrucciones ampliadas están en [Querys/README.md](Querys/README.md). Los archivos de `Querys/Historico` son referencias de versiones anteriores y no constituyen pasos adicionales de instalación.
 
 ## Integridad y recuperación
@@ -201,10 +229,13 @@ El sistema utiliza mecanismos con objetivos diferentes:
 
 - **Crear respaldo comprobado:** genera un `.bak`, lo restaura en una base auxiliar y verifica sus datos protegidos.
 - **Elegir respaldo:** selecciona la ruta del archivo; la recuperación se inicia con el botón Recuperar.
-- **Recuperar:** utiliza un respaldo comprobado de la misma base para reponer datos. La opción de restauración completa de seguridad repone Usuarios y UsuarioRol y descarta sus cambios posteriores al respaldo.
+- **Recuperar:** utiliza un respaldo comprobado de la misma base para reponer datos. Por defecto intenta recuperar los registros afectados conservando el resto.
+- **Restaurar Usuarios y UsuarioRol completos:** se encuentra en **Opciones avanzadas**. Repone esas tablas completas y descarta sus cambios posteriores al respaldo; no equivale a restaurar toda la base. Al ocultar las opciones avanzadas, la casilla vuelve a quedar desmarcada.
 - **Recalcular dígitos (asumir pérdida):** acepta expresamente los registros actuales, incluidas posibles alteraciones o pérdidas. Recalcula verificadores y deja auditoría; no recupera información anterior.
 
 El archivo debe ser accesible para SQL Server en el equipo donde se ejecuta el servicio. El log externo de integridad se encuentra en `%LOCALAPPDATA%\SIGAT\logs\integridad.log`.
+
+Si se detecta una alteración al autenticar, SIGAT abre la recuperación y conserva bloqueado el acceso. Tras recuperar, el usuario debe volver a ingresar sus credenciales. El sistema no recalcula automáticamente los dígitos para aceptar datos alterados.
 
 Ver [Guía de integridad](Querys/GUIA_INTEGRIDAD.md) para preparar la referencia y demostrar detección y recuperación en una copia de ensayo.
 
@@ -218,7 +249,7 @@ Ver [Guía de integridad](Querys/GUIA_INTEGRIDAD.md) para preparar la referencia
 
 ## Pruebas automatizadas
 
-Las pruebas utilizan **MSTest** y cubren Composite, sesión, idiomas, cifrado, presentación, diseñador y persistencia.
+Las pruebas utilizan **MSTest** y cubren Composite, sesión, idiomas, cifrado, presentación, diseñador y persistencia. Incluyen conservación del borrador, navegación, escalado, cambios de tema y avisos de idioma mientras se abren o cierran suscripciones.
 
 Para ejecutar las pruebas que no requieren SQL:
 
@@ -230,10 +261,11 @@ Las pruebas `SQLIntegration` requieren bases exclusivas con prefijo `SIGAT_Roles
 
 | Variable | Conjunto de pruebas |
 |---|---|
-| `SIGAT_ROLES_TEST_CONNECTION` | Roles, permisos y gestión de usuarios. |
+| `SIGAT_ROLES_TEST_CONNECTION` | Roles, permisos, gestión de usuarios y carga de la ventana de roles. |
 | `SIGAT_IDIOMA_TEST_CONNECTION` | Preferencias de idioma y concurrencia con la desactivación. |
 | `SIGAT_INTEGRIDAD_TEST_CONNECTION` | Inicialización, alteraciones, respaldos, recuperación y recálculo. |
 | `SIGAT_HISTORIAL_TEST_CONNECTION` | Versionado, permisos, restauración y reversión si falla el historial. |
+| `SIGAT_BITACORA_TEST_CONNECTION` | Actividades históricas y actuales, usuarios con caracteres especiales, límites de fecha y filtros combinados desde la interfaz. |
 
 Deben prepararse según las condiciones de cada prueba: algunas esperan cuentas de ensayo determinadas y la prueba de integridad comienza sin referencia inicializada. Estas pruebas modifican datos y generan respaldos; no se ejecutan sobre la base habitual.
 
@@ -246,7 +278,7 @@ dotnet test SIGAT.Tests/SIGAT.Tests.csproj --filter "TestCategory=SQLIntegration
 ## Recorrido para la demostración
 
 1. **Usuarios y acceso:** crear una cuenta sin roles y explicar la baja lógica y la protección del administrador original.
-2. **Composite:** crear una familia y una subfamilia, agregar componentes, incorporarla a un rol y asignarlo a la cuenta. Guardar en cada vista, consultar la herencia y demostrar Descartar y el rechazo de ciclos.
+2. **Composite:** crear una familia y una subfamilia, agregar componentes, incorporarla a un rol y asignarlo a la cuenta. Revisar y guardar el borrador conjunto de las tres columnas, consultar la herencia y demostrar Descartar y el rechazo de ciclos.
 3. **Observer:** cambiar el idioma y observar la actualización de las pantallas abiertas; volver a ingresar para comprobar la preferencia de la cuenta.
 4. **Bitácora:** consultar los eventos de acceso y gestión de usuarios mediante filtros combinados.
 5. **Integridad:** en una copia de ensayo con respaldo previo, modificar externamente una cuenta, verificar la detección y recuperar el dato original.
@@ -275,7 +307,7 @@ La carpeta [EA-Diagramas/Actual](EA-Diagramas/Actual) contiene el **único model
 
 Los diagramas muestran miembros principales para facilitar la lectura; las notas de las clases incluyen las firmas extraídas del código. Las secuencias presentan el recorrido principal y describen las alternativas mediante notas. El [informe de validación](EA-Diagramas/Actual/fuentes/validacion.json) registra las comprobaciones del modelo frente a las fuentes revisadas.
 
-La carpeta académica con las especificaciones de casos de uso se presenta junto con el proyecto. Como material de apoyo, el repositorio incluye la [guía del diseñador](GUIA_DISENADOR.txt), la [guía de scripts SQL](Querys/README.md) y la [guía de integridad](Querys/GUIA_INTEGRIDAD.md).
+La carpeta académica con las especificaciones de casos de uso se presenta junto con el proyecto. Como material de apoyo, el repositorio incluye la [guía del diseñador](GUIA_DISENADOR.txt), la [guía de scripts SQL](Querys/README.md), la [guía de integridad](Querys/GUIA_INTEGRIDAD.md) y la [propuesta de mejora de bitácora en PDF](output/pdf/Propuesta_mejora_bitacora_SIGAT.pdf). El PDF reúne propuestas de evolución; el alcance implementado se describe en este README.
 
 ## Estado de la tercera entrega
 

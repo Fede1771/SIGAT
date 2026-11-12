@@ -193,6 +193,38 @@ public class TemaVisualTests
     }
 
     [TestMethod]
+    public void RepintarUnMenuToleraQueUnEventoRetireUnaOpcion()
+    {
+        Exception? error = null;
+        var hilo = new Thread(() =>
+        {
+            try
+            {
+                using var menu = new ContextMenuStrip();
+                var primero = new ToolStripMenuItem("Primero");
+                var retirado = new ToolStripMenuItem("Retirado");
+                var ultimo = new ToolStripMenuItem("Último");
+                menu.Items.AddRange(new ToolStripItem[] { primero, retirado, ultimo });
+                bool cambiado = false;
+                primero.BackColorChanged += (_, _) =>
+                {
+                    if (cambiado) return;
+                    cambiado = true;
+                    menu.Items.Remove(retirado);
+                    retirado.Dispose();
+                };
+                Invocar("Aplicar", menu);
+                Assert.IsTrue(cambiado);
+                Assert.HasCount(2, menu.Items);
+                Assert.AreEqual(primero.ForeColor, ultimo.ForeColor);
+            }
+            catch (Exception ex) { error = ex; }
+        });
+        hilo.SetApartmentState(ApartmentState.STA); hilo.Start(); hilo.Join();
+        if (error != null) throw error;
+    }
+
+    [TestMethod]
     public void PreferenciaSeGuardaPorIdDeCuentaEnElCliente()
     {
         int uno = int.MaxValue - 51, dos = int.MaxValue - 52;

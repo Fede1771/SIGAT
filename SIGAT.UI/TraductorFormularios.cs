@@ -9,25 +9,29 @@ namespace SIGAT.UI
 
         // Tag identifica la clave de traducción y Text contiene el texto visible. Recorremos el formulario sin cambiar sus eventos.
         public static void TraducirFormulario(Form formulario)
+            => TraducirFormulario(formulario, registrarClaves: true);
+
+        // Las pantallas que registraron sus claves en conjunto pueden traducirse sin nuevas consultas.
+        public static void TraducirFormulario(Form formulario, bool registrarClaves)
         {
             string nombreForm = formulario.Name;
 
             if (formulario.Tag != null)
             {
-                RegistrarClave(nombreForm, formulario.Tag.ToString(), formulario.Text);
+                if (registrarClaves) RegistrarClave(nombreForm, formulario.Tag.ToString(), formulario.Text);
                 formulario.Text = Traducir(nombreForm, formulario.Tag.ToString(), formulario.Text);
             }
 
             if (formulario.MainMenuStrip != null)
             {
-                TraducirMenu(nombreForm, formulario.MainMenuStrip.Items);
+                TraducirMenu(nombreForm, formulario.MainMenuStrip.Items, registrarClaves);
             }
 
-            TraducirControles(nombreForm, formulario.Controls);
+            TraducirControles(nombreForm, formulario.Controls, registrarClaves);
         }
 
         // Recorremos los hijos de cada contenedor; solo las etiquetas identificadas para traducir cambian su texto visible.
-        private static void TraducirControles(string nombreForm, Control.ControlCollection controles)
+        private static void TraducirControles(string nombreForm, Control.ControlCollection controles, bool registrarClaves)
         {
             foreach (Control control in controles)
             {
@@ -35,7 +39,7 @@ namespace SIGAT.UI
                 if (control is Form) continue;
                 if (control.Tag != null)
                 {
-                    RegistrarClave(nombreForm, control.Tag.ToString(), control.Text);
+                    if (registrarClaves) RegistrarClave(nombreForm, control.Tag.ToString(), control.Text);
                     control.Text = Traducir(nombreForm, control.Tag.ToString(), control.Text);
                 }
 
@@ -45,7 +49,7 @@ namespace SIGAT.UI
                     {
                         if (columna.Tag != null)
                         {
-                            RegistrarClave(nombreForm, columna.Tag.ToString(), columna.HeaderText);
+                            if (registrarClaves) RegistrarClave(nombreForm, columna.Tag.ToString(), columna.HeaderText);
                             columna.HeaderText = Traducir(nombreForm, columna.Tag.ToString(), columna.HeaderText);
                         }
                     }
@@ -53,24 +57,24 @@ namespace SIGAT.UI
 
                 if (control.HasChildren)
                 {
-                    TraducirControles(nombreForm, control.Controls);
+                    TraducirControles(nombreForm, control.Controls, registrarClaves);
                 }
             }
         }
 
-        private static void TraducirMenu(string nombreForm, ToolStripItemCollection items)
+        private static void TraducirMenu(string nombreForm, ToolStripItemCollection items, bool registrarClaves)
         {
             foreach (ToolStripItem item in items)
             {
                 if (item.Tag is string)
                 {
-                    RegistrarClave(nombreForm, item.Tag.ToString(), item.Text);
+                    if (registrarClaves) RegistrarClave(nombreForm, item.Tag.ToString(), item.Text);
                     item.Text = Traducir(nombreForm, item.Tag.ToString(), item.Text);
                 }
 
                 if (item is ToolStripMenuItem menuItem)
                 {
-                    TraducirMenu(nombreForm, menuItem.DropDownItems);
+                    TraducirMenu(nombreForm, menuItem.DropDownItems, registrarClaves);
                 }
             }
         }

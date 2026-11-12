@@ -186,6 +186,8 @@ namespace SIGAT.UI
             formHijo.WindowState = FormWindowState.Normal;
             formHijo.MinimumSize = Size.Empty;
             formHijo.Dock = DockStyle.Fill;
+            // El marco ya muestra la sección; la ventana independiente conserva su título.
+            if (formHijo.Controls.Find("label3", true).FirstOrDefault() is Label titulo) titulo.Visible = false;
             // La pantalla recibe el tema estando oculta, antes de cargar datos o mostrar controles nativos.
             TemaVisual.Aplicar(formHijo);
             panelContenido.SuspendLayout();
@@ -227,7 +229,7 @@ namespace SIGAT.UI
                 bool permitido = acceso.Item2.Available;
                 acceso.Item4.Visible = acceso.Item5.Visible = permitido;
                 var fila = panelNavegacion.GetRow(acceso.Item4);
-                panelNavegacion.RowStyles[fila].Height = permitido ? 60 : 0;
+                panelNavegacion.RowStyles[fila].Height = permitido ? 44 : 0;
                 if (!permitido)
                 {
                     // El diseñador conserva el catálogo completo; la sesión solo muestra sus accesos.
@@ -348,7 +350,7 @@ namespace SIGAT.UI
             marcoPrincipal.SuspendLayout();
             try
             {
-                marcoPrincipal.ColumnStyles[0].Width = (menuContraido ? 64 : 236) * escala;
+                marcoPrincipal.ColumnStyles[0].Width = (menuContraido ? 64 : 200) * escala;
                 barraLateral.Padding = new Padding((int)((menuContraido ? 4 : 12) * escala));
                 label2.Visible = lblRoles.Visible = !menuContraido;
                 foreach (var boton in navegacion.Values.Append(navSalir))

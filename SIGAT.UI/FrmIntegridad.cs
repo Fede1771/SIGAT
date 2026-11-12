@@ -10,6 +10,7 @@ public sealed partial class FrmIntegridad : Form
     private InformeIntegridad informe;
     private bool administrador;
     private bool ocupada;
+    private bool ajustandoGrupos;
 
     public FrmIntegridad() : this(null, false) { }
 
@@ -20,7 +21,16 @@ public sealed partial class FrmIntegridad : Form
         InitializeComponent();
         if (EntornoDiseno.Activo) return;
         TemaVisual.Formulario(this);
+        flowlayoutpanel8.SizeChanged += (_, _) => AjustarGruposAcciones();
+        AjustarGruposAcciones();
         btnContinuar.Text = bloquearInicio ? "Continuar con SIGAT" : "Cerrar";
+        chkOpcionesAvanzadas.CheckedChanged += (_, _) =>
+        {
+            panelAvanzado.Visible = chkOpcionesAvanzadas.Checked;
+            // La recuperación completa debe ser una elección explícita y visible.
+            if (!chkOpcionesAvanzadas.Checked) completas.Checked = false;
+            AjustarGruposAcciones();
+        };
         btnElegirRespaldo.Click += (_, _) =>
         {
             using var dialogo = new OpenFileDialog { Filter = "Respaldo SQL (*.bak)|*.bak" };
@@ -72,11 +82,35 @@ public sealed partial class FrmIntegridad : Form
         FormClosing += (_, e) => { if (ocupada) e.Cancel = true; };
     }
 
+    private void AjustarGruposAcciones()
+    {
+        if (ajustandoGrupos || flowlayoutpanel8.ClientSize.Width <= 0) return;
+        ajustandoGrupos = true;
+        try
+        {
+            // La consecuencia de recuperar tablas completas debe leerse también en ventanas angostas.
+            int anchoCasilla = Math.Max(1, completas.Parent.ClientSize.Width - completas.Parent.Padding.Horizontal - completas.Margin.Horizontal);
+            int marca = (int)Math.Ceiling(24 * DeviceDpi / 96f);
+            int altoTexto = TextRenderer.MeasureText(completas.Text, completas.Font,
+                new Size(Math.Max(1, anchoCasilla - marca), int.MaxValue), TextFormatFlags.WordBreak).Height;
+            completas.Size = new Size(anchoCasilla, Math.Max(completas.Font.Height + 4, altoTexto + 4));
+            foreach (var grupo in flowlayoutpanel8.Controls.OfType<TableLayoutPanel>()
+                .Concat(panelAvanzado.Controls.OfType<TableLayoutPanel>()))
+            {
+                int ancho = Math.Max(1, flowlayoutpanel8.ClientSize.Width - flowlayoutpanel8.Padding.Horizontal - grupo.Margin.Horizontal);
+                grupo.MaximumSize = new Size(ancho, 0);
+                foreach (var acciones in grupo.Controls.OfType<FlowLayoutPanel>()) acciones.MaximumSize = new Size(ancho, 0);
+            }
+        }
+        finally { ajustandoGrupos = false; }
+    }
+
     // Task.Run mantiene la interfaz disponible mientras trabaja SQL. Deshabilitamos las acciones para evitar operaciones simultáneas.
     private async Task Operar(Func<string> accion, bool mostrarRuta = false)
     {
         UseWaitCursor = true;
         ocupada = true;
+        chkOpcionesAvanzadas.Enabled = archivo.Enabled = btnElegirRespaldo.Enabled = completas.Enabled = false;
         foreach (var boton in new[] { btnInicializar, btnBackupVerificado, btnRecuperar, btnComprobar, btnContinuar, btnArchivar, btnRecalcular }) boton.Enabled = false;
         try
         {
@@ -93,7 +127,13 @@ public sealed partial class FrmIntegridad : Form
             ocupada = false;
             grilla.DataSource = informe?.Problemas.ToList();
             bool correcta = informe?.Correcta == true;
-            estado.Text = correcta ? "Integridad correcta. Los datos protegidos pueden utilizarse." : "Se requiere atención. Los datos afectados están bloqueados hasta su recuperación.";
+            estado.Text = correcta ? "Integridad correcta. Los datos protegidos pueden utilizarse." :
+                informe?.Configurada == false ? "Falta preparar el control inicial. El acceso permanece bloqueado." :
+                $"Se detectaron {informe?.Problemas.Count ?? 0} diferencias. El acceso permanece bloqueado.";
+            label4.Text = correcta ? "Podés verificar nuevamente o crear un respaldo." :
+                informe?.Configurada == false ? "Prepará la referencia inicial de integridad para continuar." :
+                "Elegí un respaldo y pulsá Recuperar. Se comprobarán los datos antes de habilitar el acceso.";
+            chkOpcionesAvanzadas.Enabled = archivo.Enabled = btnElegirRespaldo.Enabled = completas.Enabled = true;
             estado.BackColor = TemaVisual.ColorActual(correcta ? TemaVisual.VerdeSuave : TemaVisual.AmbarSuave);
             estado.ForeColor = TemaVisual.ColorActual(correcta ? TemaVisual.Verde : TemaVisual.Ambar, true);
             btnComprobar.Enabled = true;

@@ -1,4 +1,4 @@
-using SIGAT.BE;
+﻿using SIGAT.BE;
 using SIGAT.BLL;
 using SIGAT.SERVICIOS.Idiomas;
 
@@ -9,6 +9,9 @@ public partial class FormGestionRoles : Form, IIdiomaObserver
     private readonly RolesBLL rolesBLL = new();
     private EdicionRoles edicion = new(new EstadoRoles());
     private bool cargando;
+    private bool consultando, datosCargados;
+    private readonly System.Windows.Forms.Timer[] filtros = new System.Windows.Forms.Timer[3];
+    private ToolTip ayudaContextual;
     private bool distribuyendo, distribucionPendiente;
     private int usuarioId, rolId, familiaId;
     private readonly HashSet<int> familiasModificadas = new();
@@ -22,6 +25,7 @@ public partial class FormGestionRoles : Form, IIdiomaObserver
     {
         InitializeComponent();
         if (EntornoDiseno.Activo) return;
+        ayudaContextual = new ToolTip(components) { AutoPopDelay = 12000 };
         // Los títulos dinámicos no se registran como leyendas con nombres de usuarios.
         foreach (var c in new Control[] { tituloUsuarios, tituloRoles, tituloFamilias, ayudaUsuarios, ayudaRoles,
             ayudaFamilias, rutaUsuario, rutaRol, rutaFamilia, lblEstado }) c.Tag = null;
@@ -29,7 +33,9 @@ public partial class FormGestionRoles : Form, IIdiomaObserver
         foreach (var tree in new[] { tvUsuarioPermisos, tvRolesJerarquia, tvCatalogoGeneral })
         {
             TemaVisual.CargarIconosArbol(tree);
-            tree.ItemHeight = Math.Max(tree.Font.Height + 8, (int)(26 * DeviceDpi / 96f));
+            if (!tree.ImageList.Images.ContainsKey("Vacio"))
+                tree.ImageList.Images.Add("Vacio", new Bitmap(tree.ImageList.ImageSize.Width, tree.ImageList.ImageSize.Height));
+            tree.ItemHeight = Math.Max(tree.Font.Height + 4, (int)(22 * DeviceDpi / 96f));
             var menu = new ContextMenuStrip(components);
             menu.Items.Add(T("expandir", "Expandir todo"), null, (_, _) => tree.ExpandAll());
             menu.Items.Add(T("contraer", "Contraer todo"), null, (_, _) => tree.CollapseAll());
@@ -37,7 +43,7 @@ public partial class FormGestionRoles : Form, IIdiomaObserver
             menu.Opening += (_, _) => TemaVisual.Aplicar(menu);
         }
         Load += CargarDatos;
-        Load += (_, _) => { if (IsDisposed) return; IdiomaManager.ObtenerInstancia().Suscribir(this); ActualizarIdioma(); };
+        Load += (_, _) => { if (!IsDisposed) IdiomaManager.ObtenerInstancia().Suscribir(this); };
         FormClosed += (_, _) => IdiomaManager.ObtenerInstancia().Desuscribir(this);
         FormClosing += (_, e) => { if (!ConfirmarSalida()) e.Cancel = true; };
         ClientSizeChanged += (_, _) => ProgramarDistribucion();
@@ -46,16 +52,21 @@ public partial class FormGestionRoles : Form, IIdiomaObserver
         Shown += (_, _) => AjustarDistribucion();
         DpiChanged += (_, _) => AjustarDistribucion();
         visorColumnas.ClientSizeChanged += (_, _) => ProgramarDistribucion();
-        buscarUsuarios.TextChanged += (_, _) => PoblarListas();
-        buscarRoles.TextChanged += (_, _) => PoblarListas();
-        buscarFamilias.TextChanged += (_, _) => PoblarListas();
-        listaUsuarios.SelectedIndexChanged += (_, _) => Seleccionar(listaUsuarios, id => usuarioId = id);
-        listaRoles.SelectedIndexChanged += (_, _) => Seleccionar(listaRoles, id => rolId = id);
-        listaFamilias.SelectedIndexChanged += (_, _) => Seleccionar(listaFamilias, id => familiaId = id);
+        var buscadores = new[] { buscarUsuarios, buscarRoles, buscarFamilias };
+        for (int i = 0; i < buscadores.Length; i++)
+        {
+            int columna = i;
+            var temporizador = filtros[i] = new System.Windows.Forms.Timer(components) { Interval = 180 };
+            temporizador.Tick += (_, _) => { temporizador.Stop(); if (!consultando) PoblarListas(columna); };
+            buscadores[i].TextChanged += (_, _) => { temporizador.Stop(); if (!cargando && !consultando) temporizador.Start(); };
+        }
+        listaUsuarios.SelectedIndexChanged += (_, _) => Seleccionar(listaUsuarios, id => usuarioId = id, 0);
+        listaRoles.SelectedIndexChanged += (_, _) => Seleccionar(listaRoles, id => rolId = id, 1);
+        listaFamilias.SelectedIndexChanged += (_, _) => Seleccionar(listaFamilias, id => familiaId = id, 2);
         rolesUsuario.ItemCheck += CambiarRolUsuario;
-        tvRolesJerarquia.AfterSelect += (_, _) => { rutaRol.Text = Procedencia(tvRolesJerarquia); ActualizarAcciones(); };
-        tvUsuarioPermisos.AfterSelect += (_, _) => rutaUsuario.Text = Procedencia(tvUsuarioPermisos);
-        tvCatalogoGeneral.AfterSelect += (_, _) => { rutaFamilia.Text = Procedencia(tvCatalogoGeneral); ActualizarAcciones(); };
+        tvRolesJerarquia.AfterSelect += (_, _) => { if (!cargando) { MostrarProcedencia(tvRolesJerarquia, rutaRol); ActualizarAcciones(); } };
+        tvUsuarioPermisos.AfterSelect += (_, _) => { if (!cargando) MostrarProcedencia(tvUsuarioPermisos, rutaUsuario); };
+        tvCatalogoGeneral.AfterSelect += (_, _) => { if (!cargando) { MostrarProcedencia(tvCatalogoGeneral, rutaFamilia); ActualizarAcciones(); } };
         btnAgregarPermisoRol.Click += (_, _) => AgregarAlRol(false);
         btnIncluirRol.Click += (_, _) => AgregarAlRol(true);
         btnQuitarAsignacion.Click += (_, _) =>
@@ -93,15 +104,61 @@ public partial class FormGestionRoles : Form, IIdiomaObserver
     private static int Id(object o) => o is Rol r ? r.Id : ((Permiso)o).Id;
     private static string Nombre(object o) => o is Rol r ? r.Nombre : ((Permiso)o).Nombre;
 
-    private void CargarDatos(object sender, EventArgs e)
+    private async void CargarDatos(object sender, EventArgs e)
     {
-        try { InicializarDatos(rolesBLL.CargarParaGestion()); }
-        catch (Exception ex) { MessageBox.Show(this, ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Error); Close(); }
+        if (consultando) return;
+        consultando = true;
+        foreach (var filtro in filtros) filtro.Stop();
+        visorColumnas.Enabled = false;
+        UseWaitCursor = true;
+        ActualizarAcciones();
+        // Capturamos los textos en el hilo de UI; SQL trabaja sin tocar controles.
+        var claves = TextosDinamicos.ToDictionary(p => "roles_v2_" + p.Key, p => p.Value);
+        void Recorrer(Control padre)
+        {
+            foreach (Control c in padre.Controls)
+            {
+                if (c.Tag is string clave) claves.TryAdd(clave, c.Text);
+                Recorrer(c);
+            }
+        }
+        Recorrer(this);
+        string nombreForm = Name;
+        try
+        {
+            var datos = await Task.Run(() =>
+            {
+                var estado = rolesBLL.CargarParaGestion();
+                new IdiomaBLL().RegistrarClavesNuevas(nombreForm, claves);
+                return estado;
+            });
+            if (IsDisposed || Disposing) return;
+            TraducirControles();
+            InicializarDatos(datos);
+        }
+        catch (Exception ex)
+        {
+            if (IsDisposed || Disposing) return;
+            MessageBox.Show(this, ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            if (!datosCargados) Close();
+        }
+        finally
+        {
+            if (!IsDisposed && !Disposing)
+            {
+                consultando = false;
+                visorColumnas.Enabled = datosCargados;
+                UseWaitCursor = false;
+                ActualizarAcciones();
+            }
+        }
     }
 
     private void InicializarDatos(EstadoRoles datos)
     {
         edicion = new EdicionRoles(datos);
+        datosCargados = true;
+        visorColumnas.Enabled = true;
         familiasModificadas.Clear(); rolesModificados.Clear();
         PoblarListas();
     }
@@ -119,31 +176,32 @@ public partial class FormGestionRoles : Form, IIdiomaObserver
         finally { lista.EndUpdate(); }
     }
 
-    private void PoblarListas()
+    private void PoblarListas(int columna = -1)
     {
         if (cargando) return;
+        if (columna == -1) foreach (var filtro in filtros) filtro?.Stop();
         cargando = true;
         try
         {
             bool Coincide(string nombre, TextBox filtro) => nombre.Contains(filtro.Text.Trim(), StringComparison.CurrentCultureIgnoreCase);
-            Poblar(listaUsuarios, Estado.Usuarios.Where(u => Coincide(u.NombreUsuario, buscarUsuarios)).Select(u => new Opcion(u.IdUsuario,
+            if (columna is -1 or 0) Poblar(listaUsuarios, Estado.Usuarios.Where(u => Coincide(u.NombreUsuario, buscarUsuarios)).Select(u => new Opcion(u.IdUsuario,
                 u.NombreUsuario + (u.Activo ? "" : " · " + T("inactivo", "Inactivo")))), usuarioId);
-            Poblar(listaRoles, Estado.Roles.Where(r => Coincide(r.Nombre, buscarRoles)).Select(r => new Opcion(r.Id, r.Nombre)), rolId);
-            Poblar(listaFamilias, Estado.Permisos.Where(p => Coincide(p.Nombre, buscarFamilias)).OrderBy(p => p.Nombre)
+            if (columna is -1 or 1) Poblar(listaRoles, Estado.Roles.Where(r => Coincide(r.Nombre, buscarRoles)).Select(r => new Opcion(r.Id, r.Nombre)), rolId);
+            if (columna is -1 or 2) Poblar(listaFamilias, Estado.Permisos.Where(p => Coincide(p.Nombre, buscarFamilias)).OrderBy(p => p.Nombre)
                 .Select(p => new Opcion(p.Id, (p is PermisoCompuesto ? T("familia", "Familia") : T("permiso", "Permiso")) + " · " + p.Nombre)), familiaId);
             usuarioId = (listaUsuarios.SelectedItem as Opcion)?.Id ?? 0;
             rolId = (listaRoles.SelectedItem as Opcion)?.Id ?? 0;
             familiaId = (listaFamilias.SelectedItem as Opcion)?.Id ?? 0;
         }
         finally { cargando = false; }
-        MostrarDetalles();
+        MostrarDetalles(columna);
     }
 
-    private void Seleccionar(ListBox lista, Action<int> seleccion)
+    private void Seleccionar(ListBox lista, Action<int> seleccion, int columna)
     {
         if (cargando) return;
         seleccion((lista.SelectedItem as Opcion)?.Id ?? 0);
-        MostrarDetalles();
+        MostrarDetalles(columna);
     }
 
     private TreeNode NodoPermiso(Permiso p, bool directo, int? familia, int? rol)
@@ -189,54 +247,83 @@ public partial class FormGestionRoles : Form, IIdiomaObserver
         finally { tree.EndUpdate(); }
     }
 
-    private void MostrarDetalles()
+    private void MostrarDetalles(int columna = -1)
     {
         cargando = true;
         try
         {
-            var usuario = Estado.Usuarios.Find(u => u.IdUsuario == usuarioId);
-            tituloUsuarios.Text = usuario?.NombreUsuario ?? T("seleccionarUsuario", "Seleccioná un usuario");
-            ayudaUsuarios.Text = T("ayudaUsuarios", "Marcá los roles directos. Debajo podés consultar los accesos y todas sus rutas de herencia.") +
-                (usuarioId > 0 && usuarioId == Estado.IdAdministradorOriginal ? " " + T("original", "Cuenta original protegida: no se puede quitar Administrador.") : "");
-            bool cuentaProtegida = usuario != null && usuarioId == Estado.IdAdministradorOriginal;
-            var administrador = cuentaProtegida ? Estado.Roles.Find(r => r.Id == 1) : null;
-            lblRolProtegido.Visible = administrador != null;
-            lblRolProtegido.Text = administrador == null ? "" : administrador.Nombre + " · " + T("protegido", "Protegido");
-            rolesUsuario.Items.Clear();
-            // Una asignación inamovible se presenta como información, sin casilla editable.
-            foreach (var r in Estado.Roles.Where(r => !cuentaProtegida || r.Id != 1))
-                rolesUsuario.Items.Add(new Opcion(r.Id, r.Nombre), usuario?.Roles.Any(h => h.Id == r.Id) == true);
-            rolesUsuario.Enabled = usuario != null;
-            ActualizarArbol(tvUsuarioPermisos, () => { if (usuario != null) foreach (var r in usuario.Roles) tvUsuarioPermisos.Nodes.Add(NodoRol(r, true, null)); });
-            var rol = Estado.Roles.Find(r => r.Id == rolId);
-            tituloRoles.Text = rol?.Nombre ?? T("seleccionarRol", "Seleccioná un rol");
-            ayudaRoles.Text = rolId == 1 ? T("adminProtegido", "Rol Administrador protegido. Su composición es de solo lectura.") :
-                T("ayudaRoles", "Las asignaciones directas se editan aquí. Para modificar un permiso heredado, abrí su origen.");
-            ActualizarArbol(tvRolesJerarquia, () =>
+            if (columna is -1 or 0)
             {
-                if (rol == null) return;
-                foreach (var p in rol.Permisos) tvRolesJerarquia.Nodes.Add(NodoPermiso(p, true, null, rol.Id));
-                foreach (var h in rol.Roles) tvRolesJerarquia.Nodes.Add(NodoRol(h, true, rol.Id));
-            });
-            var permiso = Estado.Permisos.Find(p => p.Id == familiaId);
-            tituloFamilias.Text = permiso?.Nombre ?? T("seleccionarFamilia", "Seleccioná un permiso o familia");
-            ayudaFamilias.Text = permiso is PermisoSimple ? T("simple", "Permiso simple: representa una acción y no admite componentes.") :
-                T("ayudaFamilias", "Una familia puede contener permisos y otras familias. Quitar un componente elimina solo esa relación.");
-            if (permiso != null && permiso.Id <= 7) ayudaFamilias.Text += " " + T("base", "Elemento base del sistema: no se puede eliminar.");
-            var impacto = permiso == null ? Array.Empty<string>() : edicion.Impacto(familiaId).ToArray();
-            txtImpacto.Text = T("impacto", "Se utiliza en:") + Environment.NewLine + (impacto.Length == 0 ? T("sinUso", "Sin asignaciones.") : string.Join(Environment.NewLine, impacto));
-            ActualizarArbol(tvCatalogoGeneral, () =>
-            { if (permiso != null) foreach (var h in permiso.ObtenerHijos()) tvCatalogoGeneral.Nodes.Add(NodoPermiso(h, true, permiso.Id, null)); });
-            rutaUsuario.Text = Procedencia(tvUsuarioPermisos); rutaRol.Text = Procedencia(tvRolesJerarquia); rutaFamilia.Text = Procedencia(tvCatalogoGeneral);
+                var usuario = Estado.Usuarios.Find(u => u.IdUsuario == usuarioId);
+                tituloUsuarios.Text = usuario == null ? T("seleccionarUsuario", "Seleccioná un usuario") : T("rolesDe", "Roles asignados a:") + " " + usuario.NombreUsuario;
+                ayudaUsuarios.Text = T("marcarRoles", "Marcá los roles que querés asignar.");
+                bool cuentaProtegida = usuario != null && usuarioId == Estado.IdAdministradorOriginal;
+                var administrador = cuentaProtegida ? Estado.Roles.Find(r => r.Id == 1) : null;
+                lblRolProtegido.Visible = administrador != null;
+            lblRolProtegido.Text = administrador == null ? "" : administrador.Nombre + " · " + T("protegido", "Protegido");
+                rolesUsuario.Items.Clear();
+                // Una asignación inamovible se presenta como información, sin casilla editable.
+                foreach (var r in Estado.Roles.Where(r => !cuentaProtegida || r.Id != 1))
+                    rolesUsuario.Items.Add(new Opcion(r.Id, r.Nombre), usuario?.Roles.Any(h => h.Id == r.Id) == true);
+                rolesUsuario.Enabled = usuario != null;
+                ActualizarArbol(tvUsuarioPermisos, () => { if (usuario != null) foreach (var r in usuario.Roles) tvUsuarioPermisos.Nodes.Add(NodoRol(r, true, null)); });
+            MostrarVacio(tvUsuarioPermisos, usuario == null ? T("seleccionarUsuario", "Seleccioná un usuario") : T("sinRoles", "Este usuario no tiene roles asignados."));
+                MostrarProcedencia(tvUsuarioPermisos, rutaUsuario);
+            }
+            if (columna is -1 or 1)
+            {
+                var rol = Estado.Roles.Find(r => r.Id == rolId);
+                tituloRoles.Text = rol == null ? T("seleccionarRol", "Seleccioná un rol") : T("contenidoRol", "Contenido del rol:") + " " + rol.Nombre;
+                ayudaRoles.Text = rolId == 1 ? T("soloLectura", "Rol protegido · Solo lectura") :
+                    T("editarDirectos", "Editá los componentes directos. Los heredados se cambian en su origen.");
+                ActualizarArbol(tvRolesJerarquia, () =>
+                {
+                    if (rol == null) return;
+                    foreach (var p in rol.Permisos) tvRolesJerarquia.Nodes.Add(NodoPermiso(p, true, null, rol.Id));
+                    foreach (var h in rol.Roles) tvRolesJerarquia.Nodes.Add(NodoRol(h, true, rol.Id));
+                });
+            MostrarVacio(tvRolesJerarquia, rol == null ? T("seleccionarRol", "Seleccioná un rol") : T("rolVacio", "Este rol no contiene componentes."));
+                MostrarProcedencia(tvRolesJerarquia, rutaRol);
+            }
+            if (columna is -1 or 2)
+            {
+                var permiso = Estado.Permisos.Find(p => p.Id == familiaId);
+                tituloFamilias.Text = permiso == null ? T("seleccionarFamilia", "Seleccioná un permiso o familia") : T("contenidoDe", "Contenido de:") + " " + permiso.Nombre;
+                ayudaFamilias.Text = permiso is PermisoSimple ? T("accionSimple", "Permiso simple · No admite componentes") :
+                    T("agrupar", "Agrupá permisos y familias. Quitar retira solo la asignación.");
+                if (permiso != null && permiso.Id <= 7) ayudaFamilias.Text += " " + T("noEliminarBase", "Elemento del sistema: no se puede eliminar.");
+                var impacto = permiso == null ? Array.Empty<string>() : edicion.Impacto(familiaId).ToArray();
+                txtImpacto.Text = T("impacto", "Se utiliza en:") + Environment.NewLine + (impacto.Length == 0 ? T("sinUso", "Sin asignaciones.") : string.Join(Environment.NewLine, impacto));
+                ActualizarArbol(tvCatalogoGeneral, () =>
+                { if (permiso != null) foreach (var h in permiso.ObtenerHijos()) tvCatalogoGeneral.Nodes.Add(NodoPermiso(h, true, permiso.Id, null)); });
+            MostrarVacio(tvCatalogoGeneral, permiso == null ? T("seleccionarFamilia", "Seleccioná un permiso o familia") : permiso is PermisoSimple ? T("sinHijosPermiso", "Este permiso representa una acción del sistema.") : T("familiaVacia", "Esta familia no contiene elementos."));
+                MostrarProcedencia(tvCatalogoGeneral, rutaFamilia);
+            }
         }
         finally { cargando = false; }
         ActualizarAcciones();
         ProgramarDistribucion();
     }
 
+    private void MostrarVacio(TreeView tree, string mensaje)
+    {
+        if (tree.Nodes.Count == 0) tree.Nodes.Add(new TreeNode(mensaje)
+            { ImageKey = "Vacio", SelectedImageKey = "Vacio", ForeColor = TemaVisual.ColorActual(TemaVisual.Secundario, true) });
+    }
+
+    private void MostrarProcedencia(TreeView tree, TextBox destino)
+    {
+        bool seleccionado = tree.SelectedNode?.Tag is Nodo;
+        destino.Text = Procedencia(tree);
+        destino.Height = (int)((seleccionado ? 48 : 28) * Math.Max(DeviceDpi / 96f, Font.Height / 17f));
+        destino.ScrollBars = seleccionado ? ScrollBars.Vertical : ScrollBars.None;
+        ayudaContextual.SetToolTip(destino, destino.Text);
+        ProgramarDistribucion();
+    }
+
     private string Procedencia(TreeView tree)
     {
-        if (tree.SelectedNode == null) return "";
+        if (tree.SelectedNode?.Tag is not Nodo) return T("elegirProcedencia", "Seleccioná un componente para ver su procedencia.");
         string actual = T("ruta", "Procedencia:") + " " + tree.SelectedNode.FullPath;
         if (tree.SelectedNode.Tag is not Nodo dato || dato.Componente is not PermisoSimple p) return actual;
         IEnumerable<TreeNode> Recorrer(TreeNodeCollection ns)
@@ -249,11 +336,19 @@ public partial class FormGestionRoles : Form, IIdiomaObserver
 
     private void ActualizarAcciones()
     {
+        if (consultando || !datosCargados)
+        {
+            btnGuardarCambios.Enabled = btnDescartarCambios.Enabled = btnRecargarDatos.Enabled = false;
+            lblEstado.Text = T("cargando", "Cargando roles y permisos…");
+            return;
+        }
+        btnRecargarDatos.Enabled = true;
         bool rolEditable = Estado.Roles.Any(r => r.Id == rolId) && rolId != 1;
         btnAgregarPermisoRol.Enabled = btnIncluirRol.Enabled = rolEditable;
         var n = tvRolesJerarquia.SelectedNode?.Tag as Nodo;
         btnQuitarAsignacion.Enabled = rolEditable && n?.Directo == true;
         btnAbrirOrigenRol.Enabled = n != null && !n.Directo && (n.FamiliaOrigen.HasValue || n.RolOrigen.HasValue);
+        btnAbrirOrigenRol.Visible = btnAbrirOrigenRol.Enabled;
         bool familia = Estado.Permisos.Find(p => p.Id == familiaId) is PermisoCompuesto;
         btnCrearFamiliaAnidada.Enabled = btnAgregarComponenteFamilia.Enabled = familia;
         btnQuitarComponenteFamilia.Enabled = familia && (tvCatalogoGeneral.SelectedNode?.Tag as Nodo)?.Directo == true;
@@ -393,7 +488,7 @@ public partial class FormGestionRoles : Form, IIdiomaObserver
             visorColumnas.AutoScrollMinSize = new Size(ancho, 0);
             columnasRoles.Bounds = new Rectangle(visorColumnas.AutoScrollPosition, new Size(ancho, alto));
             foreach (var vista in new[] { vistaUsuarios, vistaRoles, vistaFamilias })
-                vista.RowStyles[0].Height = 160 * escala;
+                vista.RowStyles[0].Height = 210 * escala;
             foreach (var (visor, tabla, acciones) in new[] {
                 (contenedorDetalleUsuarios, detalleUsuarios, (FlowLayoutPanel)null),
                 (contenedorDetalleRoles, detalleRoles, accionesRol),
@@ -440,16 +535,21 @@ public partial class FormGestionRoles : Form, IIdiomaObserver
         finally { distribuyendo = false; }
     }
 
-    public void ActualizarIdioma()
+    private void TraducirControles()
     {
-        var idiomas = new IdiomaBLL();
-        foreach (var leyenda in TextosDinamicos) idiomas.RegistrarClaveNueva(Name, "roles_v2_" + leyenda.Key, leyenda.Value);
-        TraductorFormularios.TraducirFormulario(this);
+        TraductorFormularios.TraducirFormulario(this, registrarClaves: false);
         foreach (var tree in new[] { tvUsuarioPermisos, tvRolesJerarquia, tvCatalogoGeneral })
         {
             tree.ContextMenuStrip.Items[0].Text = T("expandir", "Expandir todo");
             tree.ContextMenuStrip.Items[1].Text = T("contraer", "Contraer todo");
         }
-        PoblarListas(); AjustarDistribucion();
+    }
+
+    public void ActualizarIdioma()
+    {
+        TraducirControles();
+        if (datosCargados && !consultando) PoblarListas();
+        else ActualizarAcciones();
+        AjustarDistribucion();
     }
 }

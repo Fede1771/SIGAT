@@ -133,6 +133,13 @@ namespace SIGAT.BLL
             _dal.ActualizarTraduccion(idIdioma, idControl, texto, estado);
         }
 
+        public void RegistrarClavesNuevas(string nombreForm, IReadOnlyDictionary<string, string> textos)
+        {
+            var existentes = _dal.ObtenerClavesRegistradas(nombreForm);
+            foreach (var (clave, texto) in textos)
+                if (existentes.Add(clave)) RegistrarClaveNueva(nombreForm, clave, texto);
+        }
+
         // Cada etiqueta se identifica por formulario y clave. Las nuevas etiquetas reciben texto base y pendientes para los demás idiomas.
         public void RegistrarClaveNueva(string nombreForm, string nombreControl, string textoBase)
         {

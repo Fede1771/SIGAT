@@ -51,7 +51,7 @@ internal static class DisenoAdaptativo
                 int ancho = visor.ClientSize.Width;
                 raiz.Width = Math.Max(1, ancho - 1);
                 EnvolverTextos(raiz);
-                int alto = Dp(form is FrmLogin ? 550 : 620);
+                int alto = Dp(form is FrmLogin ? 550 : form is DlgHistorialUsuario ? 500 : 520);
                 if (form is FrmGestionUsuarios || form is FrmGestionIdiomas)
                     alto = EditorLateral(raiz, ancho, Dp, form is FrmGestionIdiomas);
                 if (form is FrmLogin)
@@ -61,12 +61,13 @@ internal static class DisenoAdaptativo
                     alto = raiz.Padding.Vertical + (int)Math.Ceiling(raiz.RowStyles.Cast<RowStyle>()
                         .Where(fila => fila.SizeType == SizeType.Absolute).Sum(fila => fila.Height));
                 }
-                if (form is FrmBitacora || form is FrmIntegridad)
+                if (form is FrmBitacora || form is FrmIntegridad || form is DlgHistorialUsuario)
                 {
-                    int fijos = raiz.Controls.Cast<Control>().Where(c =>
+                    int fijos = raiz.Controls.Cast<Control>().Where(c => c.Visible &&
                         raiz.RowStyles[raiz.GetRow(c)].SizeType == SizeType.AutoSize)
                         .Sum(c => c.GetPreferredSize(new Size(Math.Max(1, ancho - raiz.Padding.Horizontal - c.Margin.Horizontal), 0)).Height + c.Margin.Vertical);
-                    alto = Math.Max(alto, fijos + raiz.Padding.Vertical + Dp(300));
+                    // El historial reparte el espacio entre dos tablas; su mínimo se calcula con las ayudas ya ajustadas al ancho.
+                    alto = Math.Max(alto, fijos + raiz.Padding.Vertical + Dp(form is DlgHistorialUsuario ? 320 : form is FrmIntegridad ? 220 : 300));
                 }
                 // Un formulario alojado también puede ser menor que su MinimumSize.
                 // El visor permite llegar al contenido sin reducir las grillas a cero.
@@ -103,7 +104,10 @@ internal static class DisenoAdaptativo
         foreach (Control control in Descendientes(raiz))
         {
             if (control is Label || control is ButtonBase)
+            {
                 control.TextChanged += (_, _) => Ajustar();
+                control.VisibleChanged += (_, _) => ProgramarAjuste();
+            }
             if (!control.TabStop || control is ScrollableControl) continue;
             control.Enter += (_, _) =>
             {
@@ -133,6 +137,11 @@ internal static class DisenoAdaptativo
         {
             int ancho = Math.Max(1, etiqueta.Parent.ClientSize.Width - etiqueta.Parent.Padding.Horizontal - etiqueta.Margin.Horizontal);
             etiqueta.MaximumSize = new Size(ancho, 0);
+        }
+        foreach (var casilla in Descendientes(raiz).OfType<CheckBox>().Where(c => c.AutoSize))
+        {
+            int ancho = Math.Max(1, casilla.Parent.ClientSize.Width - casilla.Parent.Padding.Horizontal - casilla.Margin.Horizontal);
+            casilla.MaximumSize = new Size(ancho, 0);
         }
     }
 
@@ -165,11 +174,11 @@ internal static class DisenoAdaptativo
         int anchoEditor = apilado ? ancho - raiz.Padding.Horizontal : dp(idiomas ? 280 : 360);
         foreach (var label in contenido.Controls.OfType<Label>())
             label.MaximumSize = new Size(Math.Max(1, anchoEditor - contenido.Padding.Horizontal - label.Margin.Horizontal), 0);
-        int altoEditor = Math.Max(dp(idiomas ? 470 : 500), contenido.GetPreferredSize(new Size(anchoEditor, 0)).Height + dp(24));
+        int altoEditor = Math.Max(dp(idiomas ? 360 : 400), contenido.GetPreferredSize(new Size(anchoEditor, 0)).Height + dp(16));
         if (apilado) raiz.RowStyles.Add(new RowStyle(SizeType.Absolute, altoEditor));
         Ubicar(raiz, datos, 0, fila);
         Ubicar(raiz, editor, apilado ? 0 : 1, apilado ? fila + 1 : fila);
-        return apilado ? altoEditor + dp(idiomas ? 800 : 560) : Math.Max(dp(720), altoEditor + dp(220));
+        return apilado ? altoEditor + dp(idiomas ? 640 : 420) : Math.Max(dp(600), altoEditor + dp(140));
     }
 
     private static void ConfigurarPrincipal(Form form)
@@ -196,7 +205,7 @@ internal static class DisenoAdaptativo
             {
                 float escala = form.DeviceDpi / 96f;
                 bool compacto = form.ClientSize.Width < 1100 * escala;
-                marco.ColumnStyles[0].Width = (compacto ? 180 : 236) * escala;
+                marco.ColumnStyles[0].Width = (compacto ? 180 : 200) * escala;
                 encabezado.SuspendLayout();
                 encabezado.RowCount = compacto ? 2 : 1;
                 encabezado.RowStyles.Clear();
@@ -207,13 +216,26 @@ internal static class DisenoAdaptativo
                 Ubicar(encabezado, tema, 2, compacto ? 1 : 0);
                 Ubicar(encabezado, idioma, 3, compacto ? 1 : 0);
                 encabezado.ResumeLayout(true);
-                marco.RowStyles[0].Height = Math.Max((compacto ? 115 : 76) * escala, encabezado.GetPreferredSize(new Size(encabezado.Width, 0)).Height);
+                marco.RowStyles[0].Height = Math.Max((compacto ? 90 : 60) * escala, encabezado.GetPreferredSize(new Size(encabezado.Width, 0)).Height);
                 var tarjetas = Buscar<FlowLayoutPanel>(inicio, "tarjetasInicio");
-                foreach (Control tarjeta in tarjetas.Controls)
+                int disponibles = Math.Max(1, inicio.ClientSize.Width - inicio.Padding.Horizontal);
+                int columnas = Math.Clamp((int)(disponibles / (280 * escala)), 1, 3);
+                int indice = 0;
+                tarjetas.SuspendLayout();
+                try
                 {
-                    tarjeta.MinimumSize = new Size(Math.Min((int)(250 * escala), Math.Max(1, tarjetas.ClientSize.Width - tarjeta.Margin.Horizontal)), (int)(88 * escala));
-                    tarjeta.Width = tarjeta.MinimumSize.Width;
+                    foreach (Control tarjeta in tarjetas.Controls.Cast<Control>().ToArray())
+                    {
+                        int ancho = Math.Max(1, Math.Min((int)(360 * escala), disponibles / columnas - tarjeta.Margin.Horizontal));
+                        int anchoTexto = Math.Max(1, ancho - tarjeta.Padding.Horizontal);
+                        int altoTexto = TextRenderer.MeasureText(tarjeta.Text, tarjeta.Font, new Size(anchoTexto, int.MaxValue), TextFormatFlags.WordBreak).Height;
+                        int alto = Math.Max((int)(148 * escala), altoTexto + tarjeta.Padding.Vertical);
+                        tarjeta.MinimumSize = new Size(ancho, alto);
+                        tarjeta.Size = new Size(ancho, alto);
+                        tarjetas.SetFlowBreak(tarjeta, ++indice % columnas == 0);
+                    }
                 }
+                finally { tarjetas.ResumeLayout(true); }
             }
             finally { ajustando = false; }
         }

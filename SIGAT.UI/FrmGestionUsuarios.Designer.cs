@@ -22,6 +22,8 @@ namespace SIGAT.UI
         private Label lblUsuario;
         private TextBox txtUsername;
         private Label lblClave;
+        private Label lblAyudaClave;
+        private Label lblEstadoLista;
         private TextBox txtPass;
         private Label lblNombre;
         private TextBox txtNombre;
@@ -66,6 +68,8 @@ namespace SIGAT.UI
             lblUsuario = new Label();
             txtUsername = new TextBox();
             lblClave = new Label();
+            lblAyudaClave = new Label();
+            lblEstadoLista = new Label();
             txtPass = new TextBox();
             lblNombre = new Label();
             txtNombre = new TextBox();
@@ -100,7 +104,7 @@ namespace SIGAT.UI
             tablelayoutpanel1.ForeColor = Color.FromArgb(30, 45, 65);
             tablelayoutpanel1.Location = new Point(0, 0);
             tablelayoutpanel1.Name = "tablelayoutpanel1";
-            tablelayoutpanel1.Padding = new Padding(24);
+            tablelayoutpanel1.Padding = new Padding(16);
             tablelayoutpanel1.RowCount = 2;
             tablelayoutpanel1.RowStyles.Add(new RowStyle());
             tablelayoutpanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
@@ -116,11 +120,12 @@ namespace SIGAT.UI
             tablelayoutpanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             tablelayoutpanel2.Controls.Add(label3, 0, 0);
             tablelayoutpanel2.Controls.Add(label4, 0, 1);
+            tablelayoutpanel2.Controls.Add(lblEstadoLista, 0, 2);
             tablelayoutpanel2.Dock = DockStyle.Fill;
             tablelayoutpanel2.Font = new Font("Segoe UI", 10F);
             tablelayoutpanel2.ForeColor = Color.FromArgb(30, 45, 65);
             tablelayoutpanel2.Location = new Point(24, 24);
-            tablelayoutpanel2.Margin = new Padding(0, 0, 0, 22);
+            tablelayoutpanel2.Margin = new Padding(0, 0, 0, 12);
             tablelayoutpanel2.Name = "tablelayoutpanel2";
             tablelayoutpanel2.RowStyles.Add(new RowStyle());
             tablelayoutpanel2.RowStyles.Add(new RowStyle());
@@ -131,7 +136,7 @@ namespace SIGAT.UI
             // 
             label3.AutoSize = true;
             label3.BackColor = Color.FromArgb(245, 247, 251);
-            label3.Font = new Font("Segoe UI", 22F, FontStyle.Bold);
+            label3.Font = new Font("Segoe UI", 18F, FontStyle.Bold);
             label3.ForeColor = Color.FromArgb(30, 45, 65);
             label3.Location = new Point(0, 0);
             label3.Margin = new Padding(0, 0, 0, 6);
@@ -152,6 +157,7 @@ namespace SIGAT.UI
             label4.Name = "label4";
             label4.Size = new Size(513, 19);
             label4.TabIndex = 1;
+            label4.Visible = false;
             label4.Tag = "lbl_descripcion_usuarios";
             label4.Text = "Seleccioná una cuenta para editarla o completá el formulario para crear un usuario.";
             // 
@@ -169,11 +175,11 @@ namespace SIGAT.UI
             dataGridViewCellStyle2.BackColor = Color.FromArgb(236, 241, 248);
             dataGridViewCellStyle2.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             dataGridViewCellStyle2.ForeColor = Color.FromArgb(30, 45, 65);
-            dataGridViewCellStyle2.Padding = new Padding(10, 0, 10, 0);
+            dataGridViewCellStyle2.Padding = new Padding(6, 0, 6, 0);
             dataGridViewCellStyle2.SelectionBackColor = Color.FromArgb(236, 241, 248);
             dataGridViewCellStyle2.SelectionForeColor = Color.FromArgb(30, 45, 65);
             dgvUsuarios.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
-            dgvUsuarios.ColumnHeadersHeight = 44;
+            dgvUsuarios.ColumnHeadersHeight = 30;
             dgvUsuarios.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             DigitoVerificador.Name = "DigitoVerificador";
             DigitoVerificador.DataPropertyName = "DigitoVerificador";
@@ -182,13 +188,14 @@ namespace SIGAT.UI
             DigitoVerificador.MinimumWidth = 150;
             DigitoVerificador.FillWeight = 140F;
             DigitoVerificador.ReadOnly = true;
+            DigitoVerificador.Visible = false;
             DigitoVerificador.SortMode = DataGridViewColumnSortMode.NotSortable;
             dgvUsuarios.Columns.AddRange(new DataGridViewColumn[] { IdUsuario, NombreUsuario, Nombre, Apellido, Activo, Roles, DigitoVerificador });
             dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle3.BackColor = Color.FromArgb(255, 255, 255);
             dataGridViewCellStyle3.Font = new Font("Segoe UI", 10F);
             dataGridViewCellStyle3.ForeColor = Color.FromArgb(30, 45, 65);
-            dataGridViewCellStyle3.Padding = new Padding(10, 5, 10, 5);
+            dataGridViewCellStyle3.Padding = new Padding(6, 1, 6, 1);
             dataGridViewCellStyle3.SelectionBackColor = Color.FromArgb(231, 240, 252);
             dataGridViewCellStyle3.SelectionForeColor = Color.FromArgb(30, 45, 65);
             dataGridViewCellStyle3.WrapMode = DataGridViewTriState.False;
@@ -203,7 +210,7 @@ namespace SIGAT.UI
             dgvUsuarios.Name = "dgvUsuarios";
             dgvUsuarios.ReadOnly = true;
             dgvUsuarios.RowHeadersVisible = false;
-            dgvUsuarios.RowTemplate.Height = 40;
+            dgvUsuarios.RowTemplate.Height = 28;
             dgvUsuarios.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvUsuarios.Size = new Size(734, 484);
             dgvUsuarios.TabIndex = 1;
@@ -292,14 +299,16 @@ namespace SIGAT.UI
             tablelayoutpanel8.Controls.Add(txtUsername, 0, 2);
             tablelayoutpanel8.Controls.Add(lblClave, 0, 3);
             tablelayoutpanel8.Controls.Add(txtPass, 0, 4);
-            tablelayoutpanel8.Controls.Add(lblNombre, 0, 5);
-            tablelayoutpanel8.Controls.Add(txtNombre, 0, 6);
-            tablelayoutpanel8.Controls.Add(lblApellido, 0, 7);
-            tablelayoutpanel8.Controls.Add(txtApellido, 0, 8);
-            tablelayoutpanel8.Controls.Add(chkActivo, 0, 9);
-            tablelayoutpanel8.Controls.Add(tablelayoutpanel10, 0, 10);
-            tablelayoutpanel8.Controls.Add(btnHistorial, 0, 11);
-            tablelayoutpanel8.Controls.Add(lblAyuda, 0, 12);
+            tablelayoutpanel8.Controls.Add(lblAyudaClave, 0, 5);
+            tablelayoutpanel8.Controls.Add(lblNombre, 0, 6);
+            tablelayoutpanel8.Controls.Add(txtNombre, 0, 7);
+            tablelayoutpanel8.Controls.Add(lblApellido, 0, 8);
+            tablelayoutpanel8.Controls.Add(txtApellido, 0, 9);
+            tablelayoutpanel8.Controls.Add(chkActivo, 0, 10);
+            tablelayoutpanel8.Controls.Add(tablelayoutpanel10, 0, 11);
+            tablelayoutpanel8.Controls.Add(btnHistorial, 0, 12);
+            tablelayoutpanel8.Controls.Add(lblAyuda, 0, 13);
+            tablelayoutpanel8.RowCount = 14;
             tablelayoutpanel8.Dock = DockStyle.Top;
             tablelayoutpanel8.Font = new Font("Segoe UI", 10F);
             tablelayoutpanel8.ForeColor = Color.FromArgb(30, 45, 65);
@@ -326,15 +335,15 @@ namespace SIGAT.UI
             // 
             label9.AutoSize = true;
             label9.BackColor = Color.FromArgb(255, 255, 255);
-            label9.Font = new Font("Segoe UI", 13F, FontStyle.Bold);
+            label9.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
             label9.ForeColor = Color.FromArgb(35, 55, 78);
             label9.Location = new Point(16, 16);
-            label9.Margin = new Padding(0, 0, 0, 14);
+            label9.Margin = new Padding(0, 0, 0, 8);
             label9.Name = "label9";
             label9.Size = new Size(170, 25);
             label9.TabIndex = 0;
-            label9.Tag = "lbl_datos_cuenta";
-            label9.Text = "Datos de la cuenta";
+            label9.Text = "Nuevo usuario";
+            label9.Dock = DockStyle.Fill;
             // 
             // lblUsuario
             // 
@@ -343,7 +352,7 @@ namespace SIGAT.UI
             lblUsuario.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             lblUsuario.ForeColor = Color.FromArgb(30, 45, 65);
             lblUsuario.Location = new Point(16, 63);
-            lblUsuario.Margin = new Padding(0, 8, 0, 5);
+            lblUsuario.Margin = new Padding(0, 4, 0, 4);
             lblUsuario.Name = "lblUsuario";
             lblUsuario.Size = new Size(64, 19);
             lblUsuario.TabIndex = 1;
@@ -370,12 +379,12 @@ namespace SIGAT.UI
             lblClave.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             lblClave.ForeColor = Color.FromArgb(30, 45, 65);
             lblClave.Location = new Point(16, 128);
-            lblClave.Margin = new Padding(0, 8, 0, 5);
+            lblClave.Margin = new Padding(0, 4, 0, 4);
             lblClave.Name = "lblClave";
             lblClave.Size = new Size(174, 19);
             lblClave.TabIndex = 3;
-            lblClave.Tag = "lbl_clave";
-            lblClave.Text = "Clave (vacío no cambia):";
+            lblClave.Tag = "lbl_clave_usuario";
+            lblClave.Text = "Contraseña:";
             // 
             // txtPass
             // 
@@ -398,7 +407,7 @@ namespace SIGAT.UI
             lblNombre.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             lblNombre.ForeColor = Color.FromArgb(30, 45, 65);
             lblNombre.Location = new Point(16, 193);
-            lblNombre.Margin = new Padding(0, 8, 0, 5);
+            lblNombre.Margin = new Padding(0, 4, 0, 4);
             lblNombre.Name = "lblNombre";
             lblNombre.Size = new Size(69, 19);
             lblNombre.TabIndex = 5;
@@ -425,7 +434,7 @@ namespace SIGAT.UI
             lblApellido.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             lblApellido.ForeColor = Color.FromArgb(30, 45, 65);
             lblApellido.Location = new Point(16, 258);
-            lblApellido.Margin = new Padding(0, 8, 0, 5);
+            lblApellido.Margin = new Padding(0, 4, 0, 4);
             lblApellido.Name = "lblApellido";
             lblApellido.Size = new Size(70, 19);
             lblApellido.TabIndex = 7;
@@ -465,6 +474,7 @@ namespace SIGAT.UI
             // tablelayoutpanel10
             // 
             tablelayoutpanel10.AutoSize = true;
+            tablelayoutpanel10.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             tablelayoutpanel10.BackColor = Color.FromArgb(255, 255, 255);
             tablelayoutpanel10.ColumnCount = 3;
             tablelayoutpanel10.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 34F));
@@ -496,9 +506,9 @@ namespace SIGAT.UI
             btnGuardar.ForeColor = Color.FromArgb(255, 255, 255);
             btnGuardar.Location = new Point(0, 0);
             btnGuardar.Margin = new Padding(0, 0, 6, 0);
-            btnGuardar.MinimumSize = new Size(0, 40);
+            btnGuardar.MinimumSize = new Size(0, 30);
             btnGuardar.Name = "btnGuardar";
-            btnGuardar.Size = new Size(99, 40);
+            btnGuardar.Size = new Size(99, 30);
             btnGuardar.TabIndex = 0;
             btnGuardar.Tag = "btn_guardar";
             btnGuardar.Text = "Guardar";
@@ -518,12 +528,12 @@ namespace SIGAT.UI
             btnEliminar.ForeColor = Color.FromArgb(164, 48, 59);
             btnEliminar.Location = new Point(105, 0);
             btnEliminar.Margin = new Padding(0, 0, 6, 0);
-            btnEliminar.MinimumSize = new Size(0, 40);
+            btnEliminar.MinimumSize = new Size(0, 30);
             btnEliminar.Name = "btnEliminar";
-            btnEliminar.Size = new Size(96, 40);
+            btnEliminar.Size = new Size(96, 30);
             btnEliminar.TabIndex = 1;
-            btnEliminar.Tag = "btn_eliminar";
-            btnEliminar.Text = "Baja";
+            btnEliminar.Tag = "accion_baja";
+            btnEliminar.Text = "Dar de baja";
             btnEliminar.UseVisualStyleBackColor = false;
             btnEliminar.Click += BtnEliminar_Click;
             // 
@@ -539,9 +549,9 @@ namespace SIGAT.UI
             btnLimpiar.ForeColor = Color.FromArgb(30, 45, 65);
             btnLimpiar.Location = new Point(207, 0);
             btnLimpiar.Margin = new Padding(0, 0, 6, 0);
-            btnLimpiar.MinimumSize = new Size(0, 40);
+            btnLimpiar.MinimumSize = new Size(0, 30);
             btnLimpiar.Name = "btnLimpiar";
-            btnLimpiar.Size = new Size(98, 40);
+            btnLimpiar.Size = new Size(98, 30);
             btnLimpiar.TabIndex = 2;
             btnLimpiar.Tag = "btn_limpiar";
             btnLimpiar.Text = "Limpiar";
@@ -554,9 +564,11 @@ namespace SIGAT.UI
             btnHistorial.BackColor = Color.White;
             btnHistorial.Dock = DockStyle.Top;
             btnHistorial.FlatStyle = FlatStyle.Flat;
+            btnHistorial.FlatAppearance.BorderColor = Color.FromArgb(223, 230, 239);
+            btnHistorial.FlatAppearance.MouseOverBackColor = Color.FromArgb(231, 240, 252);
             btnHistorial.ForeColor = Color.FromArgb(30, 45, 65);
             btnHistorial.Margin = new Padding(0, 0, 0, 12);
-            btnHistorial.MinimumSize = new Size(0, 40);
+            btnHistorial.MinimumSize = new Size(0, 30);
             btnHistorial.Name = "btnHistorial";
             btnHistorial.TabIndex = 11;
             btnHistorial.Tag = "btn_historial_usuario";
@@ -577,8 +589,23 @@ namespace SIGAT.UI
             lblAyuda.Padding = new Padding(12);
             lblAyuda.Size = new Size(300, 99);
             lblAyuda.TabIndex = 12;
-            lblAyuda.Tag = "lbl_ayuda_roles";
-            lblAyuda.Text = "Las cuentas nuevas se crean sin roles. Asigná sus accesos desde Gestión de roles y permisos.\n\nPara reactivar una cuenta, seleccionála, marcá Activo y guardá.";
+            lblAyuda.Tag = "ayuda_cuenta_compacta";
+            lblAyuda.Text = "Asigná los roles desde Roles y permisos. Para reactivar una cuenta, marcá Activo y guardá.";
+            // Ayudas de texto; no participan del recorrido de teclado.
+            lblAyudaClave.Name = "lblAyudaClave";
+            lblAyudaClave.AutoSize = true;
+            lblAyudaClave.Dock = DockStyle.Fill;
+            lblAyudaClave.Font = new Font("Segoe UI", 9F);
+            lblAyudaClave.ForeColor = Color.FromArgb(94, 111, 133);
+            lblAyudaClave.Margin = new Padding(0, 0, 0, 8);
+            lblAyudaClave.Text = "Ingresá una contraseña para la cuenta nueva.";
+            lblEstadoLista.Name = "lblEstadoLista";
+            lblEstadoLista.AutoSize = true;
+            lblEstadoLista.Dock = DockStyle.Fill;
+            lblEstadoLista.Font = new Font("Segoe UI", 9F);
+            lblEstadoLista.ForeColor = Color.FromArgb(94, 111, 133);
+            lblEstadoLista.Margin = new Padding(0, 8, 0, 0);
+            lblEstadoLista.Text = "Seleccioná un usuario de la lista para editar sus datos o consultar su historial.";
             // 
             // FrmGestionUsuarios
             // 

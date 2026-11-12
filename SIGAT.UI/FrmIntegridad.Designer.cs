@@ -18,6 +18,8 @@ namespace SIGAT.UI
         private TextBox archivo;
         private Button btnElegirRespaldo;
         private CheckBox completas;
+        private CheckBox chkOpcionesAvanzadas;
+        private TableLayoutPanel panelAvanzado;
         private FlowLayoutPanel flowlayoutpanel8;
         private Button btnComprobar;
         private Button btnInicializar;
@@ -36,6 +38,15 @@ namespace SIGAT.UI
         // Estructura visual editable desde el diseÃ±ador; el comportamiento queda en el .cs.
         private void InitializeComponent()
         {
+            var grupoVerificacion = new TableLayoutPanel();
+            var grupoRecuperacion = new TableLayoutPanel();
+            var grupoMantenimiento = new TableLayoutPanel();
+            var accionesVerificacion = new FlowLayoutPanel();
+            var accionesRecuperacion = new FlowLayoutPanel();
+            var accionesMantenimiento = new FlowLayoutPanel();
+            var lblVerificacion = new Label();
+            var lblRecuperacion = new Label();
+            var lblMantenimiento = new Label();
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
@@ -52,6 +63,8 @@ namespace SIGAT.UI
             archivo = new TextBox();
             btnElegirRespaldo = new Button();
             completas = new CheckBox();
+            chkOpcionesAvanzadas = new CheckBox();
+            panelAvanzado = new TableLayoutPanel();
             flowlayoutpanel8 = new FlowLayoutPanel();
             btnComprobar = new Button();
             btnInicializar = new Button();
@@ -76,18 +89,20 @@ namespace SIGAT.UI
             tablelayoutpanel1.Controls.Add(estado, 0, 1);
             tablelayoutpanel1.Controls.Add(grilla, 0, 2);
             tablelayoutpanel1.Controls.Add(tablelayoutpanel7, 0, 3);
-            tablelayoutpanel1.Controls.Add(completas, 0, 4);
-            tablelayoutpanel1.Controls.Add(flowlayoutpanel8, 0, 5);
+            tablelayoutpanel1.Controls.Add(flowlayoutpanel8, 0, 4);
+            tablelayoutpanel1.Controls.Add(chkOpcionesAvanzadas, 0, 5);
+            tablelayoutpanel1.Controls.Add(panelAvanzado, 0, 6);
             tablelayoutpanel1.Dock = DockStyle.Fill;
             tablelayoutpanel1.Font = new Font("Segoe UI", 10F);
             tablelayoutpanel1.ForeColor = Color.FromArgb(30, 45, 65);
             tablelayoutpanel1.Location = new Point(0, 0);
             tablelayoutpanel1.Name = "tablelayoutpanel1";
-            tablelayoutpanel1.Padding = new Padding(24);
-            tablelayoutpanel1.RowCount = 6;
+            tablelayoutpanel1.Padding = new Padding(16);
+            tablelayoutpanel1.RowCount = 7;
             tablelayoutpanel1.RowStyles.Add(new RowStyle());
             tablelayoutpanel1.RowStyles.Add(new RowStyle());
             tablelayoutpanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            tablelayoutpanel1.RowStyles.Add(new RowStyle());
             tablelayoutpanel1.RowStyles.Add(new RowStyle());
             tablelayoutpanel1.RowStyles.Add(new RowStyle());
             tablelayoutpanel1.RowStyles.Add(new RowStyle());
@@ -106,7 +121,7 @@ namespace SIGAT.UI
             tablelayoutpanel2.Font = new Font("Segoe UI", 10F);
             tablelayoutpanel2.ForeColor = Color.FromArgb(30, 45, 65);
             tablelayoutpanel2.Location = new Point(24, 24);
-            tablelayoutpanel2.Margin = new Padding(0, 0, 0, 22);
+            tablelayoutpanel2.Margin = new Padding(0, 0, 0, 12);
             tablelayoutpanel2.Name = "tablelayoutpanel2";
             tablelayoutpanel2.RowStyles.Add(new RowStyle());
             tablelayoutpanel2.RowStyles.Add(new RowStyle());
@@ -118,14 +133,14 @@ namespace SIGAT.UI
             label3.AutoSize = true;
             label3.BackColor = Color.FromArgb(245, 247, 251);
             label3.Dock = DockStyle.Fill;
-            label3.Font = new Font("Segoe UI", 22F, FontStyle.Bold);
+            label3.Font = new Font("Segoe UI", 18F, FontStyle.Bold);
             label3.ForeColor = Color.FromArgb(30, 45, 65);
             label3.Location = new Point(0, 0);
             label3.Margin = new Padding(0, 0, 0, 6);
             label3.Name = "label3";
             label3.Size = new Size(992, 41);
             label3.TabIndex = 0;
-            label3.Text = "Integridad y recuperación";
+            label3.Text = "Integridad";
             // 
             // label4
             // 
@@ -139,7 +154,7 @@ namespace SIGAT.UI
             label4.Name = "label4";
             label4.Size = new Size(992, 19);
             label4.TabIndex = 1;
-            label4.Text = "SHA-256: verificar Usuarios y UsuarioRol, comprobar un respaldo y recuperar las cuentas y asignaciones.";
+            label4.Text = "Comprobá la integridad y administrá los respaldos del sistema.";
             // 
             // estado
             // 
@@ -149,7 +164,7 @@ namespace SIGAT.UI
             estado.Font = new Font("Segoe UI", 10F);
             estado.ForeColor = Color.FromArgb(30, 45, 65);
             estado.Location = new Point(24, 112);
-            estado.Margin = new Padding(0, 0, 0, 14);
+            estado.Margin = new Padding(0, 0, 0, 8);
             estado.Name = "estado";
             estado.Padding = new Padding(12);
             estado.Size = new Size(992, 43);
@@ -169,18 +184,18 @@ namespace SIGAT.UI
             dataGridViewCellStyle2.BackColor = Color.FromArgb(236, 241, 248);
             dataGridViewCellStyle2.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             dataGridViewCellStyle2.ForeColor = Color.FromArgb(30, 45, 65);
-            dataGridViewCellStyle2.Padding = new Padding(10, 0, 10, 0);
+            dataGridViewCellStyle2.Padding = new Padding(6, 0, 6, 0);
             dataGridViewCellStyle2.SelectionBackColor = Color.FromArgb(236, 241, 248);
             dataGridViewCellStyle2.SelectionForeColor = Color.FromArgb(30, 45, 65);
             grilla.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
-            grilla.ColumnHeadersHeight = 44;
+            grilla.ColumnHeadersHeight = 30;
             grilla.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             grilla.Columns.AddRange(new DataGridViewColumn[] { Tabla, Registro, Motivo });
             dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle3.BackColor = Color.FromArgb(255, 255, 255);
             dataGridViewCellStyle3.Font = new Font("Segoe UI", 10F);
             dataGridViewCellStyle3.ForeColor = Color.FromArgb(30, 45, 65);
-            dataGridViewCellStyle3.Padding = new Padding(10, 5, 10, 5);
+            dataGridViewCellStyle3.Padding = new Padding(6, 1, 6, 1);
             dataGridViewCellStyle3.SelectionBackColor = Color.FromArgb(231, 240, 252);
             dataGridViewCellStyle3.SelectionForeColor = Color.FromArgb(30, 45, 65);
             dataGridViewCellStyle3.WrapMode = DataGridViewTriState.False;
@@ -194,7 +209,7 @@ namespace SIGAT.UI
             grilla.Name = "grilla";
             grilla.ReadOnly = true;
             grilla.RowHeadersVisible = false;
-            grilla.RowTemplate.Height = 40;
+            grilla.RowTemplate.Height = 28;
             grilla.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             grilla.Size = new Size(986, 300);
             grilla.TabIndex = 2;
@@ -266,16 +281,16 @@ namespace SIGAT.UI
             btnElegirRespaldo.ForeColor = Color.FromArgb(30, 45, 65);
             btnElegirRespaldo.Location = new Point(856, 14);
             btnElegirRespaldo.Margin = new Padding(0, 0, 8, 8);
-            btnElegirRespaldo.MinimumSize = new Size(96, 40);
+            btnElegirRespaldo.MinimumSize = new Size(96, 30);
             btnElegirRespaldo.Name = "btnElegirRespaldo";
-            btnElegirRespaldo.Size = new Size(122, 40);
+            btnElegirRespaldo.Size = new Size(122, 30);
             btnElegirRespaldo.TabIndex = 1;
             btnElegirRespaldo.Text = "Elegir respaldo";
             btnElegirRespaldo.UseVisualStyleBackColor = false;
             // 
             // completas
             // 
-            completas.AutoSize = true;
+            completas.AutoSize = false;
             completas.BackColor = Color.FromArgb(245, 247, 251);
             completas.Font = new Font("Segoe UI", 10F);
             completas.ForeColor = Color.FromArgb(30, 45, 65);
@@ -289,20 +304,17 @@ namespace SIGAT.UI
             // flowlayoutpanel8
             // 
             flowlayoutpanel8.AutoSize = true;
+            flowlayoutpanel8.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             flowlayoutpanel8.BackColor = Color.FromArgb(245, 247, 251);
-            flowlayoutpanel8.Controls.Add(btnComprobar);
-            flowlayoutpanel8.Controls.Add(btnInicializar);
-            flowlayoutpanel8.Controls.Add(btnBackupVerificado);
-            flowlayoutpanel8.Controls.Add(btnRecuperar);
-            flowlayoutpanel8.Controls.Add(btnRecalcular);
-            flowlayoutpanel8.Controls.Add(btnArchivar);
+            flowlayoutpanel8.Controls.Add(grupoVerificacion);
+            flowlayoutpanel8.Controls.Add(grupoRecuperacion);
             flowlayoutpanel8.Controls.Add(btnContinuar);
             flowlayoutpanel8.Dock = DockStyle.Top;
             flowlayoutpanel8.Font = new Font("Segoe UI", 10F);
             flowlayoutpanel8.ForeColor = Color.FromArgb(30, 45, 65);
             flowlayoutpanel8.Location = new Point(27, 583);
             flowlayoutpanel8.Name = "flowlayoutpanel8";
-            flowlayoutpanel8.Padding = new Padding(0, 12, 0, 0);
+            flowlayoutpanel8.Padding = new Padding(0, 4, 0, 0);
             flowlayoutpanel8.Size = new Size(986, 60);
             flowlayoutpanel8.TabIndex = 5;
             // 
@@ -318,9 +330,9 @@ namespace SIGAT.UI
             btnComprobar.ForeColor = Color.FromArgb(30, 45, 65);
             btnComprobar.Location = new Point(0, 12);
             btnComprobar.Margin = new Padding(0, 0, 8, 8);
-            btnComprobar.MinimumSize = new Size(96, 40);
+            btnComprobar.MinimumSize = new Size(96, 30);
             btnComprobar.Name = "btnComprobar";
-            btnComprobar.Size = new Size(96, 40);
+            btnComprobar.Size = new Size(96, 30);
             btnComprobar.TabIndex = 0;
             btnComprobar.Text = "Verificar";
             btnComprobar.UseVisualStyleBackColor = false;
@@ -337,9 +349,9 @@ namespace SIGAT.UI
             btnInicializar.ForeColor = Color.FromArgb(30, 45, 65);
             btnInicializar.Location = new Point(104, 12);
             btnInicializar.Margin = new Padding(0, 0, 8, 8);
-            btnInicializar.MinimumSize = new Size(96, 40);
+            btnInicializar.MinimumSize = new Size(96, 30);
             btnInicializar.Name = "btnInicializar";
-            btnInicializar.Size = new Size(176, 40);
+            btnInicializar.Size = new Size(176, 30);
             btnInicializar.TabIndex = 1;
             btnInicializar.Text = "Preparar control inicial";
             btnInicializar.UseVisualStyleBackColor = false;
@@ -356,11 +368,11 @@ namespace SIGAT.UI
             btnBackupVerificado.ForeColor = Color.FromArgb(30, 45, 65);
             btnBackupVerificado.Location = new Point(288, 12);
             btnBackupVerificado.Margin = new Padding(0, 0, 8, 8);
-            btnBackupVerificado.MinimumSize = new Size(96, 40);
+            btnBackupVerificado.MinimumSize = new Size(96, 30);
             btnBackupVerificado.Name = "btnBackupVerificado";
-            btnBackupVerificado.Size = new Size(213, 40);
+            btnBackupVerificado.Size = new Size(213, 30);
             btnBackupVerificado.TabIndex = 2;
-            btnBackupVerificado.Text = "Crear respaldo comprobado";
+            btnBackupVerificado.Text = "Crear respaldo";
             btnBackupVerificado.UseVisualStyleBackColor = false;
             // 
             // btnRecuperar
@@ -376,9 +388,9 @@ namespace SIGAT.UI
             btnRecuperar.ForeColor = Color.FromArgb(255, 255, 255);
             btnRecuperar.Location = new Point(509, 12);
             btnRecuperar.Margin = new Padding(0, 0, 8, 8);
-            btnRecuperar.MinimumSize = new Size(96, 40);
+            btnRecuperar.MinimumSize = new Size(96, 30);
             btnRecuperar.Name = "btnRecuperar";
-            btnRecuperar.Size = new Size(96, 40);
+            btnRecuperar.Size = new Size(96, 30);
             btnRecuperar.TabIndex = 3;
             btnRecuperar.Text = "Recuperar";
             btnRecuperar.UseVisualStyleBackColor = false;
@@ -395,11 +407,11 @@ namespace SIGAT.UI
             btnArchivar.ForeColor = Color.FromArgb(30, 45, 65);
             btnArchivar.Location = new Point(613, 12);
             btnArchivar.Margin = new Padding(0, 0, 8, 8);
-            btnArchivar.MinimumSize = new Size(96, 40);
+            btnArchivar.MinimumSize = new Size(96, 30);
             btnArchivar.Name = "btnArchivar";
-            btnArchivar.Size = new Size(192, 40);
+            btnArchivar.Size = new Size(192, 30);
             btnArchivar.TabIndex = 4;
-            btnArchivar.Text = "Archivar bitácora antigua";
+            btnArchivar.Text = "Archivar bitácora";
             btnArchivar.UseVisualStyleBackColor = false;
             // 
             // btnRecalcular
@@ -411,7 +423,7 @@ namespace SIGAT.UI
             btnRecalcular.FlatAppearance.BorderColor = Color.FromArgb(223, 230, 239);
             btnRecalcular.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             btnRecalcular.Margin = new Padding(0, 0, 8, 8);
-            btnRecalcular.MinimumSize = new Size(96, 40);
+            btnRecalcular.MinimumSize = new Size(96, 30);
             btnRecalcular.Name = "btnRecalcular";
             btnRecalcular.Text = "Recalcular dígitos (asumir pérdida)";
             btnRecalcular.UseVisualStyleBackColor = false;
@@ -428,19 +440,112 @@ namespace SIGAT.UI
             btnContinuar.ForeColor = Color.FromArgb(30, 45, 65);
             btnContinuar.Location = new Point(813, 12);
             btnContinuar.Margin = new Padding(0, 0, 8, 8);
-            btnContinuar.MinimumSize = new Size(96, 40);
+            btnContinuar.MinimumSize = new Size(96, 30);
             btnContinuar.Name = "btnContinuar";
-            btnContinuar.Size = new Size(96, 40);
+            btnContinuar.Size = new Size(96, 30);
             btnContinuar.TabIndex = 5;
             btnContinuar.Text = "Cerrar";
             btnContinuar.UseVisualStyleBackColor = false;
             // 
+            // Grupos sencillos: se conservan las acciones, sus eventos y sus permisos.
+            grupoVerificacion.Name = "grupoVerificacion";
+            grupoVerificacion.AutoSize = true;
+            grupoVerificacion.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            grupoVerificacion.ColumnCount = 1;
+            grupoVerificacion.RowCount = 2;
+            grupoVerificacion.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            grupoVerificacion.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            grupoVerificacion.Margin = new Padding(0, 0, 12, 4);
+            grupoVerificacion.TabIndex = 0;
+            lblVerificacion.Text = "Verificación y respaldos";
+            lblVerificacion.AutoSize = true;
+            lblVerificacion.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            lblVerificacion.Margin = new Padding(0, 0, 0, 4);
+            accionesVerificacion.AutoSize = true;
+            accionesVerificacion.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            accionesVerificacion.Margin = Padding.Empty;
+            accionesVerificacion.TabIndex = 1;
+            accionesVerificacion.Controls.AddRange(new Control[] { btnComprobar, btnInicializar, btnBackupVerificado });
+            grupoVerificacion.Controls.Add(lblVerificacion, 0, 0);
+            grupoVerificacion.Controls.Add(accionesVerificacion, 0, 1);
+            grupoRecuperacion.Name = "grupoRecuperacion";
+            grupoRecuperacion.AutoSize = true;
+            grupoRecuperacion.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            grupoRecuperacion.ColumnCount = 1;
+            grupoRecuperacion.RowCount = 2;
+            grupoRecuperacion.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            grupoRecuperacion.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            grupoRecuperacion.Margin = new Padding(0, 0, 12, 4);
+            grupoRecuperacion.TabIndex = 1;
+            lblRecuperacion.Text = "Recuperación";
+            lblRecuperacion.AutoSize = true;
+            lblRecuperacion.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            lblRecuperacion.Margin = new Padding(0, 0, 0, 4);
+            accionesRecuperacion.AutoSize = true;
+            accionesRecuperacion.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            accionesRecuperacion.Margin = Padding.Empty;
+            accionesRecuperacion.TabIndex = 1;
+            accionesRecuperacion.Controls.Add(btnRecuperar);
+            grupoRecuperacion.Controls.Add(lblRecuperacion, 0, 0);
+            grupoRecuperacion.Controls.Add(accionesRecuperacion, 0, 1);
+            grupoMantenimiento.Name = "grupoMantenimiento";
+            grupoMantenimiento.AutoSize = true;
+            grupoMantenimiento.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            grupoMantenimiento.ColumnCount = 1;
+            grupoMantenimiento.RowCount = 2;
+            grupoMantenimiento.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            grupoMantenimiento.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            grupoMantenimiento.Margin = new Padding(0, 0, 12, 4);
+            grupoMantenimiento.TabIndex = 2;
+            lblMantenimiento.Text = "Mantenimiento";
+            lblMantenimiento.AutoSize = true;
+            lblMantenimiento.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            lblMantenimiento.Margin = new Padding(0, 0, 0, 4);
+            accionesMantenimiento.AutoSize = true;
+            accionesMantenimiento.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            accionesMantenimiento.Margin = Padding.Empty;
+            accionesMantenimiento.TabIndex = 1;
+            accionesMantenimiento.Controls.AddRange(new Control[] { btnRecalcular, btnArchivar });
+            grupoMantenimiento.Controls.Add(lblMantenimiento, 0, 0);
+            grupoMantenimiento.Controls.Add(accionesMantenimiento, 0, 1);
+            btnContinuar.Margin = new Padding(0, 18, 0, 0);
+            btnComprobar.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            btnInicializar.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            btnBackupVerificado.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            btnRecuperar.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            btnRecalcular.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            btnArchivar.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            btnContinuar.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            chkOpcionesAvanzadas.Name = "chkOpcionesAvanzadas";
+            chkOpcionesAvanzadas.Text = "Opciones avanzadas";
+            chkOpcionesAvanzadas.Appearance = Appearance.Button;
+            chkOpcionesAvanzadas.AutoSize = true;
+            chkOpcionesAvanzadas.FlatStyle = FlatStyle.Flat;
+            chkOpcionesAvanzadas.FlatAppearance.BorderColor = Color.FromArgb(223, 230, 239);
+            chkOpcionesAvanzadas.BackColor = Color.White;
+            chkOpcionesAvanzadas.ForeColor = Color.FromArgb(30, 45, 65);
+            chkOpcionesAvanzadas.MinimumSize = new Size(150, 30);
+            chkOpcionesAvanzadas.Margin = new Padding(0, 8, 0, 0);
+            chkOpcionesAvanzadas.TabIndex = 5;
+            panelAvanzado.Name = "panelAvanzado";
+            panelAvanzado.AutoSize = true;
+            panelAvanzado.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            panelAvanzado.ColumnCount = 1;
+            panelAvanzado.RowCount = 2;
+            panelAvanzado.Dock = DockStyle.Fill;
+            panelAvanzado.Margin = new Padding(0, 8, 0, 0);
+            panelAvanzado.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            panelAvanzado.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            panelAvanzado.Controls.Add(completas, 0, 0);
+            panelAvanzado.Controls.Add(grupoMantenimiento, 0, 1);
+            panelAvanzado.TabIndex = 6;
+            panelAvanzado.Visible = false;
             // FrmIntegridad
             // 
             AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(245, 247, 251);
-            ClientSize = new Size(1040, 670);
+            ClientSize = new Size(940, 560);
             Controls.Add(tablelayoutpanel1);
             Font = new Font("Segoe UI", 10F);
             ForeColor = Color.FromArgb(30, 45, 65);

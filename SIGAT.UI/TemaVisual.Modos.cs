@@ -113,11 +113,13 @@ internal static partial class TemaVisual
     private static void Capturar(Control control)
     {
         originales.GetValue(control, c => new ColoresOriginales(c));
-        foreach (Control hijo in control.Controls) Capturar(hijo);
+        foreach (Control hijo in control.Controls.Cast<Control>().ToArray())
+            if (!hijo.IsDisposed && hijo.Parent == control) Capturar(hijo);
     }
 
     private static void Pintar(Control control)
     {
+        if (control.IsDisposed) return;
         var original = originales.GetValue(control, c => new ColoresOriginales(c));
         control.BackColor = ColorActual(original.Fondo);
         control.ForeColor = ColorActual(original.Texto, true);
@@ -145,7 +147,8 @@ internal static partial class TemaVisual
             AplicarItems(menu.Items);
         }
         if (control.ContextMenuStrip != null) Aplicar(control.ContextMenuStrip);
-        foreach (Control hijo in control.Controls) Pintar(hijo);
+        foreach (Control hijo in control.Controls.Cast<Control>().ToArray())
+            if (!hijo.IsDisposed && hijo.Parent == control) Pintar(hijo);
         control.Invalidate();
     }
 
@@ -156,7 +159,7 @@ internal static partial class TemaVisual
         if (!EsOscuro || sender is not ButtonBase control || control.Enabled) return;
         Rectangle texto = control.ClientRectangle;
         TextFormatFlags formato = TextFormatFlags.VerticalCenter | TextFormatFlags.SingleLine;
-        if (control is CheckBox casilla)
+        if (control is CheckBox casilla && casilla.Appearance == Appearance.Normal)
         {
             var estado = casilla.Checked
                 ? System.Windows.Forms.VisualStyles.CheckBoxState.CheckedDisabled
@@ -191,9 +194,13 @@ internal static partial class TemaVisual
 
     private static void AplicarItems(ToolStripItemCollection items)
     {
-        foreach (ToolStripItem item in items)
+        // Cambiar colores dispara eventos: una opción puede retirarse o cerrar
+        // su menú durante el repintado, sin invalidar este recorrido.
+        foreach (ToolStripItem item in items.Cast<ToolStripItem>().ToArray())
         {
+            if (item.IsDisposed || !items.Contains(item)) continue;
             item.BackColor = ColorActual(Color.White);
+            if (item.IsDisposed) continue;
             item.ForeColor = ColorActual(Texto, true);
             if (item is ToolStripDropDownItem desplegable)
             {

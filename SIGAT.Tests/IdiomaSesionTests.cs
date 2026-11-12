@@ -51,6 +51,38 @@ public class IdiomaSesionTests
         Assert.AreEqual(codigo, idioma.Codigo);
     }
 
+    [TestMethod]
+    public void CambiarSuscripcionesDuranteElAvisoNoInterrumpeElIdioma()
+    {
+        var manager = IdiomaManager.ObtenerInstancia();
+        manager.ReiniciarSesion();
+        var agregado = new Observador();
+        var retirado = new Observador();
+        var siguiente = new Observador();
+        ObservadorConAccion? primero = null;
+        primero = new ObservadorConAccion(() =>
+        {
+            manager.Desuscribir(primero!);
+            manager.Desuscribir(retirado);
+            manager.Suscribir(agregado);
+        });
+        manager.Suscribir(primero);
+        manager.Suscribir(retirado);
+        manager.Suscribir(siguiente);
+        manager.CargarIdioma(new Idioma { Id = 1, Codigo = "es" }, new());
+        Assert.AreEqual(1, siguiente.Notificaciones);
+        Assert.AreEqual(0, retirado.Notificaciones, "Una ventana que ya se cerró no recibe el aviso.");
+        Assert.AreEqual(0, agregado.Notificaciones, "Una nueva ventana participa a partir del siguiente aviso.");
+        manager.NotificarObservadores();
+        Assert.AreEqual(1, agregado.Notificaciones);
+        Assert.AreEqual(2, siguiente.Notificaciones);
+    }
+
+    private sealed class ObservadorConAccion(Action accion) : IIdiomaObserver
+    {
+        public void ActualizarIdioma() => accion();
+    }
+
     private sealed class Observador : IIdiomaObserver
     {
         public int Notificaciones { get; private set; }

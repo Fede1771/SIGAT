@@ -1,4 +1,5 @@
 using SIGAT.BE;
+using SIGAT.BE.Integridad;
 using SIGAT.BLL;
 
 namespace SIGAT.UI
@@ -42,7 +43,19 @@ namespace SIGAT.UI
         private void BtnLogin_Click(object sender, EventArgs e)
         {
             Usuario usuarioValidado;
-            ResultadoLogin resultado = _usuarioBLL.Autenticar(txtUsuario.Text, txtPassword.Text, out usuarioValidado);
+            ResultadoLogin resultado;
+            try
+            {
+                resultado = _usuarioBLL.Autenticar(txtUsuario.Text, txtPassword.Text, out usuarioValidado);
+            }
+            catch (IntegridadException ex)
+            {
+                // Es una condición prevista: ofrecemos recuperación sin depender del manejador global de WinForms.
+                txtPassword.Clear();
+                Program.MostrarRecuperacion(this, ex.Informe);
+                txtPassword.Focus();
+                return;
+            }
 
             if (resultado == ResultadoLogin.CredencialesInvalidas)
             {

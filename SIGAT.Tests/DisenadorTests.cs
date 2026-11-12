@@ -67,7 +67,8 @@ public class DisenadorTests
                         var marca = formulario.Controls.Find("label2", true)[0];
                         var titulo = formulario.Controls.Find("label8", true)[0];
                         Assert.IsTrue(marca.Font.Bold && marca.Font.Size >= 22F, "La marca debe conservar su jerarquía visual.");
-                        Assert.IsTrue(titulo.Font.Bold && titulo.Font.Size >= 22F, "El título de inicio no debe perder su fuente.");
+                        Assert.IsTrue(titulo.Font.Bold && titulo.Font.Size >= 14F && titulo.Font.Size <= 18F,
+                            "El inicio debe conservar un título compacto y legible.");
                     }
                     if (formulario is FrmGestionIdiomas)
                     {

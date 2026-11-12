@@ -9,6 +9,16 @@ namespace SIGAT.UI
         private readonly UsuarioBLL _usuarioBLL = new UsuarioBLL();
         // ID cero indica alta; un ID seleccionado indica edición. Así el mismo formulario resuelve las dos operaciones.
         private int _idSeleccionado;
+        private static readonly IReadOnlyDictionary<string, string> Textos = new Dictionary<string, string>
+        {
+            ["editor_nuevo"] = "Nuevo usuario",
+            ["editor_editar"] = "Editar usuario",
+            ["ayuda_clave_nueva"] = "Ingresá una contraseña para la cuenta nueva.",
+            ["ayuda_clave_edicion"] = "Dejá este campo vacío para conservar la contraseña actual.",
+            ["ayuda_seleccion"] = "Seleccioná un usuario de la lista para editar sus datos o consultar su historial.",
+            ["lista_vacia"] = "No hay usuarios registrados.",
+            ["accion_baja"] = "Dar de baja"
+        };
 
         public FrmGestionUsuarios()
         {
@@ -29,7 +39,13 @@ namespace SIGAT.UI
         private void FrmGestionUsuarios_Load(object sender, EventArgs e)
         {
             IdiomaManager.ObtenerInstancia().Suscribir(this);
-            try { CargarGrilla(); ActualizarIdioma(); }
+            try
+            {
+                var idiomas = new IdiomaBLL();
+                foreach (var (clave, texto) in Textos) idiomas.RegistrarClaveNueva(Name, clave, texto);
+                CargarGrilla();
+                ActualizarIdioma();
+            }
             catch (Exception ex) { MessageBox.Show(ex.Message, "Gestión de usuarios", MessageBoxButtons.OK, MessageBoxIcon.Error); }
         }
 
@@ -65,6 +81,7 @@ namespace SIGAT.UI
                 }
             };
             dgvUsuarios.CellClick += (s, e) => { if (e.RowIndex >= 0) SeleccionarFila(); };
+            dgvUsuarios.DataBindingComplete += (_, _) => ActualizarPresentacionEditor();
             dgvUsuarios.KeyUp += (s, e) =>
             {
                 if (e.KeyCode == Keys.Up || e.KeyCode == Keys.Down || e.KeyCode == Keys.Enter) SeleccionarFila();
@@ -91,6 +108,7 @@ namespace SIGAT.UI
             txtPass.Clear();
             btnEliminar.Enabled = usuario.Activo && !usuario.EsAdministradorOriginal;
             chkActivo.Enabled = !usuario.EsAdministradorOriginal;
+            ActualizarPresentacionEditor();
         }
 
         // La UI reúne los valores, la BLL aplica las reglas y el DAL persiste. Este evento decide entre alta y edición.
@@ -157,12 +175,26 @@ namespace SIGAT.UI
             btnEliminar.Enabled = false;
             dgvUsuarios.ClearSelection();
             dgvUsuarios.CurrentCell = null;
+            ActualizarPresentacionEditor();
             txtUsername.Focus();
+        }
+
+        private string T(string clave) => IdiomaManager.ObtenerInstancia().Traducir(Name, clave, Textos[clave]);
+
+        // Solo cambia la ayuda visual: alta, edición y conservación de la clave siguen usando las mismas operaciones.
+        private void ActualizarPresentacionEditor()
+        {
+            label9.Text = _idSeleccionado == 0 ? T("editor_nuevo") : T("editor_editar") + ": " +
+                (dgvUsuarios.CurrentRow?.DataBoundItem as Usuario)?.NombreUsuario;
+            lblAyudaClave.Text = T(_idSeleccionado == 0 ? "ayuda_clave_nueva" : "ayuda_clave_edicion");
+            lblEstadoLista.Text = T(dgvUsuarios.DataSource != null && dgvUsuarios.Rows.Count == 0 ? "lista_vacia" : "ayuda_seleccion");
+            btnEliminar.Text = T("accion_baja");
         }
 
         public void ActualizarIdioma()
         {
             TraductorFormularios.TraducirFormulario(this);
+            ActualizarPresentacionEditor();
             dgvUsuarios.Invalidate();
         }
     }

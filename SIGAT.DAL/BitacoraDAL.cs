@@ -2,6 +2,7 @@
 using System.Data.SqlTypes;
 using Microsoft.Data.SqlClient;
 using SIGAT.BE;
+using SIGAT.BE.Auditoria;
 using SIGAT.SERVICIOS;
 
 namespace SIGAT.DAL;
@@ -33,16 +34,30 @@ public class BitacoraDAL
 
     // Desciframos los detalles de auditoría al consultarlos; ya no se comprueba DVH/DVV sobre esta tabla.
     public List<Bitacora> Buscar(DateTime? desde, DateTime? hasta, string? usuario, string? actividad)
+        => Buscar(desde, hasta, usuario, actividad, actividadExacta: false);
+
+    // El desplegable reúne equivalencias conocidas mediante igualdad, sin confundir actividades con nombres parecidos.
+    public List<Bitacora> Buscar(DateTime? desde, DateTime? hasta, string? usuario, string? actividad, bool actividadExacta)
     {
         using var conexion = Conectar(); conexion.Open();
         var lista = new List<Bitacora>();
-        using var comando = new SqlCommand(@"SELECT IdBitacora,Fecha,Usuario,Actividad,InformacionAsociada
+        // El usuario se busca como texto: sus caracteres no son comodines de SQL.
+        string? usuarioLiteral = usuario?.Trim().Replace("~", "~~").Replace("%", "~%")
+            .Replace("_", "~_").Replace("[", "~[");
+        var variantes = actividadExacta ? ActividadesBitacora.VariantesParaFiltro(actividad) : Array.Empty<string>();
+        string[] parametros = Enumerable.Range(0, variantes.Count).Select(i => "@Variante" + i).ToArray();
+        // Solo los nombres de parámetros se incorporan al SQL; los valores siempre viajan parametrizados.
+        string coincidencia = parametros.Length == 0 ? "Actividad=@Actividad" : "Actividad IN (" + string.Join(",", parametros) + ")";
+        using var comando = new SqlCommand(@$"SELECT IdBitacora,Fecha,Usuario,Actividad,InformacionAsociada
             FROM dbo.Bitacora WHERE (@Desde IS NULL OR Fecha>=@Desde) AND (@Hasta IS NULL OR Fecha<=@Hasta)
-            AND (@Usuario IS NULL OR Usuario LIKE '%'+@Usuario+'%')
-            AND (@Actividad IS NULL OR Actividad LIKE '%'+@Actividad+'%') ORDER BY Fecha DESC", conexion);
+            AND (@Usuario IS NULL OR Usuario LIKE '%'+@Usuario+'%' ESCAPE '~')
+            AND (@Actividad IS NULL OR (@Exacta=1 AND {coincidencia})
+                OR (@Exacta=0 AND Actividad LIKE '%'+@Actividad+'%')) ORDER BY Fecha DESC", conexion);
+        comando.Parameters.Add("@Exacta", SqlDbType.Bit).Value = actividadExacta;
+        for (int i = 0; i < variantes.Count; i++) comando.Parameters.Add(parametros[i], SqlDbType.VarChar, 255).Value = variantes[i];
         comando.Parameters.Add("@Desde", SqlDbType.DateTime).Value = (object?)desde ?? DBNull.Value;
         comando.Parameters.Add("@Hasta", SqlDbType.DateTime).Value = (object?)hasta ?? DBNull.Value;
-        comando.Parameters.Add("@Usuario", SqlDbType.VarChar, 50).Value = string.IsNullOrEmpty(usuario) ? DBNull.Value : usuario;
+        comando.Parameters.Add("@Usuario", SqlDbType.VarChar, -1).Value = string.IsNullOrEmpty(usuarioLiteral) ? DBNull.Value : usuarioLiteral;
         comando.Parameters.Add("@Actividad", SqlDbType.VarChar, 255).Value = string.IsNullOrEmpty(actividad) ? DBNull.Value : actividad;
         using var lector = comando.ExecuteReader();
         while (lector.Read()) lista.Add(new Bitacora
@@ -51,6 +66,18 @@ public class BitacoraDAL
             Actividad = lector.GetString(3), InformacionAsociada = encriptador.Desencriptar(lector.IsDBNull(4) ? null : lector.GetString(4))
         });
         return lista;
+    }
+
+    // Consultamos los tipos registrados sin cargar ni descifrar todos los eventos.
+    public List<string> ObtenerActividades()
+    {
+        using var conexion = Conectar(); conexion.Open();
+        using var comando = new SqlCommand(@"SELECT DISTINCT Actividad FROM dbo.Bitacora
+            WHERE Actividad IS NOT NULL AND LTRIM(RTRIM(Actividad))<>'' ORDER BY Actividad", conexion);
+        using var lector = comando.ExecuteReader();
+        var actividades = new List<string>();
+        while (lector.Read()) actividades.Add(lector.GetString(0));
+        return actividades;
     }
 
 }

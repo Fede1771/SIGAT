@@ -1,4 +1,4 @@
-namespace SIGAT.UI
+﻿namespace SIGAT.UI
 {
     partial class FrmPrincipal
     {
@@ -135,8 +135,8 @@ namespace SIGAT.UI
             // 
             itemUsuarios.Name = "itemUsuarios";
             itemUsuarios.Size = new Size(223, 22);
-            itemUsuarios.Tag = "menu_usuarios";
-            itemUsuarios.Text = "Gestión de Usuarios";
+            itemUsuarios.Tag = "nav_usuarios_compacto";
+            itemUsuarios.Text = "Usuarios";
             itemUsuarios.Click += ItemUsuarios_Click;
             // 
             // itemBitacora
@@ -159,14 +159,16 @@ namespace SIGAT.UI
             // 
             itemRoles.Name = "itemRoles";
             itemRoles.Size = new Size(223, 22);
-            itemRoles.Text = "Gestión de roles y permisos";
+            itemRoles.Tag = "nav_roles_compacto";
+            itemRoles.Text = "Roles y permisos";
             itemRoles.Click += ItemRoles_Click;
             // 
             // itemIntegridad
             // 
             itemIntegridad.Name = "itemIntegridad";
             itemIntegridad.Size = new Size(223, 22);
-            itemIntegridad.Text = "Integridad y recuperación";
+            itemIntegridad.Tag = "nav_integridad_compacto";
+            itemIntegridad.Text = "Integridad";
             itemIntegridad.Click += ItemIntegridad_Click;
             // 
             // itemIdioma
@@ -181,14 +183,15 @@ namespace SIGAT.UI
             // 
             itemGestionIdiomas.Name = "itemGestionIdiomas";
             itemGestionIdiomas.Size = new Size(178, 22);
-            itemGestionIdiomas.Text = "Gestionar idiomas...";
+            itemGestionIdiomas.Tag = "nav_idiomas_compacto";
+            itemGestionIdiomas.Text = "Idiomas";
             itemGestionIdiomas.Click += ItemGestionIdiomas_Click;
             // 
             // marcoPrincipal
             // 
             marcoPrincipal.BackColor = Color.FromArgb(245, 247, 251);
             marcoPrincipal.ColumnCount = 2;
-            marcoPrincipal.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 236F));
+            marcoPrincipal.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 200F));
             marcoPrincipal.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             marcoPrincipal.Controls.Add(cabeceraMenu, 0, 0);
             marcoPrincipal.Controls.Add(encabezadoPrincipal, 1, 0);
@@ -201,7 +204,7 @@ namespace SIGAT.UI
             marcoPrincipal.Margin = new Padding(0);
             marcoPrincipal.Name = "marcoPrincipal";
             marcoPrincipal.RowCount = 2;
-            marcoPrincipal.RowStyles.Add(new RowStyle(SizeType.Absolute, 76F));
+            marcoPrincipal.RowStyles.Add(new RowStyle(SizeType.Absolute, 60F));
             marcoPrincipal.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
             marcoPrincipal.Size = new Size(1084, 681);
             marcoPrincipal.TabIndex = 0;
@@ -239,7 +242,7 @@ namespace SIGAT.UI
             encabezadoPrincipal.Location = new Point(236, 0);
             encabezadoPrincipal.Margin = new Padding(0);
             encabezadoPrincipal.Name = "encabezadoPrincipal";
-            encabezadoPrincipal.Padding = new Padding(24, 12, 24, 12);
+            encabezadoPrincipal.Padding = new Padding(16, 8, 16, 8);
             encabezadoPrincipal.RowStyles.Add(new RowStyle());
             encabezadoPrincipal.Size = new Size(848, 76);
             encabezadoPrincipal.TabIndex = 1;
@@ -284,9 +287,9 @@ namespace SIGAT.UI
             btnTemaVisual.ForeColor = Color.FromArgb(30, 45, 65);
             btnTemaVisual.Location = new Point(614, 12);
             btnTemaVisual.Margin = new Padding(0, 0, 12, 0);
-            btnTemaVisual.MinimumSize = new Size(96, 40);
+            btnTemaVisual.MinimumSize = new Size(96, 30);
             btnTemaVisual.Name = "btnTemaVisual";
-            btnTemaVisual.Size = new Size(102, 40);
+            btnTemaVisual.Size = new Size(102, 30);
             btnTemaVisual.TabIndex = 2;
             btnTemaVisual.Text = "Modo claro";
             btnTemaVisual.UseVisualStyleBackColor = false;
@@ -303,9 +306,9 @@ namespace SIGAT.UI
             btnIdiomaVisual.ForeColor = Color.FromArgb(30, 45, 65);
             btnIdiomaVisual.Location = new Point(728, 12);
             btnIdiomaVisual.Margin = new Padding(0);
-            btnIdiomaVisual.MinimumSize = new Size(96, 40);
+            btnIdiomaVisual.MinimumSize = new Size(96, 30);
             btnIdiomaVisual.Name = "btnIdiomaVisual";
-            btnIdiomaVisual.Size = new Size(96, 40);
+            btnIdiomaVisual.Size = new Size(96, 30);
             btnIdiomaVisual.TabIndex = 3;
             btnIdiomaVisual.Tag = "menu_idioma";
             btnIdiomaVisual.Text = "Idioma";
@@ -352,12 +355,12 @@ namespace SIGAT.UI
             panelNavegacion.Margin = new Padding(0);
             panelNavegacion.Name = "panelNavegacion";
             panelNavegacion.RowCount = 6;
-            panelNavegacion.RowStyles.Add(new RowStyle(SizeType.Absolute, 60F));
-            panelNavegacion.RowStyles.Add(new RowStyle(SizeType.Absolute, 60F));
-            panelNavegacion.RowStyles.Add(new RowStyle(SizeType.Absolute, 60F));
-            panelNavegacion.RowStyles.Add(new RowStyle(SizeType.Absolute, 60F));
-            panelNavegacion.RowStyles.Add(new RowStyle(SizeType.Absolute, 60F));
-            panelNavegacion.RowStyles.Add(new RowStyle(SizeType.Absolute, 60F));
+            panelNavegacion.RowStyles.Add(new RowStyle(SizeType.Absolute, 44F));
+            panelNavegacion.RowStyles.Add(new RowStyle(SizeType.Absolute, 44F));
+            panelNavegacion.RowStyles.Add(new RowStyle(SizeType.Absolute, 44F));
+            panelNavegacion.RowStyles.Add(new RowStyle(SizeType.Absolute, 44F));
+            panelNavegacion.RowStyles.Add(new RowStyle(SizeType.Absolute, 44F));
+            panelNavegacion.RowStyles.Add(new RowStyle(SizeType.Absolute, 44F));
             panelNavegacion.Size = new Size(212, 360);
             panelNavegacion.TabIndex = 0;
             // 
@@ -397,8 +400,8 @@ namespace SIGAT.UI
             navFrmGestionUsuarios.Padding = new Padding(44, 0, 10, 0);
             navFrmGestionUsuarios.Size = new Size(212, 54);
             navFrmGestionUsuarios.TabIndex = 1;
-            navFrmGestionUsuarios.Tag = "menu_usuarios";
-            navFrmGestionUsuarios.Text = "Gestión de Usuarios";
+            navFrmGestionUsuarios.Tag = "nav_usuarios_compacto";
+            navFrmGestionUsuarios.Text = "Usuarios";
             navFrmGestionUsuarios.TextAlign = ContentAlignment.MiddleLeft;
             navFrmGestionUsuarios.UseVisualStyleBackColor = false;
             // 
@@ -418,8 +421,8 @@ namespace SIGAT.UI
             navFormGestionRoles.Padding = new Padding(44, 0, 10, 0);
             navFormGestionRoles.Size = new Size(212, 54);
             navFormGestionRoles.TabIndex = 2;
-            navFormGestionRoles.Tag = "menu_roles";
-            navFormGestionRoles.Text = "Gestión de roles y permisos";
+            navFormGestionRoles.Tag = "nav_roles_compacto";
+            navFormGestionRoles.Text = "Roles y permisos";
             navFormGestionRoles.TextAlign = ContentAlignment.MiddleLeft;
             navFormGestionRoles.UseVisualStyleBackColor = false;
             // 
@@ -439,8 +442,8 @@ namespace SIGAT.UI
             navFrmGestionIdiomas.Padding = new Padding(44, 0, 10, 0);
             navFrmGestionIdiomas.Size = new Size(212, 54);
             navFrmGestionIdiomas.TabIndex = 3;
-            navFrmGestionIdiomas.Tag = "menu_gestion_idiomas";
-            navFrmGestionIdiomas.Text = "Gestionar idiomas...";
+            navFrmGestionIdiomas.Tag = "nav_idiomas_compacto";
+            navFrmGestionIdiomas.Text = "Idiomas";
             navFrmGestionIdiomas.TextAlign = ContentAlignment.MiddleLeft;
             navFrmGestionIdiomas.UseVisualStyleBackColor = false;
             // 
@@ -481,8 +484,8 @@ namespace SIGAT.UI
             navFrmIntegridad.Padding = new Padding(44, 0, 10, 0);
             navFrmIntegridad.Size = new Size(212, 54);
             navFrmIntegridad.TabIndex = 5;
-            navFrmIntegridad.Tag = "menu_integridad";
-            navFrmIntegridad.Text = "Integridad y recuperación";
+            navFrmIntegridad.Tag = "nav_integridad_compacto";
+            navFrmIntegridad.Text = "Integridad";
             navFrmIntegridad.TextAlign = ContentAlignment.MiddleLeft;
             navFrmIntegridad.UseVisualStyleBackColor = false;
             // 
@@ -548,7 +551,7 @@ namespace SIGAT.UI
             panelInicio.ForeColor = Color.FromArgb(0, 0, 0);
             panelInicio.Location = new Point(0, 0);
             panelInicio.Name = "panelInicio";
-            panelInicio.Padding = new Padding(32);
+            panelInicio.Padding = new Padding(16);
             panelInicio.RowCount = 3;
             panelInicio.RowStyles.Add(new RowStyle());
             panelInicio.RowStyles.Add(new RowStyle());
@@ -568,7 +571,7 @@ namespace SIGAT.UI
             encabezadoInicio.Font = new Font("Segoe UI", 10F);
             encabezadoInicio.ForeColor = Color.FromArgb(0, 0, 0);
             encabezadoInicio.Location = new Point(32, 32);
-            encabezadoInicio.Margin = new Padding(0, 0, 0, 22);
+            encabezadoInicio.Margin = new Padding(0, 0, 0, 12);
             encabezadoInicio.Name = "encabezadoInicio";
             encabezadoInicio.RowStyles.Add(new RowStyle());
             encabezadoInicio.RowStyles.Add(new RowStyle());
@@ -580,15 +583,15 @@ namespace SIGAT.UI
             label8.AutoSize = true;
             label8.BackColor = Color.FromArgb(240, 240, 240);
             label8.Dock = DockStyle.Fill;
-            label8.Font = new Font("Segoe UI", 22F, FontStyle.Bold);
+            label8.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
             label8.ForeColor = Color.FromArgb(30, 45, 65);
             label8.Location = new Point(0, 0);
             label8.Margin = new Padding(0, 0, 0, 6);
             label8.Name = "label8";
             label8.Size = new Size(784, 41);
             label8.TabIndex = 0;
-            label8.Tag = "inicio_titulo";
-            label8.Text = "Tu espacio de trabajo";
+            label8.Tag = "inicio_accesos_compactos";
+            label8.Text = "Accesos rápidos";
             // 
             // label9
             // 
@@ -630,19 +633,20 @@ namespace SIGAT.UI
             inicioFrmGestionUsuarios.FlatAppearance.BorderColor = Color.FromArgb(223, 230, 239);
             inicioFrmGestionUsuarios.FlatAppearance.MouseOverBackColor = Color.FromArgb(231, 240, 252);
             inicioFrmGestionUsuarios.FlatStyle = FlatStyle.Flat;
-            inicioFrmGestionUsuarios.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            inicioFrmGestionUsuarios.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            inicioFrmGestionUsuarios.EsAccesoRapido = true;
             inicioFrmGestionUsuarios.ForeColor = Color.FromArgb(30, 45, 65);
             inicioFrmGestionUsuarios.Icono = IconoVisual.Usuarios;
             inicioFrmGestionUsuarios.Location = new Point(0, 0);
             inicioFrmGestionUsuarios.Margin = new Padding(0, 0, 16, 16);
-            inicioFrmGestionUsuarios.MinimumSize = new Size(250, 88);
+            inicioFrmGestionUsuarios.MinimumSize = new Size(240, 148);
             inicioFrmGestionUsuarios.Name = "inicioFrmGestionUsuarios";
-            inicioFrmGestionUsuarios.Padding = new Padding(48, 0, 16, 0);
-            inicioFrmGestionUsuarios.Size = new Size(250, 88);
+            inicioFrmGestionUsuarios.Padding = new Padding(14, 82, 14, 18);
+            inicioFrmGestionUsuarios.Size = new Size(320, 148);
             inicioFrmGestionUsuarios.TabIndex = 0;
-            inicioFrmGestionUsuarios.Tag = "menu_usuarios";
-            inicioFrmGestionUsuarios.Text = "Gestión de Usuarios";
-            inicioFrmGestionUsuarios.TextAlign = ContentAlignment.MiddleLeft;
+            inicioFrmGestionUsuarios.Tag = "nav_usuarios_compacto";
+            inicioFrmGestionUsuarios.Text = "Usuarios";
+            inicioFrmGestionUsuarios.TextAlign = ContentAlignment.MiddleCenter;
             inicioFrmGestionUsuarios.UseVisualStyleBackColor = false;
             // 
             // inicioFormGestionRoles
@@ -652,19 +656,20 @@ namespace SIGAT.UI
             inicioFormGestionRoles.FlatAppearance.BorderColor = Color.FromArgb(223, 230, 239);
             inicioFormGestionRoles.FlatAppearance.MouseOverBackColor = Color.FromArgb(231, 240, 252);
             inicioFormGestionRoles.FlatStyle = FlatStyle.Flat;
-            inicioFormGestionRoles.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            inicioFormGestionRoles.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            inicioFormGestionRoles.EsAccesoRapido = true;
             inicioFormGestionRoles.ForeColor = Color.FromArgb(30, 45, 65);
             inicioFormGestionRoles.Icono = IconoVisual.Roles;
             inicioFormGestionRoles.Location = new Point(266, 0);
             inicioFormGestionRoles.Margin = new Padding(0, 0, 16, 16);
-            inicioFormGestionRoles.MinimumSize = new Size(250, 88);
+            inicioFormGestionRoles.MinimumSize = new Size(240, 148);
             inicioFormGestionRoles.Name = "inicioFormGestionRoles";
-            inicioFormGestionRoles.Padding = new Padding(48, 0, 16, 0);
-            inicioFormGestionRoles.Size = new Size(250, 88);
+            inicioFormGestionRoles.Padding = new Padding(14, 82, 14, 18);
+            inicioFormGestionRoles.Size = new Size(320, 148);
             inicioFormGestionRoles.TabIndex = 1;
-            inicioFormGestionRoles.Tag = "menu_roles";
-            inicioFormGestionRoles.Text = "Gestión de roles y permisos";
-            inicioFormGestionRoles.TextAlign = ContentAlignment.MiddleLeft;
+            inicioFormGestionRoles.Tag = "nav_roles_compacto";
+            inicioFormGestionRoles.Text = "Roles y permisos";
+            inicioFormGestionRoles.TextAlign = ContentAlignment.MiddleCenter;
             inicioFormGestionRoles.UseVisualStyleBackColor = false;
             // 
             // inicioFrmGestionIdiomas
@@ -674,19 +679,20 @@ namespace SIGAT.UI
             inicioFrmGestionIdiomas.FlatAppearance.BorderColor = Color.FromArgb(223, 230, 239);
             inicioFrmGestionIdiomas.FlatAppearance.MouseOverBackColor = Color.FromArgb(231, 240, 252);
             inicioFrmGestionIdiomas.FlatStyle = FlatStyle.Flat;
-            inicioFrmGestionIdiomas.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            inicioFrmGestionIdiomas.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            inicioFrmGestionIdiomas.EsAccesoRapido = true;
             inicioFrmGestionIdiomas.ForeColor = Color.FromArgb(30, 45, 65);
             inicioFrmGestionIdiomas.Icono = IconoVisual.Idiomas;
             inicioFrmGestionIdiomas.Location = new Point(0, 104);
             inicioFrmGestionIdiomas.Margin = new Padding(0, 0, 16, 16);
-            inicioFrmGestionIdiomas.MinimumSize = new Size(250, 88);
+            inicioFrmGestionIdiomas.MinimumSize = new Size(240, 148);
             inicioFrmGestionIdiomas.Name = "inicioFrmGestionIdiomas";
-            inicioFrmGestionIdiomas.Padding = new Padding(48, 0, 16, 0);
-            inicioFrmGestionIdiomas.Size = new Size(250, 88);
+            inicioFrmGestionIdiomas.Padding = new Padding(14, 82, 14, 18);
+            inicioFrmGestionIdiomas.Size = new Size(320, 148);
             inicioFrmGestionIdiomas.TabIndex = 2;
-            inicioFrmGestionIdiomas.Tag = "menu_gestion_idiomas";
-            inicioFrmGestionIdiomas.Text = "Gestionar idiomas...";
-            inicioFrmGestionIdiomas.TextAlign = ContentAlignment.MiddleLeft;
+            inicioFrmGestionIdiomas.Tag = "nav_idiomas_compacto";
+            inicioFrmGestionIdiomas.Text = "Idiomas";
+            inicioFrmGestionIdiomas.TextAlign = ContentAlignment.MiddleCenter;
             inicioFrmGestionIdiomas.UseVisualStyleBackColor = false;
             // 
             // inicioFrmBitacora
@@ -696,19 +702,20 @@ namespace SIGAT.UI
             inicioFrmBitacora.FlatAppearance.BorderColor = Color.FromArgb(223, 230, 239);
             inicioFrmBitacora.FlatAppearance.MouseOverBackColor = Color.FromArgb(231, 240, 252);
             inicioFrmBitacora.FlatStyle = FlatStyle.Flat;
-            inicioFrmBitacora.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            inicioFrmBitacora.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            inicioFrmBitacora.EsAccesoRapido = true;
             inicioFrmBitacora.ForeColor = Color.FromArgb(30, 45, 65);
             inicioFrmBitacora.Icono = IconoVisual.Bitacora;
             inicioFrmBitacora.Location = new Point(266, 104);
             inicioFrmBitacora.Margin = new Padding(0, 0, 16, 16);
-            inicioFrmBitacora.MinimumSize = new Size(250, 88);
+            inicioFrmBitacora.MinimumSize = new Size(240, 148);
             inicioFrmBitacora.Name = "inicioFrmBitacora";
-            inicioFrmBitacora.Padding = new Padding(48, 0, 16, 0);
-            inicioFrmBitacora.Size = new Size(250, 88);
+            inicioFrmBitacora.Padding = new Padding(14, 82, 14, 18);
+            inicioFrmBitacora.Size = new Size(320, 148);
             inicioFrmBitacora.TabIndex = 3;
             inicioFrmBitacora.Tag = "menu_bitacora";
             inicioFrmBitacora.Text = "Bitácora";
-            inicioFrmBitacora.TextAlign = ContentAlignment.MiddleLeft;
+            inicioFrmBitacora.TextAlign = ContentAlignment.MiddleCenter;
             inicioFrmBitacora.UseVisualStyleBackColor = false;
             // 
             // inicioFrmIntegridad
@@ -718,19 +725,20 @@ namespace SIGAT.UI
             inicioFrmIntegridad.FlatAppearance.BorderColor = Color.FromArgb(223, 230, 239);
             inicioFrmIntegridad.FlatAppearance.MouseOverBackColor = Color.FromArgb(231, 240, 252);
             inicioFrmIntegridad.FlatStyle = FlatStyle.Flat;
-            inicioFrmIntegridad.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            inicioFrmIntegridad.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            inicioFrmIntegridad.EsAccesoRapido = true;
             inicioFrmIntegridad.ForeColor = Color.FromArgb(30, 45, 65);
             inicioFrmIntegridad.Icono = IconoVisual.Roles;
             inicioFrmIntegridad.Location = new Point(0, 208);
             inicioFrmIntegridad.Margin = new Padding(0, 0, 16, 16);
-            inicioFrmIntegridad.MinimumSize = new Size(250, 88);
+            inicioFrmIntegridad.MinimumSize = new Size(240, 148);
             inicioFrmIntegridad.Name = "inicioFrmIntegridad";
-            inicioFrmIntegridad.Padding = new Padding(48, 0, 16, 0);
-            inicioFrmIntegridad.Size = new Size(250, 88);
+            inicioFrmIntegridad.Padding = new Padding(14, 82, 14, 18);
+            inicioFrmIntegridad.Size = new Size(320, 148);
             inicioFrmIntegridad.TabIndex = 4;
-            inicioFrmIntegridad.Tag = "menu_integridad";
-            inicioFrmIntegridad.Text = "Integridad y recuperación";
-            inicioFrmIntegridad.TextAlign = ContentAlignment.MiddleLeft;
+            inicioFrmIntegridad.Tag = "nav_integridad_compacto";
+            inicioFrmIntegridad.Text = "Integridad";
+            inicioFrmIntegridad.TextAlign = ContentAlignment.MiddleCenter;
             inicioFrmIntegridad.UseVisualStyleBackColor = false;
             // 
             // selectorIdioma

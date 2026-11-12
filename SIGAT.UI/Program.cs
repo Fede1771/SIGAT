@@ -25,9 +25,7 @@ namespace SIGAT.UI
                 var informe = new IntegridadBLL().Verificar();
                 if (!informe.Correcta)
                 {
-                    IntegridadBLL.RegistrarIncidente(informe);
-                    using var recuperar = new FrmIntegridad(informe, bloquearInicio: true);
-                    if (recuperar.ShowDialog() != DialogResult.OK) return;
+                    if (MostrarRecuperacion(null, informe) != DialogResult.OK) return;
                     new IntegridadBLL().ExigirIntegridad();
                 }
                 Application.Run(new FrmLogin());
@@ -37,6 +35,14 @@ namespace SIGAT.UI
                 MessageBox.Show("No se pudo verificar la integridad de SIGAT.\n" + ex.Message,
                     "Inicio bloqueado", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        // Un fallo al escribir el log no debe impedir elegir el respaldo de recuperación.
+        internal static DialogResult MostrarRecuperacion(IWin32Window propietario, InformeIntegridad informe)
+        {
+            try { IntegridadBLL.RegistrarIncidente(informe); } catch { }
+            using var recuperar = new FrmIntegridad(informe, bloquearInicio: true);
+            return recuperar.ShowDialog(propietario);
         }
 
         // Método que atrapa errores de la interfaz
@@ -59,9 +65,7 @@ namespace SIGAT.UI
         {
             if (excepcion is IntegridadException integridad)
             {
-                try { IntegridadBLL.RegistrarIncidente(integridad.Informe); } catch { }
-                using var recuperar = new FrmIntegridad(integridad.Informe, bloquearInicio: true);
-                if (recuperar.ShowDialog(Form.ActiveForm) == DialogResult.OK) Application.Restart();
+                if (MostrarRecuperacion(Form.ActiveForm, integridad.Informe) == DialogResult.OK) Application.Restart();
                 Application.Exit();
                 return;
             }

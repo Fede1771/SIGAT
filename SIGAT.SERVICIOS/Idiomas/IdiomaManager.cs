@@ -49,9 +49,11 @@ namespace SIGAT.SERVICIOS.Idiomas
         // Cada formulario suscripto recibe el aviso de cambio de idioma. El administrador no necesita conocer sus controles.
         public void NotificarObservadores()
         {
-            foreach (IIdiomaObserver observador in _observadores)
+            // Un aviso puede cerrar una ventana o suscribir otra. Recorremos la
+            // copia inicial y omitimos las que se retiraron durante la notificación.
+            foreach (IIdiomaObserver observador in _observadores.ToArray())
             {
-                observador.ActualizarIdioma();
+                if (_observadores.Contains(observador)) observador.ActualizarIdioma();
             }
         }
 

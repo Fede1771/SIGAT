@@ -252,6 +252,18 @@ namespace SIGAT.DAL
             }
         }
 
+        // Una lectura por formulario evita consultar cada etiqueta al abrir la pantalla.
+        public HashSet<string> ObtenerClavesRegistradas(string nombreForm)
+        {
+            using var conexion = Conectar(); conexion.Open();
+            using var comando = new SqlCommand("SELECT Control FROM dbo.Control WHERE Form=@Form", conexion);
+            comando.Parameters.AddWithValue("@Form", nombreForm);
+            using var lector = comando.ExecuteReader();
+            var claves = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            while (lector.Read()) claves.Add(lector.GetString(0));
+            return claves;
+        }
+
         public bool ExisteControl(string nombreControl, string nombreForm)
         {
             string consulta = "SELECT COUNT(*) FROM Control WHERE Control = @Control AND Form = @Form";

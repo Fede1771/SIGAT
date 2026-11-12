@@ -14,6 +14,7 @@ namespace SIGAT.UI
         private TableLayoutPanel tablelayoutpanel2;
         private Label label3;
         private Label label4;
+        private Label lblVacio;
         private FlowLayoutPanel panelFiltros;
         private TableLayoutPanel tablelayoutpanel5;
         private CheckBox chkFechas;
@@ -24,7 +25,7 @@ namespace SIGAT.UI
         private TextBox txtUser;
         private TableLayoutPanel tablelayoutpanel7;
         private Label lblAct;
-        private TextBox txtActividad;
+        private ComboBox cmbActividad;
         private Button btnBuscar;
         private Panel panel8;
         private DataGridView dgv;
@@ -45,6 +46,7 @@ namespace SIGAT.UI
             tablelayoutpanel2 = new TableLayoutPanel();
             label3 = new Label();
             label4 = new Label();
+            lblVacio = new Label();
             panelFiltros = new FlowLayoutPanel();
             tablelayoutpanel5 = new TableLayoutPanel();
             chkFechas = new CheckBox();
@@ -55,7 +57,7 @@ namespace SIGAT.UI
             txtUser = new TextBox();
             tablelayoutpanel7 = new TableLayoutPanel();
             lblAct = new Label();
-            txtActividad = new TextBox();
+            cmbActividad = new ComboBox();
             btnBuscar = new Button();
             panel8 = new Panel();
             dgv = new DataGridView();
@@ -83,16 +85,18 @@ namespace SIGAT.UI
             tablelayoutpanel1.Controls.Add(tablelayoutpanel2, 0, 0);
             tablelayoutpanel1.Controls.Add(panelFiltros, 0, 1);
             tablelayoutpanel1.Controls.Add(panel8, 0, 2);
+            tablelayoutpanel1.Controls.Add(lblVacio, 0, 3);
             tablelayoutpanel1.Dock = DockStyle.Fill;
             tablelayoutpanel1.Font = new Font("Segoe UI", 10F);
             tablelayoutpanel1.ForeColor = Color.FromArgb(30, 45, 65);
             tablelayoutpanel1.Location = new Point(0, 0);
             tablelayoutpanel1.Name = "tablelayoutpanel1";
-            tablelayoutpanel1.Padding = new Padding(24);
-            tablelayoutpanel1.RowCount = 3;
+            tablelayoutpanel1.Padding = new Padding(16);
+            tablelayoutpanel1.RowCount = 4;
             tablelayoutpanel1.RowStyles.Add(new RowStyle());
             tablelayoutpanel1.RowStyles.Add(new RowStyle());
             tablelayoutpanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            tablelayoutpanel1.RowStyles.Add(new RowStyle(SizeType.AutoSize));
             tablelayoutpanel1.Size = new Size(1140, 680);
             tablelayoutpanel1.TabIndex = 0;
             // 
@@ -108,7 +112,7 @@ namespace SIGAT.UI
             tablelayoutpanel2.Font = new Font("Segoe UI", 10F);
             tablelayoutpanel2.ForeColor = Color.FromArgb(30, 45, 65);
             tablelayoutpanel2.Location = new Point(24, 24);
-            tablelayoutpanel2.Margin = new Padding(0, 0, 0, 22);
+            tablelayoutpanel2.Margin = new Padding(0, 0, 0, 12);
             tablelayoutpanel2.Name = "tablelayoutpanel2";
             tablelayoutpanel2.RowStyles.Add(new RowStyle(SizeType.AutoSize));
             tablelayoutpanel2.RowStyles.Add(new RowStyle(SizeType.AutoSize));
@@ -120,7 +124,7 @@ namespace SIGAT.UI
             label3.AutoSize = true;
             label3.BackColor = Color.FromArgb(245, 247, 251);
             label3.Dock = DockStyle.Fill;
-            label3.Font = new Font("Segoe UI", 22F, FontStyle.Bold);
+            label3.Font = new Font("Segoe UI", 18F, FontStyle.Bold);
             label3.ForeColor = Color.FromArgb(30, 45, 65);
             label3.Location = new Point(0, 0);
             label3.Margin = new Padding(0, 0, 0, 6);
@@ -157,9 +161,9 @@ namespace SIGAT.UI
             panelFiltros.Font = new Font("Segoe UI", 10F);
             panelFiltros.ForeColor = Color.FromArgb(30, 45, 65);
             panelFiltros.Location = new Point(24, 86);
-            panelFiltros.Margin = new Padding(0, 0, 0, 18);
+            panelFiltros.Margin = new Padding(0, 0, 0, 12);
             panelFiltros.Name = "panelFiltros";
-            panelFiltros.Padding = new Padding(18);
+            panelFiltros.Padding = new Padding(12);
             panelFiltros.Size = new Size(1092, 106);
             panelFiltros.TabIndex = 1;
             // 
@@ -274,7 +278,7 @@ namespace SIGAT.UI
             tablelayoutpanel7.ColumnCount = 1;
             tablelayoutpanel7.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 208F));
             tablelayoutpanel7.Controls.Add(lblAct, 0, 0);
-            tablelayoutpanel7.Controls.Add(txtActividad, 0, 1);
+            tablelayoutpanel7.Controls.Add(cmbActividad, 0, 1);
             tablelayoutpanel7.Font = new Font("Segoe UI", 10F);
             tablelayoutpanel7.ForeColor = Color.FromArgb(30, 45, 65);
             tablelayoutpanel7.Location = new Point(500, 18);
@@ -300,16 +304,18 @@ namespace SIGAT.UI
             lblAct.Tag = "lbl_actividad";
             lblAct.Text = "Actividad";
             // 
-            // txtActividad
+            // cmbActividad
             // 
-            txtActividad.BackColor = Color.FromArgb(255, 255, 255);
-            txtActividad.Dock = DockStyle.Fill;
-            txtActividad.Font = new Font("Segoe UI", 10F);
-            txtActividad.ForeColor = Color.FromArgb(0, 0, 0);
-            txtActividad.Location = new Point(3, 23);
-            txtActividad.Name = "txtActividad";
-            txtActividad.Size = new Size(202, 25);
-            txtActividad.TabIndex = 1;
+            cmbActividad.BackColor = Color.FromArgb(255, 255, 255);
+            cmbActividad.Dock = DockStyle.Fill;
+            cmbActividad.Font = new Font("Segoe UI", 10F);
+            cmbActividad.ForeColor = Color.FromArgb(0, 0, 0);
+            cmbActividad.Location = new Point(3, 23);
+            cmbActividad.Name = "cmbActividad";
+            cmbActividad.Size = new Size(202, 25);
+            cmbActividad.TabIndex = 1;
+            cmbActividad.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbActividad.DropDownWidth = 320;
             // 
             // btnBuscar
             // 
@@ -323,10 +329,10 @@ namespace SIGAT.UI
             btnBuscar.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             btnBuscar.ForeColor = Color.FromArgb(255, 255, 255);
             btnBuscar.Location = new Point(724, 38);
-            btnBuscar.Margin = new Padding(0, 20, 0, 10);
-            btnBuscar.MinimumSize = new Size(96, 40);
+            btnBuscar.Margin = new Padding(0, 16, 0, 4);
+            btnBuscar.MinimumSize = new Size(96, 30);
             btnBuscar.Name = "btnBuscar";
-            btnBuscar.Size = new Size(96, 40);
+            btnBuscar.Size = new Size(96, 30);
             btnBuscar.TabIndex = 3;
             btnBuscar.Tag = "btn_buscar";
             btnBuscar.Text = "Buscar";
@@ -360,17 +366,17 @@ namespace SIGAT.UI
             dataGridViewCellStyle2.BackColor = Color.FromArgb(236, 241, 248);
             dataGridViewCellStyle2.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             dataGridViewCellStyle2.ForeColor = Color.FromArgb(30, 45, 65);
-            dataGridViewCellStyle2.Padding = new Padding(10, 0, 10, 0);
+            dataGridViewCellStyle2.Padding = new Padding(6, 0, 6, 0);
             dataGridViewCellStyle2.SelectionBackColor = Color.FromArgb(236, 241, 248);
             dataGridViewCellStyle2.SelectionForeColor = Color.FromArgb(30, 45, 65);
             dgv.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
-            dgv.ColumnHeadersHeight = 44;
+            dgv.ColumnHeadersHeight = 30;
             dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle3.BackColor = Color.FromArgb(255, 255, 255);
             dataGridViewCellStyle3.Font = new Font("Segoe UI", 10F);
             dataGridViewCellStyle3.ForeColor = Color.FromArgb(30, 45, 65);
-            dataGridViewCellStyle3.Padding = new Padding(10, 5, 10, 5);
+            dataGridViewCellStyle3.Padding = new Padding(6, 1, 6, 1);
             dataGridViewCellStyle3.SelectionBackColor = Color.FromArgb(231, 240, 252);
             dataGridViewCellStyle3.SelectionForeColor = Color.FromArgb(30, 45, 65);
             dataGridViewCellStyle3.WrapMode = DataGridViewTriState.False;
@@ -431,11 +437,20 @@ namespace SIGAT.UI
             dgv.Name = "dgv";
             dgv.ReadOnly = true;
             dgv.RowHeadersVisible = false;
-            dgv.RowTemplate.Height = 40;
+            dgv.RowTemplate.Height = 28;
             dgv.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgv.Size = new Size(1092, 446);
             dgv.TabIndex = 0;
             // 
+            // Estado vacío fuera de la grilla para no cubrir encabezados ni filas.
+            lblVacio.Name = "lblVacio";
+            lblVacio.AutoSize = true;
+            lblVacio.Dock = DockStyle.Fill;
+            lblVacio.ForeColor = Color.FromArgb(94, 111, 133);
+            lblVacio.Margin = new Padding(0, 12, 0, 0);
+            lblVacio.Tag = "lbl_vacio_bitacora";
+            lblVacio.Text = "No hay eventos para los filtros seleccionados. Probá cambiando los filtros.";
+            lblVacio.Visible = false;
             // FrmBitacora
             // 
             AcceptButton = btnBuscar;

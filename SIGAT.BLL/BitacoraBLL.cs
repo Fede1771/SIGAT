@@ -39,5 +39,11 @@ namespace SIGAT.BLL
         {
             return _dal.Buscar(desde, hasta, usuario, actividad);
         }
+
+        public List<Bitacora> Buscar(DateTime? desde, DateTime? hasta, string? usuario, string? actividad, bool actividadExacta)
+            => _dal.Buscar(desde, hasta, usuario, actividad, actividadExacta);
+
+        public List<string> ObtenerActividades() => _dal.ObtenerActividades()
+            .Select(ActividadesBitacora.CodigoCanonico).Distinct(StringComparer.OrdinalIgnoreCase).ToList();
     }
 }

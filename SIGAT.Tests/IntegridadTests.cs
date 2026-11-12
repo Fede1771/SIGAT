@@ -5,6 +5,9 @@ using SIGAT.BE.Integridad;
 using SIGAT.BLL;
 using SIGAT.DAL;
 using SIGAT.SERVICIOS;
+using SIGAT.UI;
+using System.Windows.Forms;
+using System.Reflection;
 
 namespace SIGAT.Tests;
 
@@ -160,12 +163,89 @@ public class IntegridadTests
             Sql($"UPDATE dbo.UsuarioRol SET DigitoVerificador=REPLICATE('0',64) WHERE IdUsuario={cuenta.IdUsuario}");
             Assert.ThrowsExactly<IntegridadException>(()=>new UsuarioBLL().Autenticar("dv_prueba","Inicial123",out _));
             Assert.IsNull(SesionServicio.ObtenerInstancia().UsuarioActual);
+            ComprobarRecuperacionDesdeLogin(backup);
+            Assert.IsFalse(integridad.Verificar().Correcta, "Cancelar la ventana no debe aceptar ni recalcular los datos alterados.");
             Assert.IsTrue(integridad.Recuperar(backup,true).Correcta);
+            try
+            {
+                Assert.AreEqual(ResultadoLogin.Exito, new UsuarioBLL().Autenticar("dv_prueba", "Inicial123", out _),
+                    "Tras recuperar un respaldo válido se puede volver a iniciar sesión.");
+            }
+            finally { SesionServicio.ObtenerInstancia().CerrarSesion(); }
         }
         finally { Environment.SetEnvironmentVariable("SIGAT_BASE_PRUEBAS",previa); }
         Sql("DROP TABLE dbo.IntegridadTabla");
         Assert.IsFalse(integridad.Verificar().Configurada);
         Assert.IsTrue(servicio.RecalcularIntegridad().Correcta, "El recálculo administrativo puede crear los controles faltantes.");
         Assert.AreNotEqual(Guid.Empty, IdBase());
+    }
+
+    private static void ComprobarRecuperacionDesdeLogin(string respaldo)
+    {
+        Exception? error = null;
+        var hilo = new Thread(() =>
+        {
+            try
+            {
+                using var login = (FrmLogin)typeof(FrmLogin).GetConstructor(BindingFlags.Instance | BindingFlags.NonPublic,
+                    null, new[] { typeof(bool) }, null)!.Invoke(new object[] { false });
+                login.ShowInTaskbar = false;
+                login.Opacity = 0;
+                login.Show();
+                SynchronizationContext.SetSynchronizationContext(new WindowsFormsSynchronizationContext());
+                var usuario = (TextBox)login.Controls.Find("txtUsuario", true).Single();
+                var clave = (TextBox)login.Controls.Find("txtPassword", true).Single();
+                usuario.Text = "dv_prueba";
+                clave.Text = "Inicial123";
+                bool abrio = false;
+                var limite = DateTime.UtcNow.AddSeconds(12);
+                using var observar = new System.Windows.Forms.Timer { Interval = 25 };
+                observar.Tick += (_, _) =>
+                {
+                    var ventana = Application.OpenForms.OfType<FrmIntegridad>().FirstOrDefault();
+                    if (ventana == null) return;
+                    ventana.Opacity = 0;
+                    ventana.ShowInTaskbar = false;
+                    if (ventana.UseWaitCursor && DateTime.UtcNow < limite) return;
+                    observar.Stop();
+                    try
+                    {
+                        Assert.IsFalse(ventana.UseWaitCursor, "La ventana debe terminar su comprobación.");
+                        Assert.IsTrue(ventana.Controls.Find("btnElegirRespaldo", true).Single().Enabled);
+                        Assert.IsTrue(ventana.Controls.Find("btnRecuperar", true).Single().Enabled);
+                        Assert.IsFalse(ventana.Controls.Find("btnContinuar", true).Single().Enabled);
+                        var archivo = (TextBox)ventana.Controls.Find("archivo", true).Single();
+                        archivo.Text = respaldo;
+                        Assert.AreEqual(respaldo, archivo.Text);
+                        Assert.IsNull(SesionServicio.ObtenerInstancia().UsuarioActual);
+                        string? destino = Environment.GetEnvironmentVariable("SIGAT_RECUPERACION_PREVIEW");
+                        if (!string.IsNullOrWhiteSpace(destino))
+                        {
+                            Directory.CreateDirectory(Path.GetDirectoryName(destino)!);
+                            using var imagen = new System.Drawing.Bitmap(ventana.Width, ventana.Height);
+                            ventana.DrawToBitmap(imagen, new System.Drawing.Rectangle(System.Drawing.Point.Empty, ventana.Size));
+                            imagen.Save(destino);
+                        }
+                        abrio = true;
+                    }
+                    catch (Exception ex) { error = ex; }
+                    finally { ventana.DialogResult = DialogResult.Cancel; ventana.Close(); }
+                };
+                observar.Start();
+                ((Button)login.Controls.Find("btnLogin", true).Single()).PerformClick();
+                observar.Stop();
+                if (error != null) return;
+                Assert.IsTrue(abrio, "El error de integridad del login debe abrir la recuperación sin llegar al manejador global.");
+                Assert.IsTrue(login.Visible);
+                Assert.AreEqual("", clave.Text);
+                Assert.IsNull(SesionServicio.ObtenerInstancia().UsuarioActual);
+                login.Close();
+            }
+            catch (Exception ex) { error = ex; }
+        }) { IsBackground = true };
+        hilo.SetApartmentState(ApartmentState.STA);
+        hilo.Start();
+        Assert.IsTrue(hilo.Join(TimeSpan.FromSeconds(25)), "El login debe responder y permitir cancelar la recuperación.");
+        if (error != null) System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(error).Throw();
     }
 }
