@@ -110,14 +110,14 @@ public class PresentacionVisualTests
                 typeof(FormGestionRoles).GetMethod("InicializarDatos", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(form, new object[] { datos });
                 Preparar(form, new Size(1240, 820));
                 Assert.IsFalse(form.Controls.Find("paginaRoles", true)[0] is TabPage);
-                ((ListBox)form.Controls.Find("listaRoles", true)[0]).SelectedIndex = 1;
                 var tree = (TreeView)form.Controls.Find("tvRolesJerarquia", true)[0];
-                tree.SelectedNode = tree.Nodes.Cast<TreeNode>().Single(n => n.Text.StartsWith(familia.Nombre)).Nodes[0];
+                tree.SelectedNode = tree.Nodes[1].Nodes.Cast<TreeNode>().Single(n => n.Text.StartsWith(familia.Nombre)).Nodes[0];
                 var quitar = form.Controls.Find("btnQuitarAsignacion", true)[0];
                 Assert.IsFalse(quitar.Enabled, "Un permiso heredado no se quita como relación directa.");
                 Assert.IsTrue(form.Controls.Find("rutaRol", true)[0].Text.Contains("También se obtiene por"));
+                ((CheckBox)form.Controls.Find("mostrarDetalleRol", true)[0]).Checked = true;
                 Guardar(form, Environment.GetEnvironmentVariable("SIGAT_VISUAL_PREVIEW"), "roles-v2-oscuro-herencia");
-                ((Button)form.Controls.Find("btnAbrirOrigenRol", true)[0]).PerformClick();
+                OpcionRoles(form, "btnAbrirOrigenRol").PerformClick();
                 Application.DoEvents();
                 Assert.IsTrue(form.Controls.Find("paginaRoles", true)[0].Visible);
                 Assert.IsTrue(form.Controls.Find("paginaFamilias", true)[0].Visible);
@@ -147,6 +147,275 @@ public class PresentacionVisualTests
                 Assert.IsTrue(((TextBox)resumen.Controls.Find("resumenCambios", true)[0]).ReadOnly);
             }
             finally { tema.Invoke(null, new object[] { false }); }
+        });
+    }
+
+    [TestMethod]
+    public void ArbolCompletoRespetaMatrizAnidamientoYDestinoDeLasAcciones()
+    {
+        EnInterfaz(() =>
+        {
+            var datos = EdicionRolesTests.Base();
+            var familia = new PermisoCompuesto { Id = 8, Nombre = "Familia de prueba" };
+            var hija = new PermisoCompuesto { Id = 9, Nombre = "Subfamilia de prueba" };
+            hija.Agregar(datos.Permisos[0]); familia.Agregar(hija);
+            datos.Permisos.AddRange(new[] { familia, hija });
+            datos.Roles[1].AgregarPermiso(familia);
+            datos.Roles[1].AgregarRol(datos.Roles[4]);
+            using var form = new FormGestionRoles(); QuitarCarga(form);
+            typeof(FormGestionRoles).GetMethod("InicializarDatos", BindingFlags.NonPublic | BindingFlags.Instance)!.Invoke(form, new object[] { datos });
+            Preparar(form, new Size(1500, 1000));
+            var arbol = (TreeView)form.Controls.Find("tvRolesJerarquia", true)[0];
+            var quitar = (Button)form.Controls.Find("btnQuitarAsignacion", true)[0];
+            var agregar = (Button)form.Controls.Find("btnAgregarPermisoRol", true)[0];
+            Assert.IsEmpty(form.Controls.Find("listaRoles", true));
+            CollectionAssert.AreEqual(datos.Roles.Select(r => r.Nombre).ToArray(), arbol.Nodes.Cast<TreeNode>().Select(n => n.Text).ToArray());
+            // Las raíces identifican roles; no son relaciones que puedan quitarse.
+            arbol.SelectedNode = arbol.Nodes[0];
+            Assert.IsFalse(quitar.Enabled); Assert.IsFalse(agregar.Enabled);
+            arbol.SelectedNode = arbol.Nodes[1];
+            Assert.IsFalse(quitar.Enabled); Assert.IsTrue(agregar.Enabled);
+            var heredado = arbol.Nodes[1].Nodes.Cast<TreeNode>().Single(n => n.Text.StartsWith(familia.Nombre)).Nodes[0].Nodes[0];
+            arbol.SelectedNode = heredado;
+            Assert.IsFalse(quitar.Enabled);
+            Assert.IsTrue(OpcionRoles(form, "btnAbrirOrigenRol").Enabled);
+            Assert.IsTrue(form.Controls.Find("rutaRol", true)[0].Text.Contains("Subfamilia de prueba"));
+            // Seleccionar Auditor incluido conserva Responsable como destino, no edita Auditor.
+            var incluido = arbol.Nodes[1].Nodes.Cast<TreeNode>().Single(n => n.Text.StartsWith("Auditor"));
+            arbol.SelectedNode = incluido.Nodes[0]; Assert.IsFalse(quitar.Enabled);
+            OpcionRoles(form, "btnAbrirOrigenRol").PerformClick();
+            Assert.AreSame(arbol.Nodes[4], arbol.SelectedNode, "Abrir origen debe seleccionar el rol raíz correspondiente.");
+            incluido = arbol.Nodes[1].Nodes.Cast<TreeNode>().Single(n => n.Text.StartsWith("Auditor"));
+            arbol.SelectedNode = incluido; Assert.IsTrue(quitar.Enabled);
+            quitar.PerformClick(); Application.DoEvents();
+            Assert.IsTrue(form.TieneCambios);
+            Assert.IsFalse(arbol.Nodes[1].Nodes.Cast<TreeNode>().Any(n => n.Text.StartsWith("Auditor")));
+            Assert.HasCount(3, arbol.Nodes[4].Nodes, "Auditor mantiene sus propios permisos.");
+            Assert.HasCount(1, datos.Roles[1].Roles, "El borrador no modifica la fuente confirmada.");
+
+            // Revisar y cancelar Guardar conserva el borrador y no consulta SQL.
+            string resumen = "";
+            using var cancelar = new System.Windows.Forms.Timer { Interval = 25 };
+            cancelar.Tick += (_, _) =>
+            {
+                var dialogo = Application.OpenForms.OfType<DlgFamiliaPermisos>().FirstOrDefault();
+                if (dialogo == null) return;
+                resumen = dialogo.Controls.Find("resumenCambios", true)[0].Text;
+                cancelar.Stop(); dialogo.DialogResult = DialogResult.Cancel;
+            };
+            cancelar.Start();
+            bool guardado = (bool)typeof(FormGestionRoles).GetMethod("GuardarCambios", BindingFlags.NonPublic | BindingFlags.Instance)!.Invoke(form, null)!;
+            Assert.IsFalse(guardado); Assert.IsTrue(form.TieneCambios);
+            StringAssert.Contains(resumen, "Auditor");
+            form.DescartarCambios();
+            Assert.IsFalse(form.TieneCambios);
+            Assert.IsTrue(arbol.Nodes[1].Nodes.Cast<TreeNode>().Any(n => n.Text.StartsWith("Auditor")));
+            arbol.SelectedNode = arbol.Nodes[0].Nodes[0]; Assert.IsFalse(quitar.Enabled);
+            Guardar(form, Environment.GetEnvironmentVariable("SIGAT_VISUAL_PREVIEW"), "arbol-completo");
+
+            // Buscar por una hoja mantiene la ruta completa y no altera el borrador.
+            ((TextBox)form.Controls.Find("buscarRoles", true)[0]).Text = hija.Nombre;
+            var espera = System.Diagnostics.Stopwatch.StartNew();
+            while (arbol.Nodes.Count != 1 && espera.ElapsedMilliseconds < 3000) { Application.DoEvents(); Thread.Sleep(10); }
+            Assert.HasCount(1, arbol.Nodes);
+            Assert.AreEqual("Responsable de Inventario", arbol.Nodes[0].Text);
+            Assert.IsTrue(arbol.Nodes[0].Nodes.Cast<TreeNode>().Any(n => n.Text.StartsWith("Movimientos")), "El filtro conserva la rama completa.");
+            Assert.IsFalse(form.TieneCambios);
+        });
+    }
+
+    [TestMethod]
+    public void AgregarDesdeUnaFamiliaDelArbolAnidaEnLaSeleccionYDescartarRestauraLasRamas()
+    {
+        EnInterfaz(() =>
+        {
+            var datos = EdicionRolesTests.Base();
+            datos.Roles[1].AgregarRol(datos.Roles[3]);
+            using var form = new FormGestionRoles(); QuitarCarga(form);
+            typeof(FormGestionRoles).GetMethod("InicializarDatos", BindingFlags.NonPublic | BindingFlags.Instance)!.Invoke(form, new object[] { datos });
+            Preparar(form, new Size(1500, 1000));
+            var arbol = (TreeView)form.Controls.Find("tvRolesJerarquia", true)[0];
+            var agregar = (Button)form.Controls.Find("btnAgregarPermisoRol", true)[0];
+            var incluir = OpcionRoles(form, "btnIncluirRol");
+            TreeNode Hijo(TreeNode padre, string nombre) => padre.Nodes.Cast<TreeNode>().Single(n => n.Text == nombre);
+
+            string[] Elegir(object boton, string nombre, bool aceptar = true)
+            {
+                string[] opciones = Array.Empty<string>();
+                Exception? error = null;
+                using var aceptarSelector = new System.Windows.Forms.Timer { Interval = 25 };
+                aceptarSelector.Tick += (_, _) =>
+                {
+                    var selector = Application.OpenForms.OfType<DlgFamiliaPermisos>().FirstOrDefault();
+                    if (selector == null) return;
+                    aceptarSelector.Stop();
+                    try
+                    {
+                        var lista = (CheckedListBox)selector.Controls.Find("lista", true)[0];
+                        opciones = lista.Items.Cast<object>().Select(o => (string)o.GetType().GetProperty("Texto")!.GetValue(o)!).ToArray();
+                        int indice = Array.FindIndex(opciones, s => s.EndsWith(" · " + nombre));
+                        Assert.IsTrue(indice >= 0, "El selector debe ofrecer " + nombre);
+                        lista.SetItemChecked(indice, true);
+                    }
+                    catch (Exception ex) { error = ex; }
+                    finally { selector.DialogResult = aceptar && error == null ? DialogResult.OK : DialogResult.Cancel; }
+                };
+                Assert.IsTrue(boton is Button b ? b.Enabled : ((ToolStripMenuItem)boton).Enabled);
+                aceptarSelector.Start();
+                if (boton is Button accion) accion.PerformClick(); else ((ToolStripMenuItem)boton).PerformClick();
+                Application.DoEvents();
+                if (error != null) throw error;
+                return opciones;
+            }
+
+            var gestion = Hijo(arbol.Nodes[1], "Gestión de activos");
+            arbol.SelectedNode = gestion;
+            Assert.IsFalse(incluir.Enabled, "Las familias agrupan permisos y familias; los roles se incluyen en roles.");
+            StringAssert.Contains(form.Controls.Find("tituloRoles", true)[0].Text, "Gestión de activos");
+            Elegir(agregar, "Movimientos");
+            gestion = Hijo(arbol.Nodes[1], "Gestión de activos");
+            var movimientos = Hijo(gestion, "Movimientos");
+            Assert.AreSame(gestion, movimientos.Parent);
+            Assert.IsTrue(gestion.IsExpanded);
+            Assert.IsTrue(form.TieneCambios);
+            Assert.IsEmpty(datos.Permisos.Single(p => p.Id == 3).ObtenerHijos(), "La fuente confirmada sigue intacta.");
+
+            arbol.SelectedNode = movimientos;
+            var ofrecidos = Elegir(agregar, "Reportes");
+            Assert.IsFalse(ofrecidos.Any(s => s.EndsWith(" · Gestión de activos") || s.EndsWith(" · Movimientos")), "El selector excluye ancestros y el propio destino.");
+            gestion = Hijo(arbol.Nodes[1], "Gestión de activos");
+            var reportes = Hijo(Hijo(gestion, "Movimientos"), "Reportes");
+            Assert.AreSame(gestion, reportes.Parent!.Parent);
+            Assert.HasCount(1, Hijo(arbol.Nodes[3], "Movimientos").Nodes, "Una familia compartida muestra los mismos hijos en todas sus ramas.");
+
+            arbol.SelectedNode = gestion;
+            Elegir(agregar, "Ver bitácora", aceptar: false);
+            Assert.IsFalse(gestion.Nodes.Cast<TreeNode>().Any(n => n.Text.StartsWith("Ver bitácora")), "Cancelar el selector no cambia la familia.");
+            // Un rol incluido también recibe sus hijos en su propia rama, sin agregarlos a la raíz.
+            arbol.SelectedNode = Hijo(arbol.Nodes[1], "Mesa de Ayuda");
+            ofrecidos = Elegir(incluir, "Técnico de Mantenimiento");
+            Assert.IsFalse(ofrecidos.Any(s => s.EndsWith(" · Responsable de Inventario") || s.EndsWith(" · Mesa de Ayuda")));
+            var mesa = Hijo(arbol.Nodes[1], "Mesa de Ayuda");
+            Assert.AreSame(mesa, Hijo(mesa, "Técnico de Mantenimiento").Parent);
+            Assert.IsFalse(arbol.Nodes[1].Nodes.Cast<TreeNode>().Any(n => n.Text.StartsWith("Técnico")), "El nuevo rol se incluye bajo Mesa de Ayuda, no en Responsable.");
+
+            arbol.SelectedNode = Hijo(arbol.Nodes[4], "Ver bitácora");
+            Assert.IsFalse(agregar.Enabled); Assert.IsFalse(incluir.Enabled);
+            arbol.SelectedNode = Hijo(arbol.Nodes[0], "Gestión de activos");
+            Assert.IsFalse(agregar.Enabled, "La rama Administrador conserva su protección de edición.");
+            arbol.SelectedNode = Hijo(arbol.Nodes[1], "Gestión de activos");
+            Guardar(form, Environment.GetEnvironmentVariable("SIGAT_VISUAL_PREVIEW"), "familia-anidada-desde-arbol");
+            form.DescartarCambios();
+            Assert.IsFalse(form.TieneCambios);
+            Assert.IsEmpty(Hijo(arbol.Nodes[1], "Gestión de activos").Nodes);
+            Assert.IsFalse(Hijo(arbol.Nodes[1], "Mesa de Ayuda").Nodes.Cast<TreeNode>().Any(n => n.Text.StartsWith("Técnico")));
+            Assert.IsEmpty(datos.Roles[3].Roles);
+        });
+    }
+
+    [TestMethod]
+    public void VistaMinimalMantieneLosCincoRolesYLosDetallesOpcionalesSinAlterarElBorrador()
+    {
+        EnInterfaz(() =>
+        {
+            var tema = typeof(FrmPrincipal).Assembly.GetType("SIGAT.UI.TemaVisual")!.GetMethod("CambiarModo")!;
+            try
+            {
+                foreach (bool oscuro in new[] { false, true })
+                {
+                    tema.Invoke(null, new object[] { oscuro });
+                    using var form = new FormGestionRoles(); QuitarCarga(form);
+                    typeof(FormGestionRoles).GetMethod("InicializarDatos", BindingFlags.NonPublic | BindingFlags.Instance)!
+                        .Invoke(form, new object[] { EdicionRolesTests.Base() });
+                    Preparar(form, new Size(1440, 900));
+                    var arbol = (TreeView)form.Controls.Find("tvRolesJerarquia", true)[0];
+                    Assert.HasCount(5, arbol.Nodes);
+                    Assert.IsTrue(arbol.Nodes.Cast<TreeNode>().All(n => !n.IsExpanded), "El árbol comienza con sus cinco raíces contraídas.");
+                    Assert.AreEqual("Gestión de activos", arbol.Nodes[0].Nodes[1].Text);
+                    StringAssert.Contains(arbol.Nodes[0].Nodes[1].ToolTipText, "Familia");
+                    Assert.HasCount(3, form.Controls.Find("accionesRol", true)[0].Controls, "Solo Agregar, Quitar y Más opciones permanecen en la barra.");
+                    Assert.HasCount(3, form.Controls.Find("accionesFamilia", true)[0].Controls);
+                    Assert.IsFalse(form.Controls.Find("tvUsuarioPermisos", true)[0].Visible);
+                    Assert.IsFalse(form.Controls.Find("rutaRol", true)[0].Visible);
+                    Assert.IsFalse(form.Controls.Find("txtImpacto", true)[0].Visible);
+                    Guardar(form, Environment.GetEnvironmentVariable("SIGAT_VISUAL_PREVIEW"), "minimal-inicial-" + (oscuro ? "oscuro" : "claro"));
+                    var usuarios = (ListBox)form.Controls.Find("listaUsuarios", true)[0];
+                    usuarios.SelectedIndex = 1;
+                    ((CheckedListBox)form.Controls.Find("rolesUsuario", true)[0]).SetItemChecked(1, true);
+                    Application.DoEvents();
+                    Assert.IsTrue(form.TieneCambios);
+                    arbol.SelectedNode = arbol.Nodes[1]; arbol.Nodes[1].Expand();
+                    var seleccionado = arbol.SelectedNode;
+                    foreach (string nombre in new[] { "mostrarPermisosUsuario", "mostrarDetalleRol", "mostrarDetalleFamilia" })
+                        ((CheckBox)form.Controls.Find(nombre, true)[0]).Checked = true;
+                    Application.DoEvents();
+                    Assert.IsTrue(form.Controls.Find("tvUsuarioPermisos", true)[0].Visible);
+                    Assert.IsTrue(form.Controls.Find("rutaRol", true)[0].Visible);
+                    Assert.IsTrue(form.Controls.Find("txtImpacto", true)[0].Visible);
+                    Assert.AreSame(seleccionado, arbol.SelectedNode);
+                    Assert.IsTrue(form.TieneCambios, "Desplegar información conserva la edición pendiente.");
+                    ((Button)form.Controls.Find("btnMasOpcionesRol", true)[0]).PerformClick(); Application.DoEvents();
+                    var incluir = OpcionRoles(form, "btnIncluirRol");
+                    var menu = (ContextMenuStrip)incluir.Owner!;
+                    Assert.IsTrue(menu.Visible); Assert.IsTrue(incluir.Enabled);
+                    Assert.AreSame(menu, OpcionRoles(form, "btnAbrirOrigenRol").Owner);
+                    menu.Close();
+                    foreach (string nombre in new[] { "mostrarPermisosUsuario", "mostrarDetalleRol", "mostrarDetalleFamilia" })
+                        ((CheckBox)form.Controls.Find(nombre, true)[0]).Checked = false;
+                    Application.DoEvents();
+                    Assert.IsFalse(form.Controls.Find("rutaRol", true)[0].Visible);
+                    Assert.IsFalse(form.Controls.Find("txtImpacto", true)[0].Visible);
+                    Assert.IsTrue(form.TieneCambios);
+                    form.DescartarCambios();
+                    Assert.IsFalse(form.TieneCambios);
+                    Assert.IsTrue(arbol.Nodes[1].IsExpanded, "Descartar mantiene las ramas que el usuario estaba recorriendo.");
+                    arbol.SelectedNode = arbol.Nodes[0];
+                    Assert.IsFalse(OpcionRoles(form, "btnIncluirRol").Enabled);
+                    Assert.IsFalse(form.Controls.Find("btnAgregarPermisoRol", true)[0].Enabled);
+                    Assert.IsFalse(OpcionRoles(form, "btnEliminarFamilia").Enabled, "El elemento base sigue protegido.");
+                }
+            }
+            finally { tema.Invoke(null, new object[] { false }); }
+        });
+    }
+
+    [TestMethod]
+    public void MasOpcionesPermiteCrearSubfamiliasYDescartarSinCambiarLaFuenteConfirmada()
+    {
+        EnInterfaz(() =>
+        {
+            var datos = EdicionRolesTests.Base();
+            using var form = new FormGestionRoles(); QuitarCarga(form);
+            typeof(FormGestionRoles).GetMethod("InicializarDatos", BindingFlags.NonPublic | BindingFlags.Instance)!.Invoke(form, new object[] { datos });
+            Preparar(form, new Size(1440, 900));
+            var lista = (ListBox)form.Controls.Find("listaFamilias", true)[0];
+            lista.SelectedIndex = Enumerable.Range(0, lista.Items.Count).Single(i =>
+                (int)lista.Items[i].GetType().GetProperty("Id")!.GetValue(lista.Items[i])! == 3);
+            ((Button)form.Controls.Find("btnMasOpcionesFamilia", true)[0]).PerformClick(); Application.DoEvents();
+            var crear = OpcionRoles(form, "btnCrearFamiliaAnidada");
+            var menu = (ContextMenuStrip)crear.Owner!;
+            Assert.IsTrue(menu.Visible); Assert.IsTrue(crear.Enabled);
+            Assert.IsFalse(OpcionRoles(form, "btnEliminarFamilia").Enabled);
+            using var aceptar = new System.Windows.Forms.Timer { Interval = 25 };
+            aceptar.Tick += (_, _) =>
+            {
+                var dialogo = Application.OpenForms.OfType<DlgNombreRol>().FirstOrDefault();
+                if (dialogo == null) return;
+                aceptar.Stop(); dialogo.Controls.Find("txtNombre", true)[0].Text = "Subfamilia desde el menú";
+                dialogo.DialogResult = DialogResult.OK;
+            };
+            aceptar.Start(); crear.PerformClick(); menu.Close(); Application.DoEvents();
+            Assert.IsTrue(form.TieneCambios);
+            Assert.HasCount(7, datos.Permisos);
+            Assert.IsEmpty(datos.Permisos.Single(p => p.Id == 3).ObtenerHijos());
+            Assert.IsFalse(OpcionRoles(form, "btnEliminarFamilia").Enabled, "La subfamilia recién creada ya está en uso.");
+            var tree = (TreeView)form.Controls.Find("tvRolesJerarquia", true)[0];
+            var gestion = tree.Nodes[1].Nodes.Cast<TreeNode>().Single(n => n.Text == "Gestión de activos");
+            Assert.AreEqual("Subfamilia desde el menú", gestion.Nodes[0].Text);
+            form.DescartarCambios();
+            Assert.IsFalse(form.TieneCambios);
+            Assert.HasCount(7, lista.Items);
+            Assert.IsEmpty(tree.Nodes[1].Nodes.Cast<TreeNode>().Single(n => n.Text == "Gestión de activos").Nodes);
         });
     }
 
@@ -184,10 +453,18 @@ public class PresentacionVisualTests
                 {
                     Application.DoEvents();
                     string suf = new[] { "Usuarios", "Roles", "Familias" }[i];
-                    var lista = (ListBox)form.Controls.Find("lista" + suf, true)[0];
-                    int buscado = i == 0 ? 2 : i == 1 ? 2 : 8;
-                    lista.SelectedIndex = Enumerable.Range(0, lista.Items.Count).Single(n => (int)lista.Items[n].GetType().GetProperty("Id")!.GetValue(lista.Items[n])! == buscado);
-                    typeof(Control).GetMethod("OnKeyDown", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(lista, new object[] { new KeyEventArgs(Keys.Enter) });
+                    if (i == 0) ((CheckBox)form.Controls.Find("mostrarPermisosUsuario", true)[0]).Checked = true;
+                    if (i == 1)
+                    {
+                        var arbol = (TreeView)form.Controls.Find("tvRolesJerarquia", true)[0];
+                        arbol.SelectedNode = arbol.Nodes[1];
+                    }
+                    else
+                    {
+                        var lista = (ListBox)form.Controls.Find("lista" + suf, true)[0];
+                        int buscado = i == 0 ? 2 : 8;
+                        lista.SelectedIndex = Enumerable.Range(0, lista.Items.Count).Single(n => (int)lista.Items[n].GetType().GetProperty("Id")!.GetValue(lista.Items[n])! == buscado);
+                    }
                     Application.DoEvents();
                     var tree = (TreeView)form.Controls.Find(new[] { "tvUsuarioPermisos", "tvRolesJerarquia", "tvCatalogoGeneral" }[i], true)[0];
                     Assert.IsTrue(tree.Height >= 140, "El árbol necesita una altura legible en " + size);
@@ -270,7 +547,7 @@ public class PresentacionVisualTests
             var usuarios = (ListBox)form.Controls.Find("listaUsuarios", true)[0]; usuarios.SelectedIndex = 1;
             var cuentas = (CheckedListBox)form.Controls.Find("rolesUsuario", true)[0]; cuentas.SetItemChecked(1, true); Application.DoEvents();
             var seleccion = usuarios.SelectedItem;
-            var roles = (ListBox)form.Controls.Find("listaRoles", true)[0]; roles.SelectedIndex = 3;
+            var roles = (TreeView)form.Controls.Find("tvRolesJerarquia", true)[0]; roles.SelectedNode = roles.Nodes[3];
             var familias = (ListBox)form.Controls.Find("listaFamilias", true)[0]; familias.SelectedIndex = 2;
             Application.DoEvents();
             Assert.IsTrue(form.TieneCambios);
@@ -663,9 +940,8 @@ public class PresentacionVisualTests
             usuarios.SelectedIndex = 1;
             var marcas = (CheckedListBox)form.Controls.Find("rolesUsuario", true)[0];
             marcas.SetItemChecked(1, true); Application.DoEvents();
-            var listaRoles = (ListBox)form.Controls.Find("listaRoles", true)[0];
-            var rol = listaRoles.SelectedItem;
             var treeRoles = (TreeView)form.Controls.Find("tvRolesJerarquia", true)[0];
+            var rol = treeRoles.SelectedNode;
             var nodoRol = treeRoles.Nodes[0];
             var familia = ((ListBox)form.Controls.Find("listaFamilias", true)[0]).SelectedItem;
             var filtro = (TextBox)form.Controls.Find("buscarUsuarios", true)[0];
@@ -673,7 +949,7 @@ public class PresentacionVisualTests
             var espera = System.Diagnostics.Stopwatch.StartNew();
             while (usuarios.Items.Count != 0 && espera.ElapsedMilliseconds < 3000) { Application.DoEvents(); Thread.Sleep(10); }
             Assert.IsEmpty(usuarios.Items);
-            Assert.AreSame(rol, listaRoles.SelectedItem);
+            Assert.AreSame(rol, treeRoles.SelectedNode);
             Assert.AreSame(nodoRol, treeRoles.Nodes[0], "Buscar usuarios no reconstruye el árbol de otro contexto.");
             Assert.AreSame(familia, ((ListBox)form.Controls.Find("listaFamilias", true)[0]).SelectedItem);
             Assert.IsTrue(form.TieneCambios);
@@ -732,6 +1008,9 @@ public class PresentacionVisualTests
         }
         finally { Environment.SetEnvironmentVariable("SIGAT_BASE_PRUEBAS", anterior); }
     }
+
+    private static ToolStripMenuItem OpcionRoles(FormGestionRoles form, string nombre) =>
+        (ToolStripMenuItem)typeof(FormGestionRoles).GetField(nombre, BindingFlags.NonPublic | BindingFlags.Instance)!.GetValue(form)!;
 
     private static void ComprobarGrillas(Control parent)
     {

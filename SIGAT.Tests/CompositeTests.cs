@@ -7,6 +7,20 @@ namespace SIGAT.Tests;
 public class CompositeTests
 {
     [TestMethod]
+    public void CatalogoInicialCoincideConLosCincoRolesYPermisosDeLaEspecificacion()
+    {
+        var datos = MatrizRoles.CrearCatalogo();
+        CollectionAssert.AreEqual(new[] { "Administrador", "Responsable de Inventario", "Técnico de Mantenimiento", "Mesa de Ayuda", "Auditor" },
+            datos.Roles.Select(r => r.Nombre).ToArray());
+        int[][] esperados = { new[] { 1, 3, 4, 5, 6, 7 }, new[] { 3, 4, 6 }, new[] { 5, 2 }, new[] { 4, 2 }, new[] { 1, 2, 6 } };
+        for (int i = 0; i < esperados.Length; i++)
+            CollectionAssert.AreEquivalent(esperados[i], datos.Roles[i].Permisos.Select(p => p.Id).ToArray());
+        Assert.HasCount(7, datos.Permisos);
+        Assert.IsTrue(datos.Permisos.Where(p => p.Id <= 2).All(p => p is PermisoSimple));
+        Assert.IsTrue(datos.Permisos.Where(p => p.Id > 2).All(p => p is PermisoCompuesto && p.ObtenerHijos().Count == 0));
+    }
+
+    [TestMethod]
     public void RechazaCiclosDirectosEIndirectos()
     {
         var a = new PermisoCompuesto();
@@ -88,7 +102,8 @@ public class CompositeTests
                 Assert.IsEmpty(form.Controls.Find("vistasRoles", true));
                 var usuarios = (System.Windows.Forms.ListBox)form.Controls.Find("listaUsuarios", true).Single();
                 Assert.HasCount(3, usuarios.Items);
-                Assert.HasCount(5, ((System.Windows.Forms.ListBox)form.Controls.Find("listaRoles", true).Single()).Items);
+                Assert.HasCount(5, ((System.Windows.Forms.TreeView)form.Controls.Find("tvRolesJerarquia", true).Single()).Nodes);
+                Assert.IsEmpty(form.Controls.Find("listaRoles", true));
                 Assert.HasCount(7, ((System.Windows.Forms.ListBox)form.Controls.Find("listaFamilias", true).Single()).Items);
                 Assert.IsFalse(form.TieneCambios);
                 Assert.IsFalse(form.Controls.Find("btnGuardarCambios", true).Single().Enabled);

@@ -37,7 +37,7 @@ public class DisenadorTests
                     Assert.IsTrue(formulario.Controls.Cast<Control>().All(c => !c.IsDisposed));
                     if (formulario is FormGestionRoles)
                         foreach (string nombre in new[] { "btnCrearFamilia", "btnCrearFamiliaAnidada", "btnEliminarFamilia" })
-                            Assert.IsInstanceOfType<Button>(formulario.Controls.Find(nombre, true).Single());
+                            Assert.IsInstanceOfType<ToolStripMenuItem>(typeof(FormGestionRoles).GetField(nombre, BindingFlags.NonPublic | BindingFlags.Instance)!.GetValue(formulario));
                     if (formulario is FrmIntegridad)
                         Assert.IsInstanceOfType<Button>(formulario.Controls.Find("btnRecalcular", true).Single());
                     formulario.PerformLayout();

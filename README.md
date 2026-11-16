@@ -151,15 +151,17 @@ Las asignaciones se conservan en SQL. La composición del rol Administrador est�
 
 La gestión presenta tres columnas simultáneas, con selección independiente y un único borrador:
 
+Los cinco roles se conservan. El árbol comienza contraído y muestra nombres cortos; el tipo de componente y su procedencia se consultan al seleccionar un nodo y desplegar sus detalles. Cada área de edición deja a mano **Agregar** y **Quitar**. **Más opciones** reúne la inclusión de roles, el acceso al origen y la creación o eliminación de familias, según la columna. Los permisos efectivos del usuario y el uso de una familia se despliegan a pedido. Abrir menús, recorrer ramas y mostrar detalles no modifica el borrador.
+
 | Vista | Operaciones |
 |---|---|
 | **Usuarios** | Marcar los roles directos de una cuenta y consultar sus permisos efectivos y rutas de herencia. |
-| **Roles** | Agregar permisos o familias, incluir otros roles y quitar asignaciones directas. Los permisos heredados indican su origen. |
+| **Roles** | Árbol completo con cada rol como raíz, sus familias, subfamilias, permisos simples y roles incluidos. Agregar componente utiliza el rol o la familia seleccionados como destino: por ejemplo, Gestión de activos → Movimientos → Reportes. Incluir rol agrega otro rol debajo del rol seleccionado. Los permisos simples no admiten hijos. Se pueden quitar asignaciones directas del rol raíz; para quitar una relación heredada se abre su origen. |
 | **Familias y permisos** | Crear familias y subfamilias, agregar componentes existentes y quitar relaciones. Los permisos simples son de consulta; una familia en uso no puede eliminarse. |
 
 **Guardar cambios** abre una revisión de las operaciones y del impacto de las familias compartidas. **Descartar** restaura la última versión confirmada sin escribir SQL. Al abandonar el módulo o recargar con una edición pendiente se puede guardar, descartar o continuar editando. Si otro administrador modificó el catálogo, el guardado rechaza el conflicto y conserva la copia de trabajo; después de descartar, **Recargar** obtiene el estado vigente.
 
-La carga consulta y valida los datos fuera del hilo de la interfaz. Durante ese proceso se muestra el estado de carga y se bloquea la edición. Las claves de traducción existentes se comprueban mediante una lectura por formulario y los cambios de idioma reutilizan las traducciones de la sesión. Las búsquedas filtran la copia en memoria y actualizan solamente su columna. La autorización, la integridad y las validaciones al guardar se mantienen.
+La carga consulta y valida los datos fuera del hilo de la interfaz. Durante ese proceso se muestra el estado de carga y se bloquea la edición. Las claves de traducción existentes se comprueban mediante una lectura por formulario y los cambios de idioma reutilizan las traducciones de la sesión. Las búsquedas filtran la copia en memoria y actualizan solamente su columna. Buscar un permiso o una familia en Roles conserva las ramas completas de los roles que lo contienen, para mostrar su procedencia. La autorización, la integridad y las validaciones al guardar se mantienen.
 
 [EdicionRoles.cs](SIGAT.BLL/EdicionRoles.cs) mantiene la copia del grafo por ID, conservando familias compartidas. Cada operación se valida antes de reemplazar el borrador. Esta edición temporal no constituye el historial de versiones de T06b.
 
