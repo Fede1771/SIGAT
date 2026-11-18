@@ -1,0 +1,48 @@
+﻿SIGAT - DIAGRAMAS ACTUALIZADOS AL 17/11/2026
+
+Abrir este archivo en Enterprise Architect:
+EA-Diagramas/Actual/SIGAT_Modelo_Actualizado.EAP
+
+En el Explorador de proyectos, expandir:
+00 - SIGAT actualizado (17-11-2026)
+
+  01 - DER completo
+       SIGAT | Diagrama entidad-relación completo (52)
+
+  02 - Clases de todo el sistema
+       SIGAT | Clases de todo el sistema (46)
+       SIGAT.BE          -> clases de entidades (47)
+       SIGAT.BLL         -> lógica de aplicación (48)
+       SIGAT.DAL         -> acceso a datos (49)
+       SIGAT.SERVICIOS   -> servicios y contratos (50)
+       SIGAT.UI          -> formularios y presentación (51)
+
+  03 - T06b Control de cambios de usuarios
+       T06b Clases del control de cambios de usuarios (43)
+       Incluye FrmGestionUsuarios y DlgHistorialUsuario.
+       Secuencia T06b
+         T06b Secuencia de consulta y restauración de versiones (45)
+
+Usar el panel Browser / Explorador de proyectos de Enterprise Architect.
+Verificar que el proyecto
+abierto se llama SIGAT_Modelo_Actualizado.EAP y está en EA-Diagramas/Actual.
+Hacer doble clic sobre el DIAGRAMA dentro del paquete para abrirlo.
+
+Para leer sin EA: abrir index.html. Para ampliar sin perder calidad:
+output/pdf/SIGAT_DER_Completo.pdf
+output/pdf/SIGAT_Diagrama_Clases_Completo.pdf
+También hay SVG en la carpeta vectoriales.
+
+Cobertura: 80 tipos propios de la aplicación en 66 archivos C#; no incluye pruebas,
+tipos del framework ni miembros de controles generados por el diseñador.
+El DER incluye las 16 tablas reales y una tabla condicional (Bitacora_Historico).
+14 claves foráneas reales; UsuarioVersion conserva referencias históricas sin FK
+a Usuarios. Los permisos de activos no implican tablas de activos implementadas.
+
+En EA se muestran operaciones principales sin parámetros para facilitar la lectura.
+Las operaciones nativas conservan sus parámetros y las notas de cada clase incluyen
+atributos, firmas y rutas de origen extraídos del código. Los PDF detallan los
+parámetros de las operaciones representadas. BE muestra todos sus atributos.
+
+La raíz 99 - Archivo del modelo (21-10-2026) es una instantánea histórica.
+No se modificó la aplicación ni los datos de SQL Server. No se ejecutó la aplicación.

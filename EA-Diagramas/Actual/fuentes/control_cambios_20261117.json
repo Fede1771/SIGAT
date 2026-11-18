@@ -1,0 +1,958 @@
+{
+  "classes": [
+    {
+      "name": "FrmGestionUsuarios",
+      "layer": "SIGAT.UI",
+      "rect": [
+        40,
+        70,
+        480,
+        155
+      ],
+      "fields": [
+        {
+          "name": "_usuarioBLL",
+          "type": "UsuarioBLL",
+          "scope": "Private"
+        },
+        {
+          "name": "_idSeleccionado",
+          "type": "int",
+          "scope": "Private"
+        }
+      ],
+      "methods": [
+        {
+          "name": "BtnHistorial_Click",
+          "type": "void",
+          "params": [
+            {
+              "name": "sender",
+              "type": "object"
+            },
+            {
+              "name": "e",
+              "type": "EventArgs"
+            }
+          ],
+          "scope": "Private",
+          "static": false
+        }
+      ],
+      "stereotype": "partial",
+      "notes": "Formulario principal de gestión de usuarios; abre, configura y presenta DlgHistorialUsuario. Si hubo restauración, limpia el borrador y recarga la grilla. Fuente: SIGAT.UI/FrmGestionUsuarios.cs."
+    },
+    {
+      "name": "DlgHistorialUsuario",
+      "layer": "SIGAT.UI",
+      "rect": [
+        40,
+        320,
+        440,
+        210
+      ],
+      "fields": [
+        {
+          "name": "servicio",
+          "type": "UsuarioBLL",
+          "scope": "Private"
+        },
+        {
+          "name": "historial",
+          "type": "HistorialUsuario?",
+          "scope": "Private"
+        },
+        {
+          "name": "HuboRestauracion",
+          "type": "bool",
+          "scope": "Public"
+        }
+      ],
+      "methods": [
+        {
+          "name": "Configurar",
+          "type": "void",
+          "params": [
+            {
+              "name": "usuarioBLL",
+              "type": "UsuarioBLL"
+            },
+            {
+              "name": "idUsuario",
+              "type": "int"
+            },
+            {
+              "name": "cambiosSinGuardar",
+              "type": "bool"
+            }
+          ],
+          "scope": "Public",
+          "static": false
+        },
+        {
+          "name": "CargarVersiones",
+          "type": "void",
+          "params": [],
+          "scope": "Private",
+          "static": false
+        },
+        {
+          "name": "MostrarDetalle",
+          "type": "void",
+          "params": [],
+          "scope": "Private",
+          "static": false
+        },
+        {
+          "name": "Restaurar",
+          "type": "void",
+          "params": [],
+          "scope": "Private",
+          "static": false
+        }
+      ],
+      "stereotype": "",
+      "notes": "Compara la versión anterior, la seleccionada y la actual. HuboRestauracion es una propiedad con setter privado. Se omiten controles del diseñador y miembros ajenos al historial."
+    },
+    {
+      "name": "UsuarioBLL",
+      "layer": "SIGAT.BLL",
+      "rect": [
+        650,
+        320,
+        500,
+        220
+      ],
+      "fields": [
+        {
+          "name": "_dal",
+          "type": "UsuarioDAL",
+          "scope": "Private"
+        }
+      ],
+      "methods": [
+        {
+          "name": "ListarCuentasConHistorial",
+          "type": "IReadOnlyList<CuentaConHistorial>",
+          "params": [],
+          "scope": "Public",
+          "static": false
+        },
+        {
+          "name": "ConsultarHistorial",
+          "type": "HistorialUsuario",
+          "params": [
+            {
+              "name": "idUsuario",
+              "type": "int"
+            }
+          ],
+          "scope": "Public",
+          "static": false
+        },
+        {
+          "name": "RestaurarVersion",
+          "type": "void",
+          "params": [
+            {
+              "name": "idUsuario",
+              "type": "int"
+            },
+            {
+              "name": "numero",
+              "type": "int"
+            },
+            {
+              "name": "versionSeguridad",
+              "type": "long"
+            }
+          ],
+          "scope": "Public",
+          "static": false
+        },
+        {
+          "name": "AutorActual",
+          "type": "AutorCambioUsuario?",
+          "params": [],
+          "scope": "Private",
+          "static": true
+        }
+      ],
+      "stereotype": "partial",
+      "notes": "Vista parcial de la clase real: solo contratos de control de cambios. Consulta RolesBLL antes de listar, consultar o restaurar. La restauración exige la misma versión de seguridad."
+    },
+    {
+      "name": "UsuarioDAL",
+      "layer": "SIGAT.DAL",
+      "rect": [
+        1340,
+        320,
+        520,
+        220
+      ],
+      "fields": [
+        {
+          "name": "integridad",
+          "type": "IntegridadDAL",
+          "scope": "Private"
+        }
+      ],
+      "methods": [
+        {
+          "name": "ListarCuentasConHistorial",
+          "type": "IReadOnlyList<CuentaConHistorial>",
+          "params": [],
+          "scope": "Public",
+          "static": false
+        },
+        {
+          "name": "ConsultarHistorial",
+          "type": "HistorialUsuario",
+          "params": [
+            {
+              "name": "idUsuario",
+              "type": "int"
+            }
+          ],
+          "scope": "Public",
+          "static": false
+        },
+        {
+          "name": "RestaurarVersion",
+          "type": "void",
+          "params": [
+            {
+              "name": "idUsuario",
+              "type": "int"
+            },
+            {
+              "name": "numero",
+              "type": "int"
+            },
+            {
+              "name": "versionSeguridad",
+              "type": "long"
+            },
+            {
+              "name": "autor",
+              "type": "AutorCambioUsuario"
+            }
+          ],
+          "scope": "Public",
+          "static": false
+        },
+        {
+          "name": "AvanzarVersionSeguridad",
+          "type": "void",
+          "params": [
+            {
+              "name": "conexion",
+              "type": "SqlConnection"
+            },
+            {
+              "name": "transaccion",
+              "type": "SqlTransaction"
+            },
+            {
+              "name": "esperada",
+              "type": "long? = null"
+            }
+          ],
+          "scope": "Package",
+          "static": true
+        }
+      ],
+      "stereotype": "partial",
+      "notes": "La restauración cambia datos y roles directos dentro de IntegridadDAL.Cambiar. Mantiene la contraseña vigente, valida el administrador original, existencia de roles y nombre único. Registra una nueva versión con VersionOrigen."
+    },
+    {
+      "name": "HistorialUsuarioDAL",
+      "layer": "SIGAT.DAL",
+      "rect": [
+        2050,
+        320,
+        600,
+        230
+      ],
+      "fields": [],
+      "methods": [
+        {
+          "name": "ExigirEsquema",
+          "type": "void",
+          "params": [
+            {
+              "name": "conexion",
+              "type": "SqlConnection"
+            },
+            {
+              "name": "transaccion",
+              "type": "SqlTransaction"
+            }
+          ],
+          "scope": "Package",
+          "static": true
+        },
+        {
+          "name": "Capturar",
+          "type": "Dictionary<int, EstadoUsuarioVersion>",
+          "params": [
+            {
+              "name": "conexion",
+              "type": "SqlConnection"
+            },
+            {
+              "name": "transaccion",
+              "type": "SqlTransaction"
+            },
+            {
+              "name": "id",
+              "type": "int? = null"
+            }
+          ],
+          "scope": "Package",
+          "static": true
+        },
+        {
+          "name": "Registrar",
+          "type": "void",
+          "params": [
+            {
+              "name": "conexion",
+              "type": "SqlConnection"
+            },
+            {
+              "name": "transaccion",
+              "type": "SqlTransaction"
+            },
+            {
+              "name": "id",
+              "type": "int"
+            },
+            {
+              "name": "estado",
+              "type": "EstadoUsuarioVersion"
+            },
+            {
+              "name": "operacion",
+              "type": "OperacionUsuarioVersion"
+            },
+            {
+              "name": "autor",
+              "type": "AutorCambioUsuario?"
+            },
+            {
+              "name": "cambioClave",
+              "type": "bool = false"
+            },
+            {
+              "name": "versionOrigen",
+              "type": "int? = null"
+            },
+            {
+              "name": "existe",
+              "type": "bool = true"
+            }
+          ],
+          "scope": "Package",
+          "static": true
+        },
+        {
+          "name": "ListarCuentas",
+          "type": "List<CuentaConHistorial>",
+          "params": [
+            {
+              "name": "conexion",
+              "type": "SqlConnection"
+            },
+            {
+              "name": "transaccion",
+              "type": "SqlTransaction"
+            }
+          ],
+          "scope": "Package",
+          "static": true
+        },
+        {
+          "name": "Consultar",
+          "type": "List<UsuarioVersion>",
+          "params": [
+            {
+              "name": "conexion",
+              "type": "SqlConnection"
+            },
+            {
+              "name": "transaccion",
+              "type": "SqlTransaction"
+            },
+            {
+              "name": "id",
+              "type": "int"
+            },
+            {
+              "name": "numero",
+              "type": "int? = null"
+            }
+          ],
+          "scope": "Package",
+          "static": true
+        }
+      ],
+      "stereotype": "static",
+      "notes": "Clase internal static. Persiste dbo.UsuarioVersion y usa la conexión y transacción del llamador. No abre una transacción independiente. Registrar calcula MAX(Version)+1 con UPDLOCK/HOLDLOCK; FechaUtc se genera en SQL. Los roles históricos se serializan como JSON. La firma completa se conserva en el modelo nativo."
+    },
+    {
+      "name": "SesionServicio",
+      "layer": "SIGAT.SERVICIOS",
+      "rect": [
+        40,
+        630,
+        440,
+        120
+      ],
+      "fields": [],
+      "methods": [
+        {
+          "name": "ObtenerInstancia",
+          "type": "SesionServicio",
+          "params": [],
+          "scope": "Public",
+          "static": true
+        },
+        {
+          "name": "ObtenerAutorCambio",
+          "type": "AutorCambioUsuario?",
+          "params": [],
+          "scope": "Public",
+          "static": false
+        }
+      ],
+      "stereotype": "Singleton",
+      "notes": "Dependencia de contexto. Solo se muestra cómo se identifica al autor del cambio."
+    },
+    {
+      "name": "RolesBLL",
+      "layer": "SIGAT.BLL",
+      "rect": [
+        650,
+        630,
+        500,
+        120
+      ],
+      "fields": [],
+      "methods": [
+        {
+          "name": "CargarParaGestion",
+          "type": "EstadoRoles",
+          "params": [],
+          "scope": "Public",
+          "static": false
+        },
+        {
+          "name": "ExigirGestion",
+          "type": "Usuario",
+          "params": [
+            {
+              "name": "estado",
+              "type": "EstadoRoles"
+            }
+          ],
+          "scope": "Package",
+          "static": true
+        }
+      ],
+      "stereotype": "partial",
+      "notes": "Dependencia de contexto: verifica una cuenta activa con Administración del sistema. No se amplía al diagrama de gestión de roles."
+    },
+    {
+      "name": "IntegridadDAL",
+      "layer": "SIGAT.DAL",
+      "rect": [
+        1340,
+        630,
+        520,
+        150
+      ],
+      "fields": [],
+      "methods": [
+        {
+          "name": "LeerVerificado<T>",
+          "type": "T",
+          "params": [
+            {
+              "name": "leer",
+              "type": "Func<SqlConnection, SqlTransaction, T>"
+            }
+          ],
+          "scope": "Public",
+          "static": false
+        },
+        {
+          "name": "Cambiar<T>",
+          "type": "T",
+          "params": [
+            {
+              "name": "tablas",
+              "type": "IReadOnlyCollection<string>"
+            },
+            {
+              "name": "cambiar",
+              "type": "Func<SqlConnection, SqlTransaction, T>"
+            }
+          ],
+          "scope": "Public",
+          "static": false
+        }
+      ],
+      "stereotype": "partial",
+      "notes": "Dependencia de contexto. Consultas y cambios transaccionales Serializable; verifica y actualiza DVH/DVV. Las versiones y los cambios de cuenta se confirman o revierten juntos."
+    },
+    {
+      "name": "HistorialUsuario",
+      "layer": "SIGAT.BE",
+      "rect": [
+        40,
+        940,
+        440,
+        150
+      ],
+      "fields": [
+        {
+          "name": "VersionSeguridad",
+          "type": "long",
+          "scope": "Public"
+        },
+        {
+          "name": "EstadoActual",
+          "type": "EstadoUsuarioVersion?",
+          "scope": "Public"
+        },
+        {
+          "name": "Versiones",
+          "type": "IReadOnlyList<UsuarioVersion>",
+          "scope": "Public"
+        }
+      ],
+      "methods": [],
+      "stereotype": "record",
+      "notes": ""
+    },
+    {
+      "name": "UsuarioVersion",
+      "layer": "SIGAT.BE",
+      "rect": [
+        650,
+        940,
+        500,
+        270
+      ],
+      "fields": [
+        {
+          "name": "IdUsuario",
+          "type": "int",
+          "scope": "Public"
+        },
+        {
+          "name": "Numero",
+          "type": "int",
+          "scope": "Public"
+        },
+        {
+          "name": "FechaUtc",
+          "type": "DateTime",
+          "scope": "Public"
+        },
+        {
+          "name": "Autor",
+          "type": "AutorCambioUsuario",
+          "scope": "Public"
+        },
+        {
+          "name": "Operacion",
+          "type": "OperacionUsuarioVersion",
+          "scope": "Public"
+        },
+        {
+          "name": "Estado",
+          "type": "EstadoUsuarioVersion",
+          "scope": "Public"
+        },
+        {
+          "name": "Existe",
+          "type": "bool",
+          "scope": "Public"
+        },
+        {
+          "name": "CambioClave",
+          "type": "bool",
+          "scope": "Public"
+        },
+        {
+          "name": "VersionOrigen",
+          "type": "int?",
+          "scope": "Public"
+        }
+      ],
+      "methods": [],
+      "stereotype": "record",
+      "notes": "Instantánea de la cuenta en una operación. No contiene contraseña ni hash: CambioClave solo informa si cambió la credencial."
+    },
+    {
+      "name": "EstadoUsuarioVersion",
+      "layer": "SIGAT.BE",
+      "rect": [
+        1340,
+        940,
+        520,
+        220
+      ],
+      "fields": [
+        {
+          "name": "NombreUsuario",
+          "type": "string",
+          "scope": "Public"
+        },
+        {
+          "name": "Nombre",
+          "type": "string",
+          "scope": "Public"
+        },
+        {
+          "name": "Apellido",
+          "type": "string",
+          "scope": "Public"
+        },
+        {
+          "name": "Activo",
+          "type": "bool",
+          "scope": "Public"
+        },
+        {
+          "name": "Roles",
+          "type": "IReadOnlyList<RolVersionUsuario>",
+          "scope": "Public"
+        }
+      ],
+      "methods": [
+        {
+          "name": "MismosRolesQue",
+          "type": "bool",
+          "params": [
+            {
+              "name": "otro",
+              "type": "EstadoUsuarioVersion"
+            }
+          ],
+          "scope": "Public",
+          "static": false
+        },
+        {
+          "name": "CoincideCon",
+          "type": "bool",
+          "params": [
+            {
+              "name": "otro",
+              "type": "EstadoUsuarioVersion"
+            }
+          ],
+          "scope": "Public",
+          "static": false
+        }
+      ],
+      "stereotype": "record",
+      "notes": "Estado recomponible: datos personales, estado y roles directos. No representa las versiones históricas de la composición de los roles."
+    },
+    {
+      "name": "CuentaConHistorial",
+      "layer": "SIGAT.BE",
+      "rect": [
+        40,
+        1260,
+        440,
+        120
+      ],
+      "fields": [
+        {
+          "name": "IdUsuario",
+          "type": "int",
+          "scope": "Public"
+        },
+        {
+          "name": "NombreUsuario",
+          "type": "string",
+          "scope": "Public"
+        },
+        {
+          "name": "Existe",
+          "type": "bool",
+          "scope": "Public"
+        }
+      ],
+      "methods": [],
+      "stereotype": "record",
+      "notes": "Contrato del selector de cuentas; permite consultar también cuentas retiradas con historial."
+    },
+    {
+      "name": "AutorCambioUsuario",
+      "layer": "SIGAT.BE",
+      "rect": [
+        650,
+        1330,
+        220,
+        110
+      ],
+      "fields": [
+        {
+          "name": "IdUsuario",
+          "type": "int?",
+          "scope": "Public"
+        },
+        {
+          "name": "Nombre",
+          "type": "string",
+          "scope": "Public"
+        }
+      ],
+      "methods": [],
+      "stereotype": "record",
+      "notes": ""
+    },
+    {
+      "name": "OperacionUsuarioVersion",
+      "layer": "SIGAT.BE",
+      "rect": [
+        920,
+        1330,
+        230,
+        210
+      ],
+      "fields": [
+        {
+          "name": "EstadoInicial",
+          "type": "",
+          "scope": "Public"
+        },
+        {
+          "name": "Alta",
+          "type": "",
+          "scope": "Public"
+        },
+        {
+          "name": "Edicion",
+          "type": "",
+          "scope": "Public"
+        },
+        {
+          "name": "Baja",
+          "type": "",
+          "scope": "Public"
+        },
+        {
+          "name": "Reactivacion",
+          "type": "",
+          "scope": "Public"
+        },
+        {
+          "name": "Roles",
+          "type": "",
+          "scope": "Public"
+        },
+        {
+          "name": "Restauracion",
+          "type": "",
+          "scope": "Public"
+        },
+        {
+          "name": "Recuperacion",
+          "type": "",
+          "scope": "Public"
+        }
+      ],
+      "methods": [],
+      "stereotype": "enumeration",
+      "notes": ""
+    },
+    {
+      "name": "RolVersionUsuario",
+      "layer": "SIGAT.BE",
+      "rect": [
+        1340,
+        1330,
+        520,
+        110
+      ],
+      "fields": [
+        {
+          "name": "Id",
+          "type": "int",
+          "scope": "Public"
+        },
+        {
+          "name": "Nombre",
+          "type": "string",
+          "scope": "Public"
+        }
+      ],
+      "methods": [],
+      "stereotype": "record",
+      "notes": "Referencia histórica al rol directo. Al restaurar se exige que el rol siga existiendo y se aplican sus permisos vigentes."
+    }
+  ],
+  "edges": [
+    {
+      "a": "DlgHistorialUsuario",
+      "b": "UsuarioBLL",
+      "kind": "Association",
+      "label": "",
+      "role": "servicio",
+      "mult": "1"
+    },
+    {
+      "a": "UsuarioBLL",
+      "b": "UsuarioDAL",
+      "kind": "Association",
+      "label": "",
+      "role": "_dal",
+      "mult": "1"
+    },
+    {
+      "a": "UsuarioDAL",
+      "b": "HistorialUsuarioDAL",
+      "kind": "Dependency",
+      "label": "captura / registra / consulta",
+      "role": "",
+      "mult": ""
+    },
+    {
+      "a": "UsuarioBLL",
+      "b": "SesionServicio",
+      "kind": "Dependency",
+      "label": "obtiene autor",
+      "role": "",
+      "mult": ""
+    },
+    {
+      "a": "UsuarioBLL",
+      "b": "RolesBLL",
+      "kind": "Dependency",
+      "label": "autoriza",
+      "role": "",
+      "mult": ""
+    },
+    {
+      "a": "UsuarioDAL",
+      "b": "IntegridadDAL",
+      "kind": "Association",
+      "label": "",
+      "role": "integridad",
+      "mult": "1"
+    },
+    {
+      "a": "DlgHistorialUsuario",
+      "b": "HistorialUsuario",
+      "kind": "Association",
+      "label": "",
+      "role": "historial",
+      "mult": "0..1"
+    },
+    {
+      "a": "HistorialUsuario",
+      "b": "UsuarioVersion",
+      "kind": "Association",
+      "label": "",
+      "role": "Versiones",
+      "mult": "0..*"
+    },
+    {
+      "a": "HistorialUsuario",
+      "b": "EstadoUsuarioVersion",
+      "kind": "Association",
+      "label": "",
+      "role": "EstadoActual",
+      "mult": "0..1"
+    },
+    {
+      "a": "UsuarioVersion",
+      "b": "EstadoUsuarioVersion",
+      "kind": "Association",
+      "label": "",
+      "role": "Estado",
+      "mult": "1"
+    },
+    {
+      "a": "UsuarioVersion",
+      "b": "AutorCambioUsuario",
+      "kind": "Association",
+      "label": "",
+      "role": "Autor",
+      "mult": "1"
+    },
+    {
+      "a": "UsuarioVersion",
+      "b": "OperacionUsuarioVersion",
+      "kind": "Association",
+      "label": "",
+      "role": "Operacion",
+      "mult": "1"
+    },
+    {
+      "a": "EstadoUsuarioVersion",
+      "b": "RolVersionUsuario",
+      "kind": "Association",
+      "label": "",
+      "role": "Roles",
+      "mult": "0..*"
+    },
+    {
+      "a": "FrmGestionUsuarios",
+      "b": "DlgHistorialUsuario",
+      "kind": "Dependency",
+      "label": "crea / configura / abre",
+      "role": "",
+      "mult": ""
+    },
+    {
+      "a": "FrmGestionUsuarios",
+      "b": "UsuarioBLL",
+      "kind": "Association",
+      "label": "",
+      "role": "_usuarioBLL",
+      "mult": "1"
+    }
+  ],
+  "notes": [
+    {
+      "rect": [
+        2050,
+        690,
+        600,
+        260
+      ],
+      "text": "T06b - Control de cambios de cuentas de usuario\n\nQUIEN: AutorCambioUsuario (ID y nombre).\nCUANDO: UsuarioVersion.FechaUtc.\nQUE: operación, instantánea de datos y roles, CambioClave.\nRECOMPONER: consultar una versión y restaurarla crea una versión nueva con VersionOrigen; conserva la contraseña actual.\n\nAlcance: cuentas y roles directos. No es el historial de la composición de roles ni una restauración completa de SQL."
+    },
+    {
+      "rect": [
+        2050,
+        1030,
+        600,
+        320
+      ],
+      "text": "Integración y reglas\n\nUsuarioDAL registra alta, edición, baja y reactivación.\nRolesDAL registra cambios de asignaciones directas.\nIntegridadDAL registra recuperaciones de cuentas.\n\nLa autorización se comprueba en BLL; la concurrencia se controla con VersionSeguridad. Datos, roles, versiones y DV se confirman en una misma transacción.\n\nSe omiten miembros ajenos a T06b. «partial» indica una vista parcial de una clase existente, no una nueva clase ni un patrón adicional. Los tipos record corresponden al código C# actual.\nFirmas completas con parámetros disponibles en las propiedades de cada operación en EA."
+    }
+  ],
+  "fecha": "2026-11-17",
+  "diagramId": 43,
+  "diagramGuid": "{A5650838-BBB0-465e-8A2E-0F1B83FE6B94}",
+  "otras_vistas_sin_cambios": true,
+  "sourceHashes": {
+    "SIGAT.BE/UsuarioVersion.cs": "32eb2a96a1661a9ba32f60ac4f9cc8b7c59d5675cf0b8d9473bfcfbe51f6bdd5",
+    "SIGAT.BLL/UsuarioBLL.cs": "1069377b6186d3bed63dfc06d8e31728d8a40897d1ec8dc903b3a4ef74545cfe",
+    "SIGAT.DAL/UsuarioDAL.cs": "76b175f894b5da722a630cf2030e5cec8eeda9931b897427601933ee01db3df6",
+    "SIGAT.DAL/HistorialUsuarioDAL.cs": "5f1f10ab0a0af6714d21bc9d3a1b051dc7d6c4ab1b24a9f059eb013e0b8b08ff",
+    "SIGAT.BLL/RolesBLL.cs": "e25e294fec0bba78e615250dca102d4b336f1c5c5c5c76d153b55172302feb76",
+    "SIGAT.DAL/IntegridadDAL.cs": "486a691a5fee16627c39650afe33ee1747b777fcf6e5e1af32a7e98e9ed15923",
+    "SIGAT.SERVICIOS/SesionServicio.cs": "3296c65c766a1481fb082f44b624b08f983ed47991cbae071620777f2d6eaf26",
+    "SIGAT.UI/DlgHistorialUsuario.cs": "05489db5960f479ceef84addeb4a4c8728ec16685150bd6058357d86247a27e0",
+    "SIGAT.DAL/RolesDAL.cs": "f769cde47e6c90bfefe28ab056dd0c1e6544a1d75ee45f27f604cb368d1080ea",
+    "SIGAT.UI/FrmGestionUsuarios.cs": "78f3ad708292da65bbc15a5316f9434e76809ce9f429992ef0a80adb2a574df9"
+  }
+}

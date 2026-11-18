@@ -1,0 +1,1191 @@
+{
+  "tablas": [
+    {
+      "tabla": "AdministradorOriginal"
+    },
+    {
+      "tabla": "Bitacora"
+    },
+    {
+      "tabla": "Control"
+    },
+    {
+      "tabla": "Idioma"
+    },
+    {
+      "tabla": "IntegridadTabla"
+    },
+    {
+      "tabla": "Permiso"
+    },
+    {
+      "tabla": "PermisoHijo"
+    },
+    {
+      "tabla": "Rol"
+    },
+    {
+      "tabla": "RolHijo"
+    },
+    {
+      "tabla": "RolPermiso"
+    },
+    {
+      "tabla": "SeguridadVersion"
+    },
+    {
+      "tabla": "Traduccion"
+    },
+    {
+      "tabla": "UsuarioIdioma"
+    },
+    {
+      "tabla": "UsuarioRol"
+    },
+    {
+      "tabla": "Usuarios"
+    },
+    {
+      "tabla": "UsuarioVersion"
+    }
+  ],
+  "columnas": [
+    {
+      "tabla": "AdministradorOriginal",
+      "orden": 1,
+      "columna": "Id",
+      "tipo": "int",
+      "longitud": 4,
+      "precision": 10,
+      "scale": 0,
+      "nulo": false,
+      "identidad": false,
+      "pk": 1
+    },
+    {
+      "tabla": "AdministradorOriginal",
+      "orden": 2,
+      "columna": "IdUsuario",
+      "tipo": "int",
+      "longitud": 4,
+      "precision": 10,
+      "scale": 0,
+      "nulo": false,
+      "identidad": false,
+      "pk": 0
+    },
+    {
+      "tabla": "Bitacora",
+      "orden": 1,
+      "columna": "IdBitacora",
+      "tipo": "int",
+      "longitud": 4,
+      "precision": 10,
+      "scale": 0,
+      "nulo": false,
+      "identidad": true,
+      "pk": 1
+    },
+    {
+      "tabla": "Bitacora",
+      "orden": 2,
+      "columna": "Fecha",
+      "tipo": "datetime",
+      "longitud": 8,
+      "precision": 23,
+      "scale": 3,
+      "nulo": false,
+      "identidad": false,
+      "pk": 0
+    },
+    {
+      "tabla": "Bitacora",
+      "orden": 3,
+      "columna": "Usuario",
+      "tipo": "varchar",
+      "longitud": 50,
+      "precision": 0,
+      "scale": 0,
+      "nulo": false,
+      "identidad": false,
+      "pk": 0
+    },
+    {
+      "tabla": "Bitacora",
+      "orden": 4,
+      "columna": "Actividad",
+      "tipo": "varchar",
+      "longitud": 255,
+      "precision": 0,
+      "scale": 0,
+      "nulo": false,
+      "identidad": false,
+      "pk": 0
+    },
+    {
+      "tabla": "Bitacora",
+      "orden": 5,
+      "columna": "InformacionAsociada",
+      "tipo": "nvarchar",
+      "longitud": -1,
+      "precision": 0,
+      "scale": 0,
+      "nulo": true,
+      "identidad": false,
+      "pk": 0
+    },
+    {
+      "tabla": "Bitacora",
+      "orden": 6,
+      "columna": "DigitoVerificador",
+      "tipo": "nvarchar",
+      "longitud": 500,
+      "precision": 0,
+      "scale": 0,
+      "nulo": true,
+      "identidad": false,
+      "pk": 0
+    },
+    {
+      "tabla": "Control",
+      "orden": 1,
+      "columna": "Id",
+      "tipo": "int",
+      "longitud": 4,
+      "precision": 10,
+      "scale": 0,
+      "nulo": false,
+      "identidad": true,
+      "pk": 1
+    },
+    {
+      "tabla": "Control",
+      "orden": 2,
+      "columna": "Control",
+      "tipo": "varchar",
+      "longitud": 100,
+      "precision": 0,
+      "scale": 0,
+      "nulo": false,
+      "identidad": false,
+      "pk": 0
+    },
+    {
+      "tabla": "Control",
+      "orden": 3,
+      "columna": "Form",
+      "tipo": "varchar",
+      "longitud": 100,
+      "precision": 0,
+      "scale": 0,
+      "nulo": false,
+      "identidad": false,
+      "pk": 0
+    },
+    {
+      "tabla": "Idioma",
+      "orden": 1,
+      "columna": "Id",
+      "tipo": "int",
+      "longitud": 4,
+      "precision": 10,
+      "scale": 0,
+      "nulo": false,
+      "identidad": true,
+      "pk": 1
+    },
+    {
+      "tabla": "Idioma",
+      "orden": 2,
+      "columna": "Nombre",
+      "tipo": "varchar",
+      "longitud": 50,
+      "precision": 0,
+      "scale": 0,
+      "nulo": false,
+      "identidad": false,
+      "pk": 0
+    },
+    {
+      "tabla": "Idioma",
+      "orden": 3,
+      "columna": "Codigo",
+      "tipo": "varchar",
+      "longitud": 10,
+      "precision": 0,
+      "scale": 0,
+      "nulo": false,
+      "identidad": false,
+      "pk": 0
+    },
+    {
+      "tabla": "Idioma",
+      "orden": 4,
+      "columna": "NombreNativo",
+      "tipo": "nvarchar",
+      "longitud": 200,
+      "precision": 0,
+      "scale": 0,
+      "nulo": true,
+      "identidad": false,
+      "pk": 0
+    },
+    {
+      "tabla": "Idioma",
+      "orden": 5,
+      "columna": "Activo",
+      "tipo": "bit",
+      "longitud": 1,
+      "precision": 1,
+      "scale": 0,
+      "nulo": false,
+      "identidad": false,
+      "pk": 0,
+      "predeterminado": "((1))"
+    },
+    {
+      "tabla": "IntegridadTabla",
+      "orden": 1,
+      "columna": "Tabla",
+      "tipo": "nvarchar",
+      "longitud": 60,
+      "precision": 0,
+      "scale": 0,
+      "nulo": false,
+      "identidad": false,
+      "pk": 1
+    },
+    {
+      "tabla": "IntegridadTabla",
+      "orden": 2,
+      "columna": "HashVertical",
+      "tipo": "char",
+      "longitud": 64,
+      "precision": 0,
+      "scale": 0,
+      "nulo": false,
+      "identidad": false,
+      "pk": 0
+    },
+    {
+      "tabla": "IntegridadTabla",
+      "orden": 3,
+      "columna": "Cantidad",
+      "tipo": "bigint",
+      "longitud": 8,
+      "precision": 19,
+      "scale": 0,
+      "nulo": false,
+      "identidad": false,
+      "pk": 0
+    },
+    {
+      "tabla": "IntegridadTabla",
+      "orden": 4,
+      "columna": "IdBase",
+      "tipo": "uniqueidentifier",
+      "longitud": 16,
+      "precision": 0,
+      "scale": 0,
+      "nulo": false,
+      "identidad": false,
+      "pk": 0
+    },
+    {
+      "tabla": "IntegridadTabla",
+      "orden": 5,
+      "columna": "Version",
+      "tipo": "int",
+      "longitud": 4,
+      "precision": 10,
+      "scale": 0,
+      "nulo": false,
+      "identidad": false,
+      "pk": 0
+    },
+    {
+      "tabla": "Permiso",
+      "orden": 1,
+      "columna": "Id",
+      "tipo": "int",
+      "longitud": 4,
+      "precision": 10,
+      "scale": 0,
+      "nulo": false,
+      "identidad": false,
+      "pk": 1
+    },
+    {
+      "tabla": "Permiso",
+      "orden": 2,
+      "columna": "Nombre",
+      "tipo": "nvarchar",
+      "longitud": 300,
+      "precision": 0,
+      "scale": 0,
+      "nulo": false,
+      "identidad": false,
+      "pk": 0
+    },
+    {
+      "tabla": "Permiso",
+      "orden": 3,
+      "columna": "EsCompuesto",
+      "tipo": "bit",
+      "longitud": 1,
+      "precision": 1,
+      "scale": 0,
+      "nulo": false,
+      "identidad": false,
+      "pk": 0
+    },
+    {
+      "tabla": "PermisoHijo",
+      "orden": 1,
+      "columna": "IdPadre",
+      "tipo": "int",
+      "longitud": 4,
+      "precision": 10,
+      "scale": 0,
+      "nulo": false,
+      "identidad": false,
+      "pk": 1
+    },
+    {
+      "tabla": "PermisoHijo",
+      "orden": 2,
+      "columna": "IdHijo",
+      "tipo": "int",
+      "longitud": 4,
+      "precision": 10,
+      "scale": 0,
+      "nulo": false,
+      "identidad": false,
+      "pk": 2
+    },
+    {
+      "tabla": "Rol",
+      "orden": 1,
+      "columna": "Id",
+      "tipo": "int",
+      "longitud": 4,
+      "precision": 10,
+      "scale": 0,
+      "nulo": false,
+      "identidad": false,
+      "pk": 1
+    },
+    {
+      "tabla": "Rol",
+      "orden": 2,
+      "columna": "Nombre",
+      "tipo": "nvarchar",
+      "longitud": 300,
+      "precision": 0,
+      "scale": 0,
+      "nulo": false,
+      "identidad": false,
+      "pk": 0
+    },
+    {
+      "tabla": "RolHijo",
+      "orden": 1,
+      "columna": "IdPadre",
+      "tipo": "int",
+      "longitud": 4,
+      "precision": 10,
+      "scale": 0,
+      "nulo": false,
+      "identidad": false,
+      "pk": 1
+    },
+    {
+      "tabla": "RolHijo",
+      "orden": 2,
+      "columna": "IdHijo",
+      "tipo": "int",
+      "longitud": 4,
+      "precision": 10,
+      "scale": 0,
+      "nulo": false,
+      "identidad": false,
+      "pk": 2
+    },
+    {
+      "tabla": "RolPermiso",
+      "orden": 1,
+      "columna": "IdRol",
+      "tipo": "int",
+      "longitud": 4,
+      "precision": 10,
+      "scale": 0,
+      "nulo": false,
+      "identidad": false,
+      "pk": 1
+    },
+    {
+      "tabla": "RolPermiso",
+      "orden": 2,
+      "columna": "IdPermiso",
+      "tipo": "int",
+      "longitud": 4,
+      "precision": 10,
+      "scale": 0,
+      "nulo": false,
+      "identidad": false,
+      "pk": 2
+    },
+    {
+      "tabla": "SeguridadVersion",
+      "orden": 1,
+      "columna": "Id",
+      "tipo": "int",
+      "longitud": 4,
+      "precision": 10,
+      "scale": 0,
+      "nulo": false,
+      "identidad": false,
+      "pk": 1
+    },
+    {
+      "tabla": "SeguridadVersion",
+      "orden": 2,
+      "columna": "Version",
+      "tipo": "bigint",
+      "longitud": 8,
+      "precision": 19,
+      "scale": 0,
+      "nulo": false,
+      "identidad": false,
+      "pk": 0
+    },
+    {
+      "tabla": "SeguridadVersion",
+      "orden": 3,
+      "columna": "Esquema",
+      "tipo": "int",
+      "longitud": 4,
+      "precision": 10,
+      "scale": 0,
+      "nulo": false,
+      "identidad": false,
+      "pk": 0
+    },
+    {
+      "tabla": "Traduccion",
+      "orden": 1,
+      "columna": "Id_Idioma",
+      "tipo": "int",
+      "longitud": 4,
+      "precision": 10,
+      "scale": 0,
+      "nulo": false,
+      "identidad": false,
+      "pk": 1
+    },
+    {
+      "tabla": "Traduccion",
+      "orden": 2,
+      "columna": "Id_Control",
+      "tipo": "int",
+      "longitud": 4,
+      "precision": 10,
+      "scale": 0,
+      "nulo": false,
+      "identidad": false,
+      "pk": 2
+    },
+    {
+      "tabla": "Traduccion",
+      "orden": 3,
+      "columna": "Texto",
+      "tipo": "nvarchar",
+      "longitud": 1000,
+      "precision": 0,
+      "scale": 0,
+      "nulo": true,
+      "identidad": false,
+      "pk": 0
+    },
+    {
+      "tabla": "Traduccion",
+      "orden": 4,
+      "columna": "DigitoVerificador",
+      "tipo": "char",
+      "longitud": 64,
+      "precision": 0,
+      "scale": 0,
+      "nulo": true,
+      "identidad": false,
+      "pk": 0
+    },
+    {
+      "tabla": "Traduccion",
+      "orden": 5,
+      "columna": "Estado",
+      "tipo": "varchar",
+      "longitud": 20,
+      "precision": 0,
+      "scale": 0,
+      "nulo": false,
+      "identidad": false,
+      "pk": 0,
+      "predeterminado": "('Completa')"
+    },
+    {
+      "tabla": "UsuarioIdioma",
+      "orden": 1,
+      "columna": "IdUsuario",
+      "tipo": "int",
+      "longitud": 4,
+      "precision": 10,
+      "scale": 0,
+      "nulo": false,
+      "identidad": false,
+      "pk": 1
+    },
+    {
+      "tabla": "UsuarioIdioma",
+      "orden": 2,
+      "columna": "IdIdioma",
+      "tipo": "int",
+      "longitud": 4,
+      "precision": 10,
+      "scale": 0,
+      "nulo": false,
+      "identidad": false,
+      "pk": 0
+    },
+    {
+      "tabla": "UsuarioRol",
+      "orden": 1,
+      "columna": "IdUsuario",
+      "tipo": "int",
+      "longitud": 4,
+      "precision": 10,
+      "scale": 0,
+      "nulo": false,
+      "identidad": false,
+      "pk": 1
+    },
+    {
+      "tabla": "UsuarioRol",
+      "orden": 2,
+      "columna": "IdRol",
+      "tipo": "int",
+      "longitud": 4,
+      "precision": 10,
+      "scale": 0,
+      "nulo": false,
+      "identidad": false,
+      "pk": 2
+    },
+    {
+      "tabla": "UsuarioRol",
+      "orden": 3,
+      "columna": "DigitoVerificador",
+      "tipo": "char",
+      "longitud": 64,
+      "precision": 0,
+      "scale": 0,
+      "nulo": true,
+      "identidad": false,
+      "pk": 0
+    },
+    {
+      "tabla": "Usuarios",
+      "orden": 1,
+      "columna": "IdUsuario",
+      "tipo": "int",
+      "longitud": 4,
+      "precision": 10,
+      "scale": 0,
+      "nulo": false,
+      "identidad": true,
+      "pk": 1
+    },
+    {
+      "tabla": "Usuarios",
+      "orden": 2,
+      "columna": "NombreUsuario",
+      "tipo": "varchar",
+      "longitud": 50,
+      "precision": 0,
+      "scale": 0,
+      "nulo": false,
+      "identidad": false,
+      "pk": 0
+    },
+    {
+      "tabla": "Usuarios",
+      "orden": 3,
+      "columna": "Password",
+      "tipo": "varchar",
+      "longitud": 256,
+      "precision": 0,
+      "scale": 0,
+      "nulo": false,
+      "identidad": false,
+      "pk": 0
+    },
+    {
+      "tabla": "Usuarios",
+      "orden": 4,
+      "columna": "Nombre",
+      "tipo": "varchar",
+      "longitud": 100,
+      "precision": 0,
+      "scale": 0,
+      "nulo": false,
+      "identidad": false,
+      "pk": 0
+    },
+    {
+      "tabla": "Usuarios",
+      "orden": 5,
+      "columna": "Apellido",
+      "tipo": "varchar",
+      "longitud": 100,
+      "precision": 0,
+      "scale": 0,
+      "nulo": false,
+      "identidad": false,
+      "pk": 0
+    },
+    {
+      "tabla": "Usuarios",
+      "orden": 6,
+      "columna": "Activo",
+      "tipo": "bit",
+      "longitud": 1,
+      "precision": 1,
+      "scale": 0,
+      "nulo": false,
+      "identidad": false,
+      "pk": 0,
+      "predeterminado": "((1))"
+    },
+    {
+      "tabla": "Usuarios",
+      "orden": 8,
+      "columna": "DigitoVerificador",
+      "tipo": "char",
+      "longitud": 64,
+      "precision": 0,
+      "scale": 0,
+      "nulo": true,
+      "identidad": false,
+      "pk": 0
+    },
+    {
+      "tabla": "UsuarioVersion",
+      "orden": 1,
+      "columna": "IdUsuario",
+      "tipo": "int",
+      "longitud": 4,
+      "precision": 10,
+      "scale": 0,
+      "nulo": false,
+      "identidad": false,
+      "pk": 1
+    },
+    {
+      "tabla": "UsuarioVersion",
+      "orden": 2,
+      "columna": "Version",
+      "tipo": "int",
+      "longitud": 4,
+      "precision": 10,
+      "scale": 0,
+      "nulo": false,
+      "identidad": false,
+      "pk": 2
+    },
+    {
+      "tabla": "UsuarioVersion",
+      "orden": 3,
+      "columna": "FechaUtc",
+      "tipo": "datetime2",
+      "longitud": 8,
+      "precision": 27,
+      "scale": 7,
+      "nulo": false,
+      "identidad": false,
+      "pk": 0,
+      "predeterminado": "(sysutcdatetime())"
+    },
+    {
+      "tabla": "UsuarioVersion",
+      "orden": 4,
+      "columna": "IdActor",
+      "tipo": "int",
+      "longitud": 4,
+      "precision": 10,
+      "scale": 0,
+      "nulo": true,
+      "identidad": false,
+      "pk": 0
+    },
+    {
+      "tabla": "UsuarioVersion",
+      "orden": 5,
+      "columna": "Actor",
+      "tipo": "nvarchar",
+      "longitud": 512,
+      "precision": 0,
+      "scale": 0,
+      "nulo": false,
+      "identidad": false,
+      "pk": 0
+    },
+    {
+      "tabla": "UsuarioVersion",
+      "orden": 6,
+      "columna": "Operacion",
+      "tipo": "varchar",
+      "longitud": 24,
+      "precision": 0,
+      "scale": 0,
+      "nulo": false,
+      "identidad": false,
+      "pk": 0
+    },
+    {
+      "tabla": "UsuarioVersion",
+      "orden": 7,
+      "columna": "NombreUsuario",
+      "tipo": "varchar",
+      "longitud": 50,
+      "precision": 0,
+      "scale": 0,
+      "nulo": false,
+      "identidad": false,
+      "pk": 0
+    },
+    {
+      "tabla": "UsuarioVersion",
+      "orden": 8,
+      "columna": "Nombre",
+      "tipo": "varchar",
+      "longitud": 100,
+      "precision": 0,
+      "scale": 0,
+      "nulo": false,
+      "identidad": false,
+      "pk": 0
+    },
+    {
+      "tabla": "UsuarioVersion",
+      "orden": 9,
+      "columna": "Apellido",
+      "tipo": "varchar",
+      "longitud": 100,
+      "precision": 0,
+      "scale": 0,
+      "nulo": false,
+      "identidad": false,
+      "pk": 0
+    },
+    {
+      "tabla": "UsuarioVersion",
+      "orden": 10,
+      "columna": "Activo",
+      "tipo": "bit",
+      "longitud": 1,
+      "precision": 1,
+      "scale": 0,
+      "nulo": false,
+      "identidad": false,
+      "pk": 0
+    },
+    {
+      "tabla": "UsuarioVersion",
+      "orden": 11,
+      "columna": "Roles",
+      "tipo": "nvarchar",
+      "longitud": -1,
+      "precision": 0,
+      "scale": 0,
+      "nulo": false,
+      "identidad": false,
+      "pk": 0
+    },
+    {
+      "tabla": "UsuarioVersion",
+      "orden": 12,
+      "columna": "Existe",
+      "tipo": "bit",
+      "longitud": 1,
+      "precision": 1,
+      "scale": 0,
+      "nulo": false,
+      "identidad": false,
+      "pk": 0
+    },
+    {
+      "tabla": "UsuarioVersion",
+      "orden": 13,
+      "columna": "CambioClave",
+      "tipo": "bit",
+      "longitud": 1,
+      "precision": 1,
+      "scale": 0,
+      "nulo": false,
+      "identidad": false,
+      "pk": 0
+    },
+    {
+      "tabla": "UsuarioVersion",
+      "orden": 14,
+      "columna": "VersionOrigen",
+      "tipo": "int",
+      "longitud": 4,
+      "precision": 10,
+      "scale": 0,
+      "nulo": true,
+      "identidad": false,
+      "pk": 0
+    }
+  ],
+  "claves_foraneas": [
+    {
+      "nombre": "FK__Administr__IdUsu__05D8E0BE",
+      "origen": "AdministradorOriginal",
+      "columna_origen": "IdUsuario",
+      "destino": "Usuarios",
+      "columna_destino": "IdUsuario",
+      "orden": 1
+    },
+    {
+      "nombre": "FK__PermisoHi__IdHij__0F624AF8",
+      "origen": "PermisoHijo",
+      "columna_origen": "IdHijo",
+      "destino": "Permiso",
+      "columna_destino": "Id",
+      "orden": 1
+    },
+    {
+      "nombre": "FK__PermisoHi__IdPad__0E6E26BF",
+      "origen": "PermisoHijo",
+      "columna_origen": "IdPadre",
+      "destino": "Permiso",
+      "columna_destino": "Id",
+      "orden": 1
+    },
+    {
+      "nombre": "FK__RolHijo__IdHijo__09A971A2",
+      "origen": "RolHijo",
+      "columna_origen": "IdHijo",
+      "destino": "Rol",
+      "columna_destino": "Id",
+      "orden": 1
+    },
+    {
+      "nombre": "FK__RolHijo__IdPadre__08B54D69",
+      "origen": "RolHijo",
+      "columna_origen": "IdPadre",
+      "destino": "Rol",
+      "columna_destino": "Id",
+      "orden": 1
+    },
+    {
+      "nombre": "FK__RolPermis__IdPer__7C4F7684",
+      "origen": "RolPermiso",
+      "columna_origen": "IdPermiso",
+      "destino": "Permiso",
+      "columna_destino": "Id",
+      "orden": 1
+    },
+    {
+      "nombre": "FK__RolPermis__IdRol__7B5B524B",
+      "origen": "RolPermiso",
+      "columna_origen": "IdRol",
+      "destino": "Rol",
+      "columna_destino": "Id",
+      "orden": 1
+    },
+    {
+      "nombre": "FK__UsuarioRo__IdRol__01142BA1",
+      "origen": "UsuarioRol",
+      "columna_origen": "IdRol",
+      "destino": "Rol",
+      "columna_destino": "Id",
+      "orden": 1
+    },
+    {
+      "nombre": "FK__UsuarioRo__IdUsu__00200768",
+      "origen": "UsuarioRol",
+      "columna_origen": "IdUsuario",
+      "destino": "Usuarios",
+      "columna_destino": "IdUsuario",
+      "orden": 1
+    },
+    {
+      "nombre": "FK_Traduccion_Control",
+      "origen": "Traduccion",
+      "columna_origen": "Id_Control",
+      "destino": "Control",
+      "columna_destino": "Id",
+      "orden": 1
+    },
+    {
+      "nombre": "FK_Traduccion_Idioma",
+      "origen": "Traduccion",
+      "columna_origen": "Id_Idioma",
+      "destino": "Idioma",
+      "columna_destino": "Id",
+      "orden": 1
+    },
+    {
+      "nombre": "FK_UsuarioIdioma_Idioma",
+      "origen": "UsuarioIdioma",
+      "columna_origen": "IdIdioma",
+      "destino": "Idioma",
+      "columna_destino": "Id",
+      "orden": 1
+    },
+    {
+      "nombre": "FK_UsuarioIdioma_Usuario",
+      "origen": "UsuarioIdioma",
+      "columna_origen": "IdUsuario",
+      "destino": "Usuarios",
+      "columna_destino": "IdUsuario",
+      "orden": 1
+    },
+    {
+      "nombre": "FK_UsuarioVersion_Origen",
+      "origen": "UsuarioVersion",
+      "columna_origen": "IdUsuario",
+      "destino": "UsuarioVersion",
+      "columna_destino": "IdUsuario",
+      "orden": 1
+    },
+    {
+      "nombre": "FK_UsuarioVersion_Origen",
+      "origen": "UsuarioVersion",
+      "columna_origen": "VersionOrigen",
+      "destino": "UsuarioVersion",
+      "columna_destino": "Version",
+      "orden": 2
+    }
+  ],
+  "unicas": [
+    {
+      "tabla": "AdministradorOriginal",
+      "indice": "PK__Administ__3214EC07A676F597",
+      "pk": true,
+      "orden": 1,
+      "columna": "Id"
+    },
+    {
+      "tabla": "AdministradorOriginal",
+      "indice": "UQ__Administ__5B65BF96BF4DFBD0",
+      "pk": false,
+      "orden": 1,
+      "columna": "IdUsuario"
+    },
+    {
+      "tabla": "Bitacora",
+      "indice": "PK__Bitacora__ED3A1B13930DEB3D",
+      "pk": true,
+      "orden": 1,
+      "columna": "IdBitacora"
+    },
+    {
+      "tabla": "Control",
+      "indice": "PK__Control__3214EC07EC17E274",
+      "pk": true,
+      "orden": 1,
+      "columna": "Id"
+    },
+    {
+      "tabla": "Control",
+      "indice": "UQ_Control",
+      "pk": false,
+      "orden": 1,
+      "columna": "Control"
+    },
+    {
+      "tabla": "Control",
+      "indice": "UQ_Control",
+      "pk": false,
+      "orden": 2,
+      "columna": "Form"
+    },
+    {
+      "tabla": "Idioma",
+      "indice": "PK__Idioma__3214EC077FFC403E",
+      "pk": true,
+      "orden": 1,
+      "columna": "Id"
+    },
+    {
+      "tabla": "Idioma",
+      "indice": "UQ__Idioma__75E3EFCF0851FF64",
+      "pk": false,
+      "orden": 1,
+      "columna": "Nombre"
+    },
+    {
+      "tabla": "Idioma",
+      "indice": "UQ_Idioma_Codigo",
+      "pk": false,
+      "orden": 1,
+      "columna": "Codigo"
+    },
+    {
+      "tabla": "IntegridadTabla",
+      "indice": "PK__Integrid__80FC60E77A99D1AD",
+      "pk": true,
+      "orden": 1,
+      "columna": "Tabla"
+    },
+    {
+      "tabla": "Permiso",
+      "indice": "PK__Permiso__3214EC077C4F200B",
+      "pk": true,
+      "orden": 1,
+      "columna": "Id"
+    },
+    {
+      "tabla": "Permiso",
+      "indice": "UQ__Permiso__75E3EFCF0B0660A5",
+      "pk": false,
+      "orden": 1,
+      "columna": "Nombre"
+    },
+    {
+      "tabla": "PermisoHijo",
+      "indice": "PK__PermisoH__C15DC18C52CCC237",
+      "pk": true,
+      "orden": 1,
+      "columna": "IdPadre"
+    },
+    {
+      "tabla": "PermisoHijo",
+      "indice": "PK__PermisoH__C15DC18C52CCC237",
+      "pk": true,
+      "orden": 2,
+      "columna": "IdHijo"
+    },
+    {
+      "tabla": "Rol",
+      "indice": "PK__Rol__3214EC0754B9915F",
+      "pk": true,
+      "orden": 1,
+      "columna": "Id"
+    },
+    {
+      "tabla": "Rol",
+      "indice": "UQ__Rol__75E3EFCFBF01BB83",
+      "pk": false,
+      "orden": 1,
+      "columna": "Nombre"
+    },
+    {
+      "tabla": "RolHijo",
+      "indice": "PK__RolHijo__C15DC18CF3BFD8D0",
+      "pk": true,
+      "orden": 1,
+      "columna": "IdPadre"
+    },
+    {
+      "tabla": "RolHijo",
+      "indice": "PK__RolHijo__C15DC18CF3BFD8D0",
+      "pk": true,
+      "orden": 2,
+      "columna": "IdHijo"
+    },
+    {
+      "tabla": "RolPermiso",
+      "indice": "PK__RolPermi__BA9F7EA09CFE9349",
+      "pk": true,
+      "orden": 1,
+      "columna": "IdRol"
+    },
+    {
+      "tabla": "RolPermiso",
+      "indice": "PK__RolPermi__BA9F7EA09CFE9349",
+      "pk": true,
+      "orden": 2,
+      "columna": "IdPermiso"
+    },
+    {
+      "tabla": "SeguridadVersion",
+      "indice": "PK__Segurida__3214EC07F5CA0790",
+      "pk": true,
+      "orden": 1,
+      "columna": "Id"
+    },
+    {
+      "tabla": "Traduccion",
+      "indice": "PK__Traducci__A02FC56ABD9F3204",
+      "pk": true,
+      "orden": 1,
+      "columna": "Id_Idioma"
+    },
+    {
+      "tabla": "Traduccion",
+      "indice": "PK__Traducci__A02FC56ABD9F3204",
+      "pk": true,
+      "orden": 2,
+      "columna": "Id_Control"
+    },
+    {
+      "tabla": "UsuarioIdioma",
+      "indice": "PK_UsuarioIdioma",
+      "pk": true,
+      "orden": 1,
+      "columna": "IdUsuario"
+    },
+    {
+      "tabla": "UsuarioRol",
+      "indice": "PK__UsuarioR__89C12A134A2D6774",
+      "pk": true,
+      "orden": 1,
+      "columna": "IdUsuario"
+    },
+    {
+      "tabla": "UsuarioRol",
+      "indice": "PK__UsuarioR__89C12A134A2D6774",
+      "pk": true,
+      "orden": 2,
+      "columna": "IdRol"
+    },
+    {
+      "tabla": "Usuarios",
+      "indice": "PK__Usuarios__5B65BF9745EA176C",
+      "pk": true,
+      "orden": 1,
+      "columna": "IdUsuario"
+    },
+    {
+      "tabla": "Usuarios",
+      "indice": "UQ__Usuarios__6B0F5AE0EC26F3DB",
+      "pk": false,
+      "orden": 1,
+      "columna": "NombreUsuario"
+    },
+    {
+      "tabla": "Usuarios",
+      "indice": "UQ_Usuarios_NombreUsuario",
+      "pk": false,
+      "orden": 1,
+      "columna": "NombreUsuario"
+    },
+    {
+      "tabla": "UsuarioVersion",
+      "indice": "PK_UsuarioVersion",
+      "pk": true,
+      "orden": 1,
+      "columna": "IdUsuario"
+    },
+    {
+      "tabla": "UsuarioVersion",
+      "indice": "PK_UsuarioVersion",
+      "pk": true,
+      "orden": 2,
+      "columna": "Version"
+    }
+  ]
+}

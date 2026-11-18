@@ -370,3 +370,6 @@ FodyWeavers.xsd
 /Recursos/SIGAT LOGO.png
 /Documentacion/Diagramas
 /Documentacion
+
+# Enterprise Architect: bloqueo temporal del proyecto abierto
+/EA-Diagramas/**/*.ldb

@@ -1,0 +1,15 @@
+{
+  "otros_43_diagramas_sin_cambios": true,
+  "parametros_nativos": 43,
+  "fecha": "2026-11-17",
+  "diagramId": 43,
+  "diagrama": "T06b Clases del control de cambios de usuarios",
+  "clases": 15,
+  "diagramas_totales": 45,
+  "relaciones": 15,
+  "miembros_contrastados": true,
+  "fuentes_aplicacion_sin_cambios": true,
+  "formulario_principal_incluido": true,
+  "dialogo_historial_incluido": true,
+  "otros_44_diagramas_sin_cambios": true
+}

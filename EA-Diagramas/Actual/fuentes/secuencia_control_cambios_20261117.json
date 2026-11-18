@@ -1,0 +1,715 @@
+{
+  "title": "T06b Secuencia de consulta y restauración de versiones",
+  "nodes": [
+    {
+      "key": "admin",
+      "name": "Administrador",
+      "kind": "Actor"
+    },
+    {
+      "key": "ui",
+      "name": "ui",
+      "kind": "Object",
+      "classifier": "DlgHistorialUsuario"
+    },
+    {
+      "key": "bll",
+      "name": "usuarios",
+      "kind": "Object",
+      "classifier": "UsuarioBLL"
+    },
+    {
+      "key": "roles",
+      "name": "seguridad",
+      "kind": "Object",
+      "classifier": "RolesBLL"
+    },
+    {
+      "key": "dal",
+      "name": "cuentas",
+      "kind": "Object",
+      "classifier": "UsuarioDAL"
+    },
+    {
+      "key": "integridad",
+      "name": "integridad",
+      "kind": "Object",
+      "classifier": "IntegridadDAL"
+    },
+    {
+      "key": "historial",
+      "name": "versiones",
+      "kind": "Object",
+      "classifier": "HistorialUsuarioDAL"
+    }
+  ],
+  "steps": [
+    {
+      "note": "1. CONSULTAR Y COMPARAR\nPrecondición: una cuenta activa con Administración del sistema abrió el historial y la lista de cuentas ya está cargada. Se muestran las llamadas de T06b; la carga interna de roles se abrevia.",
+      "height": 260,
+      "rect": [
+        2670,
+        165,
+        850,
+        260
+      ]
+    },
+    {
+      "a": "admin",
+      "b": "ui",
+      "text": "Seleccionar cuenta",
+      "reply": false
+    },
+    {
+      "a": "ui",
+      "b": "bll",
+      "text": "ConsultarHistorial(idUsuario)",
+      "reply": false
+    },
+    {
+      "a": "bll",
+      "b": "roles",
+      "text": "CargarParaGestion()",
+      "reply": false
+    },
+    {
+      "a": "roles",
+      "b": "bll",
+      "text": "EstadoRoles autorizado",
+      "reply": true
+    },
+    {
+      "a": "bll",
+      "b": "dal",
+      "text": "ConsultarHistorial(idUsuario)",
+      "reply": false
+    },
+    {
+      "a": "dal",
+      "b": "integridad",
+      "text": "LeerVerificado(leer)",
+      "reply": false
+    },
+    {
+      "a": "integridad",
+      "b": "dal",
+      "text": "leer(conexion, transaccion)",
+      "reply": false
+    },
+    {
+      "a": "dal",
+      "b": "historial",
+      "text": "Capturar(conexion, transaccion, idUsuario)",
+      "reply": false
+    },
+    {
+      "a": "historial",
+      "b": "dal",
+      "text": "Estado actual de la cuenta",
+      "reply": true
+    },
+    {
+      "a": "dal",
+      "b": "historial",
+      "text": "Consultar(conexion, transaccion, idUsuario)",
+      "reply": false
+    },
+    {
+      "a": "historial",
+      "b": "dal",
+      "text": "Lista de UsuarioVersion",
+      "reply": true
+    },
+    {
+      "a": "dal",
+      "b": "integridad",
+      "text": "HistorialUsuario (resultado del callback)",
+      "reply": true
+    },
+    {
+      "a": "integridad",
+      "b": "dal",
+      "text": "Historial verificado; COMMIT de lectura",
+      "reply": true
+    },
+    {
+      "a": "dal",
+      "b": "bll",
+      "text": "HistorialUsuario",
+      "reply": true
+    },
+    {
+      "a": "bll",
+      "b": "ui",
+      "text": "HistorialUsuario",
+      "reply": true
+    },
+    {
+      "a": "ui",
+      "b": "admin",
+      "text": "Comparar anterior, seleccionada y actual",
+      "reply": true
+    },
+    {
+      "note": "2. RESTAURAR LA VERSION SELECCIONADA\nEl botón se habilita solo si la versión representa una cuenta existente y difiere del estado actual. La confirmación informa que se creará una versión nueva y se conservará la contraseña actual. Responder No finaliza sin escritura SQL.",
+      "height": 300,
+      "rect": [
+        2670,
+        665,
+        850,
+        300
+      ]
+    },
+    {
+      "a": "admin",
+      "b": "ui",
+      "text": "Seleccionar versión y pulsar Restaurar",
+      "reply": false
+    },
+    {
+      "a": "ui",
+      "b": "admin",
+      "text": "Solicitar confirmación",
+      "reply": false
+    },
+    {
+      "a": "admin",
+      "b": "ui",
+      "text": "[Sí] Confirmar restauración",
+      "reply": true
+    },
+    {
+      "a": "ui",
+      "b": "bll",
+      "text": "RestaurarVersion(idUsuario, numero, versionSeguridad)",
+      "reply": false
+    },
+    {
+      "a": "bll",
+      "b": "roles",
+      "text": "CargarParaGestion()",
+      "reply": false
+    },
+    {
+      "a": "roles",
+      "b": "bll",
+      "text": "EstadoRoles vigente",
+      "reply": true
+    },
+    {
+      "a": "bll",
+      "b": "roles",
+      "text": "[versión vigente] ExigirGestion(estado)",
+      "reply": false
+    },
+    {
+      "a": "roles",
+      "b": "bll",
+      "text": "Usuario autor autorizado",
+      "reply": true
+    },
+    {
+      "a": "bll",
+      "b": "dal",
+      "text": "RestaurarVersion(idUsuario, numero, versionSeguridad, autor)",
+      "reply": false
+    },
+    {
+      "a": "dal",
+      "b": "integridad",
+      "text": "Cambiar(Usuarios y UsuarioRol, cambiar)",
+      "reply": false
+    },
+    {
+      "a": "integridad",
+      "b": "dal",
+      "text": "cambiar(conexion, transaccion)",
+      "reply": false
+    },
+    {
+      "a": "dal",
+      "b": "dal",
+      "text": "AvanzarVersionSeguridad(..., esperada)",
+      "reply": false
+    },
+    {
+      "a": "dal",
+      "b": "historial",
+      "text": "Consultar(conexion, transaccion, idUsuario, numero)",
+      "reply": false
+    },
+    {
+      "a": "historial",
+      "b": "dal",
+      "text": "UsuarioVersion seleccionada",
+      "reply": true
+    },
+    {
+      "note": "TRANSACCION SERIALIZABLE ABIERTA POR IntegridadDAL\nEl callback comprueba esquema, concurrencia, estado de la versión y protección del administrador original. Actualiza los datos de Usuarios sin cambiar Password; si cambian los roles directos, exige que los roles históricos todavía existan. Debe permanecer un administrador activo.",
+      "height": 250,
+      "rect": [
+        2670,
+        1035,
+        850,
+        250
+      ]
+    },
+    {
+      "a": "dal",
+      "b": "dal",
+      "text": "[roles distintos] RestaurarRoles(...)",
+      "reply": false
+    },
+    {
+      "a": "dal",
+      "b": "historial",
+      "text": "Registrar(..., Restauracion, autor, versionOrigen: numero)",
+      "reply": false
+    },
+    {
+      "a": "historial",
+      "b": "dal",
+      "text": "Nueva versión registrada en dbo.UsuarioVersion",
+      "reply": true
+    },
+    {
+      "a": "dal",
+      "b": "integridad",
+      "text": "Callback completado",
+      "reply": true
+    },
+    {
+      "a": "integridad",
+      "b": "dal",
+      "text": "DVH/DVV actualizados y verificados; COMMIT",
+      "reply": true
+    },
+    {
+      "a": "dal",
+      "b": "bll",
+      "text": "Restauración confirmada",
+      "reply": true
+    },
+    {
+      "a": "bll",
+      "b": "ui",
+      "text": "Restauración confirmada",
+      "reply": true
+    },
+    {
+      "note": "3. MOSTRAR EL RESULTADO\nLa UI marca HuboRestauracion = true y vuelve a cargar cuentas y versiones. Las dos consultas siguientes repiten el circuito autorizado de la fase 1; se abrevian sus llamadas internas. El registro nuevo conserva VersionOrigen y el autor; FechaUtc se genera en SQL.",
+      "height": 250,
+      "rect": [
+        2670,
+        1365,
+        850,
+        250
+      ]
+    },
+    {
+      "a": "ui",
+      "b": "ui",
+      "text": "CargarCuentas(idUsuario)",
+      "reply": false
+    },
+    {
+      "a": "ui",
+      "b": "bll",
+      "text": "ListarCuentasConHistorial()",
+      "reply": false
+    },
+    {
+      "a": "bll",
+      "b": "ui",
+      "text": "Cuentas con historial",
+      "reply": true
+    },
+    {
+      "a": "ui",
+      "b": "bll",
+      "text": "ConsultarHistorial(idUsuario)",
+      "reply": false
+    },
+    {
+      "a": "bll",
+      "b": "ui",
+      "text": "Historial actualizado",
+      "reply": true
+    },
+    {
+      "a": "ui",
+      "b": "admin",
+      "text": "Estado restaurado y nueva versión visible",
+      "reply": true
+    },
+    {
+      "note": "ALTERNATIVAS Y GARANTIAS\nSin autorización o con VersionSeguridad desactualizada, la BLL rechaza la operación antes de escribir. El DAL vuelve a controlar la concurrencia bajo bloqueo. Una versión no restaurable, un nombre ocupado, un rol eliminado o una violación de la protección del administrador causan error.\nSi falla una validación o escritura dentro de Cambiar, la transacción se revierte: ni los datos ni la nueva versión quedan parcialmente guardados. La UI captura la excepción mediante Intentar y muestra el mensaje. El historial no guarda contraseñas ni versiones de la composición de los roles.",
+      "height": 330,
+      "rect": [
+        2670,
+        1700,
+        850,
+        330
+      ]
+    }
+  ],
+  "diagramId": 45,
+  "diagramGuid": "{72945ED9-DAF3-4441-A2FC-7C7510021E73}",
+  "messages": [
+    {
+      "reply": false,
+      "number": 1,
+      "source": "admin",
+      "connectorId": 430,
+      "text": "Seleccionar cuenta",
+      "target": "ui"
+    },
+    {
+      "reply": false,
+      "number": 2,
+      "source": "ui",
+      "connectorId": 431,
+      "text": "ConsultarHistorial(idUsuario)",
+      "target": "bll"
+    },
+    {
+      "reply": false,
+      "number": 3,
+      "source": "bll",
+      "connectorId": 432,
+      "text": "CargarParaGestion()",
+      "target": "roles"
+    },
+    {
+      "reply": true,
+      "number": 4,
+      "source": "roles",
+      "connectorId": 433,
+      "text": "EstadoRoles autorizado",
+      "target": "bll"
+    },
+    {
+      "reply": false,
+      "number": 5,
+      "source": "bll",
+      "connectorId": 434,
+      "text": "ConsultarHistorial(idUsuario)",
+      "target": "dal"
+    },
+    {
+      "reply": false,
+      "number": 6,
+      "source": "dal",
+      "connectorId": 435,
+      "text": "LeerVerificado(leer)",
+      "target": "integridad"
+    },
+    {
+      "reply": false,
+      "number": 7,
+      "source": "integridad",
+      "connectorId": 436,
+      "text": "leer(conexion, transaccion)",
+      "target": "dal"
+    },
+    {
+      "reply": false,
+      "number": 8,
+      "source": "dal",
+      "connectorId": 437,
+      "text": "Capturar(conexion, transaccion, idUsuario)",
+      "target": "historial"
+    },
+    {
+      "reply": true,
+      "number": 9,
+      "source": "historial",
+      "connectorId": 438,
+      "text": "Estado actual de la cuenta",
+      "target": "dal"
+    },
+    {
+      "reply": false,
+      "number": 10,
+      "source": "dal",
+      "connectorId": 439,
+      "text": "Consultar(conexion, transaccion, idUsuario)",
+      "target": "historial"
+    },
+    {
+      "reply": true,
+      "number": 11,
+      "source": "historial",
+      "connectorId": 440,
+      "text": "Lista de UsuarioVersion",
+      "target": "dal"
+    },
+    {
+      "reply": true,
+      "number": 12,
+      "source": "dal",
+      "connectorId": 441,
+      "text": "HistorialUsuario (resultado del callback)",
+      "target": "integridad"
+    },
+    {
+      "reply": true,
+      "number": 13,
+      "source": "integridad",
+      "connectorId": 442,
+      "text": "Historial verificado; COMMIT de lectura",
+      "target": "dal"
+    },
+    {
+      "reply": true,
+      "number": 14,
+      "source": "dal",
+      "connectorId": 443,
+      "text": "HistorialUsuario",
+      "target": "bll"
+    },
+    {
+      "reply": true,
+      "number": 15,
+      "source": "bll",
+      "connectorId": 444,
+      "text": "HistorialUsuario",
+      "target": "ui"
+    },
+    {
+      "reply": true,
+      "number": 16,
+      "source": "ui",
+      "connectorId": 445,
+      "text": "Comparar anterior, seleccionada y actual",
+      "target": "admin"
+    },
+    {
+      "reply": false,
+      "number": 17,
+      "source": "admin",
+      "connectorId": 446,
+      "text": "Seleccionar versión y pulsar Restaurar",
+      "target": "ui"
+    },
+    {
+      "reply": false,
+      "number": 18,
+      "source": "ui",
+      "connectorId": 447,
+      "text": "Solicitar confirmación",
+      "target": "admin"
+    },
+    {
+      "reply": true,
+      "number": 19,
+      "source": "admin",
+      "connectorId": 448,
+      "text": "[Sí] Confirmar restauración",
+      "target": "ui"
+    },
+    {
+      "reply": false,
+      "number": 20,
+      "source": "ui",
+      "connectorId": 449,
+      "text": "RestaurarVersion(idUsuario, numero, versionSeguridad)",
+      "target": "bll"
+    },
+    {
+      "reply": false,
+      "number": 21,
+      "source": "bll",
+      "connectorId": 450,
+      "text": "CargarParaGestion()",
+      "target": "roles"
+    },
+    {
+      "reply": true,
+      "number": 22,
+      "source": "roles",
+      "connectorId": 451,
+      "text": "EstadoRoles vigente",
+      "target": "bll"
+    },
+    {
+      "reply": false,
+      "number": 23,
+      "source": "bll",
+      "connectorId": 452,
+      "text": "[versión vigente] ExigirGestion(estado)",
+      "target": "roles"
+    },
+    {
+      "reply": true,
+      "number": 24,
+      "source": "roles",
+      "connectorId": 453,
+      "text": "Usuario autor autorizado",
+      "target": "bll"
+    },
+    {
+      "reply": false,
+      "number": 25,
+      "source": "bll",
+      "connectorId": 454,
+      "text": "RestaurarVersion(idUsuario, numero, versionSeguridad, autor)",
+      "target": "dal"
+    },
+    {
+      "reply": false,
+      "number": 26,
+      "source": "dal",
+      "connectorId": 455,
+      "text": "Cambiar(Usuarios y UsuarioRol, cambiar)",
+      "target": "integridad"
+    },
+    {
+      "reply": false,
+      "number": 27,
+      "source": "integridad",
+      "connectorId": 456,
+      "text": "cambiar(conexion, transaccion)",
+      "target": "dal"
+    },
+    {
+      "reply": false,
+      "number": 28,
+      "source": "dal",
+      "connectorId": 457,
+      "text": "AvanzarVersionSeguridad(..., esperada)",
+      "target": "dal"
+    },
+    {
+      "reply": false,
+      "number": 29,
+      "source": "dal",
+      "connectorId": 458,
+      "text": "Consultar(conexion, transaccion, idUsuario, numero)",
+      "target": "historial"
+    },
+    {
+      "reply": true,
+      "number": 30,
+      "source": "historial",
+      "connectorId": 459,
+      "text": "UsuarioVersion seleccionada",
+      "target": "dal"
+    },
+    {
+      "reply": false,
+      "number": 31,
+      "source": "dal",
+      "connectorId": 460,
+      "text": "[roles distintos] RestaurarRoles(...)",
+      "target": "dal"
+    },
+    {
+      "reply": false,
+      "number": 32,
+      "source": "dal",
+      "connectorId": 461,
+      "text": "Registrar(..., Restauracion, autor, versionOrigen: numero)",
+      "target": "historial"
+    },
+    {
+      "reply": true,
+      "number": 33,
+      "source": "historial",
+      "connectorId": 462,
+      "text": "Nueva versión registrada en dbo.UsuarioVersion",
+      "target": "dal"
+    },
+    {
+      "reply": true,
+      "number": 34,
+      "source": "dal",
+      "connectorId": 463,
+      "text": "Callback completado",
+      "target": "integridad"
+    },
+    {
+      "reply": true,
+      "number": 35,
+      "source": "integridad",
+      "connectorId": 464,
+      "text": "DVH/DVV actualizados y verificados; COMMIT",
+      "target": "dal"
+    },
+    {
+      "reply": true,
+      "number": 36,
+      "source": "dal",
+      "connectorId": 465,
+      "text": "Restauración confirmada",
+      "target": "bll"
+    },
+    {
+      "reply": true,
+      "number": 37,
+      "source": "bll",
+      "connectorId": 466,
+      "text": "Restauración confirmada",
+      "target": "ui"
+    },
+    {
+      "reply": false,
+      "number": 38,
+      "source": "ui",
+      "connectorId": 467,
+      "text": "CargarCuentas(idUsuario)",
+      "target": "ui"
+    },
+    {
+      "reply": false,
+      "number": 39,
+      "source": "ui",
+      "connectorId": 468,
+      "text": "ListarCuentasConHistorial()",
+      "target": "bll"
+    },
+    {
+      "reply": true,
+      "number": 40,
+      "source": "bll",
+      "connectorId": 469,
+      "text": "Cuentas con historial",
+      "target": "ui"
+    },
+    {
+      "reply": false,
+      "number": 41,
+      "source": "ui",
+      "connectorId": 470,
+      "text": "ConsultarHistorial(idUsuario)",
+      "target": "bll"
+    },
+    {
+      "reply": true,
+      "number": 42,
+      "source": "bll",
+      "connectorId": 471,
+      "text": "Historial actualizado",
+      "target": "ui"
+    },
+    {
+      "reply": true,
+      "number": 43,
+      "source": "ui",
+      "connectorId": 472,
+      "text": "Estado restaurado y nueva versión visible",
+      "target": "admin"
+    }
+  ],
+  "fecha": "2026-11-17",
+  "diagramas_previos_sin_cambios": true,
+  "presentacion": "Mensajes ordenados por SequenceNo; llamadas síncronas y retornos diferenciados; notas explicativas al costado de las líneas de vida.",
+  "sourceHashes": {
+    "SIGAT.UI/DlgHistorialUsuario.cs": "05489db5960f479ceef84addeb4a4c8728ec16685150bd6058357d86247a27e0",
+    "SIGAT.BLL/UsuarioBLL.cs": "1069377b6186d3bed63dfc06d8e31728d8a40897d1ec8dc903b3a4ef74545cfe",
+    "SIGAT.BLL/RolesBLL.cs": "e25e294fec0bba78e615250dca102d4b336f1c5c5c5c76d153b55172302feb76",
+    "SIGAT.DAL/UsuarioDAL.cs": "76b175f894b5da722a630cf2030e5cec8eeda9931b897427601933ee01db3df6",
+    "SIGAT.DAL/HistorialUsuarioDAL.cs": "5f1f10ab0a0af6714d21bc9d3a1b051dc7d6c4ab1b24a9f059eb013e0b8b08ff",
+    "SIGAT.DAL/IntegridadDAL.cs": "486a691a5fee16627c39650afe33ee1747b777fcf6e5e1af32a7e98e9ed15923"
+  }
+}

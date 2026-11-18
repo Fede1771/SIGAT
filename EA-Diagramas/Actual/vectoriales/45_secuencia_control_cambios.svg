@@ -1,0 +1,224 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="3300" height="4257" viewBox="0 0 3300 4257">
+<title>SIGAT - T06b - Secuencia de consulta y restauración de versiones</title>
+<desc>43 mensajes nativos del modelo actualizado. Consulta, comparación, autorización, transacción de restauración y recarga del historial.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 1 1 L 9 5 L 1 9" fill="none" stroke="#334155" stroke-width="1.5"/></marker></defs>
+<rect width="3300" height="4257" fill="white"/>
+<g font-family="Arial, sans-serif" fill="#172a40">
+<text x="40" y="47" font-size="30" font-weight="bold">SIGAT | T06b - Consulta y restauración de versiones</text>
+<text x="40" y="80" font-size="18">Línea continua: llamada. Línea discontinua: retorno. Las notas describen condiciones y alternativas.</text>
+<line x1="210" y1="185" x2="210" y2="4202" stroke="#b4c0cf" stroke-width="1.5" stroke-dasharray="7 6"/>
+<rect x="55" y="112" width="310" height="74" rx="6" fill="#e5effc" stroke="#8493a5"/>
+<text x="210" y="142" text-anchor="middle" font-size="18">«actor»</text>
+<text x="210" y="167" text-anchor="middle" font-size="18" font-weight="bold">Administrador</text>
+<line x1="560" y1="185" x2="560" y2="4202" stroke="#b4c0cf" stroke-width="1.5" stroke-dasharray="7 6"/>
+<rect x="405" y="112" width="310" height="74" rx="6" fill="#e5effc" stroke="#8493a5"/>
+<text x="560" y="142" text-anchor="middle" font-size="18">ui :</text>
+<text x="560" y="167" text-anchor="middle" font-size="18" font-weight="bold">DlgHistorialUsuario</text>
+<line x1="910" y1="185" x2="910" y2="4202" stroke="#b4c0cf" stroke-width="1.5" stroke-dasharray="7 6"/>
+<rect x="755" y="112" width="310" height="74" rx="6" fill="#e5effc" stroke="#8493a5"/>
+<text x="910" y="142" text-anchor="middle" font-size="18">usuarios :</text>
+<text x="910" y="167" text-anchor="middle" font-size="18" font-weight="bold">UsuarioBLL</text>
+<line x1="1260" y1="185" x2="1260" y2="4202" stroke="#b4c0cf" stroke-width="1.5" stroke-dasharray="7 6"/>
+<rect x="1105" y="112" width="310" height="74" rx="6" fill="#e5effc" stroke="#8493a5"/>
+<text x="1260" y="142" text-anchor="middle" font-size="18">seguridad :</text>
+<text x="1260" y="167" text-anchor="middle" font-size="18" font-weight="bold">RolesBLL</text>
+<line x1="1610" y1="185" x2="1610" y2="4202" stroke="#b4c0cf" stroke-width="1.5" stroke-dasharray="7 6"/>
+<rect x="1455" y="112" width="310" height="74" rx="6" fill="#e5effc" stroke="#8493a5"/>
+<text x="1610" y="142" text-anchor="middle" font-size="18">cuentas :</text>
+<text x="1610" y="167" text-anchor="middle" font-size="18" font-weight="bold">UsuarioDAL</text>
+<line x1="1960" y1="185" x2="1960" y2="4202" stroke="#b4c0cf" stroke-width="1.5" stroke-dasharray="7 6"/>
+<rect x="1805" y="112" width="310" height="74" rx="6" fill="#e5effc" stroke="#8493a5"/>
+<text x="1960" y="142" text-anchor="middle" font-size="18">integridad :</text>
+<text x="1960" y="167" text-anchor="middle" font-size="18" font-weight="bold">IntegridadDAL</text>
+<line x1="2310" y1="185" x2="2310" y2="4202" stroke="#b4c0cf" stroke-width="1.5" stroke-dasharray="7 6"/>
+<rect x="2155" y="112" width="310" height="74" rx="6" fill="#e5effc" stroke="#8493a5"/>
+<text x="2310" y="142" text-anchor="middle" font-size="18">versiones :</text>
+<text x="2310" y="167" text-anchor="middle" font-size="18" font-weight="bold">HistorialUsuarioDAL</text>
+<rect x="2590" y="215" width="650" height="138" rx="6" fill="#fff8df" stroke="#d1b976"/>
+<text x="2608" y="244" font-size="16" font-weight="bold">1. CONSULTAR Y COMPARAR</text>
+<text x="2608" y="266" font-size="16">Precondición: una cuenta activa con Administración del sistema abrió</text>
+<text x="2608" y="288" font-size="16">el historial y la lista de cuentas ya está cargada. Se muestran las</text>
+<text x="2608" y="310" font-size="16">llamadas de T06b; la carga interna de roles se abrevia.</text>
+<line x1="210" y1="243" x2="560" y2="243" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)"/>
+<rect x="287.7" y="214" width="194.6" height="21" fill="white"/>
+<text x="385.0" y="230" text-anchor="middle" font-size="16">1. Seleccionar cuenta</text>
+<line x1="560" y1="321" x2="910" y2="321" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)"/>
+<rect x="590.4" y="292" width="289.2" height="21" fill="white"/>
+<text x="735.0" y="308" text-anchor="middle" font-size="16">2. ConsultarHistorial(idUsuario)</text>
+<line x1="910" y1="399" x2="1260" y2="399" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)"/>
+<rect x="983.4" y="370" width="203.2" height="21" fill="white"/>
+<text x="1085.0" y="386" text-anchor="middle" font-size="16">3. CargarParaGestion()</text>
+<line x1="1260" y1="477" x2="910" y2="477" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)" stroke-dasharray="8 5"/>
+<rect x="970.5" y="448" width="229.0" height="21" fill="white"/>
+<text x="1085.0" y="464" text-anchor="middle" font-size="16">4. EstadoRoles autorizado</text>
+<line x1="910" y1="555" x2="1610" y2="555" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)"/>
+<rect x="1115.4" y="526" width="289.2" height="21" fill="white"/>
+<text x="1260.0" y="542" text-anchor="middle" font-size="16">5. ConsultarHistorial(idUsuario)</text>
+<line x1="1610" y1="633" x2="1960" y2="633" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)"/>
+<rect x="1679.1" y="604" width="211.79999999999998" height="21" fill="white"/>
+<text x="1785.0" y="620" text-anchor="middle" font-size="16">6. LeerVerificado(leer)</text>
+<line x1="1960" y1="711" x2="1610" y2="711" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)"/>
+<rect x="1649.0" y="682" width="272.0" height="21" fill="white"/>
+<text x="1785.0" y="698" text-anchor="middle" font-size="16">7. leer(conexion, transaccion)</text>
+<line x1="1610" y1="789" x2="2310" y2="789" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)"/>
+<rect x="1759.5" y="760" width="401.0" height="21" fill="white"/>
+<text x="1960.0" y="776" text-anchor="middle" font-size="16">8. Capturar(conexion, transaccion, idUsuario)</text>
+<line x1="2310" y1="867" x2="1610" y2="867" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)" stroke-dasharray="8 5"/>
+<rect x="1828.3" y="838" width="263.4" height="21" fill="white"/>
+<text x="1960.0" y="854" text-anchor="middle" font-size="16">9. Estado actual de la cuenta</text>
+<line x1="1610" y1="945" x2="2310" y2="945" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)"/>
+<rect x="1750.9" y="916" width="418.2" height="21" fill="white"/>
+<text x="1960.0" y="932" text-anchor="middle" font-size="16">10. Consultar(conexion, transaccion, idUsuario)</text>
+<line x1="2310" y1="1023" x2="1610" y2="1023" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)" stroke-dasharray="8 5"/>
+<rect x="1836.9" y="994" width="246.2" height="21" fill="white"/>
+<text x="1960.0" y="1010" text-anchor="middle" font-size="16">11. Lista de UsuarioVersion</text>
+<line x1="1610" y1="1122" x2="1960" y2="1122" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)" stroke-dasharray="8 5"/>
+<rect x="1627.5" y="1072" width="315.0" height="21" fill="white"/>
+<text x="1785.0" y="1088" text-anchor="middle" font-size="16">12. HistorialUsuario (resultado del</text>
+<rect x="1739.3" y="1093" width="91.39999999999999" height="21" fill="white"/>
+<text x="1785.0" y="1109" text-anchor="middle" font-size="16">callback)</text>
+<line x1="1960" y1="1221" x2="1610" y2="1221" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)" stroke-dasharray="8 5"/>
+<rect x="1627.5" y="1171" width="315.0" height="21" fill="white"/>
+<text x="1785.0" y="1187" text-anchor="middle" font-size="16">13. Historial verificado; COMMIT de</text>
+<rect x="1747.9" y="1192" width="74.19999999999999" height="21" fill="white"/>
+<text x="1785.0" y="1208" text-anchor="middle" font-size="16">lectura</text>
+<line x1="1610" y1="1299" x2="910" y2="1299" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)" stroke-dasharray="8 5"/>
+<rect x="1167.0" y="1270" width="186.0" height="21" fill="white"/>
+<text x="1260.0" y="1286" text-anchor="middle" font-size="16">14. HistorialUsuario</text>
+<line x1="910" y1="1377" x2="560" y2="1377" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)" stroke-dasharray="8 5"/>
+<rect x="642.0" y="1348" width="186.0" height="21" fill="white"/>
+<text x="735.0" y="1364" text-anchor="middle" font-size="16">15. HistorialUsuario</text>
+<line x1="560" y1="1476" x2="210" y2="1476" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)" stroke-dasharray="8 5"/>
+<rect x="218.9" y="1426" width="332.2" height="21" fill="white"/>
+<text x="385.0" y="1442" text-anchor="middle" font-size="16">16. Comparar anterior, seleccionada y</text>
+<rect x="352.2" y="1447" width="65.6" height="21" fill="white"/>
+<text x="385.0" y="1463" text-anchor="middle" font-size="16">actual</text>
+<rect x="2590" y="1521" width="650" height="160" rx="6" fill="#fff8df" stroke="#d1b976"/>
+<text x="2608" y="1550" font-size="16" font-weight="bold">2. RESTAURAR LA VERSION SELECCIONADA</text>
+<text x="2608" y="1572" font-size="16">El botón se habilita solo si la versión representa una cuenta</text>
+<text x="2608" y="1594" font-size="16">existente y difiere del estado actual. La confirmación informa que se</text>
+<text x="2608" y="1616" font-size="16">creará una versión nueva y se conservará la contraseña actual.</text>
+<text x="2608" y="1638" font-size="16">Responder No finaliza sin escritura SQL.</text>
+<line x1="210" y1="1620" x2="560" y2="1620" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)"/>
+<rect x="240.4" y="1570" width="289.2" height="21" fill="white"/>
+<text x="385.0" y="1586" text-anchor="middle" font-size="16">17. Seleccionar versión y pulsar</text>
+<rect x="339.3" y="1591" width="91.39999999999999" height="21" fill="white"/>
+<text x="385.0" y="1607" text-anchor="middle" font-size="16">Restaurar</text>
+<line x1="560" y1="1698" x2="210" y2="1698" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)"/>
+<rect x="266.2" y="1669" width="237.6" height="21" fill="white"/>
+<text x="385.0" y="1685" text-anchor="middle" font-size="16">18. Solicitar confirmación</text>
+<line x1="210" y1="1776" x2="560" y2="1776" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)" stroke-dasharray="8 5"/>
+<rect x="244.70000000000002" y="1747" width="280.59999999999997" height="21" fill="white"/>
+<text x="385.0" y="1763" text-anchor="middle" font-size="16">19. [Sí] Confirmar restauración</text>
+<line x1="560" y1="1875" x2="910" y2="1875" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)"/>
+<rect x="594.7" y="1825" width="280.59999999999997" height="21" fill="white"/>
+<text x="735.0" y="1841" text-anchor="middle" font-size="16">20. RestaurarVersion(idUsuario,</text>
+<rect x="620.5" y="1846" width="229.0" height="21" fill="white"/>
+<text x="735.0" y="1862" text-anchor="middle" font-size="16">numero, versionSeguridad)</text>
+<line x1="910" y1="1953" x2="1260" y2="1953" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)"/>
+<rect x="979.1" y="1924" width="211.79999999999998" height="21" fill="white"/>
+<text x="1085.0" y="1940" text-anchor="middle" font-size="16">21. CargarParaGestion()</text>
+<line x1="1260" y1="2031" x2="910" y2="2031" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)" stroke-dasharray="8 5"/>
+<rect x="979.1" y="2002" width="211.79999999999998" height="21" fill="white"/>
+<text x="1085.0" y="2018" text-anchor="middle" font-size="16">22. EstadoRoles vigente</text>
+<line x1="910" y1="2130" x2="1260" y2="2130" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)"/>
+<rect x="987.7" y="2080" width="194.6" height="21" fill="white"/>
+<text x="1085.0" y="2096" text-anchor="middle" font-size="16">23. [versión vigente]</text>
+<rect x="987.7" y="2101" width="194.6" height="21" fill="white"/>
+<text x="1085.0" y="2117" text-anchor="middle" font-size="16">ExigirGestion(estado)</text>
+<line x1="1260" y1="2208" x2="910" y2="2208" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)" stroke-dasharray="8 5"/>
+<rect x="957.6" y="2179" width="254.79999999999998" height="21" fill="white"/>
+<text x="1085.0" y="2195" text-anchor="middle" font-size="16">24. Usuario autor autorizado</text>
+<line x1="910" y1="2286" x2="1610" y2="2286" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)"/>
+<rect x="977.8" y="2257" width="564.4" height="21" fill="white"/>
+<text x="1260.0" y="2273" text-anchor="middle" font-size="16">25. RestaurarVersion(idUsuario, numero, versionSeguridad, autor)</text>
+<line x1="1610" y1="2385" x2="1960" y2="2385" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)"/>
+<rect x="1631.8" y="2335" width="306.4" height="21" fill="white"/>
+<text x="1785.0" y="2351" text-anchor="middle" font-size="16">26. Cambiar(Usuarios y UsuarioRol,</text>
+<rect x="1743.6" y="2356" width="82.8" height="21" fill="white"/>
+<text x="1785.0" y="2372" text-anchor="middle" font-size="16">cambiar)</text>
+<line x1="1960" y1="2463" x2="1610" y2="2463" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)"/>
+<rect x="1631.8" y="2434" width="306.4" height="21" fill="white"/>
+<text x="1785.0" y="2450" text-anchor="middle" font-size="16">27. cambiar(conexion, transaccion)</text>
+<path d="M 1610 2554 h 90 v 24 h -90" fill="none" stroke="#334155" marker-end="url(#arrow)"/>
+<rect x="1465.4" y="2512" width="289.2" height="21" fill="white"/>
+<text x="1610.0" y="2528" text-anchor="middle" font-size="16">28. AvanzarVersionSeguridad(...,</text>
+<rect x="1564.3" y="2533" width="91.39999999999999" height="21" fill="white"/>
+<text x="1610.0" y="2549" text-anchor="middle" font-size="16">esperada)</text>
+<line x1="1610" y1="2640" x2="2310" y2="2640" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)"/>
+<rect x="1716.5" y="2611" width="487.0" height="21" fill="white"/>
+<text x="1960.0" y="2627" text-anchor="middle" font-size="16">29. Consultar(conexion, transaccion, idUsuario, numero)</text>
+<line x1="2310" y1="2718" x2="1610" y2="2718" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)" stroke-dasharray="8 5"/>
+<rect x="1819.7" y="2689" width="280.59999999999997" height="21" fill="white"/>
+<text x="1960.0" y="2705" text-anchor="middle" font-size="16">30. UsuarioVersion seleccionada</text>
+<rect x="2590" y="2763" width="650" height="182" rx="6" fill="#fff8df" stroke="#d1b976"/>
+<text x="2608" y="2792" font-size="16" font-weight="bold">TRANSACCION SERIALIZABLE ABIERTA POR IntegridadDAL</text>
+<text x="2608" y="2814" font-size="16">El callback comprueba esquema, concurrencia, estado de la versión y</text>
+<text x="2608" y="2836" font-size="16">protección del administrador original. Actualiza los datos de Usuarios</text>
+<text x="2608" y="2858" font-size="16">sin cambiar Password; si cambian los roles directos, exige que los</text>
+<text x="2608" y="2880" font-size="16">roles históricos todavía existan. Debe permanecer un administrador</text>
+<text x="2608" y="2902" font-size="16">activo.</text>
+<path d="M 1610 2809 h 90 v 24 h -90" fill="none" stroke="#334155" marker-end="url(#arrow)"/>
+<rect x="1512.7" y="2767" width="194.6" height="21" fill="white"/>
+<text x="1610.0" y="2783" text-anchor="middle" font-size="16">31. [roles distintos]</text>
+<rect x="1521.3" y="2788" width="177.4" height="21" fill="white"/>
+<text x="1610.0" y="2804" text-anchor="middle" font-size="16">RestaurarRoles(...)</text>
+<line x1="1610" y1="2895" x2="2310" y2="2895" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)"/>
+<rect x="1686.4" y="2866" width="547.1999999999999" height="21" fill="white"/>
+<text x="1960.0" y="2882" text-anchor="middle" font-size="16">32. Registrar(..., Restauracion, autor, versionOrigen: numero)</text>
+<line x1="2310" y1="2973" x2="1610" y2="2973" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)" stroke-dasharray="8 5"/>
+<rect x="1738.0" y="2944" width="444.0" height="21" fill="white"/>
+<text x="1960.0" y="2960" text-anchor="middle" font-size="16">33. Nueva versión registrada en dbo.UsuarioVersion</text>
+<line x1="1610" y1="3051" x2="1960" y2="3051" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)" stroke-dasharray="8 5"/>
+<rect x="1679.1" y="3022" width="211.79999999999998" height="21" fill="white"/>
+<text x="1785.0" y="3038" text-anchor="middle" font-size="16">34. Callback completado</text>
+<line x1="1960" y1="3150" x2="1610" y2="3150" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)" stroke-dasharray="8 5"/>
+<rect x="1666.2" y="3100" width="237.6" height="21" fill="white"/>
+<text x="1785.0" y="3116" text-anchor="middle" font-size="16">35. DVH/DVV actualizados y</text>
+<rect x="1696.3" y="3121" width="177.4" height="21" fill="white"/>
+<text x="1785.0" y="3137" text-anchor="middle" font-size="16">verificados; COMMIT</text>
+<line x1="1610" y1="3228" x2="910" y2="3228" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)" stroke-dasharray="8 5"/>
+<rect x="1136.9" y="3199" width="246.2" height="21" fill="white"/>
+<text x="1260.0" y="3215" text-anchor="middle" font-size="16">36. Restauración confirmada</text>
+<line x1="910" y1="3306" x2="560" y2="3306" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)" stroke-dasharray="8 5"/>
+<rect x="611.9" y="3277" width="246.2" height="21" fill="white"/>
+<text x="735.0" y="3293" text-anchor="middle" font-size="16">37. Restauración confirmada</text>
+<rect x="2590" y="3351" width="650" height="160" rx="6" fill="#fff8df" stroke="#d1b976"/>
+<text x="2608" y="3380" font-size="16" font-weight="bold">3. MOSTRAR EL RESULTADO</text>
+<text x="2608" y="3402" font-size="16">La UI marca HuboRestauracion = true y vuelve a cargar cuentas y</text>
+<text x="2608" y="3424" font-size="16">versiones. Las dos consultas siguientes repiten el circuito autorizado</text>
+<text x="2608" y="3446" font-size="16">de la fase 1; se abrevian sus llamadas internas. El registro nuevo</text>
+<text x="2608" y="3468" font-size="16">conserva VersionOrigen y el autor; FechaUtc se genera en SQL.</text>
+<path d="M 560 3421 h 90 v 24 h -90" fill="none" stroke="#334155" marker-end="url(#arrow)"/>
+<rect x="432.6" y="3400" width="254.79999999999998" height="21" fill="white"/>
+<text x="560.0" y="3416" text-anchor="middle" font-size="16">38. CargarCuentas(idUsuario)</text>
+<line x1="560" y1="3507" x2="910" y2="3507" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)"/>
+<rect x="594.7" y="3478" width="280.59999999999997" height="21" fill="white"/>
+<text x="735.0" y="3494" text-anchor="middle" font-size="16">39. ListarCuentasConHistorial()</text>
+<line x1="910" y1="3585" x2="560" y2="3585" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)" stroke-dasharray="8 5"/>
+<rect x="620.5" y="3556" width="229.0" height="21" fill="white"/>
+<text x="735.0" y="3572" text-anchor="middle" font-size="16">40. Cuentas con historial</text>
+<line x1="560" y1="3663" x2="910" y2="3663" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)"/>
+<rect x="586.1" y="3634" width="297.8" height="21" fill="white"/>
+<text x="735.0" y="3650" text-anchor="middle" font-size="16">41. ConsultarHistorial(idUsuario)</text>
+<line x1="910" y1="3741" x2="560" y2="3741" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)" stroke-dasharray="8 5"/>
+<rect x="620.5" y="3712" width="229.0" height="21" fill="white"/>
+<text x="735.0" y="3728" text-anchor="middle" font-size="16">42. Historial actualizado</text>
+<line x1="560" y1="3840" x2="210" y2="3840" stroke="#334155" stroke-width="1.6" marker-end="url(#arrow)" stroke-dasharray="8 5"/>
+<rect x="218.9" y="3790" width="332.2" height="21" fill="white"/>
+<text x="385.0" y="3806" text-anchor="middle" font-size="16">43. Estado restaurado y nueva versión</text>
+<rect x="347.9" y="3811" width="74.19999999999999" height="21" fill="white"/>
+<text x="385.0" y="3827" text-anchor="middle" font-size="16">visible</text>
+<rect x="2590" y="3885" width="650" height="292" rx="6" fill="#fff8df" stroke="#d1b976"/>
+<text x="2608" y="3914" font-size="16" font-weight="bold">ALTERNATIVAS Y GARANTIAS</text>
+<text x="2608" y="3936" font-size="16">Sin autorización o con VersionSeguridad desactualizada, la BLL rechaza</text>
+<text x="2608" y="3958" font-size="16">la operación antes de escribir. El DAL vuelve a controlar la</text>
+<text x="2608" y="3980" font-size="16">concurrencia bajo bloqueo. Una versión no restaurable, un nombre</text>
+<text x="2608" y="4002" font-size="16">ocupado, un rol eliminado o una violación de la protección del</text>
+<text x="2608" y="4024" font-size="16">administrador causan error.</text>
+<text x="2608" y="4046" font-size="16">Si falla una validación o escritura dentro de Cambiar, la transacción</text>
+<text x="2608" y="4068" font-size="16">se revierte: ni los datos ni la nueva versión quedan parcialmente</text>
+<text x="2608" y="4090" font-size="16">guardados. La UI captura la excepción mediante Intentar y muestra el</text>
+<text x="2608" y="4112" font-size="16">mensaje. El historial no guarda contraseñas ni versiones de la</text>
+<text x="2608" y="4134" font-size="16">composición de los roles.</text>
+<text x="40" y="4237" font-size="16">Modelo actualizado el 17/11/2026 | 7 participantes | 43 mensajes | SVG vectorial</text></g></svg>

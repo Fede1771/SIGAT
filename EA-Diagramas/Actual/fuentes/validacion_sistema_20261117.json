@@ -1,0 +1,23 @@
+{
+  "fk": 14,
+  "tipos": 80,
+  "clases_t06b": 43,
+  "secuencia_t06b": 45,
+  "fecha": "2026-11-17",
+  "paquete_actual": 18,
+  "diagramas_nuevos": 7,
+  "ruta_t06b": "00 - SIGAT actualizado (17-11-2026) > 03 - T06b Control de cambios de usuarios",
+  "geometria_anteriores_sin_cambios": true,
+  "codigo_y_datos_modificados": false,
+  "tablas_fisicas": 16,
+  "tablas_condicionales": 1,
+  "diagramas_anteriores": 45,
+  "fuentes": 66,
+  "pdf_clases_paginas": 6,
+  "pdf_der_paginas": 1,
+  "todos_los_tipos_en_pdf": true,
+  "todas_las_tablas_en_pdf": true,
+  "pdf_vectoriales_sin_imagenes": true,
+  "hashes_fuentes_sin_cambios": true,
+  "exportaciones_totales": 52
+}

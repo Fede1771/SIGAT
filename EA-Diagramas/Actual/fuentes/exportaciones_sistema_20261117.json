@@ -1,0 +1,65 @@
+﻿[
+    {
+        "id":  "46_clases_sistema_completo",
+        "objects":  81,
+        "links":  72,
+        "kind":  "class",
+        "diagramId":  46,
+        "guid":  "{DBBBB5B8-9A27-4fe1-A401-81556702DB28}",
+        "title":  "SIGAT | Clases de todo el sistema"
+    },
+    {
+        "id":  "47_clases_be_actual",
+        "objects":  26,
+        "links":  25,
+        "kind":  "class",
+        "diagramId":  47,
+        "guid":  "{C06C98E0-DBCE-4ad8-990F-970A9445319F}",
+        "title":  "SIGAT | Clases de SIGAT.BE"
+    },
+    {
+        "id":  "48_clases_bll_actual",
+        "objects":  14,
+        "links":  16,
+        "kind":  "class",
+        "diagramId":  48,
+        "guid":  "{3D73721B-B011-4fa9-80D1-8397D5BBAE4A}",
+        "title":  "SIGAT | Clases de SIGAT.BLL"
+    },
+    {
+        "id":  "49_clases_dal_actual",
+        "objects":  11,
+        "links":  16,
+        "kind":  "class",
+        "diagramId":  49,
+        "guid":  "{2A3DB8E2-74DD-4d06-A07D-7448E2B5A20E}",
+        "title":  "SIGAT | Clases de SIGAT.DAL"
+    },
+    {
+        "id":  "50_clases_servicios_actual",
+        "objects":  8,
+        "links":  6,
+        "kind":  "class",
+        "diagramId":  50,
+        "guid":  "{8C0B954D-7561-40fa-91F2-BB82C08161E4}",
+        "title":  "SIGAT | Clases de SIGAT.SERVICIOS"
+    },
+    {
+        "id":  "51_clases_ui_actual",
+        "objects":  26,
+        "links":  64,
+        "kind":  "class",
+        "diagramId":  51,
+        "guid":  "{0FB0D536-BCD7-4b85-AC9D-921DD74EDAD5}",
+        "title":  "SIGAT | Clases de SIGAT.UI"
+    },
+    {
+        "id":  "52_der_sistema_completo",
+        "objects":  18,
+        "links":  14,
+        "kind":  "er",
+        "diagramId":  52,
+        "guid":  "{EA4F7D9E-CF1C-4f57-A4A4-518DABD8D7B9}",
+        "title":  "SIGAT | Diagrama entidad-relación completo"
+    }
+]
