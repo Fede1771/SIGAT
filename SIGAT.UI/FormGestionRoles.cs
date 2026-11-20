@@ -31,12 +31,13 @@ public partial class FormGestionRoles : Form, IIdiomaObserver
         foreach (var c in new Control[] { tituloUsuarios, tituloRoles, tituloFamilias, ayudaUsuarios, ayudaRoles,
             ayudaFamilias, rutaUsuario, rutaRol, rutaFamilia, lblEstado }) c.Tag = null;
         TemaVisual.Formulario(this);
+        ConectarPresentacion();
         foreach (var tree in new[] { tvUsuarioPermisos, tvRolesJerarquia, tvCatalogoGeneral })
         {
             TemaVisual.CargarIconosArbol(tree);
             if (!tree.ImageList.Images.ContainsKey("Vacio"))
                 tree.ImageList.Images.Add("Vacio", new Bitmap(tree.ImageList.ImageSize.Width, tree.ImageList.ImageSize.Height));
-            tree.ItemHeight = Math.Max(tree.Font.Height + 4, (int)(22 * DeviceDpi / 96f));
+            tree.ItemHeight = Math.Max(tree.Font.Height + 8, (int)(30 * DeviceDpi / 96f));
             var menu = new ContextMenuStrip(components);
             menu.Items.Add(T("expandir", "Expandir todo"), null, (_, _) => tree.ExpandAll());
             menu.Items.Add(T("contraer", "Contraer todo"), null, (_, _) => tree.CollapseAll());
@@ -253,22 +254,22 @@ public partial class FormGestionRoles : Form, IIdiomaObserver
         rolId = raiz?.Tag is Nodo { Componente: Rol rol } ? rol.Id : 0;
         var actual = Estado.Roles.Find(r => r.Id == rolId);
         tituloRoles.Text = actual == null ? T("seleccionarRol", "Seleccioná un rol") :
-            T("contenidoRol", "Contenido del rol:") + " " + actual.Nombre;
-        ayudaRoles.Text = rolId == 1 ? T("soloLectura", "Rol protegido · Solo lectura") :
+            T("rolSeleccionadoClaro", "Rol:") + " " + actual.Nombre;
+        ayudaRoles.Text = rolId == 1 ? T("adminProtegidoClaro", "Rol Administrador protegido. Sus asignaciones directas son de solo lectura.") :
             T("editarDirectos", "Editá los componentes directos. Los heredados se cambian en su origen.");
         if (rolId == 1) return;
         if (ComponenteSeleccionado is PermisoCompuesto familia)
         {
-            tituloRoles.Text = T("agregarDentroDe", "Agregar dentro de:") + " " + familia.Nombre;
-            ayudaRoles.Text = T("familiaBreve", "Agregar crea hijos aquí. Esta familia es compartida.");
+            tituloRoles.Text = T("familiaSeleccionadaClara", "Familia:") + " " + familia.Nombre;
+            ayudaRoles.Text = T("destinoFamiliaClaro", "Los elementos que agregues quedarán dentro de esta familia compartida.");
         }
         else if (ComponenteSeleccionado is PermisoSimple)
             ayudaRoles.Text = T("seleccionarContenedor", "Un permiso simple no admite hijos. Seleccioná un rol o una familia para agregar componentes.");
         else if (ComponenteSeleccionado is Rol seleccionado)
         {
-            tituloRoles.Text = T("contenidoRol", "Contenido del rol:") + " " + seleccionado.Nombre;
+            tituloRoles.Text = T("rolSeleccionadoClaro", "Rol:") + " " + seleccionado.Nombre;
             ayudaRoles.Text = seleccionado.Id == 1 ? T("soloLectura", "Rol protegido · Solo lectura") :
-                T("rolBreve", "Agregar e Incluir rol crean hijos en el rol seleccionado.");
+                T("destinoRolClaro", "Agregá permisos, familias u otros roles dentro del rol seleccionado.");
         }
     }
 
@@ -410,6 +411,7 @@ public partial class FormGestionRoles : Form, IIdiomaObserver
         if (consultando || !datosCargados)
         {
             btnGuardarCambios.Enabled = btnDescartarCambios.Enabled = btnRecargarDatos.Enabled = false;
+            btnNuevaFamiliaVisible.Enabled = btnSubfamiliaVisible.Enabled = btnIncluirRolVisible.Enabled = btnVerResumen.Enabled = false;
             lblEstado.Text = T("cargando", "Cargando roles y permisos…");
             return;
         }
@@ -432,6 +434,7 @@ public partial class FormGestionRoles : Form, IIdiomaObserver
         btnGuardarCambios.Enabled = btnDescartarCambios.Enabled = TieneCambios;
         lblEstado.Text = TieneCambios ? T("pendientes", "Cambios pendientes:") + " " + edicion.Cambios.Count : T("sinCambios", "Sin cambios pendientes.");
         lblEstado.ForeColor = TemaVisual.ColorActual(TieneCambios ? TemaVisual.Ambar : TemaVisual.Secundario, true);
+        ActualizarPresentacion();
     }
 
     private void CambiarRolUsuario(object sender, ItemCheckEventArgs e)
@@ -530,9 +533,7 @@ public partial class FormGestionRoles : Form, IIdiomaObserver
     private bool GuardarCambios()
     {
         if (!TieneCambios) return true;
-        var impacto = familiasModificadas.SelectMany(edicion.Impacto).Concat(rolesModificados.SelectMany(edicion.ImpactoRol)).Distinct();
-        string resumen = string.Join(Environment.NewLine, edicion.Cambios) + Environment.NewLine + Environment.NewLine +
-            string.Join(Environment.NewLine, impacto);
+        string resumen = ResumenCambios();
         using var confirmar = new DlgFamiliaPermisos();
         confirmar.CargarResumen(T("revision", "Revisar cambios antes de guardar"), resumen + Environment.NewLine + Environment.NewLine +
             T("confirmarGuardado", "Los accesos de sesiones abiertas se actualizarán al volver a iniciar sesión."));
@@ -593,12 +594,18 @@ public partial class FormGestionRoles : Form, IIdiomaObserver
         {
             float escala = Math.Max(DeviceDpi / 96f, Font.Height / 17f);
             int disponible = Math.Max(1, visorColumnas.ClientSize.Width);
-            int ancho = Math.Max(disponible, (int)Math.Ceiling(3 * 280 * escala));
+            int ancho = Math.Max(disponible, (int)Math.Ceiling(950 * escala));
             int alto = Math.Max(1, visorColumnas.ClientSize.Height - (ancho > disponible ? SystemInformation.HorizontalScrollBarHeight : 0));
             visorColumnas.AutoScrollMinSize = new Size(ancho, 0);
             columnasRoles.Bounds = new Rectangle(visorColumnas.AutoScrollPosition, new Size(ancho, alto));
-            foreach (var vista in new[] { vistaUsuarios, vistaFamilias })
-                vista.RowStyles[0].Height = 210 * escala;
+            int izquierda = Math.Clamp((int)(ancho * proporcionUsuarios), (int)(290 * escala), ancho - (int)(660 * escala));
+            int derecha = Math.Clamp((int)(ancho * proporcionFamilias), (int)(310 * escala), ancho - izquierda - (int)(350 * escala));
+            int[] medidas = { izquierda, ancho - izquierda - derecha, derecha };
+            for (int i = 0; i < 3; i++) { columnasRoles.ColumnStyles[i].SizeType = SizeType.Absolute; columnasRoles.ColumnStyles[i].Width = medidas[i]; }
+            listaUsuarios.ItemHeight = (int)(34 * escala); listaFamilias.ItemHeight = (int)(46 * escala);
+            foreach (var tree in new[] { tvUsuarioPermisos, tvRolesJerarquia, tvCatalogoGeneral }) tree.ItemHeight = Math.Max(tree.Font.Height + 8, (int)(30 * escala));
+            vistaUsuarios.RowStyles[0].Height = Math.Clamp(70 * escala + Math.Min(4, Math.Max(2, listaUsuarios.Items.Count)) * listaUsuarios.ItemHeight, 150 * escala, 220 * escala);
+            vistaFamilias.RowStyles[0].Height = Math.Clamp(alto * .32f, 210 * escala, 290 * escala);
             vistaRoles.RowStyles[0].Height = seleccionRoles.GetPreferredSize(new Size(vistaRoles.ClientSize.Width, 0)).Height;
             detalleUsuarios.RowStyles[3].SizeType = SizeType.Absolute;
             detalleUsuarios.RowStyles[3].Height = Math.Max(112 * escala, rolesUsuario.Items.Count * rolesUsuario.ItemHeight + 8);
@@ -610,6 +617,8 @@ public partial class FormGestionRoles : Form, IIdiomaObserver
             {
                 int anchoDetalle = Math.Max(1, visor.ClientSize.Width - SystemInformation.VerticalScrollBarWidth - 2);
                 foreach (var l in tabla.Controls.OfType<Label>()) l.MaximumSize = new Size(anchoDetalle, 0);
+                foreach (var grupo in tabla.Controls.OfType<TableLayoutPanel>())
+                    foreach (var l in grupo.Controls.OfType<Label>()) l.MaximumSize = new Size(anchoDetalle, 0);
                 if (acciones != null)
                 {
                     acciones.MaximumSize = new Size(anchoDetalle, 0);
@@ -621,11 +630,11 @@ public partial class FormGestionRoles : Form, IIdiomaObserver
                 {
                     if (DetalleOculto(c)) continue;
                     var fila = tabla.RowStyles[tabla.GetRow(c)];
-                    minimo += fila.SizeType == SizeType.Percent ? (int)((c is CheckedListBox ? 115 : 200) * escala) :
+                    minimo += fila.SizeType == SizeType.Percent ? (int)((c is CheckedListBox ? 150 : 210) * escala) :
                         fila.SizeType == SizeType.Absolute ? (int)fila.Height :
                         c.GetPreferredSize(new Size(Math.Max(1, anchoDetalle - c.Margin.Horizontal), 0)).Height + c.Margin.Vertical;
                 }
-                int altura = Math.Max(visor.ClientSize.Height, minimo);
+                int altura = Math.Max(visor.ClientSize.Height, minimo + tabla.Padding.Vertical);
                 visor.AutoScrollMinSize = new Size(0, altura);
                 tabla.Bounds = new Rectangle(visor.AutoScrollPosition, new Size(anchoDetalle, altura));
             }

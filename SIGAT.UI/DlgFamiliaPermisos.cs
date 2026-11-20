@@ -28,7 +28,7 @@ public partial class DlgFamiliaPermisos : Form
 
     public IEnumerable<object> SeleccionadosObjetos => seleccionOpciones.ToArray();
 
-    public void CargarResumen(string titulo, string resumen)
+    public void CargarResumen(string titulo, string resumen, bool soloLectura = false)
     {
         Text = titulo;
         Controls.Clear();
@@ -41,8 +41,9 @@ public partial class DlgFamiliaPermisos : Form
         var texto = new TextBox { Name = "resumenCambios", ReadOnly = true, Multiline = true,
             ScrollBars = ScrollBars.Both, WordWrap = false, Dock = DockStyle.Fill, Text = resumen };
         var acciones = new FlowLayoutPanel { Dock = DockStyle.Top, AutoSize = true, FlowDirection = FlowDirection.RightToLeft };
-        btnGuardar.Text = T("guardar", "Guardar cambios");
+        btnGuardar.Text = soloLectura ? T("cerrarResumenClaro", "Cerrar resumen") : T("guardar", "Guardar cambios");
         btnCancelar.Text = T("seguirEditando", "Seguir editando");
+        btnCancelar.Visible = !soloLectura;
         btnGuardar.AutoSize = btnCancelar.AutoSize = true;
         btnGuardar.Anchor = btnCancelar.Anchor = AnchorStyles.None;
         acciones.Controls.Add(btnCancelar); acciones.Controls.Add(btnGuardar);

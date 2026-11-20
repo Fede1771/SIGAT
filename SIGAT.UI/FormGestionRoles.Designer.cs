@@ -67,6 +67,10 @@ partial class FormGestionRoles
     private TreeView tvCatalogoGeneral;
     private TextBox txtImpacto;
     private TextBox rutaFamilia;
+    private Label lblDestinoRol, lblAlcanceRol, lblTipoFamilia;
+    private Button btnIncluirRolVisible, btnOrigenVisible, btnNuevaFamiliaVisible, btnSubfamiliaVisible;
+    private LinkLabel btnVerResumen;
+    private Panel separadorUsuarios, separadorRoles;
     protected override void Dispose(bool disposing)
     { if (disposing) components?.Dispose(); base.Dispose(disposing); }
 
@@ -674,6 +678,7 @@ partial class FormGestionRoles
         Name = "FormGestionRoles";
         Text = "Gestión de roles y permisos";
         Controls.Add(layoutPrincipal);
+        ConfigurarPresentacion();
         ResumeLayout(false);
         PerformLayout();
     }

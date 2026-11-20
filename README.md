@@ -60,7 +60,7 @@ El objetivo académico es poder explicar y demostrar cómo una operación atravi
 |---|---|
 | Autenticación | Ingreso mediante usuario y contraseña, rechazo de credenciales incorrectas y cuentas inactivas, sesión compartida y cierre de sesión. |
 | Usuarios | Alta, modificación de datos y contraseña, baja lógica y reactivación. Las cuentas nuevas se crean sin roles. |
-| Roles y permisos | Tres columnas simultáneas: Usuarios, Roles y Familias y permisos. Carga sin bloquear la ventana, búsquedas independientes, edición en memoria con Guardar/Descartar, procedencia de accesos, impacto de familias compartidas y anidamiento sin ciclos. |
+| Roles y permisos | Tres columnas simultáneas: Usuarios, Roles y Catálogo de permisos. Anchos ajustables, destino de edición visible, familias diferenciadas de permisos simples, resumen previo y edición en memoria con Guardar/Descartar. Conserva búsquedas independientes, procedencia, impacto de componentes compartidos y anidamiento sin ciclos. |
 | Idiomas | Cambio de idioma durante la sesión, preferencia por cuenta, creación y activación de idiomas, edición e importación/exportación de traducciones. |
 | Bitácora | Registro de accesos, cierre de sesión, altas, modificaciones y bajas de usuarios; intento de registro de errores inesperados y auditoría del recálculo de integridad. Consultas combinadas por fecha, usuario y actividad mediante desplegable, con compatibilidad entre nombres históricos equivalentes. |
 | Control de cambios (T06b) | Historial de usuarios con autor, fecha, operación y estado de cada versión. Comparación y restauración autorizada de los datos de la cuenta y sus roles directos. |
@@ -76,9 +76,17 @@ Las traducciones se guardan en SQL por formulario y clave de control. Cuando fal
 - **Inicio:** accesos rápidos con íconos ampliados y nombres debajo. Se acomodan en filas según el ancho disponible.
 - **Navegación:** el menú lateral permite cambiar de módulo y se puede contraer para ganar espacio. Las opciones respetan los permisos de la sesión.
 - **Apariencia:** modos claro y oscuro. El tema se conserva localmente por cuenta; el idioma se guarda en SQL.
-- **Roles y permisos:** se mantienen las tres columnas. Cada título identifica qué cuenta, rol o familia se está editando. Filtrar una columna conserva el borrador y las selecciones de las otras.
+- **Roles y permisos:** las tres columnas permanecen visibles y el árbol central tiene más espacio. La ruta sobre el árbol identifica la rama que recibirá los componentes. Se puede arrastrar el borde derecho de las dos primeras columnas para ajustar sus anchos; un doble clic restaura la distribución. Filtrar conserva el borrador y las selecciones de las otras columnas.
 - **Historial:** las versiones se presentan en una vista compacta; los campos modificados se destacan en la comparación. Restaurar requiere revisar y confirmar la versión elegida.
 - **Integridad:** Verificar, Crear respaldo, Recuperar y Cerrar/Continuar quedan a la vista. Las operaciones de mayor alcance se agrupan en **Opciones avanzadas**.
+
+### Editar roles y permisos
+
+1. En **Usuarios**, elegir la cuenta y marcar sus roles directos. La cuenta administradora original muestra su rol protegido sin casilla editable.
+2. En **Roles**, desplegar uno de los cinco roles y seleccionar el destino. **Agregar permiso o familia** coloca los componentes dentro de esa rama; **Incluir otro rol** está disponible al seleccionar un rol. Los permisos simples son hojas y no admiten hijos.
+3. En **Catálogo de permisos**, elegir una familia para consultar o editar sus hijos, o crear una familia y sus subfamilias. Una familia compartida conserva el mismo contenido en todas sus apariciones. **Quitar** elimina la relación, no el componente del catálogo.
+4. Consultar **Procedencia y herencia**, **Dónde se utiliza** o **Ver resumen** antes de confirmar. Las ramas heredadas conservan la opción de ir a su origen.
+5. Pulsar **Guardar cambios** y confirmar el resumen para persistir la edición de las tres columnas, o **Descartar** para volver al último estado confirmado. Las sesiones abiertas reciben los nuevos accesos al volver a iniciar sesión. **Actualizar catálogo** vuelve a consultar SQL y solicita resolver los cambios pendientes.
 
 ### Consultar la bitácora
 
