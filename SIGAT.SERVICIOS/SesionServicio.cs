@@ -12,6 +12,8 @@ namespace SIGAT.SERVICIOS
 
         // 3. Propiedades del usuario logueado
         public Usuario? UsuarioActual { get; private set; }
+        // Una autenticación de emergencia solo permite reparar la integridad, no abrir los módulos normales.
+        public bool SoloRecuperacion { get; private set; }
 
         public AutorCambioUsuario? ObtenerAutorCambio() =>
             UsuarioActual is Usuario usuario ? new(usuario.IdUsuario, usuario.NombreUsuario) : null;
@@ -42,11 +44,18 @@ namespace SIGAT.SERVICIOS
 
         // Limpiamos el idioma y los observadores anteriores antes de asignar la nueva cuenta.
         public void IniciarSesion(Usuario usuarioLogueado)
+            => IniciarSesion(usuarioLogueado, false);
+
+        public void IniciarSesionRecuperacion(Usuario usuarioLogueado)
+            => IniciarSesion(usuarioLogueado, true);
+
+        private void IniciarSesion(Usuario usuarioLogueado, bool soloRecuperacion)
         {
             ArgumentNullException.ThrowIfNull(usuarioLogueado);
 
             Idiomas.IdiomaManager.ObtenerInstancia().ReiniciarSesion();
 
+            SoloRecuperacion = soloRecuperacion;
             UsuarioActual = usuarioLogueado;
         }
 
@@ -56,6 +65,7 @@ namespace SIGAT.SERVICIOS
             Idiomas.IdiomaManager.ObtenerInstancia().ReiniciarSesion();
 
             UsuarioActual = null;
+            SoloRecuperacion = false;
         }
     }
 }

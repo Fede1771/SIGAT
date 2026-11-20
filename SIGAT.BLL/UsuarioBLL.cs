@@ -6,7 +6,7 @@ using SIGAT.SERVICIOS;
 
 namespace SIGAT.BLL
 {
-    public enum ResultadoLogin { Exito, CredencialesInvalidas, UsuarioInactivo }
+    public enum ResultadoLogin { Exito, CredencialesInvalidas, UsuarioInactivo, Mantenimiento, RequiereRecuperacion }
 
     public class UsuarioBLL
     {
@@ -26,8 +26,47 @@ namespace SIGAT.BLL
             return "Sistema";
         }
 
-        // Ingreso: verificamos integridad, credenciales y estado de la cuenta. Luego cargamos sus roles para construir la sesión.
         public ResultadoLogin Autenticar(string nombreUsuario, string passwordPlana, out Usuario usuarioValidado)
+        {
+            var sesion = SesionServicio.ObtenerInstancia();
+            sesion.CerrarSesion();
+            try { return AutenticarVerificado(nombreUsuario, passwordPlana, out usuarioValidado); }
+            catch (SIGAT.BE.Integridad.IntegridadException ex)
+            {
+                try { IntegridadBLL.RegistrarIncidente(ex.Informe); } catch { }
+            }
+
+            usuarioValidado = null!;
+            var acceso = new IntegridadDAL().AutenticarRecuperacion(nombreUsuario, HashHelper.ObtenerHashSHA256(passwordPlana));
+            if (acceso.Usuario == null)
+            {
+                _bitacora.Registrar(new LoginFallidoFactory().Crear(nombreUsuario, "Usuario o contraseña incorrectos."));
+                return ResultadoLogin.CredencialesInvalidas;
+            }
+            if (!acceso.Usuario.Activo)
+            {
+                _bitacora.Registrar(new LoginFallidoFactory().Crear(nombreUsuario, "El usuario intentó entrar pero está inactivo."));
+                return ResultadoLogin.UsuarioInactivo;
+            }
+            if (!acceso.Administrador)
+            {
+                _bitacora.Registrar(new LoginFallidoFactory().Crear(nombreUsuario, "Acceso bloqueado por mantenimiento de integridad."));
+                return ResultadoLogin.Mantenimiento;
+            }
+
+            // Otorgamos únicamente el permiso necesario para reparar. Los roles normales se recargan tras otra autenticación.
+            var rol = new Rol { Id = 1, Nombre = "Administrador" };
+            rol.AgregarPermiso(new PermisoCompuesto { Id = 7, Nombre = MatrizRoles.Administracion });
+            acceso.Usuario.AsignarRol(rol);
+            _bitacora.Registrar(new LoginExitosoFactory().Crear(acceso.Usuario.NombreUsuario,
+                "Autenticación administrativa restringida a recuperación de integridad."));
+            sesion.IniciarSesionRecuperacion(acceso.Usuario);
+            usuarioValidado = acceso.Usuario;
+            return ResultadoLogin.RequiereRecuperacion;
+        }
+
+        // El ingreso normal conserva todas las comprobaciones de integridad, credenciales, estado y roles.
+        private ResultadoLogin AutenticarVerificado(string nombreUsuario, string passwordPlana, out Usuario usuarioValidado)
         {
             new IntegridadBLL().ExigirIntegridad();
             // Buscamos la cuenta y calculamos la huella de la clave ingresada para compararla con la guardada.

@@ -43,6 +43,8 @@ namespace SIGAT.BLL
 
         internal static Usuario ExigirGestion(EstadoRoles estado)
         {
+            if (SesionServicio.ObtenerInstancia().SoloRecuperacion)
+                throw new UnauthorizedAccessException("La sesión de recuperación no permite gestionar roles ni usuarios.");
             int? id = SesionServicio.ObtenerInstancia().UsuarioActual?.IdUsuario;
             foreach (Usuario usuario in estado.Usuarios)
             {

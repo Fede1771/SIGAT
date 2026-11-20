@@ -16,6 +16,8 @@ namespace SIGAT.UI
         {
             InitializeComponent();
             if (EntornoDiseno.Activo) return;
+            if (SesionServicio.ObtenerInstancia().SoloRecuperacion)
+                throw new UnauthorizedAccessException("Debe completar la recuperación y volver a validar el inicio de sesión.");
             TemaVisual.CargarPreferencia(SesionServicio.ObtenerInstancia().UsuarioActual?.IdUsuario ?? 0);
             TemaVisual.Formulario(this);
             WindowState = FormWindowState.Maximized;

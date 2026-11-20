@@ -7,7 +7,7 @@ namespace SIGAT.UI
     internal static class Program
     {
         [STAThread]
-        // Antes del login revisamos integridad. Si hay problemas, el inicio pasa por la pantalla de recuperación.
+        // Siempre presentamos el login. La recuperación requiere primero autenticar a un administrador de SIGAT.
         static void Main()
         {
             ApplicationConfiguration.Initialize();
@@ -22,17 +22,11 @@ namespace SIGAT.UI
             // Arrancamos el sistema mostrando la pantalla de login
             try
             {
-                var informe = new IntegridadBLL().Verificar();
-                if (!informe.Correcta)
-                {
-                    if (MostrarRecuperacion(null, informe) != DialogResult.OK) return;
-                    new IntegridadBLL().ExigirIntegridad();
-                }
                 Application.Run(new FrmLogin());
             }
             catch (Exception ex)
             {
-                MessageBox.Show("No se pudo verificar la integridad de SIGAT.\n" + ex.Message,
+                MessageBox.Show("No se pudo iniciar SIGAT.\n" + ex.Message,
                     "Inicio bloqueado", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -40,10 +34,19 @@ namespace SIGAT.UI
         // Un fallo al escribir el log no debe impedir elegir el respaldo de recuperación.
         internal static DialogResult MostrarRecuperacion(IWin32Window propietario, InformeIntegridad informe)
         {
+            if (!IntegridadBLL.EsAdministradorAplicacion())
+            {
+                MostrarAvisoMantenimiento(propietario);
+                return DialogResult.Cancel;
+            }
             try { IntegridadBLL.RegistrarIncidente(informe); } catch { }
             using var recuperar = new FrmIntegridad(informe, bloquearInicio: true);
             return recuperar.ShowDialog(propietario);
         }
+
+        internal static void MostrarAvisoMantenimiento(IWin32Window propietario)
+            => MessageBox.Show(propietario, "En mantenimiento, estamos resolviendo el inconveniente",
+                "Mantenimiento", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
         // Método que atrapa errores de la interfaz
         static void ManejarErrorDeInterfaz(object sender, ThreadExceptionEventArgs e)

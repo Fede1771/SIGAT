@@ -1,6 +1,7 @@
 using SIGAT.BE;
 using SIGAT.BE.Integridad;
 using SIGAT.BLL;
+using SIGAT.SERVICIOS;
 
 namespace SIGAT.UI
 {
@@ -46,18 +47,32 @@ namespace SIGAT.UI
             ResultadoLogin resultado;
             try
             {
-                resultado = _usuarioBLL.Autenticar(txtUsuario.Text, txtPassword.Text, out usuarioValidado);
+                do
+                {
+                    resultado = _usuarioBLL.Autenticar(txtUsuario.Text, txtPassword.Text, out usuarioValidado);
+                    if (resultado != ResultadoLogin.RequiereRecuperacion) break;
+                    try
+                    {
+                        if (Program.MostrarRecuperacion(this, new IntegridadBLL().Verificar()) != DialogResult.OK) return;
+                    }
+                    finally { SesionServicio.ObtenerInstancia().CerrarSesion(); }
+                    // Después de reparar, validamos otra vez la clave, la integridad y los roles actuales.
+                    // La sesión restringida nunca se convierte directamente en un acceso normal.
+                } while (true);
             }
-            catch (IntegridadException ex)
+            catch (IntegridadException)
             {
-                // Es una condición prevista: ofrecemos recuperación sin depender del manejador global de WinForms.
-                txtPassword.Clear();
-                Program.MostrarRecuperacion(this, ex.Informe);
-                txtPassword.Focus();
+                SesionServicio.ObtenerInstancia().CerrarSesion();
+                Program.MostrarAvisoMantenimiento(this);
                 return;
             }
+            finally { txtPassword.Clear(); txtPassword.Focus(); }
 
-            if (resultado == ResultadoLogin.CredencialesInvalidas)
+            if (resultado == ResultadoLogin.Mantenimiento)
+            {
+                Program.MostrarAvisoMantenimiento(this);
+            }
+            else if (resultado == ResultadoLogin.CredencialesInvalidas)
             {
                 MessageBox.Show("Usuario o contraseña incorrectos.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }

@@ -124,6 +124,81 @@ public sealed class IntegridadDAL
         return estado.Informe;
     }
 
+    // Excepción acotada al login de emergencia: no expone lecturas generales ni acepta/recalcula datos dañados.
+    // Las credenciales y las asignaciones se contrastan con su DVH o con el DVV de sus datos.
+    public (Usuario? Usuario, bool Administrador) AutenticarRecuperacion(string nombreUsuario, string hashPassword)
+    {
+        using var c = Conectar(); c.Open();
+        using var t = c.BeginTransaction(IsolationLevel.Serializable);
+        Bloquear(c, t, false);
+        var estado = Examinar(c, t);
+        // Una instalación anterior a la primera referencia también debe permitir autenticar al administrador original.
+        foreach (string tabla in Tablas)
+            if (!estado.Filas.ContainsKey(tabla)) estado.Filas[tabla] = LeerFilas(c, t, tabla);
+
+        using var buscar = Comando(c, t, "SELECT IdUsuario FROM dbo.Usuarios WHERE NombreUsuario=@Usuario");
+        buscar.Parameters.Add("@Usuario", SqlDbType.VarChar, 50).Value = nombreUsuario;
+        object? encontrado = buscar.ExecuteScalar();
+        if (encontrado == null) { t.Commit(); return (null, false); }
+        var fila = estado.Filas["Usuarios"].Single(f => (int)f.Valores[0]! == (int)encontrado);
+        if (!string.Equals(fila.Valores[2] as string, hashPassword, StringComparison.Ordinal))
+        { t.Commit(); return (null, false); }
+        var usuario = new Usuario
+        {
+            IdUsuario = (int)fila.Valores[0]!, NombreUsuario = (string)fila.Valores[1]!,
+            Password = "", Nombre = (string)fila.Valores[3]!, Apellido = (string)fila.Valores[4]!,
+            Activo = (bool)fila.Valores[5]!, DigitoVerificador = fila.Guardado
+        };
+        using var original = Comando(c, t, "SELECT IdUsuario FROM dbo.AdministradorOriginal WHERE Id=1");
+        usuario.EsAdministradorOriginal = Convert.ToInt32(original.ExecuteScalar()) == usuario.IdUsuario;
+        bool cuentaConfiable = FilaConfiable(estado, fila) ||
+            (!estado.Informe.Configurada && usuario.EsAdministradorOriginal);
+        bool administrador = usuario.Activo && cuentaConfiable &&
+            (usuario.EsAdministradorOriginal || TieneAdministracionRecuperacion(c, t, estado, usuario.IdUsuario));
+        t.Commit();
+        return (usuario, administrador);
+    }
+
+    private static bool FilaConfiable(Estado estado, Fila fila)
+    {
+        if (fila.Guardado == fila.Calculado) return true;
+        var filas = estado.Filas[fila.Tabla];
+        // Si solo se alteró el dígito, el DVV calculado de los datos sigue coincidiendo.
+        return estado.Controles.TryGetValue(fila.Tabla, out var control) && control.Version == 1 &&
+            control.Cantidad == filas.Count && control.Hash == Vertical(fila.Tabla, filas);
+    }
+
+    private static bool TieneAdministracionRecuperacion(SqlConnection c, SqlTransaction t, Estado estado, int idUsuario)
+    {
+        var roles = estado.Filas["UsuarioRol"]
+            .Where(f => (int)f.Valores[0]! == idUsuario && FilaConfiable(estado, f))
+            .Select(f => (int)f.Valores[1]!).ToArray();
+        if (roles.Length == 0) return false;
+        // Conservamos el anidamiento de roles y familias, pero nunca usamos una asignación adulterada como raíz.
+        string parametros = string.Join(",", roles.Select((_, i) => "@Rol" + i));
+        using var cmd = Comando(c, t, $"""
+            WITH RolesAcceso AS (
+                SELECT Id, CAST('/'+CAST(Id AS varchar(11))+'/' AS varchar(max)) AS Ruta
+                FROM dbo.Rol WHERE Id IN ({parametros})
+                UNION ALL
+                SELECT h.IdHijo, r.Ruta+CAST(h.IdHijo AS varchar(11))+'/'
+                FROM RolesAcceso r JOIN dbo.RolHijo h ON h.IdPadre=r.Id
+                WHERE CHARINDEX('/'+CAST(h.IdHijo AS varchar(11))+'/',r.Ruta)=0
+            ), PermisosAcceso AS (
+                SELECT rp.IdPermiso AS Id, CAST('/'+CAST(rp.IdPermiso AS varchar(11))+'/' AS varchar(max)) AS Ruta
+                FROM RolesAcceso r JOIN dbo.RolPermiso rp ON rp.IdRol=r.Id
+                UNION ALL
+                SELECT h.IdHijo, p.Ruta+CAST(h.IdHijo AS varchar(11))+'/'
+                FROM PermisosAcceso p JOIN dbo.PermisoHijo h ON h.IdPadre=p.Id
+                WHERE CHARINDEX('/'+CAST(h.IdHijo AS varchar(11))+'/',p.Ruta)=0
+            )
+            SELECT CASE WHEN EXISTS(SELECT 1 FROM PermisosAcceso WHERE Id=7) THEN 1 ELSE 0 END
+            OPTION (MAXRECURSION 32767);
+            """);
+        for (int i = 0; i < roles.Length; i++) cmd.Parameters.Add("@Rol" + i, SqlDbType.Int).Value = roles[i];
+        return (int)cmd.ExecuteScalar()! == 1;
+    }
+
     // El callback representa la consulta y T su resultado. Se ejecuta dentro de la transacción solo si la integridad es correcta.
     public T LeerVerificado<T>(Func<SqlConnection, SqlTransaction, T> leer)
     {

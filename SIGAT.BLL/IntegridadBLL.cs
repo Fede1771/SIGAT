@@ -17,11 +17,11 @@ public sealed class IntegridadBLL
     public InformeIntegridad Verificar() => dal.Verificar();
     // Para administrar la recuperación se necesitan permisos en SIGAT y permisos administrativos en SQL Server.
     public bool PuedeAdministrar() => EsAdministradorAplicacion() && dal.PuedeAdministrar();
-    private static bool EsAdministradorAplicacion()
+    public static bool EsAdministradorAplicacion()
     {
         var usuario = SesionServicio.ObtenerInstancia().UsuarioActual;
-        // Antes del login, la autorización depende del administrador SQL de Windows.
-        return usuario == null || usuario.TienePermiso(MatrizRoles.Administracion);
+        // Los permisos de Windows/SQL nunca reemplazan el login del administrador de SIGAT.
+        return usuario is { Activo: true } && usuario.TienePermiso(MatrizRoles.Administracion);
     }
     private static void ExigirAdministradorAplicacion()
     {

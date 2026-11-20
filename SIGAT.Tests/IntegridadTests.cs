@@ -66,6 +66,11 @@ public class IntegridadTests
         var cuenta = new Usuario { NombreUsuario="dv_prueba",Nombre="Ana",Apellido="Pérez",Password=HashHelper.ObtenerHashSHA256("Inicial123"),Activo=true };
         usuarios.Insertar(cuenta);
         var estado = roles.Cargar();
+        var administrador = estado.Usuarios.Single(u => u.IdUsuario == estado.IdAdministradorOriginal);
+        var cuentaAdministrador = usuarios.ObtenerTodos().Single(u => u.IdUsuario == administrador.IdUsuario);
+        cuentaAdministrador.Password = HashHelper.ObtenerHashSHA256("AdminRecuperacion123!");
+        usuarios.Actualizar(cuentaAdministrador);
+        estado = roles.Cargar();
         estado.Usuarios.Single(u => u.IdUsuario == cuenta.IdUsuario).AsignarRol(estado.Roles.Single(r => r.Id==5));
         roles.Guardar(estado);
         string carpeta = Path.Combine(Path.GetTempPath(), "SIGAT_DV_"+Guid.NewGuid().ToString("N"));
@@ -128,7 +133,7 @@ public class IntegridadTests
         Assert.AreEqual("Ana",usuarios.ObtenerPorNombreUsuario("dv_prueba")!.Nombre);
 
         Sql($"UPDATE dbo.Usuarios SET Apellido=N'Aceptado conscientemente' WHERE IdUsuario={cuenta.IdUsuario}");
-        SesionServicio.ObtenerInstancia().CerrarSesion();
+        SesionServicio.ObtenerInstancia().IniciarSesion(administrador);
         var servicio = new IntegridadBLL(integridad,new BitacoraBLL(bitacora));
         Guid IdBase()
         {
@@ -155,15 +160,15 @@ public class IntegridadTests
         string log=Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),"SIGAT","logs","integridad.log");
         StringAssert.Contains(File.ReadAllText(log),"Recálculo administrativo");
 
-        // El login debe verificar antes de autenticar y no crear una sesión si se alteraron las asignaciones.
+        // La cuenta común queda en mantenimiento; solo el administrador autenticado puede ver la recuperación.
         string? previa=Environment.GetEnvironmentVariable("SIGAT_BASE_PRUEBAS");
         try
         {
             Environment.SetEnvironmentVariable("SIGAT_BASE_PRUEBAS",nombreBase);
             Sql($"UPDATE dbo.UsuarioRol SET DigitoVerificador=REPLICATE('0',64) WHERE IdUsuario={cuenta.IdUsuario}");
-            Assert.ThrowsExactly<IntegridadException>(()=>new UsuarioBLL().Autenticar("dv_prueba","Inicial123",out _));
+            Assert.AreEqual(ResultadoLogin.Mantenimiento, new UsuarioBLL().Autenticar("dv_prueba","Inicial123",out _));
             Assert.IsNull(SesionServicio.ObtenerInstancia().UsuarioActual);
-            ComprobarRecuperacionDesdeLogin(backup);
+            ComprobarRecuperacionDesdeLogin(backup, administrador.NombreUsuario);
             Assert.IsFalse(integridad.Verificar().Correcta, "Cancelar la ventana no debe aceptar ni recalcular los datos alterados.");
             Assert.IsTrue(integridad.Recuperar(backup,true).Correcta);
             try
@@ -176,11 +181,13 @@ public class IntegridadTests
         finally { Environment.SetEnvironmentVariable("SIGAT_BASE_PRUEBAS",previa); }
         Sql("DROP TABLE dbo.IntegridadTabla");
         Assert.IsFalse(integridad.Verificar().Configurada);
+        SesionServicio.ObtenerInstancia().IniciarSesion(administrador);
         Assert.IsTrue(servicio.RecalcularIntegridad().Correcta, "El recálculo administrativo puede crear los controles faltantes.");
         Assert.AreNotEqual(Guid.Empty, IdBase());
+        SesionServicio.ObtenerInstancia().CerrarSesion();
     }
 
-    private static void ComprobarRecuperacionDesdeLogin(string respaldo)
+    private static void ComprobarRecuperacionDesdeLogin(string respaldo, string administrador)
     {
         Exception? error = null;
         var hilo = new Thread(() =>
@@ -195,8 +202,8 @@ public class IntegridadTests
                 SynchronizationContext.SetSynchronizationContext(new WindowsFormsSynchronizationContext());
                 var usuario = (TextBox)login.Controls.Find("txtUsuario", true).Single();
                 var clave = (TextBox)login.Controls.Find("txtPassword", true).Single();
-                usuario.Text = "dv_prueba";
-                clave.Text = "Inicial123";
+                usuario.Text = administrador;
+                clave.Text = "AdminRecuperacion123!";
                 bool abrio = false;
                 var limite = DateTime.UtcNow.AddSeconds(12);
                 using var observar = new System.Windows.Forms.Timer { Interval = 25 };
@@ -217,7 +224,8 @@ public class IntegridadTests
                         var archivo = (TextBox)ventana.Controls.Find("archivo", true).Single();
                         archivo.Text = respaldo;
                         Assert.AreEqual(respaldo, archivo.Text);
-                        Assert.IsNull(SesionServicio.ObtenerInstancia().UsuarioActual);
+                        Assert.AreEqual(administrador, SesionServicio.ObtenerInstancia().UsuarioActual?.NombreUsuario);
+                        Assert.IsTrue(SesionServicio.ObtenerInstancia().SoloRecuperacion);
                         string? destino = Environment.GetEnvironmentVariable("SIGAT_RECUPERACION_PREVIEW");
                         if (!string.IsNullOrWhiteSpace(destino))
                         {

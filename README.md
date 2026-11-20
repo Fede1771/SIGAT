@@ -197,7 +197,7 @@ cd SIGAT
 2. Abrir [01_Instalacion_Completa.sql](Querys/01_Instalacion_Completa.sql), cambiar `@ClaveAdmin` y ejecutar **todo el archivo**. El instalador se detiene si la base ya existe.
 3. Ejecutar [04_Verificacion_Integridad.sql](Querys/04_Verificacion_Integridad.sql) para revisar la estructura y configuración.
 4. Abrir [SIGAT.slnx](SIGAT.slnx) y establecer **SIGAT.UI** como proyecto de inicio, o ejecutar los comandos siguientes desde la carpeta del repositorio.
-5. En la primera apertura, pulsar **Preparar control inicial** en Integridad y recuperación. Esta operación requiere permisos administrativos de SQL y genera respaldos.
+5. En la primera apertura, iniciar sesión con el administrador original y pulsar **Preparar control inicial** en Integridad y recuperación. Esta operación requiere además permisos administrativos de SQL y genera respaldos.
 6. Cuando se indique integridad correcta, continuar e ingresar con `admin` y la contraseña elegida en `@ClaveAdmin`.
 
 ```powershell
@@ -237,7 +237,7 @@ El sistema utiliza mecanismos con objetivos diferentes:
 
 El archivo debe ser accesible para SQL Server en el equipo donde se ejecuta el servicio. El log externo de integridad se encuentra en `%LOCALAPPDATA%\SIGAT\logs\integridad.log`.
 
-Si se detecta una alteración al autenticar, SIGAT abre la recuperación y conserva bloqueado el acceso. Tras recuperar, el usuario debe volver a ingresar sus credenciales. El sistema no recalcula automáticamente los dígitos para aceptar datos alterados.
+SIGAT siempre presenta primero el login. Si hay una alteración, una cuenta común autenticada recibe **«En mantenimiento, estamos resolviendo el inconveniente»** y no obtiene sesión. Solo un administrador con credenciales válidas puede abrir la recuperación, mediante una sesión restringida que no permite ingresar a los módulos normales. Cancelar cierra esa sesión; después de recuperar o aceptar el estado actual, el login vuelve a comprobar la contraseña, la integridad y los roles antes de habilitar el sistema. El sistema no recalcula automáticamente los dígitos para aceptar datos alterados.
 
 Ver [Guía de integridad](Querys/GUIA_INTEGRIDAD.md) para preparar la referencia y demostrar detección y recuperación en una copia de ensayo.
 
@@ -245,7 +245,7 @@ Ver [Guía de integridad](Querys/GUIA_INTEGRIDAD.md) para preparar la referencia
 
 | Situación | Qué revisar |
 |---|---|
-| Se abre Integridad y recuperación antes del login. | El inicio comprueba la base antes de autenticar. Si faltan verificadores en una instalación nueva, preparar el control inicial; si hubo una alteración, revisar el informe y recuperar desde un respaldo confiable. |
+| Aparece recuperación después del login del administrador. | Si faltan verificadores en una instalación nueva, preparar el control inicial; si hubo una alteración, revisar el informe y recuperar desde un respaldo confiable. Los usuarios comunes solo reciben el aviso de mantenimiento. |
 | SQL Server no encuentra el `.bak`. | La ruta se interpreta en el equipo del servicio SQL. Comprobar que el archivo exista allí y que la cuenta del servicio pueda leerlo. |
 | No se puede conectar con la base. | Verificar que la instancia `SQLEXPRESS` esté iniciada, que exista `SIGAT` y que el usuario de Windows tenga acceso. Si se usa otra instancia, ajustar `ConexionBD.cs`. |
 
@@ -266,6 +266,7 @@ Las pruebas `SQLIntegration` requieren bases exclusivas con prefijo `SIGAT_Roles
 | `SIGAT_ROLES_TEST_CONNECTION` | Roles, permisos, gestión de usuarios y carga de la ventana de roles. |
 | `SIGAT_IDIOMA_TEST_CONNECTION` | Preferencias de idioma y concurrencia con la desactivación. |
 | `SIGAT_INTEGRIDAD_TEST_CONNECTION` | Inicialización, alteraciones, respaldos, recuperación y recálculo. |
+| `SIGAT_LOGIN_TEST_CONNECTION` | Login en mantenimiento, sesión restringida, permisos anidados y preparación inicial después de autenticar al administrador. |
 | `SIGAT_HISTORIAL_TEST_CONNECTION` | Versionado, permisos, restauración y reversión si falla el historial. |
 | `SIGAT_BITACORA_TEST_CONNECTION` | Actividades históricas y actuales, usuarios con caracteres especiales, límites de fecha y filtros combinados desde la interfaz. |
 
